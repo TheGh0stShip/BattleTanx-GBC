@@ -44,7 +44,7 @@ wHudIconPalette:
 Bank08HudIconTiles:
 	INCBIN "assets/bank_08/hud_icon_tiles.bin" ; 10 native 2bpp tiles
 
-Bank08PaletteIndexTable:
+ObjectSpritePaletteIndexTable:
 	db 0, 1, 0, 2, 3, 1, 2, 0, 3, 0
 
 ; Four object palettes. The loader supplies color zero, then reads these three
@@ -88,7 +88,7 @@ wAlphanumericFontPalette:
 Bank08AlphanumericFontTiles:
 	INCBIN "assets/bank_08/alphanumeric_font_tiles.bin" ; 66 native 2bpp tiles
 
-Func_08_6DD5:
+SelectObjectSpritePalette:
 	push bc
 	push hl
 	ld a, l
@@ -96,10 +96,10 @@ Func_08_6DD5:
 	add a, $1E
 	ld l, a
 	ld a, [hl]
-	add a, LOW(Bank08PaletteIndexTable)
+	add a, LOW(ObjectSpritePaletteIndexTable)
 	ld l, a
 	ld a, $00
-	adc a, HIGH(Bank08PaletteIndexTable)
+	adc a, HIGH(ObjectSpritePaletteIndexTable)
 	ld h, a
 	ld a, [hl]
 	and $03

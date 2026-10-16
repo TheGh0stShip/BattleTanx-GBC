@@ -10111,18 +10111,18 @@ Func_3793:
 	and $10
 	jr z, Jump_37AB
 Jump_37A5:
-	call Func_37AC
+	call SelectObjectSpritePaletteFar
 	call Func_37BD
 Jump_37AB:
 	ret
 
 
-Func_37AC:
+SelectObjectSpritePaletteFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
 	ld [rROMB0], a
-	call Func_08_6DD5
+	call SelectObjectSpritePalette
 	pop af
 	ld [rROMB0], a
 	ret

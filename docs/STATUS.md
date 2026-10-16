@@ -88,8 +88,11 @@ palette is explicit source at `$44A0`, `$674B`, `$691D`, `$6965`, or `$69AD`;
 startup copies those five records into named WRAM buffers. Their boundaries,
 colors, copy destinations, and symbols are checked. The interval between the
 first two interface-tile groups is now split into a ten-byte palette-index
-table used by bank `$08:$6DD5` and four consecutive six-byte object-palette
-records; their loader supplies the transparent first color. Two additional
+table used by `SelectObjectSpritePalette` at bank `$08:$6DD5` and four
+consecutive six-byte object-palette records; their loader supplies the
+transparent first color. The routine maps an object's type field to sprite
+palette indices 4 through 7 before bank `$01:$4687` writes the OAM attribute.
+Two additional
 six-byte object palettes at `$4512` and `$46EA` are shared with other sprite
 sets. Another complete four-color palette separates the second and third tile
 groups. The unresolved portions are now limited to `$44A8-$4511`,

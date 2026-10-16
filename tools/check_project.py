@@ -137,6 +137,7 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
     sym = ROOT / "battletanx.sym"
     if sym.exists():
         expected_symbols = {
+            "SelectObjectSpritePaletteFar": (0x00, 0x37AC),
             "Bank08UiFontTiles": (0x08, 0x4000),
             "Bank08UiFontPalette": (0x08, 0x44A0),
             "Bank08ObjectPalette4512": (0x08, 0x4512),
@@ -153,11 +154,12 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
             "Bank08ArrowDownTiles": (0x08, 0x696D),
             "Bank08AlphanumericFontPalette": (0x08, 0x69AD),
             "Bank08AlphanumericFontTiles": (0x08, 0x69B5),
-            "Bank08PaletteIndexTable": (0x08, 0x67F3),
+            "ObjectSpritePaletteIndexTable": (0x08, 0x67F3),
             "Bank08ObjectPalettes67FD": (0x08, 0x67FD),
             "Bank08InterfaceTiles6815": (0x08, 0x6815),
             "Bank08InterfacePalette68D5": (0x08, 0x68D5),
             "Bank08InterfaceTiles68DD": (0x08, 0x68DD),
+            "SelectObjectSpritePalette": (0x08, 0x6DD5),
             "wHudIconPalette": (0x00, 0xC6F9),
             "wArrowUpPalette": (0x00, 0xC701),
             "wArrowDownPalette": (0x00, 0xC709),
