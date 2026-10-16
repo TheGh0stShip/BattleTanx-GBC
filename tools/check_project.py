@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -154,6 +155,73 @@ def check_scene_descriptors(rom: bytes) -> None:
             fail(f"scrolling-scene lookup {slot} starts outside its row data")
 
 
+def check_menu_states(rom: bytes) -> None:
+    """Validate the five headers and their fixed-size menu choice records."""
+    states = (
+        (0x4855, 0x00, 0x00, 0x00, 0x4D33, 5, 0x48AA),
+        (0x48AB, 0x04, 0x01, 0x00, 0x4D94, 4, 0x48F0),
+        (0x48F1, 0x03, 0x03, 0x00, 0x507F, 3, 0x4926),
+        (0x4927, 0x05, 0x04, 0x00, 0xD70A, 3, 0x495C),
+        (0x495D, 0x06, 0x0B, 0x00, 0x5287, 3, 0x4992),
+    )
+    state_addresses = {state[0] for state in states}
+    value_addresses = {0xD55B, 0xD55C, 0xD55D, 0xD566, 0xD567}
+    for address, state_id, init, update, callback, count, terminator in states:
+        header = rom[address : address + 5]
+        if header[:3] != bytes((state_id, init, update)):
+            fail(f"menu state {state_id:#04x} header changed")
+        if int.from_bytes(header[3:5], "little") != callback:
+            fail(f"menu state {state_id:#04x} callback changed")
+        if init >= 13 or update >= 13:
+            fail(f"menu state {state_id:#04x} selects an invalid screen mode")
+        if terminator != address + 5 + count * 16 or rom[terminator] != 0xFF:
+            fail(f"menu state {state_id:#04x} record boundary changed")
+        for index in range(count):
+            record = rom[address + 5 + index * 16 : address + 21 + index * 16]
+            if record[0] != index:
+                fail(f"menu state {state_id:#04x} choice order changed")
+            target = int.from_bytes(record[2:4], "little")
+            if target and target not in state_addresses | value_addresses:
+                fail(
+                    f"menu state {state_id:#04x} choice {index} has unknown "
+                    f"target {target:#06x}"
+                )
+            # Only the options state's three value choices carry inline text.
+            if not (state_id == 0x04 and index > 0) and record[6:] != bytes(10):
+                fail(f"menu state {state_id:#04x} choice {index} payload changed")
+
+    if [state[0] for state in states[1:]] != [state[6] + 1 for state in states[:-1]]:
+        fail("menu states are no longer contiguous")
+
+    sym = ROOT / "battletanx.sym"
+    if sym.exists():
+        expected = {
+            "MenuState00": (0x01, 0x4855),
+            "MenuState04": (0x01, 0x48AB),
+            "MenuState03": (0x01, 0x48F1),
+            "MenuState05": (0x01, 0x4927),
+            "MenuState06": (0x01, 0x495D),
+            "HandleMenuState00Input": (0x01, 0x4D33),
+            "HandleMenuState04Input": (0x01, 0x4D94),
+            "HandleMenuState03Input": (0x01, 0x507F),
+            "HandleMenuState05Input": (0x01, 0xD70A),
+            "HandleMenuState06Input": (0x01, 0x5287),
+        }
+        symbols = {}
+        for line in sym.read_text().splitlines():
+            match = re.fullmatch(
+                r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip()
+            )
+            if match:
+                symbols[match.group(3)] = (
+                    int(match.group(1), 16),
+                    int(match.group(2), 16),
+                )
+        for name, where in expected.items():
+            if symbols.get(name) != where:
+                fail(f"menu symbol {name} is at {symbols.get(name)}, expected {where}")
+
+
 def check_tracing() -> None:
     sys.path.insert(0, str(ROOT / "tools"))
     import hints  # pylint: disable=import-outside-toplevel
@@ -165,7 +233,7 @@ def check_tracing() -> None:
             fail(f"text manifest mismatch at ROM offset {offset:#x}")
     traced = trace.run(rom, hints.extra_entries(rom), hints.DATA_RANGES)
     direct_bytes = sum(traced.code.values())
-    if direct_bytes != 37612 or len(traced.loads) != 38:
+    if direct_bytes != 38772 or len(traced.loads) != 38:
         fail(
             "tracing baseline changed; review it and update docs deliberately "
             f"(bytes={direct_bytes}, loads={len(traced.loads)})"
@@ -174,14 +242,14 @@ def check_tracing() -> None:
         any(load.src <= off < load.src + load.len for off in traced.code)
         for load in traced.loads.values()
     )
-    if executable_loads != 30:
+    if executable_loads != 31:
         fail(
             "RAM image classification changed; review it deliberately "
             f"(code={executable_loads}, data={len(traced.loads) - executable_loads})"
         )
     trace.gap_fill(traced, hints.CODE_BANKS, hints.DATA_RANGES)
     total_bytes = sum(traced.code.values())
-    if total_bytes != 37612:
+    if total_bytes != 38772:
         fail(f"gap-fill baseline changed; review it deliberately (bytes={total_bytes})")
     print(
         "trace: "
@@ -354,7 +422,9 @@ def main() -> None:
     check_toolchain()
     entries = read_manifest()
     check_assets(entries)
-    check_scene_descriptors((ROOT / "baserom.gbc").read_bytes())
+    rom = (ROOT / "baserom.gbc").read_bytes()
+    check_scene_descriptors(rom)
+    check_menu_states(rom)
     check_tracing()
     check_audio()
     digest = hashlib.sha1((ROOT / "baserom.gbc").read_bytes()).hexdigest()

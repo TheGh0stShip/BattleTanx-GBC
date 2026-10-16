@@ -1253,6 +1253,18 @@ MACRO screen_mode
 	dw \2, \3, 0
 ENDM
 
+MACRO menu_state
+	db \1, \2, \3
+	dw \4
+ENDM
+
+MACRO menu_choice
+	db \1, \2
+	dw \3
+	db \4, \5
+	ds 10, 0
+ENDM
+
 ScreenModeTable:
 	screen_mode $2D, Func_2D_54FA, Func_2D_5552
 	screen_mode $2A, Func_2A_61D8, Func_2A_6230
@@ -1268,14 +1280,20 @@ ScreenModeTable:
 	screen_mode $2C, Func_2C_55C4, Func_2C_561C
 	screen_mode $2A, Func_2A_6A22, Func_2A_6A7A
 
-	db $C9, $00, $00, $00, $33, $4D, $00, $00
-	db $55, $48, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $0F
-	db $00, $00, $00, $05, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $02, $00
-	db $27, $49, $00, $07, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $03, $00
-	db $F1, $48, $00, $09, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04, $00
-	db $AB, $48, $00, $0B, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $FF, $04
-	db $01, $00, $94, $4D, $00, $00, $55, $48, $00, $00, $00, $00, $00, $00, $00, $00
-	db $00, $00, $00, $00
+	db $C9
+
+MenuState00:
+	menu_state $00, $00, $00, HandleMenuState00Input
+	menu_choice $00, $00, MenuState00, $00, $00
+	menu_choice $01, $0F, 0, $00, $05
+	menu_choice $02, $00, MenuState05, $00, $07
+	menu_choice $03, $00, MenuState03, $00, $09
+	menu_choice $04, $00, MenuState04, $00, $0B
+	db $FF
+
+MenuState04:
+	menu_state $04, $01, $00, HandleMenuState04Input
+	menu_choice $00, $00, MenuState00, $00, $00
 
 OptionsMenuEntries:
 	db $01, $02
@@ -1297,17 +1315,28 @@ OptionsSkillText:
 	db "SKILL"
 	ds 5, 0
 
-	db $FF, $03, $03, $00, $7F, $50, $00, $00, $55, $48, $00, $14
-	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $00, $F1, $48, $00, $14
-	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $02, $0F, $00, $00, $00, $14
-	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $FF, $05, $04, $00, $0A, $D7
-	db $00, $00, $55, $48, $00, $14, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	db $01, $03, $66, $D5, $00, $14, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	db $02, $00, $5D, $49, $00, $14, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	db $FF, $06, $0B, $00, $87, $52, $00, $00, $27, $49, $00, $14, $00, $00, $00, $00
-	db $00, $00, $00, $00, $00, $00, $01, $03, $67, $D5, $00, $14, $00, $00, $00, $00
-	db $00, $00, $00, $00, $00, $00, $02, $01, $00, $00, $00, $14, $00, $00, $00, $00
-	db $00, $00, $00, $00, $00, $00, $FF
+	db $FF
+
+MenuState03:
+	menu_state $03, $03, $00, HandleMenuState03Input
+	menu_choice $00, $00, MenuState00, $00, $14
+	menu_choice $01, $00, MenuState03, $00, $14
+	menu_choice $02, $0F, 0, $00, $14
+	db $FF
+
+MenuState05:
+	menu_state $05, $04, $00, HandleMenuState05Input
+	menu_choice $00, $00, MenuState00, $00, $14
+	menu_choice $01, $03, $D566, $00, $14
+	menu_choice $02, $00, MenuState06, $00, $14
+	db $FF
+
+MenuState06:
+	menu_state $06, $0B, $00, HandleMenuState06Input
+	menu_choice $00, $00, MenuState05, $00, $14
+	menu_choice $01, $03, $D567, $00, $14
+	menu_choice $02, $01, 0, $00, $14
+	db $FF
 OptionsOnText:
 	db "ON ", 0
 OptionsOffText:
@@ -1774,7 +1803,7 @@ Jump_01_4D20:
 	ret
 
 
-Func_01_4D33:
+HandleMenuState00Input:
 	bit 7, e
 	jr nz, Jump_01_4D4C
 	bit 6, e
@@ -1844,7 +1873,7 @@ Jump_01_4D90:
 	ret
 
 
-Func_01_4D94:
+HandleMenuState04Input:
 	bit 7, e
 	jr nz, Jump_01_4DC1
 	bit 6, e
@@ -2241,7 +2270,7 @@ Jump_01_507C:
 	ret
 
 
-Func_01_507F:
+HandleMenuState03Input:
 	bit 7, e
 	jr nz, Jump_01_50B1
 	bit 6, e
@@ -2442,36 +2471,269 @@ Jump_01_51CB:
 	ret
 
 
-	LOAD UNION "RAM data $D70A", WRAMX[$D70A] ; copied from $01:51CC
-	db $7B, $B7, $28, $25, $D5, $CD, $D9, $3C, $D1, $CB, $7B, $20, $1D, $CB, $73, $20
-	db $1A, $CB, $6B, $20, $17, $CB, $63, $20, $18, $CB, $5B, $20, $1A, $CB, $53, $20
-	db $17, $CB, $4B, $20, $14, $CB, $43, $20, $50, $C9, $C9, $C9, $AF, $CD, $AA, $4C
-	db $C9, $3E, $02, $CD, $AA, $4C, $C9, $C9, $C9, $1E, $13, $CD, $73, $2F, $3E, $02
-	db $EA, $63, $D5, $CD, $A2, $7C, $AF, $EA, $63, $D5, $CD, $60, $39, $FA, $66, $D5
-	db $3D, $FE, $FF, $20, $02, $3E, $02, $EA, $66, $D5, $CD, $CB, $D7, $CD, $C5, $7B
-	db $21, $03, $DC, $7D, $EA, $64, $D5, $7C, $EA, $65, $D5, $3E, $01, $EA, $63, $D5
-	db $CD, $3F, $7C, $AF, $EA, $63, $D5, $18, $40, $1E, $13, $CD, $73, $2F, $3E, $02
-	db $EA, $63, $D5, $CD, $EF, $7C, $AF, $EA, $63, $D5, $CD, $60, $39, $FA, $66, $D5
-	db $3C, $FE, $03, $20, $02, $3E, $00, $EA, $66, $D5, $CD, $CB, $D7, $CD, $C5, $7B
-	db $21, $03, $DC, $7D, $EA, $64, $D5, $7C, $EA, $65, $D5, $3E, $01, $EA, $63, $D5
-	db $CD, $E0, $7B, $AF, $EA, $63, $D5, $18, $00, $C9
+	LOAD UNION "RAM code $D70A", WRAMX[$D70A] ; copied from $01:51CC
+
+HandleMenuState05Input:
+	ld a, e
+	or a
+	jr z, RAM_D733
+	push de
+	call Func_3CD9
+	pop de
+	bit 7, e
+	jr nz, RAM_D734
+	bit 6, e
+	jr nz, RAM_D735
+	bit 5, e
+	jr nz, RAM_D736
+	bit 4, e
+	jr nz, RAM_D73B
+	bit 3, e
+	jr nz, RAM_D741
+	bit 2, e
+	jr nz, RAM_D742
+	bit 1, e
+	jr nz, RAM_D743
+	bit 0, e
+	jr nz, RAM_D783
+RAM_D733:
+	ret
+
+RAM_D734:
+	ret
+
+RAM_D735:
+	ret
+
+RAM_D736:
+	xor a
+	call Func_01_4CAA
+	ret
+
+RAM_D73B:
+	ld a, $02
+	call Func_01_4CAA
+	ret
+
+RAM_D741:
+	ret
+
+RAM_D742:
+	ret
+
+RAM_D743:
+	ld e, $13
+	call Audio_QueueSound
+	ld a, $02
+	ld [$D563], a
+	call Func_01_7CA2
+	xor a
+	ld [$D563], a
+	call Func_3960
+	ld a, [$D566]
+	dec a
+	cp $FF
+	jr nz, RAM_D761
+	ld a, $02
+RAM_D761:
+	ld [$D566], a
+	call RAM_D7CB
+	call Func_01_7BC5
+	ld hl, $DC03
+	ld a, l
+	ld [$D564], a
+	ld a, h
+	ld [$D565], a
+	ld a, $01
+	ld [$D563], a
+	call Func_01_7C3F
+	xor a
+	ld [$D563], a
+	jr RAM_D7C3
+
+RAM_D783:
+	ld e, $13
+	call Audio_QueueSound
+	ld a, $02
+	ld [$D563], a
+	call Func_01_7CEF
+	xor a
+	ld [$D563], a
+	call Func_3960
+	ld a, [$D566]
+	inc a
+	cp $03
+	jr nz, RAM_D7A1
+	ld a, $00
+RAM_D7A1:
+	ld [$D566], a
+	call RAM_D7CB
+	call Func_01_7BC5
+	ld hl, $DC03
+	ld a, l
+	ld [$D564], a
+	ld a, h
+	ld [$D565], a
+	ld a, $01
+	ld [$D563], a
+	call Func_01_7BE0
+	xor a
+	ld [$D563], a
+	jr RAM_D7C3
+
+RAM_D7C3:
+	ret
 	ENDL
-	db $00, $7B, $B7, $28, $27, $D5, $CD, $D9, $3C, $D1, $CB, $7B, $20, $1F, $CB, $73
-	db $20, $1C, $CB, $6B, $20, $19, $CB, $63, $20, $37, $CB, $4B, $20, $4E, $CB, $43
-	db $20, $55, $CB, $5B, $C2, $08, $53, $CB, $53, $C2, $15, $53, $C9, $C9, $C9, $1E
-	db $08, $CD, $73, $2F, $CD, $CE, $61, $CD, $4A, $4B, $CD, $30, $D1, $CD, $77, $53
-	db $CD, $EF, $6A, $CD, $62, $4A, $AF, $EA, $68, $D5, $EA, $67, $D5, $CD, $AA, $4C
-	db $C9, $1E, $07, $CD, $73, $2F, $3E, $01, $EA, $CD, $C6, $FA, $68, $D5, $47, $FA
-	db $67, $D5, $4F, $CD, $47, $62, $3E, $02, $CD, $AA, $4C, $C9, $CD, $23, $53, $FA
-	db $68, $D5, $3D, $CD, $40, $53, $C9, $CD, $23, $53, $FA, $68, $D5, $3C, $CD, $40
-	db $53, $C9, $1E, $0B, $CD, $73, $2F, $FA, $67, $D5, $3C, $CD, $5D, $53, $C9, $1E
-	db $0B, $CD, $73, $2F, $FA, $67, $D5, $3D, $CD, $5D, $53, $C9, $C9, $F5, $C5, $D5
-	db $E5, $CD, $21, $04, $E6, $07, $FE, $06, $30, $F7, $C6, $81, $5F, $CD, $73, $2F
-	db $1E, $21, $CD, $73, $2F, $E1, $D1, $C1, $F1, $C9, $FE, $FF, $20, $04, $3E, $04
-	db $18, $06, $FE, $05, $20, $02, $3E, $00, $47, $EA, $68, $D5, $FA, $67, $D5, $4F
-	db $CD, $CE, $61, $CD, $33, $62, $C9, $FE, $FF, $20, $04, $3E, $00, $20, $06, $FE
-	db $03, $20, $02, $3E, $02, $4F, $EA, $67, $D5, $FA, $68, $D5, $47, $CD, $67, $63
+	db $00
+
+HandleMenuState06Input:
+	ld a, e
+	or a
+	jr z, Jump_01_52B2
+	push de
+	call Func_3CD9
+	pop de
+	bit 7, e
+	jr nz, Jump_01_52B3
+	bit 6, e
+	jr nz, Jump_01_52B4
+	bit 5, e
+	jr nz, Jump_01_52B5
+	bit 4, e
+	jr nz, Jump_01_52D7
+	bit 1, e
+	jr nz, Jump_01_52F2
+	bit 0, e
+	jr nz, Jump_01_52FD
+	bit 3, e
+	jp nz, Jump_01_5308
+	bit 2, e
+	jp nz, Jump_01_5315
+Jump_01_52B2:
+	ret
+
+Jump_01_52B3:
+	ret
+
+Jump_01_52B4:
+	ret
+
+Jump_01_52B5:
+	ld e, $08
+	call Audio_QueueSound
+	call Func_01_61CE
+	call Func_01_4B4A
+	call RAM_D130
+	call Func_01_5377
+	call Func_01_6AEF
+	call Func_01_4A62
+	xor a
+	ld [$D568], a
+	ld [$D567], a
+	call Func_01_4CAA
+	ret
+
+Jump_01_52D7:
+	ld e, $07
+	call Audio_QueueSound
+	ld a, $01
+	ld [$C6CD], a
+	ld a, [$D568]
+	ld b, a
+	ld a, [$D567]
+	ld c, a
+	call Func_01_6247
+	ld a, $02
+	call Func_01_4CAA
+	ret
+
+Jump_01_52F2:
+	call Func_01_5323
+	ld a, [$D568]
+	dec a
+	call Func_01_5340
+	ret
+
+Jump_01_52FD:
+	call Func_01_5323
+	ld a, [$D568]
+	inc a
+	call Func_01_5340
+	ret
+
+Jump_01_5308:
+	ld e, $0B
+	call Audio_QueueSound
+	ld a, [$D567]
+	inc a
+	call Func_01_535D
+	ret
+
+Jump_01_5315:
+	ld e, $0B
+	call Audio_QueueSound
+	ld a, [$D567]
+	dec a
+	call Func_01_535D
+	ret
+
 	db $C9
+
+Func_01_5323:
+	push af
+	push bc
+	push de
+	push hl
+Jump_01_5327:
+	call Func_0421
+	and $07
+	cp $06
+	jr nc, Jump_01_5327
+	add a, $81
+	ld e, a
+	call Audio_QueueSound
+	ld e, $21
+	call Audio_QueueSound
+	pop hl
+	pop de
+	pop bc
+	pop af
+	ret
+
+Func_01_5340:
+	cp $FF
+	jr nz, Jump_01_5348
+	ld a, $04
+	jr Jump_01_534E
+Jump_01_5348:
+	cp $05
+	jr nz, Jump_01_534E
+	ld a, $00
+Jump_01_534E:
+	ld b, a
+	ld [$D568], a
+	ld a, [$D567]
+	ld c, a
+	call Func_01_61CE
+	call Func_01_6233
+	ret
+
+Func_01_535D:
+	cp $FF
+	jr nz, Jump_01_5365
+	ld a, $00
+	jr nz, Jump_01_536B
+Jump_01_5365:
+	cp $03
+	jr nz, Jump_01_536B
+	ld a, $02
+Jump_01_536B:
+	ld c, a
+	ld [$D567], a
+	ld a, [$D568]
+	ld b, a
+	call Func_01_6367
+	ret
 
 Func_01_5377:
 	xor a
@@ -3570,7 +3832,15 @@ RAM_D120:
 	db $00
 
 	LOAD UNION "RAM code $D130", WRAMX[$D130] ; copied from $01:5BCA
-	db $F0, $40, $CB, $A7, $E0, $40, $3E, $B4, $E0, $4B, $C9
+
+RAM_D130:
+	ldh a, [rLCDC]
+	res 4, a
+	ldh [rLCDC], a
+	ld a, $B4
+	ldh [rWX], a
+	ret
+
 	ENDL
 	db $00
 
@@ -4548,19 +4818,124 @@ Func_01_6243:
 	call Func_01_6367
 	ret
 
-	db $C5, $AF, $EA, $C0, $C6, $76, $00, $00, $FA, $C0, $C6, $B7, $28, $F7, $AF, $EA
-	db $C0, $C6, $AF, $E0, $A0, $E0, $A1, $E0, $A2, $E0, $A3, $E0, $A4, $E0, $A5, $E0
-	db $A6, $E0, $A7, $21, $00, $98, $06, $FF, $16, $20, $1E, $14, $F0, $41, $E6, $02
-	db $28, $FA, $F0, $41, $E6, $02, $20, $FA, $78, $22, $1D, $20, $EF, $3E, $0C, $85
-	db $6F, $3E, $00, $8C, $67, $CB, $94, $15, $20, $E0, $C1, $78, $87, $87, $81, $F5
-	db $21, $93, $5B, $7F, $85, $6F, $3E, $00, $8C, $67, $7E, $E0, $82, $AF, $E0, $B0
-	db $E0, $B5, $AF, $E0, $AC, $CD, $9B, $65, $CD, $60, $D1, $F1, $21, $A6, $5B, $7F
-	db $85, $6F, $3E, $00, $8C, $67, $7E, $E0, $8B, $3E, $38, $E0, $AD, $CD, $49, $61
-	db $CD, $21, $2F, $AF, $EA, $C0, $C6, $76, $00, $00, $FA, $C0, $C6, $B7, $28, $F7
-	db $AF, $EA, $C0, $C6, $CD, $B0, $D1, $F0, $84, $B7, $20, $13, $FA, $B5, $C6, $E6
-	db $80, $20, $0C, $1E, $24, $CD, $73, $2F, $F0, $AD, $3D, $E0, $AD, $20, $D1, $3E
-	db $01, $E0, $AB, $16, $FF, $CD, $71, $39, $CD, $CE, $61, $CD, $B6, $04, $CD, $51
-	db $00, $C9
+Func_01_6247:
+	push bc
+	xor a
+	ld [wVBlankPending], a
+Jump_01_624C:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, Jump_01_624C
+	xor a
+	ld [wVBlankPending], a
+	xor a
+	ldh [$FFA0], a
+	ldh [$FFA1], a
+	ldh [$FFA2], a
+	ldh [$FFA3], a
+	ldh [$FFA4], a
+	ldh [$FFA5], a
+	ldh [$FFA6], a
+	ldh [$FFA7], a
+	ld hl, $9800
+	ld b, $FF
+	ld d, $20
+Jump_01_6271:
+	ld e, $14
+Jump_01_6273:
+	ldh a, [rSTAT]
+	and $02
+	jr z, Jump_01_6273
+Jump_01_6279:
+	ldh a, [rSTAT]
+	and $02
+	jr nz, Jump_01_6279
+	ld a, b
+	ld [hli], a
+	dec e
+	jr nz, Jump_01_6273
+	ld a, $0C
+	add a, l
+	ld l, a
+	ld a, $00
+	adc a, h
+	ld h, a
+	res 2, h
+	dec d
+	jr nz, Jump_01_6271
+	pop bc
+	ld a, b
+	add a, a
+	add a, a
+	add a, c
+	push af
+	ld hl, SceneScrollDescriptorIndexTable
+	ld a, a
+	add a, l
+	ld l, a
+	ld a, $00
+	adc a, h
+	ld h, a
+	ld a, [hl]
+	ldh [$FF82], a
+	xor a
+	ldh [$FFB0], a
+	ldh [$FFB5], a
+	xor a
+	ldh [$FFAC], a
+	call CopyScrollingSceneDescriptor
+	call LoadScrollingScenePalette
+	pop af
+	ld hl, SceneScrollInitialRowTable
+	ld a, a
+	add a, l
+	ld l, a
+	ld a, $00
+	adc a, h
+	ld h, a
+	ld a, [hl]
+	ldh [$FF8B], a
+	ld a, $38
+	ldh [$FFAD], a
+	call Func_01_6149
+Jump_01_62C7:
+	call Audio_Update
+	xor a
+	ld [wVBlankPending], a
+Jump_01_62CE:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, Jump_01_62CE
+	xor a
+	ld [wVBlankPending], a
+	call RAM_D1B0
+	ldh a, [$FF84]
+	or a
+	jr nz, Jump_01_62F6
+	ld a, [$C6B5]
+	and $80
+	jr nz, Jump_01_62F6
+	ld e, $24
+	call Audio_QueueSound
+	ldh a, [$FFAD]
+	dec a
+	ldh [$FFAD], a
+	jr nz, Jump_01_62C7
+Jump_01_62F6:
+	ld a, $01
+	ldh [$FFAB], a
+	ld d, $FF
+	call Func_3971
+	call Func_01_61CE
+	call Func_04B6
+	call Func_0051
+	ret
 
 Func_01_6309:
 	ld hl, SceneDescriptorIndexTable
@@ -6653,12 +7028,54 @@ Func_01_7BC5:
 	call Func_01_78F1
 	ret
 
-	db $FA, $53, $C9, $EA, $43, $C9, $3E, $14, $EA, $4E, $C9, $3E, $01, $EA, $49, $C9
-	db $EA, $4A, $C9, $FA, $4F, $C9, $4F, $FA, $50, $C9, $47, $FA, $51, $C9, $5F, $FA
-	db $52, $C9, $57, $FA, $4E, $C9, $3D, $CD, $D4, $7A, $F0, $43, $CB, $3F, $CB, $3F
-	db $CB, $3F, $3D, $E6, $1F, $EA, $48, $C9, $CD, $1B, $D9, $CD, $21, $2F, $AF, $EA
-	db $C0, $C6, $76, $00, $00, $FA, $C0, $C6, $B7, $28, $F7, $AF, $EA, $C0, $C6, $F0
-	db $43, $D6, $08, $E0, $43, $FA, $4E, $C9, $3D, $EA, $4E, $C9, $20, $B5, $C9
+Func_01_7BE0:
+	ld a, [$C953]
+	ld [$C943], a
+	ld a, $14
+	ld [$C94E], a
+	ld a, $01
+	ld [$C949], a
+	ld [$C94A], a
+Jump_01_7BF3:
+	ld a, [$C94F]
+	ld c, a
+	ld a, [$C950]
+	ld b, a
+	ld a, [$C951]
+	ld e, a
+	ld a, [$C952]
+	ld d, a
+	ld a, [$C94E]
+	dec a
+	call Func_01_7AD4
+	ldh a, [rSCX]
+	srl a
+	srl a
+	srl a
+	dec a
+	and $1F
+	ld [$C948], a
+	call RAM_D91B
+	call Audio_Update
+	xor a
+	ld [wVBlankPending], a
+Jump_01_7C22:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, Jump_01_7C22
+	xor a
+	ld [wVBlankPending], a
+	ldh a, [rSCX]
+	sub $08
+	ldh [rSCX], a
+	ld a, [$C94E]
+	dec a
+	ld [$C94E], a
+	jr nz, Jump_01_7BF3
+	ret
 
 Func_01_7C3F:
 	ld a, [$C953]
@@ -6711,16 +7128,85 @@ Jump_01_7C85:
 	jr nz, Jump_01_7C52
 	ret
 
-	db $FA, $53, $C9, $EA, $43, $C9, $3E, $14, $EA, $4E, $C9, $3E, $01, $EA, $49, $C9
-	db $EA, $4A, $C9, $CD, $21, $2F, $AF, $EA, $C0, $C6, $76, $00, $00, $FA, $C0, $C6
-	db $B7, $28, $F7, $AF, $EA, $C0, $C6, $CD, $90, $3C, $F0, $43, $CB, $3F, $CB, $3F
-	db $CB, $3F, $C6, $14, $E6, $1F, $EA, $48, $C9, $CD, $F1, $78, $F0, $43, $C6, $08
-	db $E0, $43, $FA, $4E, $C9, $3D, $EA, $4E, $C9, $20, $C8, $C9, $C9, $FA, $53, $C9
-	db $EA, $43, $C9, $3E, $14, $EA, $4E, $C9, $3E, $01, $EA, $49, $C9, $EA, $4A, $C9
-	db $CD, $21, $2F, $AF, $EA, $C0, $C6, $76, $00, $00, $FA, $C0, $C6, $B7, $28, $F7
-	db $AF, $EA, $C0, $C6, $CD, $90, $3C, $F0, $43, $CB, $3F, $CB, $3F, $CB, $3F, $3D
-	db $E6, $1F, $EA, $48, $C9, $CD, $F1, $78, $F0, $43, $D6, $08, $E0, $43, $FA, $4E
-	db $C9, $3D, $EA, $4E, $C9, $20, $C9, $C9
+Func_01_7CA2:
+	ld a, [$C953]
+	ld [$C943], a
+	ld a, $14
+	ld [$C94E], a
+	ld a, $01
+	ld [$C949], a
+	ld [$C94A], a
+Jump_01_7CB5:
+	call Audio_Update
+	xor a
+	ld [wVBlankPending], a
+Jump_01_7CBC:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, Jump_01_7CBC
+	xor a
+	ld [wVBlankPending], a
+	call Func_3C90
+	ldh a, [rSCX]
+	srl a
+	srl a
+	srl a
+	add a, $14
+	and $1F
+	ld [$C948], a
+	call Func_01_78F1
+	ldh a, [rSCX]
+	add a, $08
+	ldh [rSCX], a
+	ld a, [$C94E]
+	dec a
+	ld [$C94E], a
+	jr nz, Jump_01_7CB5
+	ret
+
+	db $C9
+
+Func_01_7CEF:
+	ld a, [$C953]
+	ld [$C943], a
+	ld a, $14
+	ld [$C94E], a
+	ld a, $01
+	ld [$C949], a
+	ld [$C94A], a
+Jump_01_7D02:
+	call Audio_Update
+	xor a
+	ld [wVBlankPending], a
+Jump_01_7D09:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, Jump_01_7D09
+	xor a
+	ld [wVBlankPending], a
+	call Func_3C90
+	ldh a, [rSCX]
+	srl a
+	srl a
+	srl a
+	dec a
+	and $1F
+	ld [$C948], a
+	call Func_01_78F1
+	ldh a, [rSCX]
+	sub $08
+	ldh [rSCX], a
+	ld a, [$C94E]
+	dec a
+	ld [$C94E], a
+	jr nz, Jump_01_7D02
+	ret
 
 Func_01_7D3A:
 	ld d, $40

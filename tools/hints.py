@@ -14,6 +14,12 @@ ENTITY_HANDLER_TABLE = (1, 0x44E0, 10)
 # Bank 1 routines at $4E35/$4E60 select and identify the active callback.
 RUNTIME_CALLBACK_TABLE = (1, 0x4E2F, 3)
 
+# Five menu/flow-state headers in bank 1. Each header is
+#   db state id, screen-init index, screen-update index ; dw input callback
+# and is followed by 16-byte choice records terminated by $FF. State $05's
+# callback runs from the image copied from $01:$51CC to WRAM $D70A.
+MENU_STATE_HEADERS = (0x4855, 0x48AB, 0x48F1, 0x4927, 0x495D)
+
 # Confirmed non-code ranges, expressed as half-open ROM offsets. These prevent
 # the conservative gap pass from interpreting pointer bytes as instructions.
 DATA_RANGES = (
@@ -21,6 +27,7 @@ DATA_RANGES = (
     (0x0104, 0x0150),  # cartridge header
     (0x44E0, 0x44F4),  # entity handler pointers
     (0x47EC, 0x4854),  # banked screen mode records
+    (0x4854, 0x49CB),  # menu/flow states, choice records, and option strings
     (0x4E2F, 0x4E35),  # runtime callback pointers
     (0xE85A, 0xE878),  # state check pointers
     (0x22DF0, 0x24000),  # bank 8 zero padding and bank marker
@@ -93,6 +100,10 @@ def extra_entries(rom):
         + pointer_table_entries(rom, STATE_CHECK_TABLE)
         + pointer_table_entries(rom, ENTITY_HANDLER_TABLE)
         + pointer_table_entries(rom, RUNTIME_CALLBACK_TABLE)
+        + [
+            (0 if (ptr := rom[a + 3] | rom[a + 4] << 8) >= 0x8000 else 1, ptr)
+            for a in MENU_STATE_HEADERS
+        ]
         + list(MANUAL_ENTRIES)
         + [(0x2e, 0x4000), (0x2e, 0x4058)]
     )
@@ -128,6 +139,11 @@ NAMES = {
     0x44E0: "EntityHandlerTable",
     0x44F4: "DispatchEntityHandler",
     0x4E2F: "RuntimeCallbackTable",
+    0x4D33: "HandleMenuState00Input",
+    0x4D94: "HandleMenuState04Input",
+    0x507F: "HandleMenuState03Input",
+    0x51CC: "HandleMenuState05Input",
+    0x5287: "HandleMenuState06Input",
     0xE85A: "StateCheckTable",
     0xE878: "DispatchStateCheck",
 }

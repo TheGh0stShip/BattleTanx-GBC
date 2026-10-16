@@ -18,7 +18,7 @@ claim.
 - Toolchain: RGBDS 1.0.4
 - Whole-ROM match: 1,048,576 / 1,048,576 bytes (100%)
 - ROM banks represented: 64 / 64
-- Copied RAM images detected: 38 (30 executable, 8 data-only)
+- Copied RAM images detected: 38 (31 executable, 7 data-only)
 
 This is complete binary reconstruction. It is not complete semantic recovery.
 
@@ -26,10 +26,10 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 | Area | Current state | Next gate |
 | --- | --- | --- |
-| Reviewed code | 37,612 bytes traced from known entries, pointers, executable RAM images, and reviewed standalone entries | Name and document routines from behavior |
+| Reviewed code | 38,772 bytes traced from known entries, pointers, executable RAM images, and reviewed standalone entries | Name and document routines from behavior |
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
-| Symbols | Interrupts, startup, copy helpers, screen dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
-| RAM images | 30 executable and 8 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
+| Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
+| RAM images | 31 executable and 7 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
 | Graphics | 55 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: five UI sheets, three sprite sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Identify palettes, final layouts, and remaining graphics ranges |
 | Maps | Eleven fixed backgrounds and 36 scrolling scenes render from 2,640 fixed cells plus 709 scrolling rows/14,180 cells, with validated indices, attributes, flips, and palettes | Name the individual scenes and connect them to game progression |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
@@ -47,18 +47,21 @@ banked screen table at bank `$01:$47EC`; its known destinations are seeded into
 the tracer. Bank `$03:$6886` has been resolved as a 15-entry state-check table
 at `$685A`, and bank `$01:$450E` uses the 10-entry entity-handler table at
 `$44E0`. The callback at `$364D` is selected from the three-entry table at
-bank `$01:$4E2F`. The remaining site at `$4B44` dispatches through a pointer in
-a runtime object record and still needs a complete record/table model; the
-screen dispatch sites are already modeled despite remaining indirect at runtime.
+bank `$01:$4E2F`. The site at `$4B44` reads one of five callbacks from the
+menu/flow-state headers at `$4855`, `$48AB`, `$48F1`, `$4927`, and `$495D`.
+Those headers and their fourteen 16-byte choice records are now explicit
+source, and all five callback destinations are seeded into the tracer. One
+callback is copied from bank `$01:$51CC` and executes from WRAM at `$D70A`.
+Every known indirect site is therefore structurally modeled, although each
+remains an indirect transfer at runtime.
 
 ## Immediate roadmap
 
-1. Model the runtime object records used by the remaining indirect jump.
-2. Introduce evidence-based WRAM/HRAM symbols and hardware-state documentation.
-3. Split mixed code/data banks into named tables and resources.
-4. Add lossless graphics, map, text, and audio extraction/rebuild paths.
-5. Run relocation/shift tests before declaring source freely editable.
-6. Validate timing-sensitive and RAM-executed behavior on physical hardware.
+1. Introduce evidence-based WRAM/HRAM symbols and hardware-state documentation.
+2. Split mixed code/data banks into named tables and resources.
+3. Add lossless graphics, map, and text extraction/rebuild paths.
+4. Run relocation/shift tests before declaring source freely editable.
+5. Validate timing-sensitive and RAM-executed behavior on physical hardware.
 
 ## Confirmed graphics boundaries
 
