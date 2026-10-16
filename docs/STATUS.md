@@ -30,7 +30,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, OAM DMA, MBC5 bank selection, VBlank synchronization, and the runtime callback named | Continue naming routines and RAM state from evidence |
 | RAM images | 30 executable and 8 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
-| Graphics | Five confirmed bank `$08` 2bpp sheets extract to PNG and round-trip byte-exactly | Identify palettes, layouts, and remaining graphics ranges |
+| Graphics | Eight confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: five in bank `$08` and one 192-tile sheet in each of banks `$27`-`$29` | Identify palettes, layouts, and remaining graphics ranges |
 | Maps | Preserved in extracted binary ranges | Identify pointer tables, compression, and layouts |
 | Audio | Preserved in extracted binary ranges | Identify engine, sequences, instruments, and samples |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
@@ -59,4 +59,13 @@ screen dispatch sites are already modeled despite remaining indirect at runtime.
 4. Add lossless graphics, map, text, and audio extraction/rebuild paths.
 5. Run relocation/shift tests before declaring source freely editable.
 6. Validate timing-sensitive and RAM-executed behavior on physical hardware.
+
+## Confirmed graphics boundaries
+
+Banks `$27`, `$28`, and `$29` each begin with exactly `$0C00` bytes (192
+tiles) of native Game Boy 2bpp graphics. Code selects these banks and copies
+16-byte tile records from them; each graphics range is followed by `$33FF`
+zero bytes and its one-byte bank marker at `$7FFF`. The three sheets are kept
+separate because their gameplay role and palette relationship have not yet
+been established.
 

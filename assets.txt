@@ -45,9 +45,9 @@ assets/bank_23/4000.bin 0x8c000 0x4000
 assets/bank_24/4000.bin 0x90000 0x4000
 assets/bank_25/4000.bin 0x94000 0x4000
 assets/bank_26/4000.bin 0x98000 0x4000
-assets/bank_27/4000.bin 0x9c000 0x4000
-assets/bank_28/4000.bin 0xa0000 0x4000
-assets/bank_29/4000.bin 0xa4000 0x4000
+assets/bank_27/sprite_tiles.bin 0x9c000 0xc00
+assets/bank_28/sprite_tiles.bin 0xa0000 0xc00
+assets/bank_29/sprite_tiles.bin 0xa4000 0xc00
 assets/bank_2A/4000.bin 0xa8000 0x21d8
 assets/bank_2A/62A4.bin 0xaa2a4 0x77e
 assets/bank_2A/6AD3.bin 0xaaad3 0xc46

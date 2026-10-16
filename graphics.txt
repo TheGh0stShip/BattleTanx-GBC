@@ -4,3 +4,6 @@ bank_08/hud_icon_tiles.png            0x22753     0x1c0      7
 bank_08/arrow_up_tiles.png            0x22925     0x40       2
 bank_08/arrow_down_tiles.png          0x2296d     0x40       2
 bank_08/alphanumeric_font_tiles.png   0x229b5     0x420      11
+bank_27/sprite_tiles.png              0x9c000     0xc00       16
+bank_28/sprite_tiles.png              0xa0000     0xc00       16
+bank_29/sprite_tiles.png              0xa4000     0xc00       16
