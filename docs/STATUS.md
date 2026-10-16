@@ -30,7 +30,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
-| Graphics | 55 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: five UI sheets, three sprite sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Identify palettes, final layouts, and remaining graphics ranges |
+| Graphics | 57 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: seven interface sheets, three sprite sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Identify final layouts and remaining graphics ranges |
 | Maps | Eleven fixed backgrounds and 36 scrolling scenes render from 2,640 fixed cells plus 709 scrolling rows/14,180 cells, with validated indices, attributes, flips, and palettes | Name the individual scenes and connect them to game progression |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
@@ -75,6 +75,21 @@ interrupt routine. Fields whose behavior is not yet established remain raw.
 5. Validate timing-sensitive and RAM-executed behavior on physical hardware.
 
 ## Confirmed graphics boundaries
+
+Bank `$08` contains seven independently checked native 2bpp interface sheets:
+74 UI-font tiles at `$4000`; groups of 10, 12, and 4 interface tiles at
+`$6753`, `$6815`, and `$68DD`; two four-tile arrow sets at `$6925` and `$696D`;
+and 66 alphanumeric-font tiles at `$69B5`. They
+now use narrowly named binary assets that are extracted from the verified ROM
+and round-trip through the graphics checker. Each sheet's four-color 15-bit
+palette is explicit source at `$44A0`, `$674B`, `$691D`, `$6965`, or `$69AD`;
+startup copies those five records into named WRAM buffers. Their boundaries,
+colors, copy destinations, and symbols are checked. The interval between the
+first two interface-tile groups is now split into a ten-byte palette-index
+table used by bank `$08:$6DD5`, a 16-byte sprite-layout record, and an explicit
+four-color palette; another palette separates the second and third groups.
+The broad `$44A8-$674A` region remains structurally unresolved and is not
+counted as understood graphics.
 
 Banks `$27`, `$28`, and `$29` each begin with exactly `$0C00` bytes (192
 tiles) of native Game Boy 2bpp graphics. Code selects these banks and copies

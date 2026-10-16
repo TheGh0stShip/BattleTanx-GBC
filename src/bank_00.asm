@@ -1316,28 +1316,28 @@ Func_0807:
 	ld e, $53
 	ld d, $0A
 	ld a, $80
-	ld bc, $6753
+	ld bc, Bank08HudIconTiles
 	call Func_0622
 	ld a, $08
 	ld [rROMB0], a
 	ld e, $5D
 	ld d, $0C
 	ld a, $80
-	ld bc, $6815
+	ld bc, Bank08InterfaceTiles6815
 	call Func_0622
 	ld a, $08
 	ld [rROMB0], a
 	ld e, $43
 	ld d, $3D
 	ld a, $88
-	ld bc, $4010
+	ld bc, Bank08UiFontTiles + $10
 	call Func_0622
 	ld a, $08
 	ld [rROMB0], a
 	ld e, $3B
 	ld d, $08
 	ld a, $88
-	ld bc, $69FD
+	ld bc, Bank08AlphanumericFontTiles + $48
 	call Func_0622
 	ret
 
@@ -1357,22 +1357,22 @@ Func_0879:
 	ld e, $4E
 	ld d, $04
 	ld a, $80
-	ld bc, $68DD
+	ld bc, Bank08InterfaceTiles68DD
 	call Func_0622
 	ld e, $52
 	ld d, $04
 	ld a, $80
-	ld bc, $6925
+	ld bc, Bank08ArrowUpTiles
 	call Func_0622
 	ld e, $56
 	ld d, $04
 	ld a, $80
-	ld bc, $696D
+	ld bc, Bank08ArrowDownTiles
 	call Func_0622
 	ld e, $5A
 	ld d, $04
 	ld a, $80
-	ld bc, $69B5
+	ld bc, Bank08AlphanumericFontTiles
 	call Func_0622
 	pop af
 	ld [rROMB0], a
@@ -1458,32 +1458,32 @@ Func_092F:
 	push af
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $674B
-	ld bc, $C6F9
+	ld hl, Bank08HudIconPalette
+	ld bc, wHudIconPalette
 	ld e, $08
 	call CopyBytesShort
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $44A0
-	ld bc, $C721
+	ld hl, Bank08UiFontPalette
+	ld bc, wUiFontPalette
 	ld e, $08
 	call CopyBytesShort
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $691D
-	ld bc, $C701
+	ld hl, Bank08ArrowUpPalette
+	ld bc, wArrowUpPalette
 	ld e, $08
 	call CopyBytesShort
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $6965
-	ld bc, $C709
+	ld hl, Bank08ArrowDownPalette
+	ld bc, wArrowDownPalette
 	ld e, $08
 	call CopyBytesShort
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $69AD
-	ld bc, $C711
+	ld hl, Bank08AlphanumericFontPalette
+	ld bc, wAlphanumericFontPalette
 	ld e, $08
 	call CopyBytesShort
 	ld hl, $C719

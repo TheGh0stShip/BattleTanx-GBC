@@ -68,6 +68,96 @@ def check_assets(entries: list[tuple[pathlib.Path, int, int]]) -> None:
             fail(f"asset does not match ROM range: {relpath}")
 
 
+def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -> None:
+    expected = {
+        pathlib.Path("assets/bank_08/ui_font_tiles.bin"): (0x20000, 0x4A0),
+        pathlib.Path("assets/bank_08/hud_icon_tiles.bin"): (0x22753, 0xA0),
+        pathlib.Path("assets/bank_08/interface_tiles_6815.bin"): (0x22815, 0xC0),
+        pathlib.Path("assets/bank_08/interface_tiles_68DD.bin"): (0x228DD, 0x40),
+        pathlib.Path("assets/bank_08/arrow_up_tiles.bin"): (0x22925, 0x40),
+        pathlib.Path("assets/bank_08/arrow_down_tiles.bin"): (0x2296D, 0x40),
+        pathlib.Path("assets/bank_08/alphanumeric_font_tiles.bin"): (0x229B5, 0x420),
+    }
+    manifest = {path: (start, size) for path, start, size in entries}
+    for path, where in expected.items():
+        if manifest.get(path) != where:
+            fail(f"bank 08 graphics asset {path} is {manifest.get(path)}, expected {where}")
+        if where[1] % 16:
+            fail(f"bank 08 graphics asset {path} is not tile aligned")
+
+    source = (ROOT / "src" / "bank_08.asm").read_text()
+    for path in expected:
+        if f'INCBIN "{path.as_posix()}"' not in source:
+            fail(f"bank 08 source does not include named graphics asset {path}")
+    for old_name in ("4000.bin", "69B5.bin"):
+        if old_name in source:
+            fail(f"bank 08 source returned to opaque asset name {old_name}")
+
+    rom = (ROOT / "baserom.gbc").read_bytes()
+    palettes = {
+        0x204A0: (0x0C84, 0x314A, 0x4E51, 0x6738),
+        0x2274B: (0x0000, 0x10A3, 0x3200, 0x42E0),
+        0x2280D: (0x1FFF, 0x0000, 0x5818, 0x7E9F),
+        0x228D5: (0x0000, 0x001F, 0x465F, 0x7FFF),
+        0x2291D: (0x0000, 0x10A3, 0x1515, 0x1FFF),
+        0x22965: (0x0000, 0x001F, 0x10A3, 0x7FFF),
+        0x229AD: (0x0000, 0x0000, 0x0000, 0x03FE),
+    }
+    for offset, expected_colors in palettes.items():
+        colors = tuple(
+            int.from_bytes(rom[pos : pos + 2], "little")
+            for pos in range(offset, offset + 8, 2)
+        )
+        if colors != expected_colors or any(color & 0x8000 for color in colors):
+            fail(f"bank 08 palette at ROM offset {offset:#x} changed")
+
+    if rom[0x227F3:0x227FD] != bytes((0, 1, 0, 2, 3, 1, 2, 0, 3, 0)):
+        fail("bank 08 palette-index table changed")
+    if rom[0x227FD:0x2280D] != bytes.fromhex(
+        "00 00 02 70 fe 03 12 0c 1f 00 ff 7f 15 15 de 15"
+    ):
+        fail("bank 08 sprite-layout record changed")
+
+    sym = ROOT / "battletanx.sym"
+    if sym.exists():
+        expected_symbols = {
+            "Bank08UiFontTiles": (0x08, 0x4000),
+            "Bank08UiFontPalette": (0x08, 0x44A0),
+            "Bank08HudIconPalette": (0x08, 0x674B),
+            "Bank08HudIconTiles": (0x08, 0x6753),
+            "Bank08ArrowUpPalette": (0x08, 0x691D),
+            "Bank08ArrowUpTiles": (0x08, 0x6925),
+            "Bank08ArrowDownPalette": (0x08, 0x6965),
+            "Bank08ArrowDownTiles": (0x08, 0x696D),
+            "Bank08AlphanumericFontPalette": (0x08, 0x69AD),
+            "Bank08AlphanumericFontTiles": (0x08, 0x69B5),
+            "Bank08PaletteIndexTable": (0x08, 0x67F3),
+            "Bank08SpriteLayout67FD": (0x08, 0x67FD),
+            "Bank08InterfacePalette680D": (0x08, 0x680D),
+            "Bank08InterfaceTiles6815": (0x08, 0x6815),
+            "Bank08InterfacePalette68D5": (0x08, 0x68D5),
+            "Bank08InterfaceTiles68DD": (0x08, 0x68DD),
+            "wHudIconPalette": (0x00, 0xC6F9),
+            "wArrowUpPalette": (0x00, 0xC701),
+            "wArrowDownPalette": (0x00, 0xC709),
+            "wAlphanumericFontPalette": (0x00, 0xC711),
+            "wUiFontPalette": (0x00, 0xC721),
+        }
+        symbols = {}
+        for line in sym.read_text().splitlines():
+            match = re.fullmatch(
+                r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip()
+            )
+            if match:
+                symbols[match.group(3)] = (
+                    int(match.group(1), 16),
+                    int(match.group(2), 16),
+                )
+        for name, where in expected_symbols.items():
+            if symbols.get(name) != where:
+                fail(f"bank 08 symbol {name} is at {symbols.get(name)}, expected {where}")
+
+
 def check_scene_descriptors(rom: bytes) -> None:
     table = 0x599D
     destinations = [
@@ -481,6 +571,7 @@ def main() -> None:
     check_toolchain()
     entries = read_manifest()
     check_assets(entries)
+    check_bank08_graphics_assets(entries)
     rom = (ROOT / "baserom.gbc").read_bytes()
     check_scene_descriptors(rom)
     check_menu_states(rom)

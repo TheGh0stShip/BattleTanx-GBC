@@ -1,6 +1,8 @@
 # output path                         ROM offset  byte size  width in tiles
 bank_08/ui_font_tiles.png             0x20000     0x4a0      37
-bank_08/hud_icon_tiles.png            0x22753     0x1c0      7
+bank_08/hud_icon_tiles.png            0x22753     0x0a0      5
+bank_08/interface_tiles_6815.png       0x22815     0x0c0      6
+bank_08/interface_tiles_68DD.png       0x228dd     0x040      2
 bank_08/arrow_up_tiles.png            0x22925     0x40       2
 bank_08/arrow_down_tiles.png          0x2296d     0x40       2
 bank_08/alphanumeric_font_tiles.png   0x229b5     0x420      11
