@@ -3394,7 +3394,7 @@ SceneBackgroundDescriptors:
 SceneDescriptorIndexTable:
 	db 6, 7, 8, 9, 10
 
-; bank, 16-byte metatile records, 12-byte row records, row count, palette
+; bank, 16-byte metatile records, 40-byte rows, row count, palette
 ScrollingSceneDescriptors:
 	db $3B
 	dw $6218, $6E88

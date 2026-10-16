@@ -114,7 +114,7 @@ def check_scene_descriptors(rom: bytes) -> None:
             fail(f"scrolling-scene descriptor {index} has unexpected bank {bank:#x}")
         if not 0x4000 <= metatiles < 0x8000:
             fail(f"scrolling-scene descriptor {index} metatiles lie outside its bank")
-        if rows < 0x4000 or rows + row_count * 12 > 0x8000:
+        if rows < 0x4000 or rows + row_count * 40 > 0x8000:
             fail(f"scrolling-scene descriptor {index} row data lies outside its bank")
         if palette < 0x4000 or palette + 8 > 0x8000:
             fail(f"scrolling-scene descriptor {index} palette lies outside its bank")

@@ -6,6 +6,20 @@ retail cartridge.
 
 No ROM or ROM-derived binary assets are included. Supply your own dump.
 
+## Source strategy
+
+Human-readable RGBDS assembly is the authoritative decompilation target. The
+original program depends on SM83 register behavior, MBC5 banking, interrupt
+entry, code copied into WRAM/HRAM, and timing-sensitive display transfers;
+keeping those operations explicit also preserves the byte-identical build.
+
+Routines are promoted from generated listings to reviewed source by recovering
+their control flow, names, RAM state, tables, and data formats. C-like
+descriptions may accompany algorithms when they improve understanding, but a
+forced C rewrite is not treated as recovered source and is not allowed to
+replace exact target semantics. A future portable implementation can use this
+tree as its verified behavioral reference.
+
 ## Supported ROM
 
 - Title: `BATTLETANX`, game code `AVNE`, CGB-only, MBC5, 1 MiB (60 used banks)
