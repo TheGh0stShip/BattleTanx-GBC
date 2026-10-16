@@ -3337,7 +3337,64 @@ Jump_01_58D1:
 	ld [wVBlankPending], a
 	ret
 
-	INCBIN "assets/bank_01/58DF.bin" ; $2DB bytes
+	INCBIN "assets/bank_01/58DF.bin" ; $BE bytes
+
+ScrollingTileRowDestinations:
+	dw $9000, $9140, $9280, $93C0, $9500, $9640, $8800
+
+; Each 16-byte scene record contains a graphics bank, a 255-tile source,
+; 20x12 tile and attribute maps, an auxiliary-data pointer and its count.
+; The final six bytes of every record are reserved and zero.
+SceneBackgroundDescriptors:
+	db $33
+	dw $51A0, $5ED0, $5FC0, $60B0
+	db $04
+	ds 6, 0
+	db $31
+	dw $6BA0, $7800, $78F0, $79E0
+	db $05
+	ds 6, 0
+	db $32
+	dw $4000, $4EE0, $4FD0, $50C0
+	db $08
+	ds 6, 0
+	db $32
+	dw $5100, $5F80, $6070, $6160
+	db $08
+	ds 6, 0
+	db $32
+	dw $61A0, $7090, $7180, $7270
+	db $09
+	ds 6, 0
+	db $33
+	dw $4000, $4E60, $4F50, $5040
+	db $08
+	ds 6, 0
+	db $30
+	dw $5800, $6700, $67F0, $68E0
+	db $08
+	ds 6, 0
+	db $30
+	dw $6A00, $7740, $7830, $7920
+	db $08
+	ds 6, 0
+	db $31
+	dw $4000, $4E10, $4F00, $4FF0
+	db $06
+	ds 6, 0
+	db $31
+	dw $5020, $5DB0, $5EA0, $5F90
+	db $08
+	ds 6, 0
+	db $31
+	dw $5FD0, $6980, $6A70, $6B60
+	db $07
+	ds 6, 0
+
+SceneDescriptorIndexTable:
+	db 6, 7, 8, 9, 10
+
+	INCBIN "assets/bank_01/5A60.bin" ; $15A bytes
 
 	LOAD UNION "RAM code $D120", WRAMX[$D120] ; copied from $01:5BBA
 
@@ -4348,7 +4405,7 @@ Func_01_6243:
 	db $00, $C9
 
 Func_01_6309:
-	ld hl, $5A5B
+	ld hl, SceneDescriptorIndexTable
 	ld a, a
 	add a, l
 	ld l, a
@@ -4496,7 +4553,7 @@ Func_01_63D1:
 	ld a, [hl]
 	ld c, a
 	push bc
-	ld hl, $5A5B
+	ld hl, SceneDescriptorIndexTable
 	ld a, b
 	add a, l
 	ld l, a
@@ -4702,7 +4759,7 @@ Jump_01_64CE:
 Func_01_64F1:
 	ldh a, [$FFB5]
 	add a, a
-	ld hl, $599D
+	ld hl, ScrollingTileRowDestinations
 	add a, l
 	ld l, a
 	ld a, $00
@@ -4869,7 +4926,7 @@ Func_01_65BA:
 	rl b
 	sla c
 	rl b
-	ld hl, $59AB
+	ld hl, SceneBackgroundDescriptors
 	add hl, bc
 	ld bc, $D3E0
 	ld de, $0010

@@ -67,6 +67,41 @@ def check_assets(entries: list[tuple[pathlib.Path, int, int]]) -> None:
             fail(f"asset does not match ROM range: {relpath}")
 
 
+def check_scene_descriptors(rom: bytes) -> None:
+    table = 0x599D
+    destinations = [
+        int.from_bytes(rom[table + offset : table + offset + 2], "little")
+        for offset in range(0, 14, 2)
+    ]
+    if destinations != [0x9000, 0x9140, 0x9280, 0x93C0, 0x9500, 0x9640, 0x8800]:
+        fail("scrolling-tile destination table changed")
+
+    table = 0x59AB
+    for index in range(11):
+        record = rom[table + index * 16 : table + (index + 1) * 16]
+        bank = record[0]
+        pointers = [
+            int.from_bytes(record[offset : offset + 2], "little")
+            for offset in (1, 3, 5, 7)
+        ]
+        graphics, tilemap, attributes, auxiliary = pointers
+        auxiliary_count = record[9]
+        if bank not in range(0x30, 0x34):
+            fail(f"scene descriptor {index} has unexpected bank {bank:#x}")
+        if graphics < 0x4000 or graphics + 0xFF0 > 0x8000:
+            fail(f"scene descriptor {index} graphics range is outside its bank")
+        for kind, pointer in (("tilemap", tilemap), ("attributes", attributes)):
+            if pointer < 0x4000 or pointer + 20 * 12 > 0x8000:
+                fail(f"scene descriptor {index} {kind} range is outside its bank")
+        if auxiliary < 0x4000 or auxiliary + 0x38 + auxiliary_count * 8 > 0x8000:
+            fail(f"scene descriptor {index} auxiliary range is outside its bank")
+        if record[10:] != bytes(6):
+            fail(f"scene descriptor {index} reserved bytes are not zero")
+
+    if rom[0x5A5B:0x5A60] != bytes((6, 7, 8, 9, 10)):
+        fail("scene descriptor index table changed")
+
+
 def check_tracing() -> None:
     sys.path.insert(0, str(ROOT / "tools"))
     import hints  # pylint: disable=import-outside-toplevel
@@ -108,6 +143,7 @@ def main() -> None:
     check_toolchain()
     entries = read_manifest()
     check_assets(entries)
+    check_scene_descriptors((ROOT / "baserom.gbc").read_bytes())
     check_tracing()
     digest = hashlib.sha1((ROOT / "baserom.gbc").read_bytes()).hexdigest()
     print(f"project: OK ({len(entries)} assets, baserom sha1 {digest})")

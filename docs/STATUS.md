@@ -31,7 +31,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, OAM DMA, MBC5 bank selection, VBlank synchronization, and the runtime callback named | Continue naming routines and RAM state from evidence |
 | RAM images | 30 executable and 8 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
 | Graphics | Eight confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: five in bank `$08` and one 192-tile sheet in each of banks `$27`-`$29` | Identify palettes, layouts, and remaining graphics ranges |
-| Maps | Preserved in extracted binary ranges | Identify pointer tables, compression, and layouts |
+| Maps | The 11-entry scene-background descriptor table now identifies graphics banks/sources, 20x12 tile and attribute maps, and bounded auxiliary data | Name individual scenes and decode their auxiliary records |
 | Audio | Preserved in extracted binary ranges | Identify engine, sequences, instruments, and samples |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
 
@@ -68,4 +68,14 @@ tiles) of native Game Boy 2bpp graphics. Code selects these banks and copies
 zero bytes and its one-byte bank marker at `$7FFF`. The three sheets are kept
 separate because their gameplay role and palette relationship have not yet
 been established.
+
+## Scene-background descriptors
+
+Bank `$01:$59AB` contains eleven 16-byte scene descriptors. Each selects one
+of banks `$30`-`$33`, a `$0FF0`-byte source used to load 255 tiles, separate
+20x12 tile and attribute maps, and an auxiliary-data pointer with a bounded
+record count. Six trailing bytes in every descriptor are reserved zeros. The
+five-entry table at `$5A5B` maps a later group of scenes to descriptor indices
+6 through 10. Individual scene identities and the auxiliary record semantics
+remain unknown.
 
