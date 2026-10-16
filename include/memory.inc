@@ -11,3 +11,10 @@ DEF wVBlankPending EQU $C6C0
 ; the indirect jump at ROM0:$364D.
 DEF wRuntimeCallback EQU $C6BE
 
+; Options-menu values. The table at ROMX:$48C0 associates these addresses with
+; the visible MUSIC, CONTROL, and SKILL labels.
+DEF wMusicEnabled   EQU $C6BB
+DEF wMusicSetting   EQU $D55B
+DEF wControlSetting EQU $D55C
+DEF wSkillSetting   EQU $D55D
+

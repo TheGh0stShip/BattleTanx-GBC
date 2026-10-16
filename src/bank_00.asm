@@ -173,7 +173,7 @@ Init:
 	ld e, $88
 	call Func_2F73
 	ld a, $01
-	ld [$C6BB], a
+	ld [wMusicEnabled], a
 	ld [$C6E2], a
 	call Func_3B9F
 Jump_016C:
@@ -8462,7 +8462,7 @@ Func_2ED5:
 	ld a, [$C8E8]
 	cp $00
 	ret z
-	ld a, [$C6BB]
+	ld a, [wMusicEnabled]
 	and a
 	ret z
 	ld a, [$C8E7]

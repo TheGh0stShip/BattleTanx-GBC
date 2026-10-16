@@ -122,7 +122,7 @@ Jump_01_40B4:
 	cp $14
 	jr nz, Jump_01_40B4
 	call Func_2F21
-	ld a, [$C6BB]
+	ld a, [wMusicEnabled]
 	and a
 	jr z, Jump_01_40C9
 	ld a, [$C8E8]
@@ -1275,10 +1275,29 @@ ScreenModeTable:
 	db $F1, $48, $00, $09, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04, $00
 	db $AB, $48, $00, $0B, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $FF, $04
 	db $01, $00, $94, $4D, $00, $00, $55, $48, $00, $00, $00, $00, $00, $00, $00, $00
-	db $00, $00, $00, $00, $01, $02, $5B, $D5, $00, $04, $4D, $55, $53, $49, $43, $00
-	db $00, $00, $00, $00, $02, $03, $5C, $D5, $03, $08, $43, $4F, $4E, $54, $52, $4F
-	db $4C, $00, $00, $00, $03, $04, $5D, $D5, $03, $0C, $53, $4B, $49, $4C, $4C, $00
-	db $00, $00, $00, $00, $FF, $03, $03, $00, $7F, $50, $00, $00, $55, $48, $00, $14
+	db $00, $00, $00, $00
+
+OptionsMenuEntries:
+	db $01, $02
+	dw wMusicSetting
+	db $00, $04
+OptionsMusicText:
+	db "MUSIC"
+	ds 5, 0
+	db $02, $03
+	dw wControlSetting
+	db $03, $08
+OptionsControlText:
+	db "CONTROL"
+	ds 3, 0
+	db $03, $04
+	dw wSkillSetting
+	db $03, $0C
+OptionsSkillText:
+	db "SKILL"
+	ds 5, 0
+
+	db $FF, $03, $03, $00, $7F, $50, $00, $00, $55, $48, $00, $14
 	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $00, $F1, $48, $00, $14
 	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $02, $0F, $00, $00, $00, $14
 	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $FF, $05, $04, $00, $0A, $D7
@@ -1288,10 +1307,29 @@ ScreenModeTable:
 	db $FF, $06, $0B, $00, $87, $52, $00, $00, $27, $49, $00, $14, $00, $00, $00, $00
 	db $00, $00, $00, $00, $00, $00, $01, $03, $67, $D5, $00, $14, $00, $00, $00, $00
 	db $00, $00, $00, $00, $00, $00, $02, $01, $00, $00, $00, $14, $00, $00, $00, $00
-	db $00, $00, $00, $00, $00, $00, $FF, $4F, $4E, $20, $00, $4F, $46, $46, $00, $31
-	db $00, $00, $00, $00, $00, $00, $00, $32, $00, $00, $00, $00, $00, $00, $00, $33
-	db $00, $00, $00, $00, $00, $00, $00, $45, $41, $53, $59, $00, $00, $00, $00, $4D
-	db $45, $44, $20, $00, $00, $00, $00, $48, $41, $52, $44, $00, $00, $00, $00
+	db $00, $00, $00, $00, $00, $00, $FF
+OptionsOnText:
+	db "ON ", 0
+OptionsOffText:
+	db "OFF", 0
+ControlType1Text:
+	db "1"
+	ds 7, 0
+ControlType2Text:
+	db "2"
+	ds 7, 0
+ControlType3Text:
+	db "3"
+	ds 7, 0
+SkillEasyText:
+	db "EASY"
+	ds 4, 0
+SkillMediumText:
+	db "MED "
+	ds 4, 0
+SkillHardText:
+	db "HARD"
+	ds 4, 0
 
 	LOAD UNION "RAM code $D56A", WRAMX[$D56A] ; copied from $01:49CB
 
@@ -1317,7 +1355,7 @@ RAM_D56A:
 	ld [$D563], a
 	ld [$D569], a
 	ld a, [$C6CF]
-	ld [$D55D], a
+	ld [wSkillSetting], a
 	call Func_01_4A62
 	ld a, [$C6B5]
 	ld [$D55F], a
@@ -1386,11 +1424,11 @@ RAM_D62E:
 	pop de
 	pop bc
 	pop af
-	ld a, [$D55B]
+	ld a, [wMusicSetting]
 	ld [$C92E], a
-	ld a, [$D55C]
+	ld a, [wControlSetting]
 	ld [$C92F], a
-	ld a, [$D55D]
+	ld a, [wSkillSetting]
 	ld [$C6CF], a
 	ld a, $01
 	ld [rROMB0], a
@@ -1922,13 +1960,13 @@ RuntimeCallbackTable:
 	dw Func_36AF
 
 Func_01_4E35:
-	ld a, [$D55B]
-	ld [$C6BB], a
+	ld a, [wMusicSetting]
+	ld [wMusicEnabled], a
 	and a
 	jr nz, Jump_01_4E40
 	ldh [rNR51], a
 Jump_01_4E40:
-	ld a, [$D55C]
+	ld a, [wControlSetting]
 	add a, a
 	ld hl, RuntimeCallbackTable
 	ld a, a
@@ -1944,14 +1982,14 @@ Jump_01_4E40:
 	ld [wRuntimeCallback], a
 	ld a, h
 	ld [wRuntimeCallback + 1], a
-	ld a, [$D55D]
+	ld a, [wSkillSetting]
 	ld [$C6CF], a
 	ret
 
 
 Func_01_4E60:
-	ld a, [$C6BB]
-	ld [$D55B], a
+	ld a, [wMusicEnabled]
+	ld [wMusicSetting], a
 	ld hl, RuntimeCallbackTable
 	ld e, $00
 Jump_01_4E6B:
@@ -1977,9 +2015,9 @@ Jump_01_4E77:
 
 Jump_01_4E85:
 	ld a, e
-	ld [$D55C], a
+	ld [wControlSetting], a
 	ld a, [$C6CF]
-	ld [$D55D], a
+	ld [wSkillSetting], a
 	ret
 
 

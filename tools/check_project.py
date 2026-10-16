@@ -73,6 +73,9 @@ def check_tracing() -> None:
     import trace  # pylint: disable=import-outside-toplevel
 
     rom = (ROOT / "baserom.gbc").read_bytes()
+    for offset, value in hints.TEXT_STRINGS.items():
+        if rom[offset : offset + len(value)] != value:
+            fail(f"text manifest mismatch at ROM offset {offset:#x}")
     traced = trace.run(rom, hints.extra_entries(rom), hints.DATA_RANGES)
     direct_bytes = sum(traced.code.values())
     if direct_bytes != 37612 or len(traced.loads) != 38:

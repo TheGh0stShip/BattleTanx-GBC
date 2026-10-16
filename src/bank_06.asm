@@ -19,7 +19,7 @@ Func_06_7CAE:
 	inc a
 	ld [$C8FA], a
 	ld [$C8FB], a
-	ld [$C6BB], a
+	ld [wMusicEnabled], a
 	ld c, $00
 	ld b, $04
 	ld hl, $C8EC

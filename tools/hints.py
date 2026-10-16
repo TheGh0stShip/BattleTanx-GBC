@@ -48,6 +48,22 @@ MANUAL_ENTRIES = (
     (0x04, 0x62F7),
 )
 
+# Literal options-menu strings. Other visible game text is stored as graphics
+# or encoded data rather than plain ASCII.
+TEXT_STRINGS = {
+    0x48C6: b"MUSIC",
+    0x48D6: b"CONTROL",
+    0x48E6: b"SKILL",
+    0x4993: b"ON ",
+    0x4997: b"OFF",
+    0x499B: b"1",
+    0x49A3: b"2",
+    0x49AB: b"3",
+    0x49B3: b"EASY",
+    0x49BB: b"MED ",
+    0x49C3: b"HARD",
+}
+
 
 def screen_entries(rom):
     out = []

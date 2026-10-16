@@ -30,6 +30,10 @@ NAMED_ADDR = {
     0xC6BE: "wRuntimeCallback",
     0xC6BF: "wRuntimeCallback + 1",
     0xC6C0: "wVBlankPending",
+    0xC6BB: "wMusicEnabled",
+    0xD55B: "wMusicSetting",
+    0xD55C: "wControlSetting",
+    0xD55D: "wSkillSetting",
 }
 
 

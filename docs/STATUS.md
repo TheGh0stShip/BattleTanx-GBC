@@ -33,7 +33,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Graphics | Preserved in extracted binary ranges | Identify formats and add lossless conversion tools |
 | Maps | Preserved in extracted binary ranges | Identify pointer tables, compression, and layouts |
 | Audio | Preserved in extracted binary ranges | Identify engine, sequences, instruments, and samples |
-| Text | Not yet catalogued | Extract and round-trip all strings and encodings |
+| Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
 
 ## Known control-flow gaps
 
