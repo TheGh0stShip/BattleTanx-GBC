@@ -238,10 +238,10 @@ Jump_01B4:
 	ld b, $00
 	ld c, $00
 	call Func_03CB
-	call Func_1B18
+	call SetLevelScrollPosition
 	call Func_1927
 	call Func_194B
-	call Func_1AE4
+	call RefreshLevelViewport
 	call Func_0781
 	call Func_322D
 	call LoadLevelPalettes
@@ -341,9 +341,9 @@ Jump_0261:
 	ldh [rSCX], a
 	ld a, [$C6B1]
 	ldh [rSCY], a
-	ld a, [$CA04]
+	ld a, [wLevelScrollX]
 	ld [$C6B0], a
-	ld a, [$CA05]
+	ld a, [wLevelScrollY]
 	ld [$C6B1], a
 	call Func_3C56
 	call Func_2058
@@ -374,7 +374,7 @@ Jump_02E9:
 	ld l, a
 	ld a, [$CD01]
 	ld h, a
-	call Func_1804
+	call UpdateLevelCamera
 	call Func_03DB
 	jp c, Jump_0061
 	ld a, [$C6C1]
@@ -4222,11 +4222,11 @@ Func_17AD:
 	ret
 
 
-Func_1804:
+UpdateLevelCamera:
 	push de
 	push bc
 	push hl
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	ld e, a
 	ld a, l
 	and $C0
@@ -4245,9 +4245,9 @@ Func_1804:
 	jr z, Jump_1826
 	dec a
 	cpl
-	call Func_1BE4
+	call ScrollLevelLeft
 Jump_1826:
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	ld e, a
 	ld a, l
 	and $C0
@@ -4266,9 +4266,9 @@ Jump_1826:
 	ld a, [hl]
 	bit 7, a
 	jr nz, Jump_1846
-	call Func_1B75
+	call ScrollLevelRight
 Jump_1846:
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	ld e, a
 	ld a, l
 	and $C0
@@ -4287,9 +4287,9 @@ Jump_1846:
 	jr z, Jump_1866
 	dec a
 	cpl
-	call Func_1CBC
+	call ScrollLevelUp
 Jump_1866:
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	ld e, a
 	ld a, l
 	and $C0
@@ -4308,7 +4308,7 @@ Jump_1866:
 	ld a, [hl]
 	bit 7, a
 	jr nz, Jump_1887
-	call Func_1C4D
+	call ScrollLevelDown
 Jump_1887:
 	pop hl
 	pop bc
@@ -4404,7 +4404,7 @@ LoadLevelData:
 	call Func_1B07
 	ld b, $00
 	ld c, $00
-	call Func_1B18
+	call SetLevelScrollPosition
 	call LoadLevelTiles
 	call LoadLevelCellMap
 	ld a, $01
@@ -4716,7 +4716,7 @@ Jump_1AD6:
 	ret
 
 
-Func_1AE4:
+RefreshLevelViewport:
 	call Func_3C19
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -4744,17 +4744,17 @@ Func_1B07:
 	ret
 
 
-Func_1B18:
+SetLevelScrollPosition:
 	push af
 	push bc
 	ld a, b
-	ld [$CA04], a
+	ld [wLevelScrollX], a
 	srl a
 	srl a
 	srl a
 	ld [wLevelRingX], a
 	ld a, c
-	ld [$CA05], a
+	ld [wLevelScrollY], a
 	srl a
 	srl a
 	srl a
@@ -4817,11 +4817,11 @@ Jump_1B66:
 	ret
 
 
-Func_1B75:
+ScrollLevelRight:
 	ld e, a
 	ld a, [wLevelRingX]
 	ld d, a
-	ld a, [$CA04]
+	ld a, [wLevelScrollX]
 	add a, e
 	srl a
 	srl a
@@ -4834,22 +4834,22 @@ Func_1B75:
 	ld a, [wLevelViewX]
 	cp b
 	ret z
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	add a, e
-	ld [$CA00], a
-	ld a, [$CA01]
+	ld [wLevelCameraX], a
+	ld a, [wLevelCameraX + 1]
 	adc a, $00
-	ld [$CA01], a
-	ld a, [$CA04]
+	ld [wLevelCameraX + 1], a
+	ld a, [wLevelScrollX]
 	add a, e
-	ld [$CA04], a
+	ld [wLevelScrollX], a
 	srl a
 	srl a
 	srl a
 	ld [wLevelRingX], a
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	ld c, a
-	ld a, [$CA01]
+	ld a, [wLevelCameraX + 1]
 	ld b, a
 	srl b
 	rr c
@@ -4863,23 +4863,23 @@ Func_1B75:
 	ret
 
 Jump_1BCD:
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	add a, e
-	ld [$CA00], a
-	ld a, [$CA01]
+	ld [wLevelCameraX], a
+	ld a, [wLevelCameraX + 1]
 	adc a, $00
-	ld [$CA01], a
-	ld a, [$CA04]
+	ld [wLevelCameraX + 1], a
+	ld a, [wLevelScrollX]
 	add a, e
-	ld [$CA04], a
+	ld [wLevelScrollX], a
 	ret
 
 
-Func_1BE4:
+ScrollLevelLeft:
 	ld e, a
 	ld a, [wLevelRingX]
 	ld d, a
-	ld a, [$CA04]
+	ld a, [wLevelScrollX]
 	sub e
 	srl a
 	srl a
@@ -4889,22 +4889,22 @@ Func_1BE4:
 	ld a, [wLevelViewX]
 	or a
 	ret z
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	sub e
-	ld [$CA00], a
-	ld a, [$CA01]
+	ld [wLevelCameraX], a
+	ld a, [wLevelCameraX + 1]
 	sbc a, $00
-	ld [$CA01], a
-	ld a, [$CA04]
+	ld [wLevelCameraX + 1], a
+	ld a, [wLevelScrollX]
 	sub e
-	ld [$CA04], a
+	ld [wLevelScrollX], a
 	srl a
 	srl a
 	srl a
 	ld [wLevelRingX], a
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	ld c, a
-	ld a, [$CA01]
+	ld a, [wLevelCameraX + 1]
 	ld b, a
 	srl b
 	rr c
@@ -4918,23 +4918,23 @@ Func_1BE4:
 	ret
 
 Jump_1C36:
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	sub e
-	ld [$CA00], a
-	ld a, [$CA01]
+	ld [wLevelCameraX], a
+	ld a, [wLevelCameraX + 1]
 	sbc a, $00
-	ld [$CA01], a
-	ld a, [$CA04]
+	ld [wLevelCameraX + 1], a
+	ld a, [wLevelScrollX]
 	sub e
-	ld [$CA04], a
+	ld [wLevelScrollX], a
 	ret
 
 
-Func_1C4D:
+ScrollLevelDown:
 	ld e, a
 	ld a, [wLevelRingY]
 	ld d, a
-	ld a, [$CA05]
+	ld a, [wLevelScrollY]
 	add a, e
 	srl a
 	srl a
@@ -4947,22 +4947,22 @@ Func_1C4D:
 	ld a, [wLevelViewY]
 	cp b
 	ret z
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	add a, e
-	ld [$CA02], a
-	ld a, [$CA03]
+	ld [wLevelCameraY], a
+	ld a, [wLevelCameraY + 1]
 	adc a, $00
-	ld [$CA03], a
-	ld a, [$CA05]
+	ld [wLevelCameraY + 1], a
+	ld a, [wLevelScrollY]
 	add a, e
-	ld [$CA05], a
+	ld [wLevelScrollY], a
 	srl a
 	srl a
 	srl a
 	ld [wLevelRingY], a
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	ld c, a
-	ld a, [$CA03]
+	ld a, [wLevelCameraY + 1]
 	ld b, a
 	srl b
 	rr c
@@ -4976,23 +4976,23 @@ Func_1C4D:
 	ret
 
 Jump_1CA5:
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	add a, e
-	ld [$CA02], a
-	ld a, [$CA03]
+	ld [wLevelCameraY], a
+	ld a, [wLevelCameraY + 1]
 	adc a, $00
-	ld [$CA03], a
-	ld a, [$CA05]
+	ld [wLevelCameraY + 1], a
+	ld a, [wLevelScrollY]
 	add a, e
-	ld [$CA05], a
+	ld [wLevelScrollY], a
 	ret
 
 
-Func_1CBC:
+ScrollLevelUp:
 	ld e, a
 	ld a, [wLevelRingY]
 	ld d, a
-	ld a, [$CA05]
+	ld a, [wLevelScrollY]
 	sub e
 	srl a
 	srl a
@@ -5002,22 +5002,22 @@ Func_1CBC:
 	ld a, [wLevelViewY]
 	or a
 	ret z
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	sub e
-	ld [$CA02], a
-	ld a, [$CA03]
+	ld [wLevelCameraY], a
+	ld a, [wLevelCameraY + 1]
 	sbc a, $00
-	ld [$CA03], a
-	ld a, [$CA05]
+	ld [wLevelCameraY + 1], a
+	ld a, [wLevelScrollY]
 	sub e
-	ld [$CA05], a
+	ld [wLevelScrollY], a
 	srl a
 	srl a
 	srl a
 	ld [wLevelRingY], a
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	ld c, a
-	ld a, [$CA03]
+	ld a, [wLevelCameraY + 1]
 	ld b, a
 	dec bc
 	srl b
@@ -5032,15 +5032,15 @@ Func_1CBC:
 	ret
 
 Jump_1D0F:
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	sub e
-	ld [$CA02], a
-	ld a, [$CA03]
+	ld [wLevelCameraY], a
+	ld a, [wLevelCameraY + 1]
 	sbc a, $00
-	ld [$CA03], a
-	ld a, [$CA05]
+	ld [wLevelCameraY + 1], a
+	ld a, [wLevelScrollY]
 	sub e
-	ld [$CA05], a
+	ld [wLevelScrollY], a
 	ret
 
 
@@ -5819,12 +5819,12 @@ Func_214D:
 	and $C0
 	inc a
 	ld l, a
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	ld c, a
 	ld a, [hli]
 	sub c
 	ld c, a
-	ld a, [$CA01]
+	ld a, [wLevelCameraX + 1]
 	ld b, a
 	ld a, [hl]
 	sbc a, b
@@ -5864,12 +5864,12 @@ Jump_2184:
 	and $C0
 	add a, $04
 	ld l, a
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	ld c, a
 	ld a, [hli]
 	sub c
 	ld c, a
-	ld a, [$CA03]
+	ld a, [wLevelCameraY + 1]
 	ld b, a
 	ld a, [hl]
 	sbc a, b

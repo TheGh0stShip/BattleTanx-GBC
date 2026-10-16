@@ -648,9 +648,9 @@ Func_04_63D0:
 	push hl
 	ld a, [hli]
 	ld [$CD19], a
-	ld a, [$CA01]
+	ld a, [wLevelCameraX + 1]
 	ld d, a
-	ld a, [$CA00]
+	ld a, [wLevelCameraX]
 	add a, $50
 	ld e, a
 	ld a, d
@@ -682,9 +682,9 @@ Jump_04_6418:
 	inc hl
 	push bc
 	push de
-	ld a, [$CA03]
+	ld a, [wLevelCameraY + 1]
 	ld b, a
-	ld a, [$CA02]
+	ld a, [wLevelCameraY]
 	add a, $48
 	ld c, a
 	ld a, b

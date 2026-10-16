@@ -106,6 +106,13 @@ The level renderer now names its cell resolver/writer, 21-cell row and
 and 20-by-18 viewport refresh. Its world-space viewport origin and wrapped
 32-by-32 BG-map origin fields are also named and checked.
 
+The camera update follows the active object within horizontal and vertical
+screen margins. Four directional scroll routines maintain 16-bit level-space
+pixel coordinates, the hardware scroll bytes, the viewport cell origin, and
+the wrapped BG-map origin; crossing a cell boundary redraws only the newly
+exposed row or column. Their entry points and camera fields are named and
+address-checked.
+
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have
 behavioral names. Four eight-byte object-type parameter records at `$5100`

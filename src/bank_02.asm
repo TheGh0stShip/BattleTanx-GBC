@@ -299,9 +299,9 @@ Func_02_4263:
 	sla e
 	rl d
 	ld a, e
-	ld [$CA00], a
+	ld [wLevelCameraX], a
 	ld a, d
-	ld [$CA01], a
+	ld [wLevelCameraX + 1], a
 	ld e, c
 	ld d, $00
 	sla e
@@ -311,9 +311,9 @@ Func_02_4263:
 	sla e
 	rl d
 	ld a, e
-	ld [$CA02], a
+	ld [wLevelCameraY], a
 	ld a, d
-	ld [$CA03], a
+	ld [wLevelCameraY + 1], a
 	ld a, b
 	ld [wLevelViewX], a
 	ld a, c

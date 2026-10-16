@@ -64,6 +64,12 @@ DEF wLevelTileAnimationTable   EQU $C8CE ; 2-byte pointer
 DEF wLevelAttributeLookup      EQU $C8D0 ; 2-byte pointer
 DEF wLevelAttributeLookupBank  EQU $C8D2
 
+; Camera position in level-space pixels. The scroll bytes are written to
+; SCX/SCY and may wrap while the 16-bit camera coordinates do not.
+DEF wLevelCameraX              EQU $CA00 ; 2-byte little-endian position
+DEF wLevelCameraY              EQU $CA02 ; 2-byte little-endian position
+DEF wLevelScrollX              EQU $CA04
+DEF wLevelScrollY              EQU $CA05
 DEF wLevelNumber               EQU $CA06
 DEF wLevelWidth                EQU $CA09
 DEF wLevelHeight               EQU $CA0A
