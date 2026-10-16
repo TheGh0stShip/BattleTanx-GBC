@@ -1,4 +1,5 @@
 INCLUDE "include/hardware.inc"
+INCLUDE "include/memory.inc"
 
 INCLUDE "src/bank_00.asm"
 INCLUDE "src/bank_01.asm"

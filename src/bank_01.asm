@@ -8,16 +8,16 @@ Func_01_4000:
 	ld d, $08
 Jump_01_4005:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_4009:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_4009
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld b, $02
 	call Func_3252
 	dec d
@@ -26,40 +26,40 @@ Jump_01_4009:
 	ld d, $08
 Jump_01_4023:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_4027:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_4027
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld b, $FE
 	call Func_3252
 	dec d
 	jr nz, Jump_01_4023
 Jump_01_403C:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_4040:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_4040
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_3608
 	ld a, [$C6C1]
 	or a
 	jp z, Jump_01_4064
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_405B:
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_405B
 	jp Jump_01_403C
@@ -68,16 +68,16 @@ Jump_01_4064:
 	ld d, $08
 Jump_01_4066:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_406A:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_406A
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld b, $02
 	call Func_3252
 	dec d
@@ -86,16 +86,16 @@ Jump_01_406A:
 	ld d, $08
 Jump_01_4084:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_4088:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_4088
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld b, $FE
 	call Func_3252
 	dec d
@@ -653,16 +653,16 @@ Func_01_446E:
 	ld [hl], $00
 Jump_01_4482:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_4486:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_4486
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $01
 	ldh [rVBK], a
 	ld a, $C4
@@ -1226,16 +1226,16 @@ Jump_01_47AB:
 	ld e, $1F
 Jump_01_47CA:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_47CE:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_47CE
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_2F21
 	call Func_3A52
 	dec e
@@ -1344,12 +1344,12 @@ RAM_D56A:
 	ld a, $00
 	call ScreenTable_CallInit
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $00
 	ld bc, $0020
 	call ScreenTable_CallUpdate
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $01
 	ld e, $01
 	call Func_01_4D15
@@ -1393,7 +1393,7 @@ RAM_D62E:
 	ld a, [$D55D]
 	ld [$C6CF], a
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 RAM_D650:
@@ -1436,12 +1436,12 @@ RAM_D664:
 	ld a, [hl]
 	call ScreenTable_CallInit
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [hl]
 	ld bc, $0020
 	call ScreenTable_CallUpdate
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_5427
 	call Func_01_5448
 	ld a, $01
@@ -1456,16 +1456,16 @@ RAM_D6B4:
 RAM_D6C7:
 	call Func_2F21
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 RAM_D6CE:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, RAM_D6CE
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $00
 	call Func_01_4C15
 	ld a, [$D555]
@@ -1941,9 +1941,9 @@ Jump_01_4E40:
 	ld h, [hl]
 	ld l, a
 	ld a, l
-	ld [$C6BE], a
+	ld [wRuntimeCallback], a
 	ld a, h
-	ld [$C6BF], a
+	ld [wRuntimeCallback + 1], a
 	ld a, [$D55D]
 	ld [$C6CF], a
 	ret
@@ -1957,7 +1957,7 @@ Func_01_4E60:
 Jump_01_4E6B:
 	ld a, [hli]
 	ld b, a
-	ld a, [$C6BE]
+	ld a, [wRuntimeCallback]
 	cp b
 	jr z, Jump_01_4E77
 	inc e
@@ -1967,7 +1967,7 @@ Jump_01_4E6B:
 Jump_01_4E77:
 	ld a, [hli]
 	ld b, a
-	ld a, [$C6BF]
+	ld a, [wRuntimeCallback + 1]
 	cp b
 	jr z, Jump_01_4E85
 	inc e
@@ -2011,16 +2011,16 @@ Jump_01_4E9D:
 	ld a, $01
 	call Func_01_4C15
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_4EC1:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_4EC1
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ret
 
 
@@ -2318,16 +2318,16 @@ Func_01_5126:
 	call Func_01_7981
 Jump_01_5140:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_5144:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_5144
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_2F21
 	ld a, [$C6B5]
 	or a
@@ -2549,16 +2549,16 @@ Func_01_5427:
 	ld a, $01
 	ld [$D569], a
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_5430:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_5430
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ret
 
 
@@ -2655,16 +2655,16 @@ Jump_01_54DA:
 
 Jump_01_54E8:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_54EC:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_54EC
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ret
 
 
@@ -2964,10 +2964,10 @@ RAM_D7CB:
 	ld [$C924], a
 	ld a, [$DBFB]
 	ld d, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, d
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $DBFD
 	ld a, [hli]
 	ld c, a
@@ -3019,7 +3019,7 @@ RAM_D7CB:
 	ld d, $80
 	call Func_0622
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $DBFB
 	ld a, [hli]
 	ld [$C953], a
@@ -3042,10 +3042,10 @@ RAM_D7CB:
 	LOAD UNION "RAM code $D9CB", WRAMX[$D9CB] ; copied from $01:5718
 
 RAM_D9CB:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $01
 	ldh [rVBK], a
 	ld e, $00
@@ -3055,7 +3055,7 @@ RAM_D9CB:
 	call Func_0622
 	call Func_2AB9
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 	ENDL
@@ -3066,10 +3066,10 @@ RAM_D9CB:
 RAM_D91B:
 	ld a, [$C943]
 	ld b, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, b
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [$C949]
 	ld c, a
 	ld b, $00
@@ -3159,7 +3159,7 @@ RAM_D96E:
 	ld [$C94D], a
 	jp nz, RAM_D968
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 	ENDL
@@ -3170,10 +3170,10 @@ RAM_D88B:
 	ld hl, $C943
 	ld a, [hli]
 	ld b, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, b
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $C949
 	ld a, [hl]
 	ld c, a
@@ -3245,7 +3245,7 @@ RAM_D8DC:
 	or a
 	jr nz, RAM_D8D1
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 	ENDL
@@ -3287,16 +3287,16 @@ Func_01_5867:
 	ld bc, $D91B
 	call CopyBytes
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_58D1:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_58D1
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ret
 
 	INCBIN "assets/bank_01/58DF.bin" ; $2DB bytes
@@ -3388,16 +3388,16 @@ Jump_01_5C18:
 	call Func_01_6618
 	call Func_01_5C56
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_5C48:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_5C48
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ret
 
 
@@ -3452,16 +3452,16 @@ Jump_01_5C6D:
 	ld a, $01
 	ldh [rVBK], a
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_5CA9:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_5CA9
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $3F
 	ldh [rHDMA5], a
 	ld hl, $DC00
@@ -3480,16 +3480,16 @@ Jump_01_5CA9:
 	xor a
 	ldh [rVBK], a
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_5CDD:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_5CDD
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $3F
 	ldh [rHDMA5], a
 	ld hl, $DC00
@@ -3508,16 +3508,16 @@ Jump_01_5CDD:
 	ld a, $01
 	ldh [rVBK], a
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_5D12:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_5D12
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $3F
 	ldh [rHDMA5], a
 	ld hl, $DC00
@@ -3536,16 +3536,16 @@ Jump_01_5D12:
 	xor a
 	ldh [rVBK], a
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_5D46:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_5D46
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $3F
 	ldh [rHDMA5], a
 	ld hl, $87F0
@@ -3633,7 +3633,7 @@ RAM_C82E:
 	adc a, $00
 	ld [$C6B8], a
 	ld a, $01
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	pop hl
 	pop bc
 	pop de
@@ -3772,7 +3772,7 @@ RAM_D000:
 	ld hl, $D3E0
 	ld a, [hli]
 	ld a, a
-	ld [$2000], a
+	ld [rROMB0], a
 	ld c, [hl]
 	inc hl
 	ld b, [hl]
@@ -3780,16 +3780,16 @@ RAM_D000:
 	ld a, $01
 	ldh [rVBK], a
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 RAM_D015:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, RAM_D015
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, b
 	ldh [rHDMA1], a
 	ld a, c
@@ -3813,16 +3813,16 @@ RAM_D015:
 	xor a
 	ldh [rHDMA4], a
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 RAM_D049:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, RAM_D049
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $7E
 	ldh [rHDMA5], a
 	ld hl, $D3E7
@@ -3875,16 +3875,16 @@ RAM_D08A:
 	pop hl
 	pop bc
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 RAM_D0A7:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, RAM_D0A7
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	xor a
 	ldh [rVBK], a
 	ld d, $0C
@@ -3942,14 +3942,14 @@ RAM_D0DF:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	ld d, a
 	call Func_3A88
 	xor a
 	ld [$C6D1], a
 	call Func_3A2F
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 	ENDL
@@ -3977,7 +3977,7 @@ RAM_D160:
 	ldh [$FF8A], a
 	ld a, e
 	ld a, a
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $D3F6
 	ld a, [hli]
 	ld h, [hl]
@@ -3989,7 +3989,7 @@ RAM_D160:
 	xor a
 	ldh [$FF8B], a
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -4003,16 +4003,16 @@ RAM_D160:
 
 Func_01_609A:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_609E:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_609E
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $01
 	ldh [$FF80], a
 	call Func_01_65BA
@@ -4021,31 +4021,31 @@ Jump_01_609E:
 	call RAM_D160
 	call Func_01_6149
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_60C2:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_60C2
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	xor a
 	ldh [$FF80], a
 Jump_01_60D2:
 	call Func_2F21
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_60D9:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_60D9
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ldh a, [$FF95]
 	or a
 	jr z, Jump_01_60D2
@@ -4070,16 +4070,16 @@ Jump_01_6107:
 Jump_01_610A:
 	call Func_2F21
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_6111:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_6111
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	halt
 	nop
 	nop
@@ -4131,16 +4131,16 @@ Jump_01_6155:
 	dec e
 	jr nz, Jump_01_6155
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_615F:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_615F
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld e, $1F
 	call Func_3A52
 	pop hl
@@ -4156,16 +4156,16 @@ Func_01_6176:
 	ld d, $01
 Jump_01_617C:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_6180:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_6180
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_2F21
 	ld a, d
 	cp $10
@@ -4219,16 +4219,16 @@ Func_01_61CE:
 	ld d, $1E
 Jump_01_61D8:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_61DC:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_61DC
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_2F21
 	ld a, d
 	cp $10
@@ -4326,16 +4326,16 @@ Func_01_6309:
 	ld a, $01
 	ldh [$FFAB], a
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_6328:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_6328
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $B4
 	ldh [rWX], a
 	ldh [$FF85], a
@@ -4352,16 +4352,16 @@ Jump_01_6328:
 	ldh [$FF85], a
 	ldh [rWX], a
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_6355:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_6355
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $00
 	ldh [$FFAB], a
 	ret
@@ -4391,16 +4391,16 @@ Func_01_6367:
 	push de
 Jump_01_6388:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_638C:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_638C
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ldh a, [$FFB5]
 	ld e, a
 	call RAM_D330
@@ -4528,7 +4528,7 @@ RAM_D1DF:
 RAM_D1F0:
 	ldh a, [$FF92]
 	ld a, a
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $D3F3
 	ld a, [hli]
 	ld h, [hl]
@@ -4555,7 +4555,7 @@ RAM_D1F0:
 	ld a, h
 	ldh [$FF8E], a
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 	ENDL
@@ -4684,7 +4684,7 @@ RAM_D370:
 	call RAM_D1F0
 	ldh a, [$FF92]
 	ld a, a
-	ld [$2000], a
+	ld [rROMB0], a
 	ld de, $0000
 RAM_D37C:
 	ldh a, [$FF8D]
@@ -4708,7 +4708,7 @@ RAM_D37C:
 	cp $14
 	jr c, RAM_D37C
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 	ENDL
@@ -5607,16 +5607,16 @@ Jump_01_6AD6:
 
 Func_01_6AEF:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_6AF3:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_6AF3
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	push af
 	push bc
 	push de
@@ -5953,29 +5953,29 @@ Jump_01_6CDC:
 Func_01_6CF0:
 	call Func_3960
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_6CF7:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_6CF7
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $06
 	call ScreenTable_CallInit
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_6D0D:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_6D0D
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld bc, $0000
 	ld a, $06
 	call ScreenTable_CallUpdate
@@ -6154,29 +6154,29 @@ Func_01_6E44:
 	call Func_3960
 	call Func_035C
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_6E4E:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_6E4E
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $0C
 	call ScreenTable_CallInit
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_6E64:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_6E64
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld bc, $0000
 	ld a, $0C
 	call ScreenTable_CallUpdate
@@ -6254,16 +6254,16 @@ Func_01_7981:
 Jump_01_7997:
 	call Func_2F21
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_799E:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_799E
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $01
 	ld hl, $C949
 	ld [hl], a
@@ -6439,16 +6439,16 @@ Jump_01_7C52:
 	call RAM_D91B
 	call Func_2F21
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_01_7C85:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_01_7C85
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ldh a, [rSCX]
 	add a, $08
 	ldh [rSCX], a

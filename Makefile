@@ -2,7 +2,7 @@
 ROM     := battletanx.gbc
 BASEROM := baserom.gbc
 PYTHON  ?= python3
-SRCS    := $(wildcard src/*.asm) include/hardware.inc
+SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
 .PHONY: all check compare check-project check-baserom assets disasm clean tidy
 

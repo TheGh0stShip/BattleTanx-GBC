@@ -97,7 +97,7 @@ Func_2D_4058:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	ld d, a
 	ld e, $40
 	call Func_3A88
@@ -107,16 +107,16 @@ Func_2D_4058:
 	ld e, $00
 Jump_2D_40AE:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_2D_40B2:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_2D_40B2
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_3A52
 	call Func_2F21
 	inc e
@@ -222,7 +222,7 @@ Func_2D_5552:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	ld d, a
 	ld e, $40
 	call Func_3A88
@@ -232,16 +232,16 @@ Func_2D_5552:
 	ld e, $00
 Jump_2D_55A8:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_2D_55AC:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_2D_55AC
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_3A52
 	call Func_2F21
 	inc e

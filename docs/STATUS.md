@@ -28,7 +28,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | --- | --- | --- |
 | Reviewed code | 37,612 bytes traced from known entries, pointers, RAM relocations, and reviewed standalone entries | Name and document routines from behavior |
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
-| Symbols | Interrupts, startup, copy helpers, screen dispatch, and OAM DMA named | Name routines and RAM state from evidence |
+| Symbols | Interrupts, startup, copy helpers, screen dispatch, OAM DMA, MBC5 bank selection, VBlank synchronization, and the runtime callback named | Continue naming routines and RAM state from evidence |
 | RAM code | ROM source and runtime address represented with `LOAD` blocks | Verify every copy site and execution entry |
 | Graphics | Preserved in extracted binary ranges | Identify formats and add lossless conversion tools |
 | Maps | Preserved in extracted binary ranges | Identify pointer tables, compression, and layouts |

@@ -88,16 +88,16 @@ Jump_0090:
 Jump_009F:
 	call Func_2F21
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_00A6:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_00A6
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	nop
 	ld a, [$C6B5]
 	or a
@@ -185,12 +185,12 @@ Jump_0175:
 	xor a
 	ld [$C6E2], a
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_3AAE
 	call RAM_D56A
 	call RAM_D62A
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_0192
 	jp Jump_016C
 
@@ -251,16 +251,16 @@ Jump_01B4:
 	ld d, $08
 Jump_0214:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_0218:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_0218
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld b, $FE
 	call Func_3252
 	dec d
@@ -284,16 +284,16 @@ Jump_0245:
 	call Func_0A23
 Jump_0250:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_0254:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_0254
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_0261:
 	ldh a, [rLY]
 	cp $90
@@ -387,52 +387,52 @@ Jump_02E9:
 Jump_0320:
 	call Func_2A88
 	call Func_3834
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jp nz, Jump_0250
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_0331:
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_0331
 	jp Jump_0250
 
 
 Func_033A:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_4000
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_034B:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_409E
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_035C:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_0360:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_0360
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_32EF
 	call Func_04CD
 	call Func_0AC4
@@ -527,13 +527,13 @@ Jump_0400:
 
 
 Func_0402:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_05_4088
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -1044,10 +1044,10 @@ Jump_065D:
 	jr nz, Jump_065D
 	ld a, $1B
 	ldh [rBGP], a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, b
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $88
 	ld d, $DD
 	ld e, $00
@@ -1081,7 +1081,7 @@ Jump_068B:
 	jr nz, Jump_0683
 	call Func_0051
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 Jump_06A9:
 	jr Jump_06A9
 
@@ -1108,35 +1108,35 @@ EnableDoubleSpeed:
 
 
 Func_06C5:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_40CE
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_06D6:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_4102
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_06E7:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_4143
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -1148,16 +1148,16 @@ Func_06F8:
 Jump_0701:
 	call Func_2F21
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_0708:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_0708
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_3878
 	call Func_3A1E
 	dec d
@@ -1251,39 +1251,39 @@ Jump_078D:
 
 Func_07A7:
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $27
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $4512
 	ld b, $00
 	ld c, $01
 	call Func_057D
 	ld a, $28
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $4512
 	ld b, $01
 	ld c, $01
 	call Func_057D
 	ld a, $29
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $4512
 	ld b, $02
 	ld c, $01
 	call Func_057D
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $46EA
 	ld b, $03
 	ld c, $01
 	call Func_057D
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $67FD
 	ld b, $04
 	ld c, $04
 	call Func_057D
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $44A2
 	ld b, $07
 	ld c, $01
@@ -1293,7 +1293,7 @@ Func_07A7:
 
 Func_0807:
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $01
 	ldh [rVBK], a
 	ld e, $40
@@ -1312,28 +1312,28 @@ Func_0807:
 	ld bc, $611A
 	call Func_0622
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld e, $53
 	ld d, $0A
 	ld a, $80
 	ld bc, $6753
 	call Func_0622
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld e, $5D
 	ld d, $0C
 	ld a, $80
 	ld bc, $6815
 	call Func_0622
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld e, $43
 	ld d, $3D
 	ld a, $88
 	ld bc, $4010
 	call Func_0622
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld e, $3B
 	ld d, $08
 	ld a, $88
@@ -1343,10 +1343,10 @@ Func_0807:
 
 
 Func_0879:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	xor a
 	ldh [rVBK], a
 	ld e, $00
@@ -1375,7 +1375,7 @@ Func_0879:
 	ld bc, $69B5
 	call Func_0622
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -1396,9 +1396,9 @@ Func_08C6:
 	call Func_0051
 	ld hl, Func_367F
 	ld a, l
-	ld [$C6BE], a
+	ld [wRuntimeCallback], a
 	ld a, h
-	ld [$C6BF], a
+	ld [wRuntimeCallback + 1], a
 	xor a
 	ldh [rIF], a
 	xor a
@@ -1454,34 +1454,34 @@ Func_092F:
 	push bc
 	push de
 	push hl
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $674B
 	ld bc, $C6F9
 	ld e, $08
 	call CopyBytesShort
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $44A0
 	ld bc, $C721
 	ld e, $08
 	call CopyBytesShort
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $691D
 	ld bc, $C701
 	ld e, $08
 	call CopyBytesShort
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $6965
 	ld bc, $C709
 	ld e, $08
 	call CopyBytesShort
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $69AD
 	ld bc, $C711
 	ld e, $08
@@ -1504,7 +1504,7 @@ Jump_0996:
 	dec c
 	jr nz, Jump_0991
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -1587,13 +1587,13 @@ Func_0A23:
 
 
 Func_0A48:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_406F
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -1672,24 +1672,24 @@ Jump_0AA8:
 
 
 Func_0AB3:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_418A
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_0AC4:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_4238
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -1936,10 +1936,10 @@ Jump_0C12:
 Func_0C1A:
 	push af
 	push hl
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, l
 	and $C0
 	add a, $1E
@@ -1953,7 +1953,7 @@ Func_0C1A:
 	inc l
 	ld b, [hl]
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop af
 	ret
@@ -2333,10 +2333,10 @@ Jump_0DCB:
 	ld l, a
 	ld a, [hl]
 	ldh [$FF81], a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ldh a, [$FF80]
 	cp $03
 	jr z, Jump_0E39
@@ -2350,7 +2350,7 @@ Jump_0DCB:
 	call Func_0F0C
 Jump_0E31:
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 Jump_0E35:
 	pop hl
 	pop bc
@@ -2422,7 +2422,7 @@ Jump_0E39:
 	ld a, b
 	ldh [$FF8B], a
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $03
 	ldh [$FF8C], a
 Jump_0EA3:
@@ -2497,13 +2497,13 @@ Jump_0EA3:
 
 Jump_0F05:
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	jp Jump_0E35
 
 
 Func_0F0C:
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $4000
 	ldh a, [$FF81]
 	sla a
@@ -2546,7 +2546,7 @@ Jump_0F1F:
 
 Func_0F43:
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $4020
 	ldh a, [$FF81]
 	sla a
@@ -2557,7 +2557,7 @@ Func_0F43:
 	ld l, a
 	ldh a, [$FF80]
 	add a, $27
-	ld [$2000], a
+	ld [rROMB0], a
 	ld b, $09
 Jump_0F5D:
 	ld a, [hli]
@@ -4322,7 +4322,7 @@ Func_188B:
 	push de
 	push hl
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld e, l
 	ld a, $00
 	add a, e
@@ -4389,7 +4389,7 @@ Func_18EE:
 	ld [$CA06], a
 	ld b, a
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, b
 	sla a
 	ld hl, $4300
@@ -4408,7 +4408,7 @@ Func_18EE:
 	call Func_1A33
 	call Func_1AA4
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -4614,7 +4614,7 @@ Func_1A33:
 	ld a, [$C8C2]
 	ld b, a
 	ld a, [$C8B9]
-	ld [$2000], a
+	ld [rROMB0], a
 	ld d, $80
 	ld e, $00
 	ld a, $88
@@ -4659,7 +4659,7 @@ Func_1A86:
 	cp $90
 	jr c, Func_1A86
 	ld a, [$C8BA]
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [$C8C3]
 	ld l, a
 	ld a, [$C8C4]
@@ -4679,7 +4679,7 @@ Func_1AA4:
 	ldh a, [rSVBK]
 	push af
 	ld a, [$C8BB]
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $02
 	ldh [rSVBK], a
 	ld bc, $D000
@@ -4718,10 +4718,10 @@ Jump_1AD6:
 
 Func_1AE4:
 	call Func_3C19
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_1F82
 	call Func_1F2F
 	call Func_1F12
@@ -4729,18 +4729,18 @@ Func_1AE4:
 	call Func_1F65
 	call Func_3C56
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_1B07:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_4263
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -5094,17 +5094,17 @@ Func_1D26:
 	ld d, a
 	ld hl, $9800
 	add hl, de
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, [$C8BC]
-	ld [$2000], a
+	ld [rROMB0], a
 	ldh a, [$FFA0]
 	ld b, a
 	ldh a, [$FFA1]
 	ld c, a
 	call Func_1E84
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 Jump_1D8E:
 	pop hl
 	pop de
@@ -5197,10 +5197,10 @@ Jump_1DEB:
 	ld a, d
 	and $08
 	jr nz, Jump_1E81
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, e
 	add a, $7F
 	ld c, a
@@ -5238,10 +5238,10 @@ Jump_1DEB:
 	ld b, $00
 	add hl, bc
 	ld a, [$C8D2]
-	ld [$2000], a
+	ld [rROMB0], a
 	ld d, [hl]
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	jr Jump_1E81
 
 Jump_1E5F:
@@ -5296,10 +5296,10 @@ Func_1E97:
 	push bc
 	push de
 	push hl
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, [$C8BC]
-	ld [$2000], a
+	ld [rROMB0], a
 	ld e, $15
 Jump_1EA7:
 	call Func_1E84
@@ -5319,7 +5319,7 @@ Jump_1EA7:
 	dec e
 	jr nz, Jump_1EA7
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -5332,10 +5332,10 @@ Func_1EC5:
 	push bc
 	push de
 	push hl
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, [$C8BC]
-	ld [$2000], a
+	ld [rROMB0], a
 	ld e, $13
 Jump_1ED5:
 	call Func_1E84
@@ -5353,7 +5353,7 @@ Jump_1ED5:
 	dec e
 	jr nz, Jump_1ED5
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -5474,10 +5474,10 @@ Func_1F82:
 	push bc
 	push de
 	push hl
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, [$C8BC]
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $00
 	ldh [$FF94], a
 	ldh [$FF95], a
@@ -5537,7 +5537,7 @@ Jump_1FC4:
 	ldh [$FF91], a
 	jr nz, Jump_1FA4
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -6033,7 +6033,7 @@ Func_2241:
 	ld a, [hl]
 	ldh [$FF81], a
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ldh a, [$FF80]
 	ld h, a
 	ld l, $00
@@ -6103,7 +6103,7 @@ Func_2295:
 	and $0F
 	ldh [$FF81], a
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ldh a, [$FF80]
 	ld h, a
 	ld l, $00
@@ -6149,10 +6149,10 @@ Jump_22E8:
 
 
 Func_22ED:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	xor a
 	ld [$CA07], a
 	ld [$CA08], a
@@ -6199,7 +6199,7 @@ Jump_2335:
 	dec d
 	jr nz, Jump_2302
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 Jump_2345:
@@ -7635,21 +7635,21 @@ Jump_2A7B:
 
 
 Func_2A88:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_4D58
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_2A99:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	xor a
 	ldh [rVBK], a
 	ld e, $00
@@ -7659,7 +7659,7 @@ Func_2A99:
 	call Func_0622
 	call Func_2AB9
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -7721,10 +7721,10 @@ Func_2AF7:
 	push de
 	push hl
 	ld c, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld b, $00
 	ld hl, $6B05
 	add hl, bc
@@ -7768,7 +7768,7 @@ Jump_2B42:
 	ld [hl], a
 	call Func_2AC4
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -7871,10 +7871,10 @@ Func_2B86:
 	ld de, $5100
 	add a, e
 	ld e, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, c
 	and $C0
 	add a, $22
@@ -7914,7 +7914,7 @@ Func_2B86:
 	xor a
 	ld [bc], a
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, c
 	and $C0
 	ld c, a
@@ -7933,13 +7933,13 @@ Jump_2C1F:
 
 
 Func_2C24:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_43EC
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -8431,21 +8431,21 @@ Jump_2EA2:
 
 
 Func_2EA7:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_4548
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_2EB8:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $06
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_06_7CAE
 	ld a, [$C8E6]
 	cp $00
@@ -8454,7 +8454,7 @@ Func_2EB8:
 	ld [$C8E6], a
 Jump_2ED0:
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -8481,7 +8481,7 @@ Jump_2EEC:
 	ld l, a
 Jump_2EF4:
 	ld a, [$C8F4]
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [hli]
 	ld b, a
 	ld a, [hli]
@@ -8489,7 +8489,7 @@ Jump_2EF4:
 	ld a, [hli]
 	ld [$C8E7], a
 	ld a, $06
-	ld [$2000], a
+	ld [rROMB0], a
 	push hl
 	call Func_06_7D11
 	pop hl
@@ -8517,10 +8517,10 @@ Func_2F21:
 	dec a
 	ld [$C8F7], a
 Jump_2F2F:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $06
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_06_7EFD
 	call Func_2ED5
 	ld hl, $C8FD
@@ -8550,7 +8550,7 @@ Jump_2F48:
 
 Jump_2F6A:
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -8721,10 +8721,10 @@ Func_3019:
 
 
 Func_302D:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $418F
 	ld a, [$C6D0]
 	inc a
@@ -8769,18 +8769,18 @@ Jump_306E:
 	ld [$C6D0], a
 Jump_307A:
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_307F:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_45C1
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -8833,35 +8833,35 @@ Jump_30CD:
 
 
 Func_30D1:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_4611
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_30E2:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_463D
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_30F3:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_4688
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -8869,10 +8869,10 @@ Func_3104:
 	push de
 	push bc
 	push hl
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld e, l
 	ld a, $06
 	add a, e
@@ -8920,7 +8920,7 @@ Func_3104:
 	call Func_315F
 Jump_3157:
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop bc
 	pop de
@@ -8929,7 +8929,7 @@ Jump_3157:
 
 Func_315F:
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	ldh a, [$FF88]
 	ld l, a
 	ldh a, [$FF89]
@@ -8969,7 +8969,7 @@ Jump_316D:
 
 Func_3190:
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	ldh a, [$FF86]
 	ld l, a
 	ldh a, [$FF87]
@@ -8985,7 +8985,7 @@ Func_3190:
 	ld h, [hl]
 	ld l, a
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ldh a, [$FF8A]
 	ld b, a
 Jump_31AF:
@@ -9149,16 +9149,16 @@ Func_325B:
 	call Func_3302
 	call Func_32B4
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_3268:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_3268
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $01
 	ldh [rVBK], a
 	ld a, $C4
@@ -9187,13 +9187,13 @@ Jump_3268:
 
 
 Func_32A3:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_4233
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -9235,13 +9235,13 @@ Func_32B4:
 
 
 Func_32DE:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_42A2
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -9780,13 +9780,13 @@ Jump_35B6:
 
 
 Func_35C6:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_42EE
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -9812,13 +9812,13 @@ Func_35D7:
 
 
 Func_35F7:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_446E
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -9866,7 +9866,7 @@ Jump_363F:
 	ret
 
 Jump_3647:
-	ld hl, $C6BE
+	ld hl, wRuntimeCallback
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -10062,13 +10062,13 @@ Jump_3761:
 
 
 Func_3764:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call DispatchEntityHandler
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -10118,156 +10118,156 @@ Jump_37AB:
 
 
 Func_37AC:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_08_6DD5
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_37BD:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_4687
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_37CE:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $04
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_04_601C
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_37DF:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $04
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_04_6343
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_37F0:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $04
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_04_6392
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3801:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_03_5C11
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3812:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_03_5CD0
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3823:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_03_6391
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3834:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03
-	ld [$2000], a
+	ld [rROMB0], a
 	call DispatchStateCheck
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3845:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_03_6923
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3856:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_46B1
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3867:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_4703
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3878:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_475E
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3889:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_4799
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -10423,13 +10423,13 @@ Jump_395D:
 
 
 Func_3960:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_46E1
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -10462,16 +10462,16 @@ Jump_3989:
 	jr nz, Jump_39A6
 	call Func_2F21
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_3996:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_3996
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	dec d
 	jr nz, Jump_3989
 Jump_39A6:
@@ -10491,17 +10491,17 @@ ScreenTable_CallInit:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, e
-	ld [$2000], a
+	ld [rROMB0], a
 	ld de, Func_39C4
 	push de
 	jp hl
 
 Func_39C4:
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -10526,10 +10526,10 @@ ScreenTable_CallUpdate:
 	ld h, [hl]
 	ld l, a
 	pop bc
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, e
-	ld [$2000], a
+	ld [rROMB0], a
 	push bc
 	ld de, Func_39F1
 	push de
@@ -10538,7 +10538,7 @@ ScreenTable_CallUpdate:
 Func_39F1:
 	pop bc
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	pop hl
 	pop de
 	pop bc
@@ -10559,35 +10559,35 @@ ScreenTable_LoadEntry:
 	ld h, a
 	ld bc, $C6E3
 	ld e, $08
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call CopyBytesShort
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3A1E:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_4710
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3A2F:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_474B
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -10648,10 +10648,10 @@ Jump_3A7D:
 
 
 Func_3A88:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, d
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $02
 	ldh [rSVBK], a
 	push hl
@@ -10664,24 +10664,24 @@ Func_3A88:
 	ld a, $01
 	ldh [rSVBK], a
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3AAE:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_5867
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3ABF:
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_3CD9
 	ld a, [$C6CD]
 	cp $01
@@ -10724,7 +10724,7 @@ Jump_3B11:
 
 Func_3B12:
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [$C6CD]
 	cp $00
 	jr z, Jump_3B28
@@ -10750,26 +10750,26 @@ Jump_3B38:
 	ld bc, $0000
 	call ScreenTable_CallUpdate
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_3B49:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_3B49
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_3F1F
 Jump_3B59:
 	ret
 
 
 Func_3B5A:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [$C6CD]
 	cp $01
 	jr z, Jump_3B9A
@@ -10783,101 +10783,101 @@ Func_3B5A:
 	call Func_3BC4
 Jump_3B80:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_3B84:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_3B84
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_2F21
 	ld a, [$C6B5]
 	or a
 	jr z, Jump_3B80
 Jump_3B9A:
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3B9F:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_5C40
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3BB0:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_0AC4
 	call Func_01_6618
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3BC4:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_6CF0
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3BD5:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_6E01
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3BE6:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_47AF
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3BF7:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_5D33
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3C08:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_6E44
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -10975,10 +10975,10 @@ Func_3C90:
 	ld hl, $C943
 	ld a, [hli]
 	ld b, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, b
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [$C94F]
 	ld l, a
 	ld a, [$C950]
@@ -10996,7 +10996,7 @@ Func_3C90:
 	ld a, [hl]
 	ld [$C956], a
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -11004,35 +11004,35 @@ Func_3CC2:
 	ldh a, [rLCDC]
 	res 1, a
 	ldh [rLCDC], a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_5D6D
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
 Func_3CD9:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_3CDD:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_3CDD
 	xor a
-	ld [$C6C0], a
-	ld a, [$7FFF]
+	ld [wVBlankPending], a
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_4810
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -11072,16 +11072,16 @@ Func_3CFB:
 	ld a, $40
 	ld [$C967], a
 	call Func_3D70
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $5502
 	ld b, $03
 	ld c, $01
 	call Func_057D
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, $01
 	ld [$C0FF], a
 	ld a, $4F
@@ -11096,13 +11096,13 @@ Func_3CFB:
 
 
 Func_3D70:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_01_7D3A
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -11169,7 +11169,7 @@ Jump_3DD7:
 
 Func_3DD8:
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [$C95D]
 	add a, b
 	ld l, a
@@ -11201,10 +11201,10 @@ Func_3E05:
 	ld a, [$C959]
 	cp $03
 	ret c
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld b, $00
 	ld c, $03
 Jump_3E18:
@@ -11226,7 +11226,7 @@ Jump_3E32:
 	dec c
 	jr nz, Jump_3E18
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 
@@ -11236,7 +11236,7 @@ Func_3E3C:
 	ld a, [$C961]
 	ld h, a
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [$C95F]
 	ld b, a
 Jump_3E4D:
@@ -11299,7 +11299,7 @@ Func_3E81:
 	ld a, [$C963]
 	ld h, a
 	ld a, $05
-	ld [$2000], a
+	ld [rROMB0], a
 	ld a, [$C95F]
 	ld c, a
 Jump_3E92:
@@ -11378,16 +11378,16 @@ Jump_3EFF:
 
 Jump_3F00:
 	call Func_1163
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
-	ld [$2000], a
+	ld [rROMB0], a
 	ld hl, $46EA
 	ld b, $03
 	ld c, $01
 	call Func_057D
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	xor a
 	ld [$C0FF], a
 	ret
@@ -11395,19 +11395,19 @@ Jump_3F00:
 
 Func_3F1F:
 	ld a, $02
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_02_6306
 	ret
 
 
 Func_3F28:
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $2A
-	ld [$2000], a
+	ld [rROMB0], a
 	call Func_2A_7774
 	pop af
-	ld [$2000], a
+	ld [rROMB0], a
 	ret
 
 	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00

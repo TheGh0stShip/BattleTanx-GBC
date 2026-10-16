@@ -24,6 +24,13 @@ HREG = {
     0x55: "rHDMA5", 0x56: "rRP", 0x68: "rBCPS", 0x69: "rBCPD", 0x6A: "rOCPS", 0x6B: "rOCPD",
     0x70: "rSVBK", 0xFF: "rIE",
 }
+NAMED_ADDR = {
+    0x2000: "rROMB0",
+    0x7FFF: "ROM_BANK_MARKER",
+    0xC6BE: "wRuntimeCallback",
+    0xC6BF: "wRuntimeCallback + 1",
+    0xC6C0: "wVBlankPending",
+}
 
 
 def cpu_addr(off, ctx, loads):
@@ -99,11 +106,11 @@ class Emitter:
         if typ == 'a16':
             if len(tgt) == 1 and self.addr_at(tgt[0]) == v and self.label_ok(tgt[0]):
                 return self.names[tgt[0]]
-            return f"${v:04X}"
+            return NAMED_ADDR.get(v, f"${v:04X}")
         if typ == 'n16':
             if len(tgt) == 1 and self.addr_at(tgt[0]) == v and self.label_ok(tgt[0]):
                 return self.names[tgt[0]]
-            return f"${v:04X}"
+            return NAMED_ADDR.get(v, f"${v:04X}")
         if typ == 'n8':
             return f"${v:02X}"
         if typ == 'h8':
@@ -246,7 +253,8 @@ def main():
             f.write(f"; BattleTanx (USA) - ROM bank ${b:02X}\n\n")
             f.write(em.emit_bank(b))
     with open(os.path.join(outdir, "src", "main.asm"), "w") as f:
-        f.write('INCLUDE "include/hardware.inc"\n\n')
+        f.write('INCLUDE "include/hardware.inc"\n')
+        f.write('INCLUDE "include/memory.inc"\n\n')
         for b in range(nbanks):
             f.write(f'INCLUDE "src/bank_{b:02X}.asm"\n')
     with open(os.path.join(outdir, "assets.txt"), "w") as f:

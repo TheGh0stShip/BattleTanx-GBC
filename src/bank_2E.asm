@@ -97,7 +97,7 @@ Func_2E_4058:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	ld d, a
 	ld e, $40
 	call Func_3A88
@@ -107,16 +107,16 @@ Func_2E_4058:
 	ld e, $00
 Jump_2E_40AE:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_2E_40B2:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_2E_40B2
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_3A52
 	call Func_2F21
 	inc e

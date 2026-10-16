@@ -98,7 +98,7 @@ Func_2A_6230:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld a, [$7FFF]
+	ld a, [ROM_BANK_MARKER]
 	ld d, a
 	ld e, $40
 	call Func_3A88
@@ -108,16 +108,16 @@ Func_2A_6230:
 	ld e, $00
 Jump_2A_6286:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_2A_628A:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_2A_628A
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_3A52
 	call Func_2F21
 	inc e
@@ -226,16 +226,16 @@ Func_2A_6A7A:
 	ld l, a
 	call Func_052F
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_2A_6AC5:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_2A_6AC5
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ret
 
 	INCBIN "assets/bank_2A/6AD3.bin" ; $C46 bytes
@@ -331,16 +331,16 @@ Func_2A_7795:
 	ld d, a
 	ld hl, $980F
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_2A_77B4:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_2A_77B4
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	ld a, $0B
 	ldh [$FFC1], a
 Jump_2A_77C5:

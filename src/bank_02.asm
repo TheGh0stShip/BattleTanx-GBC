@@ -142,7 +142,7 @@ RAM_C82F:
 	adc a, $00
 	ld [hl], a
 	ld a, $01
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	pop hl
 	pop de
 	pop bc
@@ -218,7 +218,7 @@ RAM_C80B:
 	adc a, $00
 	ld [$C6B8], a
 	ld a, $01
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	pop hl
 	pop de
 	pop bc
@@ -745,12 +745,12 @@ Jump_02_475B:
 	ld a, $20
 	ldh [$FFC2], a
 Jump_02_476B:
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_02_4778
 	call Func_2F21
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_02_4778:
 	ld a, [hli]
 	ld c, a
@@ -1418,16 +1418,16 @@ Func_02_5C40:
 	ld d, $B4
 Jump_02_5C52:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_02_5C56:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_02_5C56
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_2F21
 	dec d
 	jr nz, Jump_02_5C52
@@ -1463,16 +1463,16 @@ Jump_02_5C56:
 	ld e, $3C
 Jump_02_5CB5:
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_02_5CB9:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_02_5CB9
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_2F21
 	call Func_0421
 	and $0F
@@ -1510,16 +1510,16 @@ Jump_02_5CEF:
 	ld b, a
 	ld a, $03
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 Jump_02_5D06:
 	halt
 	nop
 	nop
-	ld a, [$C6C0]
+	ld a, [wVBlankPending]
 	or a
 	jr z, Jump_02_5D06
 	xor a
-	ld [$C6C0], a
+	ld [wVBlankPending], a
 	call Func_2F21
 	ld a, d
 	ld a, c

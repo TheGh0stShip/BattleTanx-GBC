@@ -1,5 +1,8 @@
 ; Game Boy / Game Boy Color hardware registers (high-RAM page $FF00)
 
+; MBC5 bank-selection register. BattleTanx uses only the low eight bank bits.
+DEF rROMB0   EQU $2000
+
 DEF rP1      EQU $FF00
 DEF rSB      EQU $FF01
 DEF rSC      EQU $FF02
