@@ -45,6 +45,8 @@ make            # verifies baserom, extracts assets, builds, compares
   by `make assets`; untracked
 - `graphics.txt` - confirmed native 2bpp ranges rendered losslessly by
   `make graphics`; generated PNG previews are under `build/graphics/`
+- `make maps` - renders all descriptor-driven scrolling scenes and writes their
+  tile-index CSV and decoded palette values under `build/maps/`
 - `tools/` - tracer/disassembler used to generate the initial source
 
 ## Method
@@ -76,4 +78,5 @@ Detailed recovery status, control-flow gaps, and the current roadmap are tracked
 in [`docs/STATUS.md`](docs/STATUS.md). Run `make check` before committing; it pins
 RGBDS 1.0.4, validates every extracted asset against its ROM range, checks tracing
 invariants, round-trips confirmed graphics through PNG, rebuilds the cartridge,
-and verifies the retail hashes.
+renders and validates every scrolling-scene tilemap, and verifies the retail
+hashes.

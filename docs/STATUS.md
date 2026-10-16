@@ -31,7 +31,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, OAM DMA, MBC5 bank selection, VBlank synchronization, and the runtime callback named | Continue naming routines and RAM state from evidence |
 | RAM images | 30 executable and 8 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
 | Graphics | 55 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: five UI sheets, three sprite sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Identify palettes, final layouts, and remaining graphics ranges |
-| Maps | Eleven fixed-background descriptors and 36 scrolling-scene descriptors identify graphics, metatiles, 40-byte rows, maps, attributes, palettes, and bounded auxiliary data | Name individual scenes and decode their remaining auxiliary records |
+| Maps | Eleven fixed-background descriptors are bounded; all 36 scrolling scenes render from 709 rows and 14,180 validated tile indices with decoded palette values | Name individual scenes and decode the fixed-background auxiliary records |
 | Audio | Preserved in extracted binary ranges | Identify engine, sequences, instruments, and samples |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
 
@@ -80,13 +80,20 @@ five-entry table at `$5A5B` maps a later group of scenes to descriptor indices
 remain unknown.
 
 Bank `$01:$5A60` contains 36 eight-byte scrolling-scene descriptors. Their
-callers establish the data bank, pointer to 16-byte metatile records, pointer
-to 40-byte scrolling rows (twenty two-byte cells), row count, and eight-byte
-palette source. Three
+callers establish the data bank, pointer to 16-byte native tile graphics,
+pointer to 40-byte scrolling rows (twenty little-endian tile indices), last
+valid row index, and eight-byte palette source. Every index has been checked
+against its scene's tile count, and each palette begins exactly after the final
+row. Three
 19-byte lookup tables select descriptors and initial rows; validation ensures
 that every selection and row lies within its referenced table. The precise
-meaning of each scene and the fields inside the metatile and row records still
-need to be documented.
+meaning of each scene still needs to be documented.
+
+`make maps` expands those indexed rows into 36 lossless scene previews and
+emits the original indices as CSV plus the four 15-bit palette values. Across
+the table, 709 rows and 14,180 indices are checked; every index resolves inside
+its descriptor's graphics table. These generated files are inspection aids,
+not substitutes for the source descriptors.
 
 All 11 fixed-background tile sources and all 36 scrolling-scene graphics
 ranges now have lossless PNG extraction. The fixed loader establishes a size

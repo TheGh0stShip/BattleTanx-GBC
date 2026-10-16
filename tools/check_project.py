@@ -102,23 +102,30 @@ def check_scene_descriptors(rom: bytes) -> None:
         fail("scene descriptor index table changed")
 
     table = 0x5A60
-    row_counts = []
+    last_rows = []
     for index in range(36):
         record = rom[table + index * 8 : table + (index + 1) * 8]
         bank = record[0]
         metatiles = int.from_bytes(record[1:3], "little")
         rows = int.from_bytes(record[3:5], "little")
-        row_count = record[5]
+        last_row = record[5]
         palette = int.from_bytes(record[6:8], "little")
         if bank not in range(0x2F, 0x3C):
             fail(f"scrolling-scene descriptor {index} has unexpected bank {bank:#x}")
         if not 0x4000 <= metatiles < 0x8000:
             fail(f"scrolling-scene descriptor {index} metatiles lie outside its bank")
-        if rows < 0x4000 or rows + row_count * 40 > 0x8000:
-            fail(f"scrolling-scene descriptor {index} row data lies outside its bank")
+        row_end = rows + (last_row + 1) * 40
+        if rows < 0x4000 or row_end != palette:
+            fail(f"scrolling-scene descriptor {index} rows do not end at its palette")
         if palette < 0x4000 or palette + 8 > 0x8000:
             fail(f"scrolling-scene descriptor {index} palette lies outside its bank")
-        row_counts.append(row_count)
+        bank_base = bank * 0x4000 - 0x4000
+        tile_count = (rows - metatiles) // 16
+        for offset in range(bank_base + rows, bank_base + row_end, 2):
+            tile = int.from_bytes(rom[offset : offset + 2], "little")
+            if tile >= tile_count:
+                fail(f"scrolling-scene descriptor {index} has invalid tile index {tile}")
+        last_rows.append(last_row)
 
     variant_indices = rom[0x5B80:0x5B93]
     descriptor_indices = rom[0x5B93:0x5BA6]
@@ -126,7 +133,7 @@ def check_scene_descriptors(rom: bytes) -> None:
     if max(variant_indices) >= 36 or max(descriptor_indices) >= 36:
         fail("scrolling-scene lookup selects a nonexistent descriptor")
     for slot, (index, row) in enumerate(zip(descriptor_indices, initial_rows)):
-        if row >= row_counts[index]:
+        if row > last_rows[index]:
             fail(f"scrolling-scene lookup {slot} starts outside its row data")
 
 
