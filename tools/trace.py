@@ -158,7 +158,8 @@ class Tracer:
                             self.labels[so].add('load')
                             self._retry_ram()
             # code pointers: `ld rr, ptr` followed by a store of l/h or a push
-            if fmt.startswith("ld ") and opnd and opnd[0] == 'n16' and fmt[3:5] in ('hl', 'de', 'bc'):
+            if (fmt.startswith("ld ") and opnd and opnd[0] == 'n16'
+                    and opnd[1] >= 0x40 and fmt[3:5] in ('hl', 'de', 'bc')):
                 if self.looks_like_ptr_store(off + ln, fmt[3:5]):
                     self.add(ctx, cur, opnd[1], 'ptr', off)
             if kind == 'call':

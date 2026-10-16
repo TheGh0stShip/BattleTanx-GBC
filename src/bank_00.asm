@@ -1,71 +1,9 @@
 ; BattleTanx (USA) - ROM bank $00
 
 SECTION "ROM Bank $00", ROM0[$0000]
-Func_0000:
-	inc c
-	nop
-	ld h, a
-	nop
-	sbc a, b
-	adc a, e
-	ld h, a
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
+RestartVectorData:
+	db $0C, $00, $67, $00, $98, $8B, $67, $00
+	ds $38, 0
 
 VBlankInterrupt:
 	jp $C7F1
@@ -4539,7 +4477,7 @@ Func_194B:
 	cp $00
 Jump_197D:
 	jr nc, Jump_1982
-	ld de, Func_0000
+	ld de, $0000
 Jump_1982:
 	ld a, e
 	ldh [$FF80], a
@@ -4598,7 +4536,7 @@ Jump_19A8:
 	cp $00
 Jump_19D7:
 	jr nc, Jump_19DC
-	ld de, Func_0000
+	ld de, $0000
 Jump_19DC:
 	ld a, e
 	ldh [$FF82], a

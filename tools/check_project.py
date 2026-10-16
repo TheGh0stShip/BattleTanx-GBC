@@ -75,14 +75,14 @@ def check_tracing() -> None:
     rom = (ROOT / "baserom.gbc").read_bytes()
     traced = trace.run(rom, hints.extra_entries(rom), hints.DATA_RANGES)
     direct_bytes = sum(traced.code.values())
-    if direct_bytes != 33140 or len(traced.loads) != 38:
+    if direct_bytes != 32815 or len(traced.loads) != 38:
         fail(
             "tracing baseline changed; review it and update docs deliberately "
             f"(bytes={direct_bytes}, loads={len(traced.loads)})"
         )
     trace.gap_fill(traced, hints.CODE_BANKS, hints.DATA_RANGES)
     total_bytes = sum(traced.code.values())
-    if total_bytes != 37199:
+    if total_bytes != 36874:
         fail(f"gap-fill baseline changed; review it deliberately (bytes={total_bytes})")
     print(
         "trace: "

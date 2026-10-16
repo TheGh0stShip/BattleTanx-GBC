@@ -17,6 +17,7 @@ RUNTIME_CALLBACK_TABLE = (1, 0x4E2F, 3)
 # Confirmed non-code ranges, expressed as half-open ROM offsets. These prevent
 # the conservative gap pass from interpreting pointer bytes as instructions.
 DATA_RANGES = (
+    (0x0000, 0x0040),  # unused restart vectors / fixed-bank metadata
     (0x0104, 0x0150),  # cartridge header
     (0x44E0, 0x44F4),  # entity handler pointers
     (0x47EC, 0x4854),  # banked screen mode records
