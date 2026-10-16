@@ -30,7 +30,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, OAM DMA, MBC5 bank selection, VBlank synchronization, and the runtime callback named | Continue naming routines and RAM state from evidence |
 | RAM images | 30 executable and 8 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
-| Graphics | Preserved in extracted binary ranges | Identify formats and add lossless conversion tools |
+| Graphics | Five confirmed bank `$08` 2bpp sheets extract to PNG and round-trip byte-exactly | Identify palettes, layouts, and remaining graphics ranges |
 | Maps | Preserved in extracted binary ranges | Identify pointer tables, compression, and layouts |
 | Audio | Preserved in extracted binary ranges | Identify engine, sequences, instruments, and samples |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |

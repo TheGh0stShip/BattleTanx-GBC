@@ -23,6 +23,7 @@ DATA_RANGES = (
     (0x47EC, 0x4854),  # banked screen mode records
     (0x4E2F, 0x4E35),  # runtime callback pointers
     (0xE85A, 0xE878),  # state check pointers
+    (0x22DF0, 0x24000),  # bank 8 zero padding and bank marker
 )
 
 # Reviewed standalone routine entries that are not reached by the static bank

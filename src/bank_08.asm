@@ -83,4 +83,5 @@ Func_08_6DD5:
 	pop bc
 	ret
 
-	INCBIN "assets/bank_08/6DF0.bin" ; $1210 bytes
+	ds $120F, 0
+	db $08 ; ROM bank marker

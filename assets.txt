@@ -15,7 +15,6 @@ assets/bank_07/4000.bin 0x1c000 0x4000
 assets/bank_08/4000.bin 0x20000 0x4a0
 assets/bank_08/44A8.bin 0x204a8 0x22a3
 assets/bank_08/69B5.bin 0x229b5 0x420
-assets/bank_08/6DF0.bin 0x22df0 0x1210
 assets/bank_09/4000.bin 0x24000 0x4000
 assets/bank_0A/4000.bin 0x28000 0x4000
 assets/bank_0B/4000.bin 0x2c000 0x4000

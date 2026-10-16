@@ -29,6 +29,8 @@ make            # verifies baserom, extracts assets, builds, compares
 - `include/hardware.inc` - hardware register names
 - `assets/` - binary blobs (graphics, maps, tables) extracted from `baserom.gbc`
   by `make assets`; untracked
+- `graphics.txt` - confirmed native 2bpp ranges rendered losslessly by
+  `make graphics`; generated PNG previews are under `build/graphics/`
 - `tools/` - tracer/disassembler used to generate the initial source
 
 ## Method
@@ -59,4 +61,5 @@ bytes; confirmed data ranges are explicitly excluded from instruction tracing.
 Detailed recovery status, control-flow gaps, and the current roadmap are tracked
 in [`docs/STATUS.md`](docs/STATUS.md). Run `make check` before committing; it pins
 RGBDS 1.0.4, validates every extracted asset against its ROM range, checks tracing
-invariants, rebuilds the cartridge, and verifies the retail hashes.
+invariants, round-trips confirmed graphics through PNG, rebuilds the cartridge,
+and verifies the retail hashes.
