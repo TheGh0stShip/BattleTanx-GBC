@@ -1,0 +1,26 @@
+{
+  "$schema": "https://recomp.fyi/schema/v1.json",
+  "game": "BattleTanx",
+  "system": "GBC",
+  "type": "decomp",
+  "original": {
+    "region": "USA",
+    "sha1": "5078584e86c0b6f4687c424cc00bbd762ba6573a"
+  },
+  "project": "BattleTanx GBC",
+  "status": "in-progress",
+  "toolchain": "RGBDS 1.0.4",
+  "approach": "Byte-exact SM83 assembly disassembly with reviewed symbols and extracted data formats",
+  "maintainers": [
+    {
+      "name": "TheGh0stShip",
+      "link": "https://github.com/TheGh0stShip"
+    }
+  ],
+  "help": [
+    "Routine and RAM symbol identification",
+    "Graphics, map, text, and audio format recovery",
+    "Hardware behavior verification"
+  ],
+  "notes": "The complete cartridge rebuilds byte-for-byte. Semantic recovery is ongoing; reconstruction completeness is not treated as source-understanding completeness."
+}
