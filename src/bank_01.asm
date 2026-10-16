@@ -109,8 +109,8 @@ Func_01_409E:
 	push de
 	push hl
 	xor a
-	ld [$C8F8], a
-	ld [$C8F9], a
+	ld [wSfxSeqPtr], a
+	ld [wSfxSeqPtr + 1], a
 	ldh [rNR51], a
 	call Func_2FF9
 Jump_01_40AE:
@@ -121,11 +121,11 @@ Jump_01_40B4:
 	ldh a, [rLY]
 	cp $14
 	jr nz, Jump_01_40B4
-	call Func_2F21
+	call Audio_Update
 	ld a, [wMusicEnabled]
 	and a
 	jr z, Jump_01_40C9
-	ld a, [$C8E8]
+	ld a, [wMusicPtr]
 	and a
 	jr nz, Jump_01_40AE
 Jump_01_40C9:
@@ -778,7 +778,7 @@ Jump_01_452C:
 	ld b, a
 	call Func_2FA3
 	ld e, $4A
-	call Func_2F73
+	call Audio_QueueSound
 	jp Func_01_450F
 
 
@@ -801,7 +801,7 @@ Jump_01_454F:
 	ld b, a
 	call Func_2FA3
 	ld e, $4B
-	call Func_2F73
+	call Audio_QueueSound
 	jp Func_01_450F
 
 
@@ -825,7 +825,7 @@ Func_01_455E:
 	ld l, a
 	ld [hl], $00
 	ld e, $53
-	call Func_2F73
+	call Audio_QueueSound
 	jp Func_01_450F
 
 
@@ -841,7 +841,7 @@ Func_01_4582:
 	ld bc, $0BB8
 	call Func_3019
 	ld e, $54
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$C6EF]
 	inc a
 	ld [$C6EF], a
@@ -862,7 +862,7 @@ Func_01_45AB:
 	jp z, Func_01_4516
 	call Func_2FED
 	ld e, $49
-	call Func_2F73
+	call Audio_QueueSound
 	jp Func_01_450F
 
 
@@ -884,7 +884,7 @@ Func_01_45CD:
 	ld a, $06
 	ld [hl], a
 	ld e, $55
-	call Func_2F73
+	call Audio_QueueSound
 	jp Func_01_450F
 
 
@@ -910,7 +910,7 @@ Func_01_45EE:
 	ld a, $09
 	ld [hl], a
 	ld e, $56
-	call Func_2F73
+	call Audio_QueueSound
 	jp Func_01_450F
 
 
@@ -939,7 +939,7 @@ Func_01_4615:
 	ld a, $01
 	ld [hl], a
 	ld e, $51
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$C6F0]
 	inc a
 	ld [$C6F0], a
@@ -958,7 +958,7 @@ Func_01_4648:
 	ld a, $01
 	ld [$C91D], a
 	ld e, $53
-	call Func_2F73
+	call Audio_QueueSound
 	xor a
 	ld [$C8D9], a
 	call Func_0A48
@@ -1236,7 +1236,7 @@ Jump_01_47CE:
 	jr z, Jump_01_47CE
 	xor a
 	ld [wVBlankPending], a
-	call Func_2F21
+	call Audio_Update
 	call Func_3A52
 	dec e
 	ld a, e
@@ -1492,7 +1492,7 @@ RAM_D6B4:
 	ld a, [$D558]
 	ld [$D55A], a
 RAM_D6C7:
-	call Func_2F21
+	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
 RAM_D6CE:
@@ -1794,7 +1794,7 @@ Jump_01_4D4C:
 
 Jump_01_4D4D:
 	ld e, $07
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$D550]
 	call Func_01_4C81
 	ld a, $01
@@ -1823,7 +1823,7 @@ Jump_01_4D71:
 
 Jump_01_4D75:
 	ld e, $0A
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$D550]
 	ld e, a
 	inc a
@@ -1831,7 +1831,7 @@ Jump_01_4D75:
 
 Jump_01_4D81:
 	ld e, $0A
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$D550]
 	dec a
 	jr nz, Jump_01_4D8E
@@ -1884,21 +1884,21 @@ Jump_01_4DCB:
 
 Jump_01_4DCD:
 	ld e, $0A
-	call Func_2F73
+	call Audio_QueueSound
 	ld b, $FF
 	call Func_01_4E04
 	jr Jump_01_4DB4
 
 Jump_01_4DD9:
 	ld e, $0A
-	call Func_2F73
+	call Audio_QueueSound
 	ld b, $01
 	call Func_01_4E04
 	jr Jump_01_4DB4
 
 Jump_01_4DE5:
 	ld e, $0B
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$D550]
 	ld e, a
 	inc a
@@ -1906,7 +1906,7 @@ Jump_01_4DE5:
 
 Jump_01_4DF1:
 	ld e, $0B
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$D550]
 	dec a
 	jr nz, Jump_01_4DFE
@@ -2279,7 +2279,7 @@ Jump_01_50B2:
 
 Jump_01_50BB:
 	ld e, $07
-	call Func_2F73
+	call Audio_QueueSound
 	call Func_01_5126
 	ret
 
@@ -2307,7 +2307,7 @@ Jump_01_50DF:
 
 Jump_01_50E7:
 	ld e, $0B
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$DF0B]
 	dec a
 	cp $FF
@@ -2320,7 +2320,7 @@ Jump_01_50F6:
 
 Jump_01_50FE:
 	ld e, $0B
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$DF0B]
 	inc a
 	cp $05
@@ -2366,7 +2366,7 @@ Jump_01_5144:
 	jr z, Jump_01_5144
 	xor a
 	ld [wVBlankPending], a
-	call Func_2F21
+	call Audio_Update
 	ld a, [$C6B5]
 	or a
 	jr z, Jump_01_5140
@@ -4287,7 +4287,7 @@ Jump_01_60C2:
 	xor a
 	ldh [$FF80], a
 Jump_01_60D2:
-	call Func_2F21
+	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
 Jump_01_60D9:
@@ -4314,14 +4314,14 @@ Jump_01_60D9:
 	and $30
 	jr z, Jump_01_6107
 	ld e, $24
-	call Func_2F73
+	call Audio_QueueSound
 	jr Jump_01_60D2
 
 Jump_01_6107:
 	ld a, $03
 	ld d, a
 Jump_01_610A:
-	call Func_2F21
+	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
 Jump_01_6111:
@@ -4419,7 +4419,7 @@ Jump_01_6180:
 	jr z, Jump_01_6180
 	xor a
 	ld [wVBlankPending], a
-	call Func_2F21
+	call Audio_Update
 	ld a, d
 	cp $10
 	jr nc, Jump_01_61A2
@@ -4482,7 +4482,7 @@ Jump_01_61DC:
 	jr z, Jump_01_61DC
 	xor a
 	ld [wVBlankPending], a
-	call Func_2F21
+	call Audio_Update
 	ld a, d
 	cp $10
 	jr c, Jump_01_6217
@@ -5559,9 +5559,9 @@ Jump_01_6931:
 Func_01_6940:
 	push de
 	ld e, $0A
-	call Func_2F73
+	call Audio_QueueSound
 	pop de
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$DF0B]
 	ld hl, $DF00
 	ld a, a
@@ -6501,11 +6501,11 @@ Func_01_7981:
 	ld hl, $C94B
 	ld [hl], a
 	ld e, $22
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, $08
 	ld [$C94E], a
 Jump_01_7997:
-	call Func_2F21
+	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
 Jump_01_799E:
@@ -6690,7 +6690,7 @@ Jump_01_7C52:
 	and $1F
 	ld [$C948], a
 	call RAM_D91B
-	call Func_2F21
+	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
 Jump_01_7C85:

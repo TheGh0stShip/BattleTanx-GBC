@@ -1,28 +1,28 @@
 ; BattleTanx (USA) - ROM bank $06
 
 SECTION "ROM Bank $06", ROMX[$4000], BANK[$06]
-	INCBIN "assets/bank_06/4000.bin" ; $3CAE bytes
+INCLUDE "src/audio_data.asm"
 
-Func_06_7CAE:
+Audio_Init:
 	xor a
-	ld [$C8FC], a
-	ld [$C8E8], a
-	ld [$C8E9], a
-	ld [$C8F7], a
+	ld [wSoundQueueLast], a
+	ld [wMusicPtr], a
+	ld [wMusicPtr + 1], a
+	ld [wNoiseLockTimer], a
 	ld [$C8F6], a
 	ld [$C8E4], a
 	ld [$C8E3], a
-	ld [$C8F8], a
-	ld [$C8F9], a
-	ld [$C91B], a
-	ld [$C91C], a
+	ld [wSfxSeqPtr], a
+	ld [wSfxSeqPtr + 1], a
+	ld [wSfxSeqLock], a
+	ld [wSfxSeqLockId], a
 	inc a
-	ld [$C8FA], a
-	ld [$C8FB], a
+	ld [wSfxSeqDelay], a
+	ld [wSoundQueueNext], a
 	ld [wMusicEnabled], a
 	ld c, $00
 	ld b, $04
-	ld hl, $C8EC
+	ld hl, wChannelSettings
 Jump_06_7CE1:
 	ld a, c
 	ld [hli], a
@@ -32,7 +32,7 @@ Jump_06_7CE1:
 	dec b
 	jr nz, Jump_06_7CE1
 	ld hl, $FF30
-	ld bc, $4716
+	ld bc, WaveformPattern
 	ld d, $10
 Jump_06_7CF2:
 	ld a, [bc]
@@ -42,15 +42,15 @@ Jump_06_7CF2:
 	jr nz, Jump_06_7CF2
 	ld d, $17
 	ld bc, $FF10
-	ld hl, $4649
+	ld hl, AudioRegisterInit
 Jump_06_7D00:
 	ld a, [hli]
 	ld [bc], a
 	inc bc
 	dec d
 	jr nz, Jump_06_7D00
-	ld hl, $C8FD
-	ld b, $1E
+	ld hl, wSoundQueue
+	ld b, SOUND_QUEUE_SIZE
 	xor a
 Jump_06_7D0C:
 	ld [hli], a
@@ -59,15 +59,15 @@ Jump_06_7D0C:
 	ret
 
 
-Func_06_7D11:
+Music_HandleEvent:
 	ld a, b
 	cp $8F
 	jr c, Jump_06_7D46
 	cp $FE
 	jr z, Jump_06_7D24
 	xor a
-	ld [$C8E8], a
-	ld [$C8E9], a
+	ld [wMusicPtr], a
+	ld [wMusicPtr + 1], a
 	ldh [rNR51], a
 	ret
 
@@ -76,19 +76,19 @@ Jump_06_7D24:
 	cp $F0
 	jr nc, Jump_06_7D2E
 	ld e, a
-	call Func_2F73
+	call Audio_QueueSound
 	ret
 
 Jump_06_7D2E:
 	pop de
 	pop hl
-	ld hl, $C8EA
+	ld hl, wMusicLoopPtr
 	ld a, [hli]
-	ld [$C8E8], a
+	ld [wMusicPtr], a
 	ld a, [hl]
 	ld l, a
-	ld [$C8E9], a
-	ld a, [$C8E8]
+	ld [wMusicPtr + 1], a
+	ld a, [wMusicPtr]
 	ld h, a
 	push hl
 	push de
@@ -121,24 +121,24 @@ Jump_06_7D63:
 	ld e, b
 	dec e
 	sla e
-	ld hl, $C8EC
+	ld hl, wChannelSettings
 	add hl, de
 	srl e
 	ld a, [hli]
 	ld d, a
 	ld a, [hl]
-	ld [$C8F5], a
+	ld [wNotePan], a
 	ld a, e
 	cp $03
 	jr nz, Jump_06_7DA7
-	ld a, [$C8F7]
+	ld a, [wNoiseLockTimer]
 	and a
 	jr z, Jump_06_7D8E
 	ldh a, [rNR52]
 	bit 3, a
 	ret nz
 	xor a
-	ld [$C8F7], a
+	ld [wNoiseLockTimer], a
 Jump_06_7D8E:
 	ld a, c
 	sub $0C
@@ -147,12 +147,12 @@ Jump_06_7D8E:
 	push hl
 	push de
 	add a, a
-	ld hl, $4726
+	ld hl, NoiseNoteTable
 	ld d, $00
 	ld e, a
 	add hl, de
 	ld a, [hli]
-	ld [$C8F5], a
+	ld [wNotePan], a
 	ld a, [hl]
 	pop de
 	pop hl
@@ -163,13 +163,13 @@ Jump_06_7DA7:
 	add a, a
 	ld d, $00
 	ld e, a
-	ld hl, $476E
+	ld hl, Instruments
 	add hl, de
 	push hl
 	ld e, b
 	dec e
 	sla e
-	ld hl, $4738
+	ld hl, ChannelRegisterBases
 	add hl, de
 	ld a, [hli]
 	ld e, a
@@ -198,7 +198,7 @@ Jump_06_7DD5:
 	bit 2, b
 	jr nz, Jump_06_7DEB
 	push de
-	ld hl, $4662
+	ld hl, NoteFrequencies
 	ld a, c
 	sla a
 	ld d, $00
@@ -214,7 +214,7 @@ Jump_06_7DD5:
 Jump_06_7DEB:
 	inc de
 Jump_06_7DEC:
-	ld a, [$C8F5]
+	ld a, [wNotePan]
 	ld c, b
 Jump_06_7DF0:
 	dec c
@@ -238,7 +238,7 @@ Jump_06_7E03:
 	ld a, d
 	cp $04
 	jr nz, Jump_06_7E0F
-	ld a, [$C8F7]
+	ld a, [wNoiseLockTimer]
 	cp $00
 	jr nz, Jump_06_7E1E
 Jump_06_7E0F:
@@ -260,13 +260,13 @@ Jump_06_7E1E:
 	pop hl
 	dec hl
 	ld a, c
-	ld [$C8E7], a
+	ld [wMusicDelay], a
 	push hl
 	push de
 	ret
 
 Jump_06_7E28:
-	ld hl, $C8EC
+	ld hl, wChannelSettings
 	ld d, $00
 	ld e, b
 	dec e
@@ -276,7 +276,7 @@ Jump_06_7E28:
 	ret
 
 Jump_06_7E34:
-	ld hl, $C8EC
+	ld hl, wChannelSettings
 	ld d, $00
 	ld e, b
 	dec e
@@ -287,12 +287,12 @@ Jump_06_7E34:
 	ret
 
 
-Func_06_7E41:
+Audio_PlaySound:
 	bit 7, a
 	jr nz, Jump_06_7E9A
 	bit 6, a
 	jp nz, Jump_06_7ED0
-	ld hl, $4000
+	ld hl, SoundPatches
 	add a, a
 	add a, a
 	add a, a
@@ -308,7 +308,7 @@ Func_06_7E41:
 	cp $04
 	jr nz, Jump_06_7E66
 	ld a, $37
-	ld [$C8F7], a
+	ld [wNoiseLockTimer], a
 	ld a, $04
 Jump_06_7E66:
 	cp $01
@@ -318,7 +318,7 @@ Jump_06_7E6D:
 	dec a
 	add a, a
 	ld e, a
-	ld hl, $4738
+	ld hl, ChannelRegisterBases
 	add hl, de
 	ld a, [hli]
 	ld e, a
@@ -359,19 +359,19 @@ Jump_06_7E9A:
 	and $7F
 	add a, a
 	add a, a
-	ld hl, $4744
+	ld hl, MusicPointers
 	ld d, $00
 	ld e, a
 	add hl, de
 	ld a, [hli]
-	ld [$C8E9], a
-	ld [$C8EB], a
+	ld [wMusicPtr + 1], a
+	ld [wMusicLoopPtr + 1], a
 	ld a, [hli]
-	ld [$C8EA], a
-	ld [$C8E8], a
+	ld [wMusicLoopPtr], a
+	ld [wMusicPtr], a
 	ld a, [hl]
-	ld [$C8F4], a
-	ld hl, $C8EC
+	ld [wMusicBank], a
+	ld hl, wChannelSettings
 	ld b, $00
 	ld c, $04
 Jump_06_7EBE:
@@ -385,49 +385,49 @@ Jump_06_7EBE:
 	xor a
 	ldh [rNR51], a
 	ld a, $01
-	ld [$C8E7], a
+	ld [wMusicDelay], a
 	ret
 
 Jump_06_7ED0:
 	ld b, a
-	ld a, [$C91B]
+	ld a, [wSfxSeqLock]
 	and a
 	ret nz
-	ld a, [$C91C]
+	ld a, [wSfxSeqLockId]
 	cp b
 	jr nz, Jump_06_7EE4
 	xor a
-	ld [$C91C], a
+	ld [wSfxSeqLockId], a
 	inc a
-	ld [$C91B], a
+	ld [wSfxSeqLock], a
 Jump_06_7EE4:
 	ld a, b
 	and $3F
-	ld hl, $4128
+	ld hl, SfxSequencePointers
 	add a, a
 	ld e, a
 	ld d, $00
 	add hl, de
 	ld a, [hli]
-	ld [$C8F8], a
+	ld [wSfxSeqPtr], a
 	ld a, [hl]
-	ld [$C8F9], a
+	ld [wSfxSeqPtr + 1], a
 	ld a, $01
-	ld [$C8FA], a
+	ld [wSfxSeqDelay], a
 	ret
 
 
-Func_06_7EFD:
-	ld a, [$C8F9]
+SfxSequence_Update:
+	ld a, [wSfxSeqPtr + 1]
 	and a
 	ret z
-	ld a, [$C8FA]
+	ld a, [wSfxSeqDelay]
 	dec a
-	ld [$C8FA], a
+	ld [wSfxSeqDelay], a
 Jump_06_7F09:
 	and a
 	ret nz
-	ld hl, $C8F8
+	ld hl, wSfxSeqPtr
 	ld a, [hli]
 	ld b, a
 	ld h, [hl]
@@ -449,7 +449,7 @@ Jump_06_7F29:
 	and $77
 	ldh [rNR51], a
 	xor a
-	ld [$C8F7], a
+	ld [wNoiseLockTimer], a
 	jr Jump_06_7FB4
 
 Jump_06_7F35:
@@ -458,7 +458,7 @@ Jump_06_7F35:
 	jr z, Jump_06_7F8F
 	ld a, [hli]
 	push hl
-	ld hl, $4000
+	ld hl, SoundPatches
 	add a, a
 	add a, a
 	add a, a
@@ -474,7 +474,7 @@ Jump_06_7F35:
 	cp $04
 	jr nz, Jump_06_7F59
 	ld a, $37
-	ld [$C8F7], a
+	ld [wNoiseLockTimer], a
 	ld a, $04
 Jump_06_7F59:
 	cp $01
@@ -484,7 +484,7 @@ Jump_06_7F60:
 	dec a
 	add a, a
 	ld e, a
-	ld hl, $4738
+	ld hl, ChannelRegisterBases
 	add hl, de
 	ld a, [hli]
 	ld e, a
@@ -534,7 +534,7 @@ Jump_06_7F8F:
 	ldh [rNR51], a
 	ld a, [hli]
 	push hl
-	ld hl, $4662
+	ld hl, NoteFrequencies
 	add a, a
 	ld e, a
 	ld d, $00
@@ -547,21 +547,21 @@ Jump_06_7F8F:
 	pop hl
 Jump_06_7FB4:
 	ld a, [hli]
-	ld [$C8FA], a
+	ld [wSfxSeqDelay], a
 	ld b, a
 	ld a, l
-	ld [$C8F8], a
+	ld [wSfxSeqPtr], a
 	ld a, h
-	ld [$C8F9], a
+	ld [wSfxSeqPtr + 1], a
 	ld a, b
 	jp Jump_06_7F09
 
 Jump_06_7FC5:
-	ld hl, $C8F8
+	ld hl, wSfxSeqPtr
 	xor a
 	ld [hli], a
 	ld [hli], a
-	ld [$C91B], a
+	ld [wSfxSeqLock], a
 	inc a
 	ld [hl], a
 	ret

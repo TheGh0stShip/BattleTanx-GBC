@@ -10,7 +10,6 @@ assets/bank_03/69D7.bin 0xe9d7 0x1629
 assets/bank_04/4000.bin 0x10000 0x201c
 assets/bank_04/6575.bin 0x12575 0x1a8b
 assets/bank_05/40B1.bin 0x140b1 0x3f4f
-assets/bank_06/4000.bin 0x18000 0x3cae
 assets/bank_07/4000.bin 0x1c000 0x4000
 assets/bank_08/4000.bin 0x20000 0x4a0
 assets/bank_08/44A8.bin 0x204a8 0x22a3

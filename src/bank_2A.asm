@@ -119,7 +119,7 @@ Jump_2A_628A:
 	xor a
 	ld [wVBlankPending], a
 	call Func_3A52
-	call Func_2F21
+	call Audio_Update
 	inc e
 	ld a, e
 	cp $20

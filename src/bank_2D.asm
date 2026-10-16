@@ -118,7 +118,7 @@ Jump_2D_40B2:
 	xor a
 	ld [wVBlankPending], a
 	call Func_3A52
-	call Func_2F21
+	call Audio_Update
 	inc e
 	ld a, e
 	cp $20
@@ -243,7 +243,7 @@ Jump_2D_55AC:
 	xor a
 	ld [wVBlankPending], a
 	call Func_3A52
-	call Func_2F21
+	call Audio_Update
 	inc e
 	ld a, e
 	cp $20

@@ -32,7 +32,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | RAM images | 30 executable and 8 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
 | Graphics | 55 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: five UI sheets, three sprite sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Identify palettes, final layouts, and remaining graphics ranges |
 | Maps | Eleven fixed backgrounds and 36 scrolling scenes render from 2,640 fixed cells plus 709 scrolling rows/14,180 cells, with validated indices, attributes, flips, and palettes | Name the individual scenes and connect them to game progression |
-| Audio | Preserved in extracted binary ranges | Identify engine, sequences, instruments, and samples |
+| Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
 
 ## Known control-flow gaps
@@ -109,3 +109,41 @@ row-data pointer, and every resulting range is an exact multiple of the
 16-byte native 2bpp tile size. Layout-only padding lets non-rectangular tile
 counts use readable 16-tile-wide previews without changing the round trip.
 
+
+## Audio
+
+Details and evidence: `AUDIO_RESEARCH.md`.
+
+Reconstruction completeness (bytes represented as explicit, structured
+source rather than opaque INCBIN):
+
+- Bank `$06:$4000-$7CAD` (15,534 bytes): 37 sound patches, 25 sound-effect
+  sequence pointers + 24 distinct sequences, register init, 90 note
+  frequencies, waveform, noise-note table, channel register bases, 10 music
+  pointers, 11 instruments, 10 music sequences. `assets/bank_06/4000.bin` is
+  no longer used.
+- Driver code: ROM0 `$2EB8-$2F92`, bank `$06:$7CAE-$7FD1` (already traced).
+- Byte match is unchanged: SHA-1 `5078584e86c0b6f4687c424cc00bbd762ba6573a`.
+
+Semantic understanding:
+
+- Understood (format, boundaries and every reference checked): queue,
+  sound-id ranges, patch / sfx-sequence / music event formats, all bank-`$06`
+  table boundaries, bank switching, callers and frame timing.
+- Named in source: 8 routines (`Audio_InitFar`, `Music_Update`,
+  `Audio_Update`, `Audio_QueueSound`, `Audio_Init`, `Music_HandleEvent`,
+  `Audio_PlaySound`, `SfxSequence_Update`), 9 data tables, 14 WRAM symbols
+  in `include/memory.inc`.
+- Kept numeric and unknown: `$C8E3`, `$C8E4`, `$C8F6`; unread bytes
+  `06:415A-415B`, `4660-4661`, `4740-4743`, `476C-476D`, patch `$00`
+  bytes 6-7, music-pointer byte 3, the bytes after each sequence
+  terminator; raw sfx op bytes; musical meaning of notes and tracks.
+- Not audio: bank `$05` (sprite layouts and level parameters).
+- Bank `$07`: `$4007-$4BFB` duplicates bank `$06`; no traced path maps it.
+  Not proven unused, because some computed bank indexes are unbounded.
+- Not checked on hardware.
+
+`tools/check_project.py` re-derives every table boundary, record format and
+range listed above from `baserom.gbc`, rejects any return of a bank-`$06`
+INCBIN, checks every immediate sound id in `src/`, and checks the audio
+symbol addresses in `battletanx.sym`.

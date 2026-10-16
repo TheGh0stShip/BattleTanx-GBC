@@ -81,12 +81,12 @@ Jump_0076:
 Jump_0090:
 	call Func_035C
 	ld e, $88
-	call Func_2F73
+	call Audio_QueueSound
 	call Func_3B12
 	xor a
 	ld [$C6B5], a
 Jump_009F:
-	call Func_2F21
+	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
 Jump_00A6:
@@ -109,7 +109,7 @@ Jump_00A6:
 	db $C3, $C3, $00, $C9
 Jump_00C7:
 	ld e, $83
-	call Func_2F73
+	call Audio_QueueSound
 	call Func_035C
 	call Func_3F28
 	call Func_06F8
@@ -169,9 +169,9 @@ Init:
 	ld sp, $C0FF
 	call Func_08C6
 	call EnableDoubleSpeed
-	call Func_2EB8
+	call Audio_InitFar
 	ld e, $88
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, $01
 	ld [wMusicEnabled], a
 	ld [$C6E2], a
@@ -266,7 +266,7 @@ Jump_0218:
 	dec d
 	jr nz, Jump_0214
 	call Func_35F7
-	ld a, [$C8E8]
+	ld a, [wMusicPtr]
 	and a
 	jr nz, Jump_0245
 Jump_0236:
@@ -276,10 +276,10 @@ Jump_0236:
 	jr nc, Jump_0236
 	add a, $81
 	ld e, a
-	call Func_2F73
+	call Audio_QueueSound
 Jump_0245:
 	ld e, $58
-	call Func_2F73
+	call Audio_QueueSound
 	call Func_0A48
 	call Func_0A23
 Jump_0250:
@@ -465,7 +465,7 @@ Func_0396:
 	xor a
 	ld [$CD09], a
 	ld e, $87
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$C91D]
 	and a
 	ret z
@@ -1142,11 +1142,11 @@ Func_06E7:
 
 Func_06F8:
 	ld e, $57
-	call Func_2F73
+	call Audio_QueueSound
 	ld d, $20
 	ld e, $01
 Jump_0701:
-	call Func_2F21
+	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
 Jump_0708:
@@ -1167,7 +1167,7 @@ Jump_0708:
 
 Func_071F:
 	ld e, $57
-	call Func_2F73
+	call Audio_QueueSound
 	ld d, $20
 	ld e, $01
 	call Func_3889
@@ -1759,7 +1759,7 @@ Func_0AF5:
 	jr z, Jump_0B3B
 	push de
 	ld e, $46
-	call Func_2F73
+	call Audio_QueueSound
 	pop de
 	ld a, $00
 	call Func_3090
@@ -2750,7 +2750,7 @@ Jump_103C:
 	ld b, $1B
 Jump_1042:
 	ld e, b
-	call Func_2F73
+	call Audio_QueueSound
 Jump_1046:
 	pop hl
 	pop de
@@ -3166,7 +3166,7 @@ Func_1219:
 	ldh [$FF93], a
 	call Func_12A1
 	ld e, $21
-	call Func_2F73
+	call Audio_QueueSound
 	ld bc, $0014
 	call Func_3019
 	pop hl
@@ -3236,7 +3236,7 @@ Func_12D8:
 	ldh [$FF9E], a
 	ldh [$FF9F], a
 	ld e, $45
-	call Func_2F73
+	call Audio_QueueSound
 	ldh a, [$FF92]
 	ldh [$FF94], a
 Jump_12EA:
@@ -3489,7 +3489,7 @@ Func_1425:
 	push de
 	push hl
 	ld e, $44
-	call Func_2F73
+	call Audio_QueueSound
 	xor a
 	ldh [$FF9D], a
 	ldh [$FF9C], a
@@ -6986,7 +6986,7 @@ Jump_2744:
 	ld a, $01
 	call Func_3090
 	ld e, $1E
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, l
 	and $C0
 	add a, $21
@@ -7400,7 +7400,7 @@ Jump_294C:
 	ld a, $01
 	call Func_3090
 	ld e, $14
-	call Func_2F73
+	call Audio_QueueSound
 	pop hl
 	pop de
 	pop bc
@@ -8441,12 +8441,12 @@ Func_2EA7:
 	ret
 
 
-Func_2EB8:
+Audio_InitFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $06
 	ld [rROMB0], a
-	call Func_06_7CAE
+	call Audio_Init
 	ld a, [$C8E6]
 	cp $00
 	jr nz, Jump_2ED0
@@ -8458,73 +8458,73 @@ Jump_2ED0:
 	ret
 
 
-Func_2ED5:
-	ld a, [$C8E8]
+Music_Update:
+	ld a, [wMusicPtr]
 	cp $00
 	ret z
 	ld a, [wMusicEnabled]
 	and a
 	ret z
-	ld a, [$C8E7]
+	ld a, [wMusicDelay]
 	cp $01
 	jr z, Jump_2EEC
 	dec a
-	ld [$C8E7], a
+	ld [wMusicDelay], a
 	ret
 
 Jump_2EEC:
-	ld hl, $C8E8
+	ld hl, wMusicPtr
 	ld a, [hli]
 	ld b, a
 	ld a, [hl]
 	ld h, b
 	ld l, a
 Jump_2EF4:
-	ld a, [$C8F4]
+	ld a, [wMusicBank]
 	ld [rROMB0], a
 	ld a, [hli]
 	ld b, a
 	ld a, [hli]
 	ld c, a
 	ld a, [hli]
-	ld [$C8E7], a
+	ld [wMusicDelay], a
 	ld a, $06
 	ld [rROMB0], a
 	push hl
-	call Func_06_7D11
+	call Music_HandleEvent
 	pop hl
-	ld a, [$C8E8]
+	ld a, [wMusicPtr]
 	and a
 	ret z
 	ld a, h
-	ld [$C8E8], a
+	ld [wMusicPtr], a
 	ld a, l
-	ld [$C8E9], a
-	ld a, [$C8E7]
+	ld [wMusicPtr + 1], a
+	ld a, [wMusicDelay]
 	cp $00
 	jr z, Jump_2EF4
 	ret
 
 
-Func_2F21:
+Audio_Update:
 	push af
 	push bc
 	push de
 	push hl
-	ld a, [$C8F7]
+	ld a, [wNoiseLockTimer]
 	and a
 	jr z, Jump_2F2F
 	dec a
-	ld [$C8F7], a
+	ld [wNoiseLockTimer], a
 Jump_2F2F:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $06
 	ld [rROMB0], a
-	call Func_06_7EFD
-	call Func_2ED5
-	ld hl, $C8FD
-	ld a, [$C8FB]
+	call SfxSequence_Update
+	call Music_Update
+	ld hl, wSoundQueue
+	ld a, [wSoundQueueNext]
 	ld d, $00
 	ld e, a
 	add hl, de
@@ -8533,19 +8533,19 @@ Jump_2F48:
 	and a
 	jr z, Jump_2F6A
 	push hl
-	call Func_06_7E41
+	call Audio_PlaySound
 	pop hl
 	xor a
 	ld [hli], a
-	ld a, [$C8FB]
-	ld [$C8FC], a
+	ld a, [wSoundQueueNext]
+	ld [wSoundQueueLast], a
 	inc a
-	ld [$C8FB], a
-	cp $1E
+	ld [wSoundQueueNext], a
+	cp SOUND_QUEUE_SIZE
 	jr nz, Jump_2F48
-	ld hl, $C8FD
+	ld hl, wSoundQueue
 	xor a
-	ld [$C8FB], a
+	ld [wSoundQueueNext], a
 	jr Jump_2F48
 
 Jump_2F6A:
@@ -8558,7 +8558,7 @@ Jump_2F6A:
 	ret
 
 
-Func_2F73:
+Audio_QueueSound:
 	push af
 	push bc
 	push de
@@ -8566,16 +8566,16 @@ Func_2F73:
 	ld a, e
 	and a
 	ret z
-	ld a, [$C8FC]
+	ld a, [wSoundQueueLast]
 	inc a
-	cp $1E
+	cp SOUND_QUEUE_SIZE
 	jr nz, Jump_2F83
 	xor a
 Jump_2F83:
-	ld [$C8FC], a
+	ld [wSoundQueueLast], a
 	ld b, $00
 	ld c, a
-	ld hl, $C8FD
+	ld hl, wSoundQueue
 	add hl, bc
 	ld [hl], e
 	pop hl
@@ -8764,7 +8764,7 @@ Func_302D:
 Jump_306E:
 	call Func_2FED
 	ld e, $52
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, c
 	ld [$C6D0], a
 Jump_307A:
@@ -10460,7 +10460,7 @@ Jump_3989:
 	ld a, [$C6B5]
 	or a
 	jr nz, Jump_39A6
-	call Func_2F21
+	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
 Jump_3996:
@@ -10704,7 +10704,7 @@ Func_3ABF:
 	call Func_01_6133
 Jump_3AEE:
 	ld e, $10
-	call Func_2F73
+	call Audio_QueueSound
 Jump_3AF3:
 	call Func_0421
 	and $07
@@ -10712,7 +10712,7 @@ Jump_3AF3:
 	jr nc, Jump_3AF3
 	add a, $81
 	ld e, a
-	call Func_2F73
+	call Audio_QueueSound
 	call Func_01_5BF1
 	ld a, [$CA06]
 	call Func_01_63D1
@@ -10775,7 +10775,7 @@ Func_3B5A:
 	jr z, Jump_3B9A
 	call Func_035C
 	ld e, $82
-	call Func_2F73
+	call Audio_QueueSound
 	ld a, [$CA06]
 	cp $0E
 	jp z, Jump_3B9A
@@ -10793,7 +10793,7 @@ Jump_3B84:
 	jr z, Jump_3B84
 	xor a
 	ld [wVBlankPending], a
-	call Func_2F21
+	call Audio_Update
 	ld a, [$C6B5]
 	or a
 	jr z, Jump_3B80
@@ -11085,9 +11085,9 @@ Func_3CFB:
 	ld a, $01
 	ld [$C0FF], a
 	ld a, $4F
-	ld [$C91C], a
+	ld [wSfxSeqLockId], a
 	ld e, a
-	call Func_2F73
+	call Audio_QueueSound
 	pop hl
 	pop de
 	pop bc

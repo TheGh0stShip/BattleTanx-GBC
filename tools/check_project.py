@@ -191,12 +191,172 @@ def check_tracing() -> None:
     )
 
 
+AUDIO_SYMBOLS = {
+    "Audio_InitFar": (0x00, 0x2EB8),
+    "Music_Update": (0x00, 0x2ED5),
+    "Audio_Update": (0x00, 0x2F21),
+    "Audio_QueueSound": (0x00, 0x2F73),
+    "SoundPatches": (0x06, 0x4000),
+    "SfxSequencePointers": (0x06, 0x4128),
+    "AudioRegisterInit": (0x06, 0x4649),
+    "NoteFrequencies": (0x06, 0x4662),
+    "WaveformPattern": (0x06, 0x4716),
+    "NoiseNoteTable": (0x06, 0x4726),
+    "ChannelRegisterBases": (0x06, 0x4738),
+    "MusicPointers": (0x06, 0x4744),
+    "Instruments": (0x06, 0x476E),
+    "Music_00": (0x06, 0x479A),
+    "Audio_Init": (0x06, 0x7CAE),
+    "Music_HandleEvent": (0x06, 0x7D11),
+    "Audio_PlaySound": (0x06, 0x7E41),
+    "SfxSequence_Update": (0x06, 0x7EFD),
+}
+
+
+def check_audio() -> None:
+    """Re-derive every recovered sound-driver invariant from the base ROM."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import audio as au  # pylint: disable=import-outside-toplevel
+
+    rom = (ROOT / "baserom.gbc").read_bytes()
+    b6 = au.b6
+
+    # Driver code entry bytes (guards against the tables being mis-sized).
+    if b6(rom, au.DRIVER_CODE, 4) != bytes.fromhex("afeafcc8"):
+        fail("audio: Audio_Init does not start at $06:$7CAE")
+    if rom[0x1BFD2:0x1BFFF] != bytes(0x2D) or rom[0x1BFFF] != 0x06:
+        fail("audio: bank $06 tail after the driver is not zero fill + marker")
+
+    # Patches: channel 1, 2 or 4; register count from channel bit 0; padding.
+    patches = [b6(rom, au.PATCHES + 8 * i, 8) for i in range(au.PATCH_COUNT)]
+    if au.PATCHES + 8 * au.PATCH_COUNT != au.SFX_SEQ_PTRS:
+        fail("audio: patch table does not end at the sequence pointer table")
+    for i, rec in enumerate(patches):
+        if rec[0] not in (1, 2, 4):
+            fail(f"audio: patch {i:#x} has channel {rec[0]}")
+        mask = rec[1 + (5 if rec[0] & 1 else 4)]
+        if mask != (0x11 << (rec[0] - 1)):
+            fail(f"audio: patch {i:#x} NR51 bits {mask:#x} do not match its channel")
+        pad = rec[2 + (5 if rec[0] & 1 else 4):]
+        if any(pad) and not (i == 0 and pad == b"\x22\x00"):
+            fail(f"audio: patch {i:#x} has unexpected padding {pad.hex()}")
+
+    # Sound-effect sequences: 25 pointers, a null word, contiguous data.
+    ptrs = au.sfx_seq_pointers(rom)
+    if au.word(rom, au.SFX_SEQ_PTRS + 2 * au.SFX_SEQ_COUNT) != 0:
+        fail("audio: word after the 25 sequence pointers is not $0000")
+    cursor = au.SFX_SEQ_DATA
+    for start in sorted(set(ptrs)):
+        if start != cursor:
+            fail(f"audio: sfx sequence gap/overlap at {cursor:#x}->{start:#x}")
+        events, end = au.parse_sfx_seq(rom, start)
+        for event in events:
+            if event[0] == "patch" and event[2] >= au.PATCH_COUNT:
+                fail(f"audio: sequence {start:#x} uses patch {event[2]:#x}")
+            if event[0] == "tone" and event[2] >= au.NOTE_COUNT:
+                fail(f"audio: sequence {start:#x} uses note {event[2]}")
+        trailer = b6(rom, end, 6)
+        extra = 6 if trailer == bytes.fromhex("ff00ffff0000") else 4
+        if trailer[:4] != bytes.fromhex("ff00ffff"):
+            fail(f"audio: sequence {start:#x} trailer is {trailer.hex()}")
+        cursor = end + extra
+    if cursor != au.SFX_SEQ_END or ptrs[0x00] != ptrs[0x0B]:
+        fail("audio: sound-effect sequence data boundaries changed")
+
+    # Fixed tables.
+    if b6(rom, au.REG_INIT + au.REG_INIT_SIZE, 2) != bytes(2):
+        fail("audio: bytes between AudioRegisterInit and NoteFrequencies changed")
+    freqs = [au.word(rom, au.NOTE_FREQS + 2 * i) for i in range(au.NOTE_COUNT)]
+    if any(f > 0x7FF for f in freqs) or freqs != sorted(freqs):
+        fail("audio: note frequencies are not ascending 11-bit values")
+    if au.NOTE_FREQS + 2 * au.NOTE_COUNT != au.WAVE:
+        fail("audio: note table does not end at the waveform")
+    noise = [b6(rom, au.NOISE_NOTES + 2 * i, 2) for i in range(au.NOISE_NOTE_COUNT)]
+    if any(r[1] >= au.INSTRUMENT_COUNT for r in noise):
+        fail("audio: noise note table names a missing instrument")
+    bases = [au.word(rom, au.CHANNEL_REGS + 2 * i) for i in range(4)]
+    if bases != [0xFF10, 0xFF16, 0xFF1A, 0xFF20]:
+        fail(f"audio: channel register bases changed {bases}")
+
+    # Music: 10 entries in bank $06, sequences contiguous up to the driver.
+    music = au.music_pointers(rom)
+    for i, (start, bank, unknown) in enumerate(music):
+        if bank != au.AUDIO_BANK or unknown != 0:
+            fail(f"audio: music {i} bank/unknown byte changed")
+    for i, (start, _, _) in enumerate(music):
+        nxt = music[i + 1][0] if i + 1 < len(music) else au.MUSIC_END
+        events, end = au.parse_music(rom, start)
+        for event in events:
+            if event[0] in ("note", "off", "instrument", "pan") and not 1 <= event[1] >> 4 <= 4:
+                fail(f"audio: music {i} uses channel {event[1] >> 4}")
+            if event[0] == "note" and event[2] >= au.NOTE_COUNT:
+                fail(f"audio: music {i} uses note {event[2]}")
+            if event[0] == "instrument" and event[2] >= au.INSTRUMENT_COUNT:
+                fail(f"audio: music {i} uses instrument {event[2]}")
+        if nxt - end > 3 or (i and music[i][0] == music[i - 1][0]):
+            fail(f"audio: music {i} ends at {end:#x}, next sequence at {nxt:#x}")
+    if music[0][0] != au.MUSIC_DATA:
+        fail("audio: first music sequence does not follow the instrument table")
+
+    # Bank $07 duplicates bank $06 $4007-$4BFB (see AUDIO_RESEARCH.md).
+    bank7 = rom[0x1C000:0x20000]
+    if bank7[7:0xBFC] != rom[0x18007:0x18BFC] or any(bank7[0xBFC:0x3FFF]):
+        fail("audio: bank $07 is no longer a partial copy of bank $06")
+
+    # Source representation: no opaque blob for the decoded range.
+    manifest = (ROOT / "assets.txt").read_text()
+    if "bank_06/" in manifest:
+        fail("audio: bank $06 data is back in the asset manifest")
+    if "INCBIN" in (ROOT / "src" / "audio_data.asm").read_text():
+        fail("audio: src/audio_data.asm must stay explicit source")
+
+    # Every immediate sound id passed to Audio_QueueSound must be playable.
+    import re  # pylint: disable=import-outside-toplevel
+    ids = set()
+    for path in sorted((ROOT / "src").glob("bank_*.asm")):
+        lines = path.read_text().splitlines()
+        for n, line in enumerate(lines):
+            if line.strip() == "call Audio_QueueSound":
+                for prev in reversed(lines[max(0, n - 3):n]):
+                    m = re.fullmatch(r"\s*ld e, \$([0-9A-F]{2})", prev)
+                    if m:
+                        ids.add(int(m.group(1), 16))
+                        break
+    for sid in ids:
+        ok = (
+            (sid < 0x40 and sid < au.PATCH_COUNT)
+            or (0x40 <= sid < 0x80 and sid - 0x40 < au.SFX_SEQ_COUNT)
+            or (sid >= 0x80 and sid - 0x80 < au.MUSIC_COUNT)
+        )
+        if not ok or sid == 0:
+            fail(f"audio: source queues unplayable sound id {sid:#04x}")
+
+    # Symbol placement, when a linked symbol file is available.
+    sym = ROOT / "battletanx.sym"
+    if sym.exists():
+        table = {}
+        for line in sym.read_text().splitlines():
+            m = re.fullmatch(r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip())
+            if m:
+                table[m.group(3)] = (int(m.group(1), 16), int(m.group(2), 16))
+        for name, where in AUDIO_SYMBOLS.items():
+            if table.get(name) != where:
+                fail(f"audio: symbol {name} is at {table.get(name)}, expected {where}")
+
+    print(
+        f"audio: {au.PATCH_COUNT} patches, {au.SFX_SEQ_COUNT} sfx sequences, "
+        f"{au.MUSIC_COUNT} music sequences, {len(ids)} queued ids checked"
+        + ("" if sym.exists() else " (symbol check skipped: no battletanx.sym)")
+    )
+
+
 def main() -> None:
     check_toolchain()
     entries = read_manifest()
     check_assets(entries)
     check_scene_descriptors((ROOT / "baserom.gbc").read_bytes())
     check_tracing()
+    check_audio()
     digest = hashlib.sha1((ROOT / "baserom.gbc").read_bytes()).hexdigest()
     print(f"project: OK ({len(entries)} assets, baserom sha1 {digest})")
 
