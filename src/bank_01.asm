@@ -4021,8 +4021,8 @@ RAM_D310:
 
 	LOAD UNION "RAM code $D000", WRAMX[$D000] ; copied from $01:5F42
 
-RAM_D000:
-	ld hl, $D3E0
+LoadFixedSceneResources:
+	ld hl, wFixedSceneGraphicsBank
 	ld a, [hli]
 	ld a, a
 	ld [rROMB0], a
@@ -4078,7 +4078,7 @@ RAM_D049:
 	ld [wVBlankPending], a
 	ld a, $7E
 	ldh [rHDMA5], a
-	ld hl, $D3E7
+	ld hl, wFixedScenePalettes
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -4087,7 +4087,7 @@ RAM_D049:
 	ld bc, $DC40
 	ld e, $08
 	call CopyBytesShort
-	ld hl, $D3E3
+	ld hl, wFixedSceneTilemap
 	ld a, [hli]
 	ld e, a
 	ld a, [hli]
@@ -4181,7 +4181,7 @@ RAM_D0DF:
 	ld h, a
 	dec d
 	jr nz, RAM_D0B9
-	ld hl, $D3E7
+	ld hl, wFixedScenePalettes
 	ld b, h
 	ld c, l
 	inc bc
@@ -4191,7 +4191,7 @@ RAM_D0DF:
 	add a, a
 	add a, a
 	ld e, a
-	ld hl, $D3E7
+	ld hl, wFixedScenePalettes
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -4210,14 +4210,14 @@ RAM_D0DF:
 
 	LOAD UNION "RAM code $D160", WRAMX[$D160] ; copied from $01:6057
 
-RAM_D160:
+LoadScrollingScenePalette:
 	push af
 	push bc
 	push de
 	push hl
 	ld a, $01
 	ldh [$FF80], a
-	ld hl, $D3F0
+	ld hl, wScrollingSceneBank
 	ld a, l
 	ldh [$FF88], a
 	ld a, h
@@ -4225,13 +4225,13 @@ RAM_D160:
 	ld a, [hl]
 	ldh [$FF92], a
 	ld e, a
-	ld hl, $D3F5
+	ld hl, wScrollingSceneLastRow
 	ld a, [hli]
 	ldh [$FF8A], a
 	ld a, e
 	ld a, a
 	ld [rROMB0], a
-	ld hl, $D3F6
+	ld hl, wScrollingScenePalette
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -4268,10 +4268,10 @@ Jump_01_609E:
 	ld [wVBlankPending], a
 	ld a, $01
 	ldh [$FF80], a
-	call Func_01_65BA
-	call Func_01_659B
-	call RAM_D000
-	call RAM_D160
+	call CopyFixedSceneDescriptor
+	call CopyScrollingSceneDescriptor
+	call LoadFixedSceneResources
+	call LoadScrollingScenePalette
 	call Func_01_6149
 	xor a
 	ld [wVBlankPending], a
@@ -4574,7 +4574,7 @@ Func_01_6309:
 	ldh [$FF81], a
 	ld a, $01
 	ldh [$FF80], a
-	call Func_01_65BA
+	call CopyFixedSceneDescriptor
 	call Func_3960
 	ld a, $01
 	ldh [$FFAB], a
@@ -4595,7 +4595,7 @@ Jump_01_6328:
 	xor a
 	ldh [rWY], a
 	ldh [$FF86], a
-	call RAM_D000
+	call LoadFixedSceneResources
 	xor a
 	ldh [$FF80], a
 	xor a
@@ -4638,8 +4638,8 @@ Func_01_6367:
 	ldh [$FFB0], a
 	ldh [$FFB5], a
 	ldh [$FF8B], a
-	call Func_01_659B
-	call RAM_D160
+	call CopyScrollingSceneDescriptor
+	call LoadScrollingScenePalette
 	ld e, $06
 	push de
 Jump_01_6388:
@@ -4782,7 +4782,7 @@ RAM_D1F0:
 	ldh a, [$FF92]
 	ld a, a
 	ld [rROMB0], a
-	ld hl, $D3F3
+	ld hl, wScrollingSceneRows
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -5052,7 +5052,7 @@ Func_01_6580:
 	ENDL
 	db $00
 
-Func_01_659B:
+CopyScrollingSceneDescriptor:
 	ld hl, ScrollingSceneDescriptors
 	ldh a, [$FF82]
 	ld c, a
@@ -5064,13 +5064,13 @@ Func_01_659B:
 	sla c
 	rl b
 	add hl, bc
-	ld bc, $D3F0
+	ld bc, wScrollingSceneBank
 	ld de, $0008
 	call CopyBytesShort
 	ret
 
 
-Func_01_65BA:
+CopyFixedSceneDescriptor:
 	ld a, $01
 	ldh [rSVBK], a
 	ldh a, [$FF81]
@@ -5086,7 +5086,7 @@ Func_01_65BA:
 	rl b
 	ld hl, SceneBackgroundDescriptors
 	add hl, bc
-	ld bc, $D3E0
+	ld bc, wFixedSceneGraphicsBank
 	ld de, $0010
 	call CopyBytesShort
 	ret
