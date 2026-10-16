@@ -1248,13 +1248,27 @@ Jump_01_47CE:
 	pop af
 	ret
 
-	db $2D, $00, $FA, $54, $52, $55, $00, $00, $2A, $00, $D8, $61, $30, $62, $00, $00
-	db $2C, $00, $00, $40, $58, $40, $00, $00, $2C, $00, $D3, $5E, $2B, $5F, $00, $00
-	db $2B, $00, $6C, $6E, $C4, $6E, $00, $00, $2C, $00, $3A, $4B, $92, $4B, $00, $00
-	db $2C, $00, $9F, $5F, $F7, $5F, $00, $00, $2B, $00, $00, $40, $58, $40, $00, $00
-	db $2D, $00, $00, $40, $58, $40, $00, $00, $2B, $00, $DA, $5B, $32, $5C, $00, $00
-	db $2B, $00, $DA, $5B, $32, $5C, $00, $00, $2C, $00, $C4, $55, $1C, $56, $00, $00
-	db $2A, $00, $22, $6A, $7A, $6A, $00, $00, $C9, $00, $00, $00, $33, $4D, $00, $00
+MACRO screen_mode
+	db \1, 0
+	dw \2, \3, 0
+ENDM
+
+ScreenModeTable:
+	screen_mode $2D, Func_2D_54FA, Func_2D_5552
+	screen_mode $2A, Func_2A_61D8, Func_2A_6230
+	screen_mode $2C, Func_2C_4000, Func_2C_4058
+	screen_mode $2C, Func_2C_5ED3, Func_2C_5F2B
+	screen_mode $2B, Func_2B_6E6C, Func_2B_6EC4
+	screen_mode $2C, Func_2C_4B3A, Func_2C_4B92
+	screen_mode $2C, Func_2C_5F9F, Func_2C_5FF7
+	screen_mode $2B, Func_2B_4000, Func_2B_4058
+	screen_mode $2D, Func_2D_4000, Func_2D_4058
+	screen_mode $2B, Func_2B_5BDA, Func_2B_5C32
+	screen_mode $2B, Func_2B_5BDA, Func_2B_5C32
+	screen_mode $2C, Func_2C_55C4, Func_2C_561C
+	screen_mode $2A, Func_2A_6A22, Func_2A_6A7A
+
+	db $C9, $00, $00, $00, $33, $4D, $00, $00
 	db $55, $48, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $0F
 	db $00, $00, $00, $05, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $02, $00
 	db $27, $49, $00, $07, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $03, $00
@@ -1902,7 +1916,10 @@ Jump_01_4E2D:
 Jump_01_4E2E:
 	ret
 
-	db $4E, $36, $7F, $36, $AF, $36
+RuntimeCallbackTable:
+	dw Func_364E
+	dw Func_367F
+	dw Func_36AF
 
 Func_01_4E35:
 	ld a, [$D55B]
@@ -1913,7 +1930,7 @@ Func_01_4E35:
 Jump_01_4E40:
 	ld a, [$D55C]
 	add a, a
-	ld hl, $4E2F
+	ld hl, RuntimeCallbackTable
 	ld a, a
 	add a, l
 	ld l, a
@@ -1935,7 +1952,7 @@ Jump_01_4E40:
 Func_01_4E60:
 	ld a, [$C6BB]
 	ld [$D55B], a
-	ld hl, $4E2F
+	ld hl, RuntimeCallbackTable
 	ld e, $00
 Jump_01_4E6B:
 	ld a, [hli]

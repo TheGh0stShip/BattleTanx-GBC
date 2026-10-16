@@ -26,8 +26,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 | Area | Current state | Next gate |
 | --- | --- | --- |
-| Reachable code | 32,964 bytes traced from known entries and pointers | Resolve indirect control flow and validate boundaries |
-| Heuristic decoding | 4,551 additional bytes accepted by gap fill | Classify each range as code, table, or padding |
+| Reachable code | 33,140 bytes traced from known entries and pointers | Resolve indirect control flow and validate boundaries |
+| Heuristic decoding | 4,375 additional bytes accepted by gap fill | Classify each range as code, table, or padding |
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, and OAM DMA named | Name routines and RAM state from evidence |
 | RAM code | ROM source and runtime address represented with `LOAD` blocks | Verify every copy site and execution entry |
 | Graphics | Preserved in extracted binary ranges | Identify formats and add lossless conversion tools |
@@ -46,9 +46,10 @@ The screen init/update dispatch sites at `$39C3` and `$39F0` use the 13-entry
 banked screen table at bank `$01:$47EC`; its known destinations are seeded into
 the tracer. Bank `$03:$6886` has been resolved as a 15-entry state-check table
 at `$685A`, and bank `$01:$450E` uses the 10-entry entity-handler table at
-`$44E0`. The two remaining sites at `$364D` and `$4B44` need stored-callback
-models; the screen dispatch sites are already modeled despite remaining
-indirect at runtime.
+`$44E0`. The callback at `$364D` is selected from the three-entry table at
+bank `$01:$4E2F`. The remaining site at `$4B44` dispatches through a pointer in
+a runtime object record and still needs a complete record/table model; the
+screen dispatch sites are already modeled despite remaining indirect at runtime.
 
 ## Immediate roadmap
 

@@ -11,6 +11,9 @@ STATE_CHECK_TABLE = (3, 0x685A, 15)
 # Bank 1 dispatcher at $44F4 uses an entity field at offset $1E as an index.
 ENTITY_HANDLER_TABLE = (1, 0x44E0, 10)
 
+# Bank 1 routines at $4E35/$4E60 select and identify the active callback.
+RUNTIME_CALLBACK_TABLE = (1, 0x4E2F, 3)
+
 
 def screen_entries(rom):
     out = []
@@ -38,6 +41,7 @@ def extra_entries(rom):
         screen_entries(rom)
         + pointer_table_entries(rom, STATE_CHECK_TABLE)
         + pointer_table_entries(rom, ENTITY_HANDLER_TABLE)
+        + pointer_table_entries(rom, RUNTIME_CALLBACK_TABLE)
         + [(0x2e, 0x4000), (0x2e, 0x4058)]
     )
 
@@ -60,8 +64,10 @@ NAMES = {
     0x39A7: "ScreenTable_CallInit",
     0x39CD: "ScreenTable_CallUpdate",
     0x39FB: "ScreenTable_LoadEntry",
+    0x47EC: "ScreenModeTable",
     0x44E0: "EntityHandlerTable",
     0x44F4: "DispatchEntityHandler",
+    0x4E2F: "RuntimeCallbackTable",
     0xE85A: "StateCheckTable",
     0xE878: "DispatchStateCheck",
 }

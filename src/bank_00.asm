@@ -10609,7 +10609,7 @@ Func_39F1:
 
 
 ScreenTable_LoadEntry:
-	ld hl, $47EC
+	ld hl, ScreenModeTable
 	add a, a
 	add a, a
 	add a, a

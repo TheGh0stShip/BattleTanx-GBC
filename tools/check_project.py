@@ -75,7 +75,7 @@ def check_tracing() -> None:
     rom = (ROOT / "baserom.gbc").read_bytes()
     traced = trace.run(rom, hints.extra_entries(rom))
     direct_bytes = sum(traced.code.values())
-    if direct_bytes != 32964 or len(traced.loads) != 38:
+    if direct_bytes != 33140 or len(traced.loads) != 38:
         fail(
             "tracing baseline changed; review it and update docs deliberately "
             f"(bytes={direct_bytes}, loads={len(traced.loads)})"

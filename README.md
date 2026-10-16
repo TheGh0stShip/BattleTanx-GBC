@@ -52,8 +52,8 @@ only to bootstrap; from then on `src/` is the source of truth.
 
 All 1,048,576 bytes reconstruct exactly. That establishes a complete binary
 rebuild, not a complete understanding of the source. The tracer currently reaches
-32,964 instruction bytes from known entry points, pointers, and RAM relocations.
-Its optional gap pass decodes another 4,551 bytes, some of which are still tables
+33,140 instruction bytes from known entry points, pointers, and RAM relocations.
+Its optional gap pass decodes another 4,375 bytes, some of which are still tables
 or padding and must not be counted as confirmed code.
 
 Detailed recovery status, control-flow gaps, and the current roadmap are tracked
