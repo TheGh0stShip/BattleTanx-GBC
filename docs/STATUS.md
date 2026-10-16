@@ -31,7 +31,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, OAM DMA, MBC5 bank selection, VBlank synchronization, and the runtime callback named | Continue naming routines and RAM state from evidence |
 | RAM images | 30 executable and 8 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
 | Graphics | 55 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: five UI sheets, three sprite sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Identify palettes, final layouts, and remaining graphics ranges |
-| Maps | Eleven fixed-background descriptors are bounded; all 36 scrolling scenes render from 709 rows and 14,180 validated tile indices with decoded palette values | Name individual scenes and decode the fixed-background auxiliary records |
+| Maps | Eleven fixed backgrounds and 36 scrolling scenes render from 2,640 fixed cells plus 709 scrolling rows/14,180 cells, with validated indices, attributes, flips, and palettes | Name individual scenes and decode the remaining fixed-background auxiliary records |
 | Audio | Preserved in extracted binary ranges | Identify engine, sequences, instruments, and samples |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
 
@@ -94,6 +94,13 @@ emits the original indices as CSV plus the four 15-bit palette values. Across
 the table, 709 rows and 14,180 indices are checked; every index resolves inside
 its descriptor's graphics table. These generated files are inspection aids,
 not substitutes for the source descriptors.
+
+The same target also renders the eleven fixed backgrounds. Their 240-byte
+tilemaps and attribute maps form 20x12 scenes; the tilemap high bit and final
+attribute bank bit select between the two VRAM tile banks, while attribute
+flip bits are applied to the preview. All 2,640 resolved source-tile indices
+fit inside the corresponding 255-tile graphics range. The original attributes
+and resolved indices are emitted separately as CSV.
 
 All 11 fixed-background tile sources and all 36 scrolling-scene graphics
 ranges now have lossless PNG extraction. The fixed loader establishes a size

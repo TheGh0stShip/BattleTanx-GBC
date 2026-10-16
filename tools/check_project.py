@@ -97,6 +97,15 @@ def check_scene_descriptors(rom: bytes) -> None:
             fail(f"scene descriptor {index} auxiliary range is outside its bank")
         if record[10:] != bytes(6):
             fail(f"scene descriptor {index} reserved bytes are not zero")
+        bank_base = bank * 0x4000 - 0x4000
+        tilemap_data = rom[bank_base + tilemap : bank_base + tilemap + 240]
+        attribute_data = rom[bank_base + attributes : bank_base + attributes + 240]
+        source_indices = [
+            (value & 0x7F) + (0 if (value & 0x80) or (attr & 0x08) else 128)
+            for value, attr in zip(tilemap_data, attribute_data)
+        ]
+        if any(tile >= 255 for tile in source_indices):
+            fail(f"scene descriptor {index} references a nonexistent tile")
 
     if rom[0x5A5B:0x5A60] != bytes((6, 7, 8, 9, 10)):
         fail("scene descriptor index table changed")
