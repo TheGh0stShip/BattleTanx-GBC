@@ -712,12 +712,24 @@ def check_level_banks() -> None:
     bank5_assets = {
         "assets/bank_05/40B1.bin": (0x140B1, 0x24F),
         "assets/bank_05/431E.bin": (0x1431E, 0xE2),
-        "assets/bank_05/452C.bin": (0x1452C, 0xBF4),
+        "assets/bank_05/452C.bin": (0x1452C, 0x974),
         "assets/bank_05/59E0.bin": (0x159E0, 0x2620),
     }
     for path, where in bank5_assets.items():
         if manifest.get(path) != where:
             fail(f"levels: bank $05 asset {path} is {manifest.get(path)}, expected {where}")
+
+    if tuple(
+        int.from_bytes(rom[position : position + 2], "little")
+        for position in range(0x14EA0, 0x14EA8, 2)
+    ) != (500, 1000, 3000, 1000):
+        fail("levels: object score-value table changed")
+    parameter_records = rom[0x15100:0x15120]
+    if tuple(parameter_records[offset : offset + 3] for offset in range(0, 0x20, 8)) != (
+        bytes.fromhex("06 0f 50"), bytes.fromhex("04 06 b4"),
+        bytes.fromhex("05 05 4b"), bytes.fromhex("40 01 14"),
+    ) or any(parameter_records[offset] for record in range(4) for offset in range(record * 8 + 3, record * 8 + 8)):
+        fail("levels: object-type parameter table changed")
 
     inc = (ROOT / "include" / "level_data.inc").read_text()
     consts = {
@@ -764,7 +776,11 @@ def check_level_banks() -> None:
             "LoadLevelPalettes": (0x00, 0x1A86),
             "LoadLevelCellMap": (0x00, 0x1AA4),
             "GetLevelCellTileAndAttr": (0x00, 0x1D93),
+            "GetObjectScoreValue": (0x00, 0x0C1A),
+            "AddToScore": (0x00, 0x3019),
             "LoadLevelLookupPointers": (0x05, 0x4088),
+            "ObjectScoreValues": (0x05, 0x4EA0),
+            "ObjectTypeParameterTable": (0x05, 0x5100),
             "LevelRecordPointers": (0x05, 0x4300),
             "Level00_Record": (0x05, 0x4400),
             "Level14_Record": (0x05, 0x4518),

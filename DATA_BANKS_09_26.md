@@ -170,6 +170,9 @@ bytes are zero; `$7FFF` holds the bank number.
   lookup references are explicit symbolic source. Its 15 tile-animation
   pointers and all 430 fixed-size animation records are also explicit; the
   former `$40B1-$7FFF` opaque asset is split around every proven structure.
+  The adjacent four-entry score-value table and four eight-byte object-type
+  parameter records are also explicit; the latter retain five reserved zero
+  bytes per record because only the first three fields have known readers.
 - `make levels` (`tools/extract_level_data.py`) writes `build/levels/level_NN/`:
   `record.json`, `cellmap.csv`, `tilemap.csv`, `attrmap.csv`, `cells.csv`
   (decoded tile number, palette, bank, flips, priority, cell byte),

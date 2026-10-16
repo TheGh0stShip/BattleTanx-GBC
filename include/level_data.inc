@@ -30,6 +30,11 @@ MACRO level_tile_animation
 	db \1, \2, \3, \4, \5
 ENDM
 
+; Three object initialization parameters followed by five reserved zeros.
+MACRO object_type_parameters
+	db \1, \2, \3, $00, $00, $00, $00, $00
+ENDM
+
 DEF LEVEL00_WIDTH EQU 64
 DEF LEVEL00_HEIGHT EQU 64
 DEF LEVEL00_TILE_COUNT EQU 401 ; record +7 holds this minus 1

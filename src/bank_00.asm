@@ -1933,7 +1933,7 @@ Jump_0C12:
 	ret
 
 
-Func_0C1A:
+GetObjectScoreValue:
 	push af
 	push hl
 	ld a, [ROM_BANK_MARKER]
@@ -1946,7 +1946,7 @@ Func_0C1A:
 	ld l, a
 	ld a, [hl]
 	sla a
-	ld hl, $4EA0
+	ld hl, ObjectScoreValues
 	add a, l
 	ld l, a
 	ld c, [hl]
@@ -2835,8 +2835,8 @@ Jump_109F:
 	ld a, [$CD01]
 	cp b
 	jr nz, Jump_10BA
-	call Func_0C1A
-	call Func_3019
+	call GetObjectScoreValue
+	call AddToScore
 Jump_10BA:
 	ld a, l
 	and $C0
@@ -3168,7 +3168,7 @@ Func_1219:
 	ld e, $21
 	call Audio_QueueSound
 	ld bc, $0014
-	call Func_3019
+	call AddToScore
 	pop hl
 	pop de
 	pop bc
@@ -3277,7 +3277,7 @@ Jump_1308:
 	ld c, a
 	ldh a, [$FF9F]
 	ld b, a
-	call Func_3019
+	call AddToScore
 	pop hl
 	pop de
 	pop bc
@@ -7868,7 +7868,7 @@ Func_2B86:
 	sla a
 	sla a
 	sla a
-	ld de, $5100
+	ld de, ObjectTypeParameterTable
 	add a, e
 	ld e, a
 	ld a, [ROM_BANK_MARKER]
@@ -8701,7 +8701,7 @@ Func_300A:
 	ret
 
 
-Func_3019:
+AddToScore:
 	push hl
 	ld hl, $CD04
 	ld a, [hl]
@@ -11157,8 +11157,8 @@ Jump_3DBC:
 	ld a, h
 	ld [$C966], a
 	ld l, e
-	call Func_0C1A
-	call Func_3019
+	call GetObjectScoreValue
+	call AddToScore
 	ld l, e
 	ld a, $01
 	ld b, $01

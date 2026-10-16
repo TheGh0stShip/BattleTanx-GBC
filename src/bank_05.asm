@@ -89,6 +89,19 @@ Level14_Record:
 
 	INCBIN "assets/bank_05/452C.bin"
 
+; Indexed by the object's type field; GetObjectScoreValue returns the selected
+; 16-bit value and AddToScore adds it to the four-byte score accumulator.
+ObjectScoreValues:
+	dw 500, 1000, 3000, 1000
+
+	ds $5100 - @, $00
+
+ObjectTypeParameterTable:
+	object_type_parameters $06, $0F, $50
+	object_type_parameters $04, $06, $B4
+	object_type_parameters $05, $05, $4B
+	object_type_parameters $40, $01, $14
+
 LevelTileAnimationPointers:
 	dw LevelTileAnimationSet0, LevelTileAnimationSet0, LevelTileAnimationSet0
 	dw LevelTileAnimationSet2, LevelTileAnimationSet2, LevelTileAnimationSet2
@@ -119,6 +132,8 @@ LevelAttributeLookupPointers:
 
 	ASSERT LevelRecordPointers == $4300
 	ASSERT Level14_Record == $4518
+	ASSERT ObjectScoreValues == $4EA0
+	ASSERT ObjectTypeParameterTable == $5100
 	ASSERT LevelTileAnimationPointers == $5120
 	ASSERT LevelAttributeLookupPointers == $513E
 	ASSERT LevelTileAnimationSet0 == $517A

@@ -2598,7 +2598,7 @@ Jump_03_6911:
 	ld bc, $003C
 	call Func_0388
 	ld bc, $2710
-	call Func_3019
+	call AddToScore
 	ret
 
 

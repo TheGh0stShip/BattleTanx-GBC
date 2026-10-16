@@ -839,7 +839,7 @@ Func_01_4582:
 	jp nz, Func_01_450F
 	call Func_3845
 	ld bc, $0BB8
-	call Func_3019
+	call AddToScore
 	ld e, $54
 	call Audio_QueueSound
 	ld a, [$C6EF]

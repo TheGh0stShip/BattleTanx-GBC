@@ -101,6 +101,12 @@ and the level-to-table mapping are checked. Eighteen active-level WRAM fields
 now have checked names for banks, pointers, dimensions, lookup state, and row
 offsets.
 
+Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
+type; the two callers and the four-byte score-accumulation routine now have
+behavioral names. Four eight-byte object-type parameter records at `$5100`
+have three consumed bytes and five reserved zeros apiece. Both tables are
+explicit source with checked values and addresses.
+
 The low six bits of cell-map entries, record fields +6 and +7/+8, and the role
 of one unread byte preceding each lookup table remain unknown. No ROM cell sets
 bits 6 or 7, so the lookup-table paths may depend on run-time changes.
