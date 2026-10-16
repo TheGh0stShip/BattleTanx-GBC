@@ -84,8 +84,8 @@ def check_scene_descriptors(rom: bytes) -> None:
             int.from_bytes(record[offset : offset + 2], "little")
             for offset in (1, 3, 5, 7)
         ]
-        graphics, tilemap, attributes, auxiliary = pointers
-        auxiliary_count = record[9]
+        graphics, tilemap, attributes, palettes = pointers
+        palette_count = record[9]
         if bank not in range(0x30, 0x34):
             fail(f"scene descriptor {index} has unexpected bank {bank:#x}")
         if graphics < 0x4000 or graphics + 0xFF0 > 0x8000:
@@ -93,8 +93,9 @@ def check_scene_descriptors(rom: bytes) -> None:
         for kind, pointer in (("tilemap", tilemap), ("attributes", attributes)):
             if pointer < 0x4000 or pointer + 20 * 12 > 0x8000:
                 fail(f"scene descriptor {index} {kind} range is outside its bank")
-        if auxiliary < 0x4000 or auxiliary + 0x38 + auxiliary_count * 8 > 0x8000:
-            fail(f"scene descriptor {index} auxiliary range is outside its bank")
+        palette_span = max(palette_count * 8, 0x40)
+        if palettes < 0x4000 or palettes + palette_span > 0x8000:
+            fail(f"scene descriptor {index} palette range is outside its bank")
         if record[10:] != bytes(6):
             fail(f"scene descriptor {index} reserved bytes are not zero")
         bank_base = bank * 0x4000 - 0x4000
@@ -106,6 +107,13 @@ def check_scene_descriptors(rom: bytes) -> None:
         ]
         if any(tile >= 255 for tile in source_indices):
             fail(f"scene descriptor {index} references a nonexistent tile")
+        palette_data = rom[
+            bank_base + palettes : bank_base + palettes + palette_count * 8
+        ]
+        for offset in range(0, len(palette_data), 2):
+            color = int.from_bytes(palette_data[offset : offset + 2], "little")
+            if color & 0x8000:
+                fail(f"scene descriptor {index} palette contains invalid color {color:#x}")
 
     if rom[0x5A5B:0x5A60] != bytes((6, 7, 8, 9, 10)):
         fail("scene descriptor index table changed")

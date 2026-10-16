@@ -3343,7 +3343,7 @@ ScrollingTileRowDestinations:
 	dw $9000, $9140, $9280, $93C0, $9500, $9640, $8800
 
 ; Each 16-byte scene record contains a graphics bank, a 255-tile source,
-; 20x12 tile and attribute maps, an auxiliary-data pointer and its count.
+; 20x12 tile and attribute maps, a palette-table pointer and record count.
 ; The final six bytes of every record are reserved and zero.
 SceneBackgroundDescriptors:
 	db $33

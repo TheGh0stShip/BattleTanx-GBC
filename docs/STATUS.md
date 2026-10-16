@@ -31,7 +31,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, OAM DMA, MBC5 bank selection, VBlank synchronization, and the runtime callback named | Continue naming routines and RAM state from evidence |
 | RAM images | 30 executable and 8 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
 | Graphics | 55 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: five UI sheets, three sprite sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Identify palettes, final layouts, and remaining graphics ranges |
-| Maps | Eleven fixed backgrounds and 36 scrolling scenes render from 2,640 fixed cells plus 709 scrolling rows/14,180 cells, with validated indices, attributes, flips, and palettes | Name individual scenes and decode the remaining fixed-background auxiliary records |
+| Maps | Eleven fixed backgrounds and 36 scrolling scenes render from 2,640 fixed cells plus 709 scrolling rows/14,180 cells, with validated indices, attributes, flips, and palettes | Name the individual scenes and connect them to game progression |
 | Audio | Preserved in extracted binary ranges | Identify engine, sequences, instruments, and samples |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
 
@@ -73,11 +73,11 @@ been established.
 
 Bank `$01:$59AB` contains eleven 16-byte scene descriptors. Each selects one
 of banks `$30`-`$33`, a `$0FF0`-byte source used to load 255 tiles, separate
-20x12 tile and attribute maps, and an auxiliary-data pointer with a bounded
-record count. Six trailing bytes in every descriptor are reserved zeros. The
+20x12 tile and attribute maps, and a table of eight-byte four-color palette
+records. The loader copies the recorded number of palettes into its fade
+target buffer. Six trailing bytes in every descriptor are reserved zeros. The
 five-entry table at `$5A5B` maps a later group of scenes to descriptor indices
-6 through 10. Individual scene identities and the auxiliary record semantics
-remain unknown.
+6 through 10. Individual scene identities remain unknown.
 
 Bank `$01:$5A60` contains 36 eight-byte scrolling-scene descriptors. Their
 callers establish the data bank, pointer to 16-byte native tile graphics,

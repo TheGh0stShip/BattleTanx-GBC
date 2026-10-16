@@ -64,6 +64,23 @@ def write_palette(path: pathlib.Path, raw_palette: bytes) -> None:
     path.write_text("\n".join(lines) + "\n")
 
 
+def write_palette_records(path: pathlib.Path, data: bytes) -> None:
+    lines = []
+    for record in range(len(data) // 8):
+        colors = [
+            int.from_bytes(data[record * 8 + offset : record * 8 + offset + 2], "little")
+            for offset in range(0, 8, 2)
+        ]
+        encoded = " ".join(f"{color:04X}" for color in colors)
+        decoded = " ".join(
+            f"#{red:02X}{green:02X}{blue:02X}"
+            for color in colors
+            for red, green, blue in (rgb555(color),)
+        )
+        lines.append(f"{record:02}: {encoded} | {decoded}")
+    path.write_text("\n".join(lines) + "\n")
+
+
 def main() -> None:
     if len(sys.argv) != 3:
         fail("usage: extract_scene_maps.py ROM OUTPUT_DIR")
@@ -76,10 +93,11 @@ def main() -> None:
         start = FIXED_DESCRIPTOR_OFFSET + index * 16
         record = rom[start : start + 16]
         bank = record[0]
-        graphics, tilemap, attribute_map, auxiliary = (
+        graphics, tilemap, attribute_map, palettes = (
             int.from_bytes(record[offset : offset + 2], "little")
             for offset in (1, 3, 5, 7)
         )
+        palette_count = record[9]
         bank_base = bank * 0x4000 - 0x4000
         tile_data = rom[bank_base + graphics : bank_base + graphics + 0xFF0]
         tilemap_data = rom[bank_base + tilemap : bank_base + tilemap + 240]
@@ -112,7 +130,13 @@ def main() -> None:
         )
         write_palette(
             stem.with_suffix(".palette.txt"),
-            rom[bank_base + auxiliary + 0x38 : bank_base + auxiliary + 0x40],
+            rom[bank_base + palettes + 0x38 : bank_base + palettes + 0x40],
+        )
+        write_palette_records(
+            stem.with_suffix(".palettes.txt"),
+            rom[
+                bank_base + palettes : bank_base + palettes + palette_count * 8
+            ],
         )
         fixed_cells += len(source_indices)
 
