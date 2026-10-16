@@ -4,11 +4,11 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check compare check-project check-baserom assets graphics maps disasm clean tidy
+.PHONY: all check compare check-project check-baserom assets graphics maps levels disasm clean tidy
 
 all: compare
 
-check: compare check-project graphics maps
+check: compare check-project graphics maps levels
 
 check-project: assets
 	$(PYTHON) tools/check_project.py
@@ -24,6 +24,9 @@ graphics: graphics.txt check-baserom
 
 maps: check-baserom
 	$(PYTHON) tools/extract_scene_maps.py $(BASEROM) build/maps
+
+levels: check-baserom
+	$(PYTHON) tools/extract_level_data.py $(BASEROM) build/levels
 
 # Regenerate src/ from the base ROM (overwrites src/!)
 disasm: check-baserom

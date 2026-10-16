@@ -31,7 +31,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
 | Graphics | 61 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three orientation sets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Establish the remaining mixed graphics/data formats in banks `$27-$29` and identify remaining layouts |
-| Maps | Eleven fixed backgrounds and 36 scrolling scenes render from 2,640 fixed cells plus 709 scrolling rows/14,180 cells, with validated indices, attributes, flips, and palettes | Name the individual scenes and connect them to game progression |
+| Maps | Eleven fixed backgrounds, 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers with checked dimensions, indices, attributes, flips, and palettes | Recover the low six bits of level cell maps and name individual scenes and levels |
+| Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
 
@@ -73,6 +74,25 @@ interrupt routine. Fields whose behavior is not yet established remain raw.
 3. Add lossless graphics, map, and text extraction/rebuild paths.
 4. Run relocation/shift tests before declaring source freely editable.
 5. Validate timing-sensitive and RAM-executed behavior on physical hardware.
+
+## Level banks `$09-$26`
+
+The 30 banks are structured as 15 two-bank levels through the record table at
+bank `$05:$4300`. Each odd bank contains a cell map, native 2bpp tiles, an
+attribute lookup table, BG palettes, fill, and its bank marker. Its paired even
+bank contains equally sized tile and attribute maps, followed by fill and its
+marker. All 491,520 bytes are covered exactly once.
+
+The source now uses typed assets for the four large ranges in each level,
+explicit lookup tables and palettes, and assembly assertions for every derived
+boundary. `tools/level_data.py` validates all 15 record layouts, legal palette
+and tile indexes, zero-filled intervals, markers, and total coverage. Ten
+deliberate corruptions must be rejected. `make levels` emits CSV, JSON, palette,
+tile, and map inspection outputs and verifies their round trips.
+
+The low six bits of cell-map entries, record fields +6 and +7/+8, and the role
+of one unread byte preceding each lookup table remain unknown. No ROM cell sets
+bits 6 or 7, so the lookup-table paths may depend on run-time changes.
 
 ## Confirmed graphics boundaries
 

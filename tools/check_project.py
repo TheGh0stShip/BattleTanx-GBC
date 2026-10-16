@@ -676,6 +676,68 @@ def check_audio() -> None:
     )
 
 
+def check_level_banks() -> None:
+    """Banks $09-$26: level data boundaries, formats, source and manifest."""
+    import re  # pylint: disable=import-outside-toplevel
+
+    sys.path.insert(0, str(ROOT / "tools"))
+    import level_data as lvl  # pylint: disable=import-outside-toplevel
+
+    rom = (ROOT / "baserom.gbc").read_bytes()
+    try:
+        levels = lvl.parse_levels(rom)
+        negatives = lvl.negative_tests(rom)
+    except lvl.LevelDataError as exc:
+        fail(f"levels: {exc}")
+
+    expected = set()
+    for level in levels:
+        base = f"assets/levels/level_{level.number:02}"
+        odd = level.cell_bank * 0x4000 - 0x4000
+        even = level.map_bank * 0x4000 - 0x4000
+        expected |= {
+            (f"{base}/cellmap.bin", odd + level.cellmap_addr, level.cells),
+            (f"{base}/tiles.2bpp", odd + level.tiles_addr, 16 * level.tile_count),
+            (f"{base}/tilemap.bin", even + level.tilemap_addr, level.cells),
+            (f"{base}/attrmap.bin", even + level.attrmap_addr, level.cells),
+        }
+    actual = set()
+    for path, start, size in read_manifest():
+        if lvl.FIRST_BANK * 0x4000 <= start < (lvl.LAST_BANK + 1) * 0x4000:
+            actual.add((str(path), start, size))
+    if actual != expected:
+        fail(f"levels: assets.txt ranges differ: {sorted(actual ^ expected)[:4]}")
+
+    inc = (ROOT / "include" / "level_data.inc").read_text()
+    consts = {
+        match[0]: int(match[1])
+        for match in re.findall(r"DEF (LEVEL\d\d_\w+) EQU (\d+)", inc)
+    }
+    for level in levels:
+        prefix = f"LEVEL{level.number:02}"
+        expected_constants = {
+            f"{prefix}_WIDTH": level.width,
+            f"{prefix}_HEIGHT": level.height,
+            f"{prefix}_TILE_COUNT": level.tile_count,
+            f"{prefix}_PALETTE_COUNT": level.palette_count,
+        }
+        for name, value in expected_constants.items():
+            if consts.get(name) != value:
+                fail(f"levels: {name} is {consts.get(name)}, ROM record says {value}")
+
+    for bank in range(lvl.FIRST_BANK, lvl.LAST_BANK + 1):
+        source = (ROOT / "src" / f"bank_{bank:02X}.asm").read_text()
+        if f"assets/bank_{bank:02X}/" in source or "level_bank_end" not in source:
+            fail(f"levels: src/bank_{bank:02X}.asm lost its structured layout")
+        if bank % 2 and ("_AttrLookup:" not in source or "_BGPalettes:" not in source):
+            fail(f"levels: src/bank_{bank:02X}.asm must define its tables explicitly")
+
+    print(
+        f"levels: {len(levels)} levels in banks $09-$26, every byte in one range, "
+        f"{negatives} negative tests rejected"
+    )
+
+
 def main() -> None:
     check_toolchain()
     entries = read_manifest()
@@ -689,6 +751,7 @@ def main() -> None:
     check_executable_ram_source()
     check_tracing()
     check_audio()
+    check_level_banks()
     digest = hashlib.sha1((ROOT / "baserom.gbc").read_bytes()).hexdigest()
     print(f"project: OK ({len(entries)} assets, baserom sha1 {digest})")
 
