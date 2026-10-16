@@ -7,3 +7,54 @@ bank_08/alphanumeric_font_tiles.png   0x229b5     0x420      11
 bank_27/sprite_tiles.png              0x9c000     0xc00       16
 bank_28/sprite_tiles.png              0xa0000     0xc00       16
 bank_29/sprite_tiles.png              0xa4000     0xc00       16
+
+# Fixed backgrounds: each loader transfers exactly 255 tiles ($0FF0 bytes).
+bank_33/fixed_scene_00_tiles.png       0xcd1a0     0xff0       16
+bank_31/fixed_scene_01_tiles.png       0xc6ba0     0xff0       16
+bank_32/fixed_scene_02_tiles.png       0xc8000     0xff0       16
+bank_32/fixed_scene_03_tiles.png       0xc9100     0xff0       16
+bank_32/fixed_scene_04_tiles.png       0xca1a0     0xff0       16
+bank_33/fixed_scene_05_tiles.png       0xcc000     0xff0       16
+bank_30/fixed_scene_06_tiles.png       0xc1800     0xff0       16
+bank_30/fixed_scene_07_tiles.png       0xc2a00     0xff0       16
+bank_31/fixed_scene_08_tiles.png       0xc4000     0xff0       16
+bank_31/fixed_scene_09_tiles.png       0xc5020     0xff0       16
+bank_31/fixed_scene_10_tiles.png       0xc5fd0     0xff0       16
+
+# Scrolling scenes: graphics end where the descriptor row-data pointer begins.
+bank_3B/scroll_scene_00_tiles.png      0xee218     0x0c70      16
+bank_39/scroll_scene_01_tiles.png      0xe4000     0x1400      16
+bank_39/scroll_scene_02_tiles.png      0xe5a70     0x10e0      16
+bank_3A/scroll_scene_03_tiles.png      0xe8000     0x1460      16
+bank_3A/scroll_scene_04_tiles.png      0xe9a58     0x0ff0      16
+bank_3B/scroll_scene_05_tiles.png      0xed090     0x0cd0      16
+bank_34/scroll_scene_06_tiles.png      0xd0000     0x0e40      16
+bank_34/scroll_scene_07_tiles.png      0xd1258     0x0e80      16
+bank_34/scroll_scene_08_tiles.png      0xd2518     0x0ce0      16
+bank_35/scroll_scene_09_tiles.png      0xd4000     0x0a60      16
+bank_35/scroll_scene_10_tiles.png      0xd4ea0     0x0c30      16
+bank_35/scroll_scene_11_tiles.png      0xd5ee8     0x0ea0      16
+bank_36/scroll_scene_12_tiles.png      0xd8000     0x0d30      16
+bank_36/scroll_scene_13_tiles.png      0xd9170     0x0a40      16
+bank_36/scroll_scene_14_tiles.png      0xd9ff0     0x0d40      16
+bank_37/scroll_scene_15_tiles.png      0xdc000     0x0b80      16
+bank_37/scroll_scene_16_tiles.png      0xdcfc0     0x0b70      16
+bank_37/scroll_scene_17_tiles.png      0xddf70     0x0b50      16
+bank_38/scroll_scene_18_tiles.png      0xe0000     0x0b00      16
+bank_38/scroll_scene_19_tiles.png      0xe0f18     0x0e70      16
+bank_38/scroll_scene_20_tiles.png      0xe21a0     0x0b00      16
+bank_2F/scroll_scene_21_tiles.png      0xbc000     0x0460      16
+bank_2F/scroll_scene_22_tiles.png      0xbc558     0x0440      16
+bank_2F/scroll_scene_23_tiles.png      0xbca90     0x0450      16
+bank_2F/scroll_scene_24_tiles.png      0xbcfd8     0x04f0      16
+bank_2F/scroll_scene_25_tiles.png      0xbd5c0     0x04d0      16
+bank_2F/scroll_scene_26_tiles.png      0xbdb88     0x0450      16
+bank_2F/scroll_scene_27_tiles.png      0xbe0d0     0x0450      16
+bank_2F/scroll_scene_28_tiles.png      0xbe618     0x0410      16
+bank_2F/scroll_scene_29_tiles.png      0xbeb20     0x0420      16
+bank_2F/scroll_scene_30_tiles.png      0xbf038     0x0400      16
+bank_2F/scroll_scene_31_tiles.png      0xbf530     0x04c0      16
+bank_30/scroll_scene_32_tiles.png      0xc0000     0x04a0      16
+bank_30/scroll_scene_33_tiles.png      0xc0598     0x0460      16
+bank_30/scroll_scene_34_tiles.png      0xc0af0     0x0530      16
+bank_30/scroll_scene_35_tiles.png      0xc1118     0x0530      16

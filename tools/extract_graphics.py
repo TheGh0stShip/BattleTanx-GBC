@@ -32,8 +32,9 @@ def main() -> None:
         if size <= 0 or size % 16:
             fail(f"{manifest_path}:{number}: 2bpp size must be a positive multiple of 16")
         tiles = size // 16
-        if width <= 0 or tiles % width:
-            fail(f"{manifest_path}:{number}: width must divide the tile count")
+        if width <= 0:
+            fail(f"{manifest_path}:{number}: width must be positive")
+        padding = -tiles % width
         if offset < 0 or offset + size > len(rom):
             fail(f"{manifest_path}:{number}: range lies outside the ROM")
 
@@ -43,13 +44,16 @@ def main() -> None:
         check_path = png_path.with_suffix(".roundtrip.2bpp")
         original = rom[offset : offset + size]
         tile_path.write_bytes(original)
+        reverse_args = ["rgbgfx", "-r", str(width)]
+        forward_args = ["rgbgfx", str(png_path)]
+        if padding:
+            # Reverse mode restores tiles omitted by a prior -x; using the same
+            # option in forward mode removes those blank layout-only tiles.
+            reverse_args += ["-x", str(padding)]
+            forward_args += ["-x", str(padding)]
+        subprocess.run(reverse_args + ["-o", str(tile_path), str(png_path)], check=True)
         subprocess.run(
-            ["rgbgfx", "-r", str(width), "-o", str(tile_path), str(png_path)],
-            check=True,
-        )
-        subprocess.run(
-            ["rgbgfx", str(png_path), "-o", str(check_path), "-c", "dmg"],
-            check=True,
+            forward_args + ["-o", str(check_path), "-c", "dmg"], check=True
         )
         rebuilt = check_path.read_bytes()
         tile_path.unlink()
