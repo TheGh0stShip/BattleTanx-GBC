@@ -22,7 +22,7 @@ ObjectLayoutXFlipped:
 	db $FC, $04, $03, $20, $FC, $FC, $04, $20, $FC, $F4, $05, $20, $04, $04, $06, $20
 	db $04, $FC, $07, $20, $04, $F4, $08, $20
 
-Func_05_4088:
+LoadLevelLookupPointers:
 	ld hl, LevelTileAnimationPointers
 	ld a, [wLevelNumber]
 	add a, a

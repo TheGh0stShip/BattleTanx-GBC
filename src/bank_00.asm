@@ -531,7 +531,7 @@ Func_0402:
 	push af
 	ld a, $05
 	ld [rROMB0], a
-	call Func_05_4088
+	call LoadLevelLookupPointers
 	pop af
 	ld [rROMB0], a
 	ret

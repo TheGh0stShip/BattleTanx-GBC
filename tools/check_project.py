@@ -764,6 +764,7 @@ def check_level_banks() -> None:
             "LoadLevelPalettes": (0x00, 0x1A86),
             "LoadLevelCellMap": (0x00, 0x1AA4),
             "GetLevelCellTileAndAttr": (0x00, 0x1D93),
+            "LoadLevelLookupPointers": (0x05, 0x4088),
             "LevelRecordPointers": (0x05, 0x4300),
             "Level00_Record": (0x05, 0x4400),
             "Level14_Record": (0x05, 0x4518),
