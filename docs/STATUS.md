@@ -101,6 +101,11 @@ and the level-to-table mapping are checked. Eighteen active-level WRAM fields
 now have checked names for banks, pointers, dimensions, lookup state, and row
 offsets.
 
+The level renderer now names its cell resolver/writer, 21-cell row and
+19-cell column loops, four scrolling-edge updates, BG-map address calculation,
+and 20-by-18 viewport refresh. Its world-space viewport origin and wrapped
+32-by-32 BG-map origin fields are also named and checked.
+
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have
 behavioral names. Four eight-byte object-type parameter records at `$5100`

@@ -67,6 +67,10 @@ DEF wLevelAttributeLookupBank  EQU $C8D2
 DEF wLevelNumber               EQU $CA06
 DEF wLevelWidth                EQU $CA09
 DEF wLevelHeight               EQU $CA0A
+DEF wLevelViewY                EQU $CA0F
+DEF wLevelViewX                EQU $CA10
+DEF wLevelRingY                EQU $CA13
+DEF wLevelRingX                EQU $CA14
 DEF wLevelRowOffsets           EQU $CA17 ; little-endian offset per row
 
 

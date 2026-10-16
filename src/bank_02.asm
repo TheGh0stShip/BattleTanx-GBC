@@ -315,9 +315,9 @@ Func_02_4263:
 	ld a, d
 	ld [$CA03], a
 	ld a, b
-	ld [$CA10], a
+	ld [wLevelViewX], a
 	ld a, c
-	ld [$CA0F], a
+	ld [wLevelViewY], a
 	ld a, c
 	call Func_1B4F
 	pop de

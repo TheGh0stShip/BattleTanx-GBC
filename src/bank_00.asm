@@ -1812,19 +1812,19 @@ Func_0B65:
 	srl d
 	rr e
 	dec e
-	call Func_1D26
+	call DrawLevelCellIfVisible
 	inc c
-	call Func_1D26
+	call DrawLevelCellIfVisible
 	dec c
 	inc e
-	call Func_1D26
+	call DrawLevelCellIfVisible
 	inc c
-	call Func_1D26
+	call DrawLevelCellIfVisible
 	dec c
 	inc e
-	call Func_1D26
+	call DrawLevelCellIfVisible
 	inc c
-	call Func_1D26
+	call DrawLevelCellIfVisible
 	pop hl
 	pop de
 	pop bc
@@ -2362,23 +2362,23 @@ Jump_0E39:
 	ld c, a
 	ldh a, [$FF87]
 	ld e, a
-	ld a, [$CA10]
+	ld a, [wLevelViewX]
 	ld l, a
 	ld a, c
 	sub l
 	dec a
 	ld c, a
-	ld a, [$CA14]
+	ld a, [wLevelRingX]
 	add a, c
 	and $1F
 	ld c, a
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	ld l, a
 	ld a, e
 	sub l
 	dec a
 	ld e, a
-	ld a, [$CA13]
+	ld a, [wLevelRingY]
 	add a, e
 	and $1F
 	ld e, a
@@ -2967,7 +2967,7 @@ Func_1163:
 	push bc
 	push de
 	push hl
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	ldh [$FF98], a
 	add a, $12
 	ld c, a
@@ -2979,7 +2979,7 @@ Func_1163:
 Jump_1177:
 	ld a, c
 	ldh [$FF99], a
-	ld a, [$CA10]
+	ld a, [wLevelViewX]
 	ldh [$FF96], a
 	add a, $14
 	ld c, a
@@ -3202,7 +3202,7 @@ Jump_12AD:
 	ld e, a
 	call Func_1399
 	jr z, Jump_12BB
-	call Func_1D26
+	call DrawLevelCellIfVisible
 Jump_12BB:
 	ldh a, [$FF91]
 	inc a
@@ -3255,7 +3255,7 @@ Jump_12EE:
 	ldh a, [$FF9F]
 	adc a, $00
 	ldh [$FF9F], a
-	call Func_1D26
+	call DrawLevelCellIfVisible
 Jump_1308:
 	ldh a, [$FF91]
 	inc a
@@ -3514,7 +3514,7 @@ Jump_143B:
 	jr z, Jump_14AB
 	jr z, Jump_148D
 Jump_1457:
-	call Func_1D26
+	call DrawLevelCellIfVisible
 	ldh a, [$FF9D]
 	inc a
 	ldh [$FF9D], a
@@ -4722,11 +4722,11 @@ Func_1AE4:
 	push af
 	ld a, $01
 	ld [rROMB0], a
-	call Func_1F82
-	call Func_1F2F
-	call Func_1F12
-	call Func_1F4A
-	call Func_1F65
+	call DrawLevelViewport
+	call DrawLevelLeftColumn
+	call DrawLevelRightColumn
+	call DrawLevelTopRow
+	call DrawLevelBottomRow
 	call Func_3C56
 	pop af
 	ld [rROMB0], a
@@ -4752,13 +4752,13 @@ Func_1B18:
 	srl a
 	srl a
 	srl a
-	ld [$CA14], a
+	ld [wLevelRingX], a
 	ld a, c
 	ld [$CA05], a
 	srl a
 	srl a
 	srl a
-	ld [$CA13], a
+	ld [wLevelRingY], a
 	call Func_1B3A
 	pop bc
 	pop af
@@ -4819,7 +4819,7 @@ Jump_1B66:
 
 Func_1B75:
 	ld e, a
-	ld a, [$CA14]
+	ld a, [wLevelRingX]
 	ld d, a
 	ld a, [$CA04]
 	add a, e
@@ -4831,7 +4831,7 @@ Func_1B75:
 	ld a, [wLevelWidth]
 	sub $15
 	ld b, a
-	ld a, [$CA10]
+	ld a, [wLevelViewX]
 	cp b
 	ret z
 	ld a, [$CA00]
@@ -4846,7 +4846,7 @@ Func_1B75:
 	srl a
 	srl a
 	srl a
-	ld [$CA14], a
+	ld [wLevelRingX], a
 	ld a, [$CA00]
 	ld c, a
 	ld a, [$CA01]
@@ -4858,8 +4858,8 @@ Func_1B75:
 	srl b
 	rr c
 	ld a, c
-	ld [$CA10], a
-	call Func_1F12
+	ld [wLevelViewX], a
+	call DrawLevelRightColumn
 	ret
 
 Jump_1BCD:
@@ -4877,7 +4877,7 @@ Jump_1BCD:
 
 Func_1BE4:
 	ld e, a
-	ld a, [$CA14]
+	ld a, [wLevelRingX]
 	ld d, a
 	ld a, [$CA04]
 	sub e
@@ -4886,7 +4886,7 @@ Func_1BE4:
 	srl a
 	cp d
 	jr z, Jump_1C36
-	ld a, [$CA10]
+	ld a, [wLevelViewX]
 	or a
 	ret z
 	ld a, [$CA00]
@@ -4901,7 +4901,7 @@ Func_1BE4:
 	srl a
 	srl a
 	srl a
-	ld [$CA14], a
+	ld [wLevelRingX], a
 	ld a, [$CA00]
 	ld c, a
 	ld a, [$CA01]
@@ -4913,8 +4913,8 @@ Func_1BE4:
 	srl b
 	rr c
 	ld a, c
-	ld [$CA10], a
-	call Func_1F2F
+	ld [wLevelViewX], a
+	call DrawLevelLeftColumn
 	ret
 
 Jump_1C36:
@@ -4932,7 +4932,7 @@ Jump_1C36:
 
 Func_1C4D:
 	ld e, a
-	ld a, [$CA13]
+	ld a, [wLevelRingY]
 	ld d, a
 	ld a, [$CA05]
 	add a, e
@@ -4944,7 +4944,7 @@ Func_1C4D:
 	ld a, [wLevelHeight]
 	sub $13
 	ld b, a
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	cp b
 	ret z
 	ld a, [$CA02]
@@ -4959,7 +4959,7 @@ Func_1C4D:
 	srl a
 	srl a
 	srl a
-	ld [$CA13], a
+	ld [wLevelRingY], a
 	ld a, [$CA02]
 	ld c, a
 	ld a, [$CA03]
@@ -4971,8 +4971,8 @@ Func_1C4D:
 	srl b
 	rr c
 	ld a, c
-	ld [$CA0F], a
-	call Func_1F65
+	ld [wLevelViewY], a
+	call DrawLevelBottomRow
 	ret
 
 Jump_1CA5:
@@ -4990,7 +4990,7 @@ Jump_1CA5:
 
 Func_1CBC:
 	ld e, a
-	ld a, [$CA13]
+	ld a, [wLevelRingY]
 	ld d, a
 	ld a, [$CA05]
 	sub e
@@ -4999,7 +4999,7 @@ Func_1CBC:
 	srl a
 	cp d
 	jr z, Jump_1D0F
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	or a
 	ret z
 	ld a, [$CA02]
@@ -5014,7 +5014,7 @@ Func_1CBC:
 	srl a
 	srl a
 	srl a
-	ld [$CA13], a
+	ld [wLevelRingY], a
 	ld a, [$CA02]
 	ld c, a
 	ld a, [$CA03]
@@ -5027,8 +5027,8 @@ Func_1CBC:
 	srl b
 	rr c
 	ld a, c
-	ld [$CA0F], a
-	call Func_1F4A
+	ld [wLevelViewY], a
+	call DrawLevelTopRow
 	ret
 
 Jump_1D0F:
@@ -5044,7 +5044,7 @@ Jump_1D0F:
 	ret
 
 
-Func_1D26:
+DrawLevelCellIfVisible:
 	push af
 	push bc
 	push de
@@ -5053,25 +5053,25 @@ Func_1D26:
 	ldh [$FFA0], a
 	ld a, e
 	ldh [$FFA1], a
-	ld a, [$CA10]
+	ld a, [wLevelViewX]
 	ld l, a
 	ld a, c
 	sub l
 	ld c, a
 	cp $20
 	jp nc, Jump_1D8E
-	ld a, [$CA14]
+	ld a, [wLevelRingX]
 	add a, c
 	and $1F
 	ld c, a
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	ld l, a
 	ld a, e
 	sub l
 	ld e, a
 	cp $20
 	jp nc, Jump_1D8E
-	ld a, [$CA13]
+	ld a, [wLevelRingY]
 	add a, e
 	and $1F
 	ld e, a
@@ -5102,7 +5102,7 @@ Func_1D26:
 	ld b, a
 	ldh a, [$FFA1]
 	ld c, a
-	call Func_1E84
+	call WriteLevelCellToBGMap
 	pop af
 	ld [rROMB0], a
 Jump_1D8E:
@@ -5273,7 +5273,7 @@ Jump_1E81:
 	ret
 
 
-Func_1E84:
+WriteLevelCellToBGMap:
 	push af
 	push bc
 	push de
@@ -5291,7 +5291,7 @@ Func_1E84:
 	ret
 
 
-Func_1E97:
+DrawLevelRow21:
 	push af
 	push bc
 	push de
@@ -5302,7 +5302,7 @@ Func_1E97:
 	ld [rROMB0], a
 	ld e, $15
 Jump_1EA7:
-	call Func_1E84
+	call WriteLevelCellToBGMap
 	push af
 	push de
 	ld a, l
@@ -5327,7 +5327,7 @@ Jump_1EA7:
 	ret
 
 
-Func_1EC5:
+DrawLevelColumn19:
 	push af
 	push bc
 	push de
@@ -5338,7 +5338,7 @@ Func_1EC5:
 	ld [rROMB0], a
 	ld e, $13
 Jump_1ED5:
-	call Func_1E84
+	call WriteLevelCellToBGMap
 	push af
 	ld a, $20
 	add a, l
@@ -5361,10 +5361,10 @@ Jump_1ED5:
 	ret
 
 
-Func_1EF3:
+GetLevelBGMapAddress:
 	push af
 	push bc
-	ld a, [$CA13]
+	ld a, [wLevelRingY]
 	add a, c
 	and $1F
 	ld l, a
@@ -5377,7 +5377,7 @@ Func_1EF3:
 	ld a, $98
 	add a, h
 	ld h, a
-	ld a, [$CA14]
+	ld a, [wLevelRingX]
 	add a, b
 	and $1F
 	or l
@@ -5387,20 +5387,20 @@ Func_1EF3:
 	ret
 
 
-Func_1F12:
+DrawLevelRightColumn:
 	push af
 	push bc
 	push de
 	push hl
 	ld b, $14
 	ld c, $00
-	call Func_1EF3
-	ld a, [$CA10]
+	call GetLevelBGMapAddress
+	ld a, [wLevelViewX]
 	add a, $14
 	ld b, a
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	ld c, a
-	call Func_1EC5
+	call DrawLevelColumn19
 	pop hl
 	pop de
 	pop bc
@@ -5408,19 +5408,19 @@ Func_1F12:
 	ret
 
 
-Func_1F2F:
+DrawLevelLeftColumn:
 	push af
 	push bc
 	push de
 	push hl
 	ld b, $00
 	ld c, $00
-	call Func_1EF3
-	ld a, [$CA10]
+	call GetLevelBGMapAddress
+	ld a, [wLevelViewX]
 	ld b, a
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	ld c, a
-	call Func_1EC5
+	call DrawLevelColumn19
 	pop hl
 	pop de
 	pop bc
@@ -5428,19 +5428,19 @@ Func_1F2F:
 	ret
 
 
-Func_1F4A:
+DrawLevelTopRow:
 	push af
 	push bc
 	push de
 	push hl
 	ld b, $00
 	ld c, $00
-	call Func_1EF3
-	ld a, [$CA10]
+	call GetLevelBGMapAddress
+	ld a, [wLevelViewX]
 	ld b, a
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	ld c, a
-	call Func_1E97
+	call DrawLevelRow21
 	pop hl
 	pop de
 	pop bc
@@ -5448,20 +5448,20 @@ Func_1F4A:
 	ret
 
 
-Func_1F65:
+DrawLevelBottomRow:
 	push af
 	push bc
 	push de
 	push hl
 	ld b, $00
 	ld c, $12
-	call Func_1EF3
-	ld a, [$CA10]
+	call GetLevelBGMapAddress
+	ld a, [wLevelViewX]
 	ld b, a
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	add a, $12
 	ld c, a
-	call Func_1E97
+	call DrawLevelRow21
 	pop hl
 	pop de
 	pop bc
@@ -5469,7 +5469,7 @@ Func_1F65:
 	ret
 
 
-Func_1F82:
+DrawLevelViewport:
 	push af
 	push bc
 	push de
@@ -5481,9 +5481,9 @@ Func_1F82:
 	ld a, $00
 	ldh [$FF94], a
 	ldh [$FF95], a
-	ld a, [$CA10]
+	ld a, [wLevelViewX]
 	ldh [$FF92], a
-	ld a, [$CA0F]
+	ld a, [wLevelViewY]
 	ldh [$FF93], a
 	ld a, $12
 	ldh [$FF91], a
@@ -5494,7 +5494,7 @@ Jump_1FA4:
 	ld c, a
 	inc a
 	ldh [$FF95], a
-	call Func_1EF3
+	call GetLevelBGMapAddress
 	ld a, $14
 	ldh [$FF90], a
 	ldh a, [$FF92]

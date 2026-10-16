@@ -776,6 +776,16 @@ def check_level_banks() -> None:
             "LoadLevelPalettes": (0x00, 0x1A86),
             "LoadLevelCellMap": (0x00, 0x1AA4),
             "GetLevelCellTileAndAttr": (0x00, 0x1D93),
+            "DrawLevelCellIfVisible": (0x00, 0x1D26),
+            "WriteLevelCellToBGMap": (0x00, 0x1E84),
+            "DrawLevelRow21": (0x00, 0x1E97),
+            "DrawLevelColumn19": (0x00, 0x1EC5),
+            "GetLevelBGMapAddress": (0x00, 0x1EF3),
+            "DrawLevelRightColumn": (0x00, 0x1F12),
+            "DrawLevelLeftColumn": (0x00, 0x1F2F),
+            "DrawLevelTopRow": (0x00, 0x1F4A),
+            "DrawLevelBottomRow": (0x00, 0x1F65),
+            "DrawLevelViewport": (0x00, 0x1F82),
             "GetObjectScoreValue": (0x00, 0x0C1A),
             "AddToScore": (0x00, 0x3019),
             "LoadLevelLookupPointers": (0x05, 0x4088),
@@ -810,7 +820,9 @@ def check_level_banks() -> None:
         "wLevelAnimationFrame": 0xC8CB, "wLevelTileAnimationTable": 0xC8CE,
         "wLevelAttributeLookup": 0xC8D0, "wLevelAttributeLookupBank": 0xC8D2,
         "wLevelNumber": 0xCA06, "wLevelWidth": 0xCA09,
-        "wLevelHeight": 0xCA0A, "wLevelRowOffsets": 0xCA17,
+        "wLevelHeight": 0xCA0A, "wLevelViewY": 0xCA0F,
+        "wLevelViewX": 0xCA10, "wLevelRingY": 0xCA13,
+        "wLevelRingX": 0xCA14, "wLevelRowOffsets": 0xCA17,
     }
     if memory_symbols != expected_memory:
         fail(f"levels: WRAM symbols differ: {memory_symbols.items() ^ expected_memory.items()}")
