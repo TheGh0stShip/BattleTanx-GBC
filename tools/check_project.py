@@ -181,8 +181,8 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
 
 def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> None:
     expected_assets = {
-        pathlib.Path(f"assets/bank_{bank:02X}/sprite_data_4000.bin"):
-            (bank * 0x4000, 0x512)
+        pathlib.Path(f"assets/bank_{bank:02X}/orientation_tiles.bin"):
+            (bank * 0x4000, 0x510)
         for bank in (0x27, 0x28, 0x29)
     }
     expected_assets.update({
@@ -196,6 +196,31 @@ def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> 
             fail(f"sprite data asset {path} is {manifest.get(path)}, expected {where}")
 
     rom = (ROOT / "baserom.gbc").read_bytes()
+    layout_pointers = tuple(
+        int.from_bytes(rom[0x14000 + pos : 0x14002 + pos], "little")
+        for pos in range(0, 0x20, 2)
+    )
+    if layout_pointers != (0x4040,) * 9 + (0x4064,) * 7:
+        fail("object orientation layout-pointer table changed")
+
+    tile_pointers = tuple(
+        int.from_bytes(rom[0x14020 + pos : 0x14022 + pos], "little")
+        for pos in range(0, 0x20, 2)
+    )
+    expected_tile_pointers = (
+        0x4000, 0x4090, 0x4120, 0x41B0, 0x4240, 0x42D0, 0x4360, 0x43F0,
+        0x4480, 0x43F0, 0x4360, 0x42D0, 0x4240, 0x41B0, 0x4120, 0x4090,
+    )
+    if tile_pointers != expected_tile_pointers:
+        fail("object orientation tile-pointer table changed")
+    if sorted(set(tile_pointers)) != list(range(0x4000, 0x4510, 0x90)):
+        fail("object orientation frames no longer cover $4000-$450F exactly")
+
+    if tuple(rom[offset : offset + 2] for offset in (0x9C510, 0xA0510, 0xA4510)) != (
+        bytes.fromhex("8c31"), bytes.fromhex("3967"), bytes.fromhex("3967")
+    ):
+        fail("unknown words preceding the object palettes changed")
+
     palettes = {
         0x9C512: (0x0040, 0x0260, 0x03E5),
         0xA0512: (0x7E51, 0x0000, 0x60E8),
@@ -211,12 +236,18 @@ def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> 
 
     for bank in (0x27, 0x28, 0x29):
         source = (ROOT / "src" / f"bank_{bank:02X}.asm").read_text()
-        if "sprite_tiles.bin" in source:
+        if "sprite_tiles.bin" in source or "sprite_data_4000.bin" in source:
             fail(f"bank {bank:#04x} returned to an overbroad graphics asset")
 
     sym = ROOT / "battletanx.sym"
     if sym.exists():
         expected_symbols = {
+            "Bank27OrientationTiles": (0x27, 0x4000),
+            "Bank28OrientationTiles": (0x28, 0x4000),
+            "Bank29OrientationTiles": (0x29, 0x4000),
+            "Bank27Unknown4510": (0x27, 0x4510),
+            "Bank28Unknown4510": (0x28, 0x4510),
+            "Bank29Unknown4510": (0x29, 0x4510),
             "Bank27ObjectPalette": (0x27, 0x4512),
             "Bank28ObjectPalette": (0x28, 0x4512),
             "Bank29ObjectPalette": (0x29, 0x4512),

@@ -30,7 +30,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
-| Graphics | 58 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Establish the mixed graphics/data formats in banks `$27-$29` and identify remaining layouts |
+| Graphics | 61 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three orientation sets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Establish the remaining mixed graphics/data formats in banks `$27-$29` and identify remaining layouts |
 | Maps | Eleven fixed backgrounds and 36 scrolling scenes render from 2,640 fixed cells plus 709 scrolling rows/14,180 cells, with validated indices, attributes, flips, and palettes | Name the individual scenes and connect them to game progression |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
@@ -98,14 +98,19 @@ portions are now limited to `$44A8-$46E9`, `$46F0-$60F7`, `$6108-$6119`,
 `$621A-$6221`, and `$6242-$626A` (7,309 bytes total); they are not counted as
 understood graphics.
 
-Banks `$27`, `$28`, and `$29` each begin with `$0C00` bytes of mixed sprite
-data, followed by `$33FF` zero bytes and the bank marker at `$7FFF`. They were
-previously treated as continuous 192-tile sheets, but the palette loader proves
-that each contains a six-byte object-palette record at `$4512`. Those palettes
-are now explicit source and are loaded into object palette slots 0, 1, and 2.
-The surrounding ranges remain lossless, narrowly split binary data until their
-graphics and metadata boundaries are established; they are no longer counted
-as confirmed graphics.
+Banks `$27`, `$28`, and `$29` each start with nine orientation frames of nine
+native 2bpp tiles. Bank `$05:$4020` contains the 16-entry orientation lookup:
+the first nine entries select the nine consecutive `$90`-byte frames and the
+last seven select them in reverse, reusing the mirrored layouts at `$4064`.
+The loader copies exactly nine 16-byte tiles from the selected frame. These
+three `$510`-byte ranges now round-trip as confirmed graphics. Each is followed
+by an unidentified two-byte value at `$4510` and an explicit three-color object
+palette at `$4512`; the palette loader supplies the transparent color and loads
+these records into object palette slots 0, 1, and 2.
+
+The `$4518-$4BFF` range in each bank remains lossless opaque sprite data until
+its readers and internal boundaries are established. Each bank then has
+`$33FF` zero bytes and its marker at `$7FFF`.
 
 ## Scene-background descriptors
 

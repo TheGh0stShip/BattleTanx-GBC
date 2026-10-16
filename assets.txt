@@ -57,11 +57,11 @@ assets/bank_23/4000.bin 0x8c000 0x4000
 assets/bank_24/4000.bin 0x90000 0x4000
 assets/bank_25/4000.bin 0x94000 0x4000
 assets/bank_26/4000.bin 0x98000 0x4000
-assets/bank_27/sprite_data_4000.bin 0x9c000 0x512
+assets/bank_27/orientation_tiles.bin 0x9c000 0x510
 assets/bank_27/sprite_data_4518.bin 0x9c518 0x6e8
-assets/bank_28/sprite_data_4000.bin 0xa0000 0x512
+assets/bank_28/orientation_tiles.bin 0xa0000 0x510
 assets/bank_28/sprite_data_4518.bin 0xa0518 0x6e8
-assets/bank_29/sprite_data_4000.bin 0xa4000 0x512
+assets/bank_29/orientation_tiles.bin 0xa4000 0x510
 assets/bank_29/sprite_data_4518.bin 0xa4518 0x6e8
 assets/bank_2A/4000.bin 0xa8000 0x21d8
 assets/bank_2A/62A4.bin 0xaa2a4 0x77e

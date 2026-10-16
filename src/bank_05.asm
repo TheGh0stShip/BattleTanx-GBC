@@ -1,13 +1,24 @@
 ; BattleTanx (USA) - ROM bank $05
 
 SECTION "ROM Bank $05", ROMX[$4000], BANK[$05]
-	db $40, $40, $40, $40, $40, $40, $40, $40, $40, $40, $40, $40, $40, $40, $40, $40
-	db $40, $40, $64, $40, $64, $40, $64, $40, $64, $40, $64, $40, $64, $40, $64, $40
-	db $00, $40, $90, $40, $20, $41, $B0, $41, $40, $42, $D0, $42, $60, $43, $F0, $43
-	db $80, $44, $F0, $43, $60, $43, $D0, $42, $40, $42, $B0, $41, $20, $41, $90, $40
+ObjectOrientationLayoutPointers:
+	dw ObjectLayoutNormal, ObjectLayoutNormal, ObjectLayoutNormal, ObjectLayoutNormal
+	dw ObjectLayoutNormal, ObjectLayoutNormal, ObjectLayoutNormal, ObjectLayoutNormal
+	dw ObjectLayoutNormal
+	dw ObjectLayoutXFlipped, ObjectLayoutXFlipped, ObjectLayoutXFlipped
+	dw ObjectLayoutXFlipped, ObjectLayoutXFlipped, ObjectLayoutXFlipped, ObjectLayoutXFlipped
+
+ObjectOrientationTilePointers:
+	dw $4000, $4090, $4120, $41B0, $4240, $42D0, $4360, $43F0
+	dw $4480, $43F0, $4360, $42D0, $4240, $41B0, $4120, $4090
+
+ObjectLayoutNormal:
 	db $F4, $F4, $00, $00, $F4, $FC, $01, $00, $F4, $04, $02, $00, $FC, $F4, $03, $00
 	db $FC, $FC, $04, $00, $FC, $04, $05, $00, $04, $F4, $06, $00, $04, $FC, $07, $00
-	db $04, $04, $08, $00, $F4, $04, $00, $20, $F4, $FC, $01, $20, $F4, $F4, $02, $20
+	db $04, $04, $08, $00
+
+ObjectLayoutXFlipped:
+	db $F4, $04, $00, $20, $F4, $FC, $01, $20, $F4, $F4, $02, $20
 	db $FC, $04, $03, $20, $FC, $FC, $04, $20, $FC, $F4, $05, $20, $04, $04, $06, $20
 	db $04, $FC, $07, $20, $04, $F4, $08, $20
 

@@ -2504,7 +2504,7 @@ Jump_0F05:
 Func_0F0C:
 	ld a, $05
 	ld [rROMB0], a
-	ld hl, $4000
+	ld hl, ObjectOrientationLayoutPointers
 	ldh a, [$FF81]
 	sla a
 	add a, l
@@ -2547,7 +2547,7 @@ Jump_0F1F:
 Func_0F43:
 	ld a, $05
 	ld [rROMB0], a
-	ld hl, $4020
+	ld hl, ObjectOrientationTilePointers
 	ldh a, [$FF81]
 	sla a
 	add a, l
