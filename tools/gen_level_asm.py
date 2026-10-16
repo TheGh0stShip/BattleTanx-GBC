@@ -25,7 +25,9 @@ inc = ["; Level data constants for ROM banks $09-$26. Values are copied from the
        "\tdb BANK(\\3), BANK(\\4), BANK(\\5), BANK(\\6), BANK(\\7)\n"
        "\tdw \\8 - 1\n\tdb \\9\n\tdw \\3, \\4, \\7, \\6, \\5\nENDM\n\n"
        "; Address, bank, and reserved zero for bank $05:$4088.\n"
-       "MACRO level_attr_lookup\n\tdw \\1\n\tdb BANK(\\1), $00\nENDM\n"]
+       "MACRO level_attr_lookup\n\tdw \\1\n\tdb BANK(\\1), $00\nENDM\n\n"
+       "; One-based index followed by four animation-frame tile IDs.\n"
+       "MACRO level_tile_animation\n\tdb \\1, \\2, \\3, \\4, \\5\nENDM\n"]
 assets = []
 for lv in levels:
     n, p = lv.number, f"LEVEL{lv.number:02}"

@@ -89,9 +89,17 @@ boundary. Bank `$05` also expresses all 15 record pointers, 20-byte records,
 and lookup references symbolically. The record, tile, palette, cell-map,
 row-offset, and cell-lookup routines now have behavioral names.
 `tools/level_data.py` validates all 15 record layouts, legal palette
-and tile indexes, zero-filled intervals, markers, and total coverage. Ten
+and tile indexes, zero-filled intervals, markers, and total coverage. Eleven
 deliberate corruptions must be rejected. `make levels` emits CSV, JSON, palette,
 tile, and map inspection outputs and verifies their round trips.
+
+The same bank contains five tile-animation tables selected by a 15-entry
+per-level pointer table. Their 430 five-byte records are explicit source: a
+one-based record index followed by four frame tile IDs. The cell lookup chooses
+a frame with a two-bit counter. Table addresses, record counts, sequential IDs,
+and the level-to-table mapping are checked. Eighteen active-level WRAM fields
+now have checked names for banks, pointers, dimensions, lookup state, and row
+offsets.
 
 The low six bits of cell-map entries, record fields +6 and +7/+8, and the role
 of one unread byte preceding each lookup table remain unknown. No ROM cell sets

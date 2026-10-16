@@ -123,19 +123,34 @@ byte before it is zero in every level and is never read. It is kept as an
 explicit `db $00`, because the source can't show whether it belongs to the
 tiles, the table or neither. Table values seen: `$00-$05`, `$80`.
 
-### 4.4 BG palettes
+### 4.4 Level tile-animation tables
+
+Bank `$05:$5120` contains one pointer per level. Levels are grouped in threes
+and select five tables at `$517A`, `$532D`, `$54CC`, `$56A7`, and `$5800`.
+They contain 87, 83, 95, 69, and 96 five-byte records respectively, ending
+exactly at `$59E0`. Each record is its one-based index followed by four tile
+IDs. `GetLevelCellTileAndAttr` selects one of those four IDs with the low two
+bits of the shared animation counter. For input tile ID `t`, its zero-based
+record index is the 8-bit value `t + $7F`; the selected byte is therefore
+`table + 5 * index + 1 + frame`.
+
+The pointer table and all 430 records are explicit source. Validation checks
+all pointers, table boundaries, counts, and sequential record IDs. The visual
+meaning of individual animated tiles is not assigned.
+
+### 4.5 BG palettes
 
 `record+9` palettes x 4 RGB555 words, bit 15 clear in every word, loaded
 from BG palette 0 upward. Every attribute byte names a palette below the
 count.
 
-### 4.5 Tile map and attribute map (even bank)
+### 4.6 Tile map and attribute map (even bank)
 
 Tile map at `$4000`, attribute map right after it, each width x height
 bytes, row-major. Attribute bits: 0-2 palette, 3 VRAM bank, 5 x flip,
 6 y flip, 7 priority (used only in level 12); bit 4 is clear everywhere.
 
-### 4.6 Padding and markers
+### 4.7 Padding and markers
 
 From the end of the palettes (odd) or attribute map (even) to `$7FFE` all
 bytes are zero; `$7FFF` holds the bank number.
@@ -152,8 +167,9 @@ bytes are zero; `$7FFF` holds the bank number.
 - `include/level_data.inc`: per-level width, height, tile count and palette
   count, plus macros for bank endings, level records, and lookup references.
 - `src/bank_05.asm`: the 15 record pointers, 20-byte records, and attribute
-  lookup references are explicit symbolic source rather than part of the
-  former `$40B1-$7FFF` opaque asset.
+  lookup references are explicit symbolic source. Its 15 tile-animation
+  pointers and all 430 fixed-size animation records are also explicit; the
+  former `$40B1-$7FFF` opaque asset is split around every proven structure.
 - `make levels` (`tools/extract_level_data.py`) writes `build/levels/level_NN/`:
   `record.json`, `cellmap.csv`, `tilemap.csv`, `attrmap.csv`, `cells.csv`
   (decoded tile number, palette, bank, flips, priority, cell byte),
@@ -186,10 +202,8 @@ validator. Visual renders were only used as a sanity check, not as evidence.
 3. Record +6 and +7..+8 are never read.
 4. The level number set in `01:4CAA` (`3*[$D568]+[$D567]`) and `01:5164`
    (`[$C939]`) is not bounded.
-5. The bank-`$05` table at `[$C8CE]` (`$517A`, `$54CC`, `$532D`, `$5800`,
-   `$56A7`) is outside this scope.
-6. No level names or themes are assigned.
-7. Nothing was checked on hardware.
+5. No level names or themes are assigned.
+6. Nothing was checked on hardware.
 
 ## 8. Suggested `docs/STATUS.md` text
 
@@ -198,7 +212,7 @@ validator. Visual renders were only used as a sanity check, not as evidence.
 > 2bpp tiles, attribute lookup tables, BG palettes, tile maps, attribute
 > maps, zero fill and markers. Source is structured per bank with typed
 > INCBINs, explicit palettes and tables, and layout ASSERTs.
-> `tools/level_data.py` validates every boundary from the ROM, with 10
+> `tools/level_data.py` validates every boundary from the ROM, with 11
 > negative tests. Unknown: cell-map low bits, record +6/+7, the role of one
 > unread byte per level, and the run-time use of the lookup tables.
 
@@ -215,7 +229,7 @@ Result (clean tree, no stale assets):
 battletanx.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 trace: 38772 direct bytes, 0 heuristic bytes, 31 RAM code images, 7 RAM data images
 audio: 37 patches, 25 sfx sequences, 10 music sequences, 32 queued ids checked
-levels: 15 levels in banks $09-$26, every byte in one range, 10 negative tests rejected
+levels: 15 levels in banks $09-$26, every byte in one range, 11 negative tests rejected
 project: OK (129 assets, baserom sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 graphics: 61 sheets extracted and round-trip verified
 scene maps: 11 fixed scenes (2640 cells), 36 scrolling scenes (709 rows, 14180 cells) rendered and verified
@@ -225,7 +239,7 @@ levels: 15 levels, 112000 cells; CSV, palette and PNG outputs round-trip verifie
 Negative tests (each must fail for the stated reason): bank marker, zero
 fill, record bank byte, record tile count, lookup-table pointer, palette
 bit 15, attribute palette range, tile beyond count, cell bits 6-7, and the
-unread byte.
+unread byte, plus the tile-animation pointer table.
 
 ## 10. Range map
 

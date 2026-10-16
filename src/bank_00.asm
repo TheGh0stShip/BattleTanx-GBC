@@ -71,11 +71,11 @@ Jump_0076:
 	ld a, [$C6CD]
 	cp $01
 	jp z, Jump_0090
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	cp $0E
 	jp z, Jump_0090
 	inc a
-	ld [$CA06], a
+	ld [wLevelNumber], a
 	jp Func_0192
 
 Jump_0090:
@@ -1412,7 +1412,7 @@ Func_08C6:
 
 
 Func_0903:
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	call LoadLevelData
 	ld b, $00
 	ld c, $00
@@ -1554,7 +1554,7 @@ Jump_09F1:
 	ld [$C8D8], a
 	ld [$C8D9], a
 	ld b, $00
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	ld c, a
 	ld hl, $0A14
 	add hl, bc
@@ -2898,7 +2898,7 @@ Func_10E6:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -2971,7 +2971,7 @@ Func_1163:
 	ldh [$FF98], a
 	add a, $12
 	ld c, a
-	ld a, [$CA0A]
+	ld a, [wLevelHeight]
 	dec a
 	cp c
 	jr nc, Jump_1177
@@ -2983,7 +2983,7 @@ Jump_1177:
 	ldh [$FF96], a
 	add a, $14
 	ld c, a
-	ld a, [$CA09]
+	ld a, [wLevelWidth]
 	dec a
 	cp c
 	jr nc, Jump_118A
@@ -3037,7 +3037,7 @@ Func_11BB:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3117,7 +3117,7 @@ Func_1219:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3294,7 +3294,7 @@ Func_132E:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3380,7 +3380,7 @@ Func_1399:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3581,7 +3581,7 @@ Func_14B3:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3682,7 +3682,7 @@ Jump_1532:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3740,7 +3740,7 @@ Jump_1579:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3779,7 +3779,7 @@ Jump_1579:
 	and $0C
 	jr z, Jump_15BC
 	inc c
-	ld a, [$CA09]
+	ld a, [wLevelWidth]
 	cp c
 	jr nz, Jump_1579
 Jump_15BC:
@@ -3798,7 +3798,7 @@ Jump_15C1:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3856,7 +3856,7 @@ Jump_1608:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3895,7 +3895,7 @@ Jump_1608:
 	and $0C
 	jr z, Jump_164B
 	inc e
-	ld a, [$CA0A]
+	ld a, [wLevelHeight]
 	cp e
 	jr nz, Jump_1608
 Jump_164B:
@@ -3927,7 +3927,7 @@ Func_164F:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -3991,7 +3991,7 @@ Func_16A8:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -4054,7 +4054,7 @@ Func_16FF:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -4117,7 +4117,7 @@ Func_1756:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -4180,7 +4180,7 @@ Func_17AD:
 	ld d, $00
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -4328,7 +4328,7 @@ LoadLevelRecord:
 	add a, e
 	ld l, a
 	ld a, [hl]
-	ld [$CA09], a
+	ld [wLevelWidth], a
 	ld c, a
 	ld b, $00
 	sla c
@@ -4347,7 +4347,7 @@ LoadLevelRecord:
 	add a, e
 	ld l, a
 	ld a, [hl]
-	ld [$CA0A], a
+	ld [wLevelHeight], a
 	ld c, a
 	ld b, $00
 	sla c
@@ -4365,7 +4365,7 @@ LoadLevelRecord:
 	ld a, $02
 	add a, e
 	ld l, a
-	ld bc, $C8B9
+	ld bc, wLevelTileBank
 	ld d, $12
 Jump_18E0:
 	ld a, [hli]
@@ -4386,7 +4386,7 @@ LoadLevelData:
 	push bc
 	push de
 	push hl
-	ld [$CA06], a
+	ld [wLevelNumber], a
 	ld b, a
 	ld a, $05
 	ld [rROMB0], a
@@ -4483,7 +4483,7 @@ Jump_1982:
 	ldh [$FF80], a
 	ld a, d
 	ldh [$FF81], a
-	ld a, [$CA09]
+	ld a, [wLevelWidth]
 	sub $15
 	ld e, a
 	ld a, $00
@@ -4542,7 +4542,7 @@ Jump_19DC:
 	ldh [$FF82], a
 	ld a, d
 	ldh [$FF83], a
-	ld a, [$CA0A]
+	ld a, [wLevelHeight]
 	sub $13
 	ld e, a
 	ld a, $00
@@ -4582,15 +4582,15 @@ BuildLevelRowOffsets:
 	push de
 	push hl
 	ld bc, $0000
-	ld hl, $CA17
-	ld a, [$CA0A]
+	ld hl, wLevelRowOffsets
+	ld a, [wLevelHeight]
 	ld d, a
 Jump_1A1E:
 	ld [hl], c
 	inc hl
 	ld [hl], b
 	inc hl
-	ld a, [$CA09]
+	ld a, [wLevelWidth]
 	add a, c
 	ld c, a
 	ld a, $00
@@ -4609,11 +4609,11 @@ LoadLevelTiles:
 	ld e, l
 	xor a
 	ldh [rVBK], a
-	ld a, [$C8C1]
+	ld a, [wLevelTiles]
 	ld c, a
-	ld a, [$C8C2]
+	ld a, [wLevelTiles + 1]
 	ld b, a
-	ld a, [$C8B9]
+	ld a, [wLevelTileBank]
 	ld [rROMB0], a
 	ld d, $80
 	ld e, $00
@@ -4658,14 +4658,14 @@ LoadLevelPalettes:
 	ldh a, [rLY]
 	cp $90
 	jr c, LoadLevelPalettes
-	ld a, [$C8BA]
+	ld a, [wLevelPaletteBank]
 	ld [rROMB0], a
-	ld a, [$C8C3]
+	ld a, [wLevelPalettes]
 	ld l, a
-	ld a, [$C8C4]
+	ld a, [wLevelPalettes + 1]
 	ld h, a
 	ld b, $00
-	ld a, [$C8C0]
+	ld a, [wLevelPaletteCount]
 	ld c, a
 	call Func_052F
 	ret
@@ -4678,19 +4678,19 @@ LoadLevelCellMap:
 	push hl
 	ldh a, [rSVBK]
 	push af
-	ld a, [$C8BB]
+	ld a, [wLevelCellMapBank]
 	ld [rROMB0], a
 	ld a, $02
 	ldh [rSVBK], a
 	ld bc, $D000
-	ld a, [$C8C9]
+	ld a, [wLevelCellMap]
 	ld l, a
-	ld a, [$C8CA]
+	ld a, [wLevelCellMap + 1]
 	ld h, a
-	ld a, [$CA0A]
+	ld a, [wLevelHeight]
 	ld e, a
 Jump_1AC4:
-	ld a, [$CA09]
+	ld a, [wLevelWidth]
 	ld d, a
 Jump_1AC8:
 	ld a, [hli]
@@ -4790,7 +4790,7 @@ Func_1B4F:
 	push de
 	push hl
 	ld c, a
-	ld a, [$CA09]
+	ld a, [wLevelWidth]
 	ld e, a
 	ld d, $00
 	ld h, $00
@@ -4828,7 +4828,7 @@ Func_1B75:
 	srl a
 	cp d
 	jr z, Jump_1BCD
-	ld a, [$CA09]
+	ld a, [wLevelWidth]
 	sub $15
 	ld b, a
 	ld a, [$CA10]
@@ -4941,7 +4941,7 @@ Func_1C4D:
 	srl a
 	cp d
 	jr z, Jump_1CA5
-	ld a, [$CA0A]
+	ld a, [wLevelHeight]
 	sub $13
 	ld b, a
 	ld a, [$CA0F]
@@ -5096,7 +5096,7 @@ Func_1D26:
 	add hl, de
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, [$C8BC]
+	ld a, [wLevelMapBank]
 	ld [rROMB0], a
 	ldh a, [$FFA0]
 	ld b, a
@@ -5120,7 +5120,7 @@ GetLevelCellTileAndAttr:
 	ld e, c
 	sla e
 	rl d
-	ld hl, $CA17
+	ld hl, wLevelRowOffsets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -5163,10 +5163,10 @@ GetLevelCellTileAndAttr:
 Jump_1DD8:
 	ld a, [$C8D3]
 	ld d, a
-	ld a, [$C8CB]
+	ld a, [wLevelAnimationFrame]
 	inc a
 	and $07
-	ld [$C8CB], a
+	ld [wLevelAnimationFrame], a
 	add a, $BB
 	ld e, a
 	jp Jump_1E81
@@ -5176,10 +5176,10 @@ Jump_1DEB:
 	ld l, a
 	ldh a, [$FF81]
 	ld h, a
-	ld a, [$C8C5]
+	ld a, [wLevelAttributeMap]
 	add a, l
 	ld l, a
-	ld a, [$C8C6]
+	ld a, [wLevelAttributeMap + 1]
 	adc a, h
 	ld h, a
 	ld d, [hl]
@@ -5187,10 +5187,10 @@ Jump_1DEB:
 	ld l, a
 	ldh a, [$FF81]
 	ld h, a
-	ld a, [$C8C7]
+	ld a, [wLevelTileMap]
 	add a, l
 	ld l, a
-	ld a, [$C8C8]
+	ld a, [wLevelTileMap + 1]
 	adc a, h
 	ld h, a
 	ld e, [hl]
@@ -5208,10 +5208,10 @@ Jump_1DEB:
 	ld l, c
 	ld h, b
 	inc bc
-	ld a, [$C8CB]
+	ld a, [wLevelAnimationFrame]
 	inc a
 	and $03
-	ld [$C8CB], a
+	ld [wLevelAnimationFrame], a
 	add a, c
 	ld c, a
 	ld a, $00
@@ -5220,24 +5220,24 @@ Jump_1DEB:
 	add hl, hl
 	add hl, hl
 	add hl, bc
-	ld a, [$C8CE]
+	ld a, [wLevelTileAnimationTable]
 	ld c, a
-	ld a, [$C8CF]
+	ld a, [wLevelTileAnimationTable + 1]
 	ld b, a
 	add hl, bc
 	ld a, [hl]
 	add a, $80
 	ld e, a
-	ld a, [$C8D1]
+	ld a, [wLevelAttributeLookup + 1]
 	ld h, a
-	ld a, [$C8D0]
+	ld a, [wLevelAttributeLookup]
 	ld l, a
 	ld a, e
 	add a, $7F
 	ld c, a
 	ld b, $00
 	add hl, bc
-	ld a, [$C8D2]
+	ld a, [wLevelAttributeLookupBank]
 	ld [rROMB0], a
 	ld d, [hl]
 	pop af
@@ -5249,10 +5249,10 @@ Jump_1E5F:
 	ld l, a
 	ldh a, [$FF81]
 	ld h, a
-	ld a, [$C8C5]
+	ld a, [wLevelAttributeMap]
 	add a, l
 	ld l, a
-	ld a, [$C8C6]
+	ld a, [wLevelAttributeMap + 1]
 	adc a, h
 	ld h, a
 	ld d, [hl]
@@ -5260,10 +5260,10 @@ Jump_1E5F:
 	ld l, a
 	ldh a, [$FF81]
 	ld h, a
-	ld a, [$C8C7]
+	ld a, [wLevelTileMap]
 	add a, l
 	ld l, a
-	ld a, [$C8C8]
+	ld a, [wLevelTileMap + 1]
 	adc a, h
 	ld h, a
 	ld e, [hl]
@@ -5298,7 +5298,7 @@ Func_1E97:
 	push hl
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, [$C8BC]
+	ld a, [wLevelMapBank]
 	ld [rROMB0], a
 	ld e, $15
 Jump_1EA7:
@@ -5334,7 +5334,7 @@ Func_1EC5:
 	push hl
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, [$C8BC]
+	ld a, [wLevelMapBank]
 	ld [rROMB0], a
 	ld e, $13
 Jump_1ED5:
@@ -5476,7 +5476,7 @@ Func_1F82:
 	push hl
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, [$C8BC]
+	ld a, [wLevelMapBank]
 	ld [rROMB0], a
 	ld a, $00
 	ldh [$FF94], a
@@ -10687,7 +10687,7 @@ Func_3ABF:
 	cp $01
 	jr z, Jump_3B11
 	call Func_01_5BF1
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	ld hl, $6609
 	ld a, a
 	add a, l
@@ -10697,7 +10697,7 @@ Func_3ABF:
 	ld h, a
 	ld a, [hl]
 	or a
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	jr z, Jump_3AEE
 	call Func_01_63B3
 	call Func_01_609A
@@ -10714,7 +10714,7 @@ Jump_3AF3:
 	ld e, a
 	call Audio_QueueSound
 	call Func_01_5BF1
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	call Func_01_63D1
 	call Func_01_609A
 	call Func_3960
@@ -10776,7 +10776,7 @@ Func_3B5A:
 	call Func_035C
 	ld e, $82
 	call Audio_QueueSound
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	cp $0E
 	jp z, Jump_3B9A
 	call Func_01_6BBC

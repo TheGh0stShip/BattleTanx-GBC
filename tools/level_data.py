@@ -30,6 +30,10 @@ ATTR_TABLE_PTRS = (0x05, 0x513E)   # 4 bytes x 15: dw table, db bank, db 0
 ATTR_TABLE_SIZE = 0xA0
 VRAM_TILE_WINDOW = 440             # tiles copied by ROM0 $1A33
 PALETTE_SIZE = 8
+ANIMATION_PTRS = (0x05, 0x5120)
+ANIMATION_TABLES = ((0x517A, 87), (0x532D, 83), (0x54CC, 95),
+                    (0x56A7, 69), (0x5800, 96))
+LEVEL_TO_ANIMATION = (0, 0, 0, 2, 2, 2, 1, 1, 1, 4, 4, 4, 3, 3, 3)
 
 
 class LevelDataError(ValueError):
@@ -176,6 +180,20 @@ def parse_levels(rom: bytes) -> list[Level]:
             check(start == cursor and end > start, f"bank ${bank:02X}: gap/overlap at {cursor:#x}")
             cursor = end
         check(cursor == 0x8000, f"bank ${bank:02X}: coverage ends at {cursor:#x}")
+    pointer_bank, pointer_address = ANIMATION_PTRS
+    pointers = tuple(
+        word(rom, pointer_bank, pointer_address + 2 * level)
+        for level in range(LEVEL_COUNT)
+    )
+    expected_pointers = tuple(ANIMATION_TABLES[index][0] for index in LEVEL_TO_ANIMATION)
+    check(pointers == expected_pointers, "level tile-animation pointer table changed")
+    for table_number, (address, count) in enumerate(ANIMATION_TABLES):
+        records = read(rom, 0x05, address, count * 5)
+        for index in range(count):
+            check(
+                records[index * 5] == index + 1,
+                f"animation table {table_number} entry {index + 1} id changed",
+            )
     return levels
 
 
@@ -208,6 +226,7 @@ def negative_tests(rom: bytes) -> int:
         "tile beyond count": ({(0x0A, 0x4000): 0xB7, (0x0A, lv0.attrmap_addr): 0x08}, "highest tile"),
         "cell flag bits": ({(0x09, 0x4000): 0x80}, "bit 6/7"),
         "gap byte": ({(0x09, lv0.attr_table_addr - 1): 0x01}, "byte before"),
+        "animation pointer": ({(0x05, 0x5120): 0x7B}, "animation pointer table"),
     }
     for name, (mutation, expect) in cases.items():
         try:

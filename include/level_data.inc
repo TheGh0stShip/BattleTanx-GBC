@@ -25,6 +25,11 @@ MACRO level_attr_lookup
 	db BANK(\1), $00
 ENDM
 
+; One-based entry number followed by the four tile IDs selected over time.
+MACRO level_tile_animation
+	db \1, \2, \3, \4, \5
+ENDM
+
 DEF LEVEL00_WIDTH EQU 64
 DEF LEVEL00_HEIGHT EQU 64
 DEF LEVEL00_TILE_COUNT EQU 401 ; record +7 holds this minus 1

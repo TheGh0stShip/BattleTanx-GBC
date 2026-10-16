@@ -23,16 +23,16 @@ ObjectLayoutXFlipped:
 	db $04, $FC, $07, $20, $04, $F4, $08, $20
 
 Func_05_4088:
-	ld hl, $5120
-	ld a, [$CA06]
+	ld hl, LevelTileAnimationPointers
+	ld a, [wLevelNumber]
 	add a, a
 	ld c, a
 	ld b, $00
 	add hl, bc
 	ld a, [hli]
-	ld [$C8CE], a
+	ld [wLevelTileAnimationTable], a
 	ld a, [hli]
-	ld [$C8CF], a
+	ld [wLevelTileAnimationTable + 1], a
 	ld hl, LevelAttributeLookupPointers
 	ld a, c
 	add a, a
@@ -40,11 +40,11 @@ Func_05_4088:
 	ld b, $00
 	add hl, bc
 	ld a, [hli]
-	ld [$C8D0], a
+	ld [wLevelAttributeLookup], a
 	ld a, [hli]
-	ld [$C8D1], a
+	ld [wLevelAttributeLookup + 1], a
 	ld a, [hl]
-	ld [$C8D2], a
+	ld [wLevelAttributeLookupBank], a
 	ret
 
 	INCBIN "assets/bank_05/40B1.bin"
@@ -89,6 +89,13 @@ Level14_Record:
 
 	INCBIN "assets/bank_05/452C.bin"
 
+LevelTileAnimationPointers:
+	dw LevelTileAnimationSet0, LevelTileAnimationSet0, LevelTileAnimationSet0
+	dw LevelTileAnimationSet2, LevelTileAnimationSet2, LevelTileAnimationSet2
+	dw LevelTileAnimationSet1, LevelTileAnimationSet1, LevelTileAnimationSet1
+	dw LevelTileAnimationSet4, LevelTileAnimationSet4, LevelTileAnimationSet4
+	dw LevelTileAnimationSet3, LevelTileAnimationSet3, LevelTileAnimationSet3
+
 LevelAttributeLookupPointers:
 	level_attr_lookup Level00_AttrLookup
 	level_attr_lookup Level01_AttrLookup
@@ -106,8 +113,12 @@ LevelAttributeLookupPointers:
 	level_attr_lookup Level13_AttrLookup
 	level_attr_lookup Level14_AttrLookup
 
-	INCBIN "assets/bank_05/517A.bin"
+	INCLUDE "src/level_tile_animation.asm"
+
+	INCBIN "assets/bank_05/59E0.bin"
 
 	ASSERT LevelRecordPointers == $4300
 	ASSERT Level14_Record == $4518
+	ASSERT LevelTileAnimationPointers == $5120
 	ASSERT LevelAttributeLookupPointers == $513E
+	ASSERT LevelTileAnimationSet0 == $517A

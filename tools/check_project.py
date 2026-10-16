@@ -712,8 +712,8 @@ def check_level_banks() -> None:
     bank5_assets = {
         "assets/bank_05/40B1.bin": (0x140B1, 0x24F),
         "assets/bank_05/431E.bin": (0x1431E, 0xE2),
-        "assets/bank_05/452C.bin": (0x1452C, 0xC12),
-        "assets/bank_05/517A.bin": (0x1517A, 0x2E86),
+        "assets/bank_05/452C.bin": (0x1452C, 0xBF4),
+        "assets/bank_05/59E0.bin": (0x159E0, 0x2620),
     }
     for path, where in bank5_assets.items():
         if manifest.get(path) != where:
@@ -745,7 +745,7 @@ def check_level_banks() -> None:
 
     bank5_source = (ROOT / "src" / "bank_05.asm").read_text()
     for symbol in ("LevelRecordPointers", "Level00_Record", "Level14_Record",
-                   "LevelAttributeLookupPointers"):
+                   "LevelTileAnimationPointers", "LevelAttributeLookupPointers"):
         if f"{symbol}:" not in bank5_source:
             fail(f"levels: bank $05 is missing {symbol}")
 
@@ -767,11 +767,36 @@ def check_level_banks() -> None:
             "LevelRecordPointers": (0x05, 0x4300),
             "Level00_Record": (0x05, 0x4400),
             "Level14_Record": (0x05, 0x4518),
+            "LevelTileAnimationPointers": (0x05, 0x5120),
             "LevelAttributeLookupPointers": (0x05, 0x513E),
+            "LevelTileAnimationSet0": (0x05, 0x517A),
+            "LevelTileAnimationSet1": (0x05, 0x532D),
+            "LevelTileAnimationSet2": (0x05, 0x54CC),
+            "LevelTileAnimationSet3": (0x05, 0x56A7),
+            "LevelTileAnimationSet4": (0x05, 0x5800),
         }
         for name, where in expected_symbols.items():
             if symbols.get(name) != where:
                 fail(f"levels: symbol {name} is at {symbols.get(name)}, expected {where}")
+
+    memory_source = (ROOT / "include" / "memory.inc").read_text()
+    memory_symbols = {
+        name: int(address, 16)
+        for name, address in re.findall(r"DEF (wLevel\w+)\s+EQU \$([0-9A-Fa-f]+)", memory_source)
+    }
+    expected_memory = {
+        "wLevelTileBank": 0xC8B9, "wLevelPaletteBank": 0xC8BA,
+        "wLevelCellMapBank": 0xC8BB, "wLevelMapBank": 0xC8BC,
+        "wLevelPaletteCount": 0xC8C0, "wLevelTiles": 0xC8C1,
+        "wLevelPalettes": 0xC8C3, "wLevelAttributeMap": 0xC8C5,
+        "wLevelTileMap": 0xC8C7, "wLevelCellMap": 0xC8C9,
+        "wLevelAnimationFrame": 0xC8CB, "wLevelTileAnimationTable": 0xC8CE,
+        "wLevelAttributeLookup": 0xC8D0, "wLevelAttributeLookupBank": 0xC8D2,
+        "wLevelNumber": 0xCA06, "wLevelWidth": 0xCA09,
+        "wLevelHeight": 0xCA0A, "wLevelRowOffsets": 0xCA17,
+    }
+    if memory_symbols != expected_memory:
+        fail(f"levels: WRAM symbols differ: {memory_symbols.items() ^ expected_memory.items()}")
 
     print(
         f"levels: {len(levels)} levels in banks $09-$26, every byte in one range, "

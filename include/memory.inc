@@ -47,6 +47,28 @@ DEF wScrollingSceneRows      EQU $D3F3
 DEF wScrollingSceneLastRow   EQU $D3F5
 DEF wScrollingScenePalette   EQU $D3F6
 
+; Active level record and derived lookup state. LoadLevelRecord copies the
+; bank and pointer fields from the selected 20-byte bank-$05 record.
+DEF wLevelTileBank             EQU $C8B9
+DEF wLevelPaletteBank          EQU $C8BA
+DEF wLevelCellMapBank          EQU $C8BB
+DEF wLevelMapBank              EQU $C8BC
+DEF wLevelPaletteCount         EQU $C8C0
+DEF wLevelTiles                EQU $C8C1 ; 2-byte pointer
+DEF wLevelPalettes             EQU $C8C3 ; 2-byte pointer
+DEF wLevelAttributeMap         EQU $C8C5 ; 2-byte pointer
+DEF wLevelTileMap              EQU $C8C7 ; 2-byte pointer
+DEF wLevelCellMap              EQU $C8C9 ; 2-byte pointer
+DEF wLevelAnimationFrame       EQU $C8CB
+DEF wLevelTileAnimationTable   EQU $C8CE ; 2-byte pointer
+DEF wLevelAttributeLookup      EQU $C8D0 ; 2-byte pointer
+DEF wLevelAttributeLookupBank  EQU $C8D2
+
+DEF wLevelNumber               EQU $CA06
+DEF wLevelWidth                EQU $CA09
+DEF wLevelHeight               EQU $CA0A
+DEF wLevelRowOffsets           EQU $CA17 ; little-endian offset per row
+
 
 ; Sound driver state (see AUDIO_RESEARCH.md). Written by Audio_Init
 ; ($06:$7CAE) and used by the driver in bank $06 and ROM0:$2ED5-$2F92.
