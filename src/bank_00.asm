@@ -244,7 +244,7 @@ Jump_01B4:
 	call Func_1AE4
 	call Func_0781
 	call Func_322D
-	call Func_1A86
+	call LoadLevelPalettes
 	call Func_092F
 	call Func_07A7
 	call Func_0AB3
@@ -1413,7 +1413,7 @@ Func_08C6:
 
 Func_0903:
 	ld a, [$CA06]
-	call Func_18EE
+	call LoadLevelData
 	ld b, $00
 	ld c, $00
 	call Func_1B07
@@ -4316,7 +4316,7 @@ Jump_1887:
 	ret
 
 
-Func_188B:
+LoadLevelRecord:
 	push af
 	push bc
 	push de
@@ -4373,7 +4373,7 @@ Jump_18E0:
 	inc bc
 	dec d
 	jr nz, Jump_18E0
-	call Func_1A10
+	call BuildLevelRowOffsets
 	pop hl
 	pop de
 	pop bc
@@ -4381,7 +4381,7 @@ Jump_18E0:
 	ret
 
 
-Func_18EE:
+LoadLevelData:
 	push af
 	push bc
 	push de
@@ -4392,21 +4392,21 @@ Func_18EE:
 	ld [rROMB0], a
 	ld a, b
 	sla a
-	ld hl, $4300
+	ld hl, LevelRecordPointers
 	add a, l
 	ld l, a
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call Func_188B
+	call LoadLevelRecord
 	ld b, $00
 	ld c, $00
 	call Func_1B07
 	ld b, $00
 	ld c, $00
 	call Func_1B18
-	call Func_1A33
-	call Func_1AA4
+	call LoadLevelTiles
+	call LoadLevelCellMap
 	ld a, $01
 	ld [rROMB0], a
 	pop hl
@@ -4576,7 +4576,7 @@ Jump_1A02:
 	ret
 
 
-Func_1A10:
+BuildLevelRowOffsets:
 	push af
 	push bc
 	push de
@@ -4605,7 +4605,7 @@ Jump_1A1E:
 	ret
 
 
-Func_1A33:
+LoadLevelTiles:
 	ld e, l
 	xor a
 	ldh [rVBK], a
@@ -4654,10 +4654,10 @@ Func_1A33:
 	ret
 
 
-Func_1A86:
+LoadLevelPalettes:
 	ldh a, [rLY]
 	cp $90
-	jr c, Func_1A86
+	jr c, LoadLevelPalettes
 	ld a, [$C8BA]
 	ld [rROMB0], a
 	ld a, [$C8C3]
@@ -4671,7 +4671,7 @@ Func_1A86:
 	ret
 
 
-Func_1AA4:
+LoadLevelCellMap:
 	push af
 	push bc
 	push de
@@ -5113,7 +5113,7 @@ Jump_1D8E:
 	ret
 
 
-Func_1D93:
+GetLevelCellTileAndAttr:
 	push hl
 	push bc
 	ld d, $00
@@ -5278,7 +5278,7 @@ Func_1E84:
 	push bc
 	push de
 	push hl
-	call Func_1D93
+	call GetLevelCellTileAndAttr
 	ld b, d
 	ld c, e
 	ld e, l
@@ -5504,7 +5504,7 @@ Jump_1FA4:
 	inc a
 	ldh [$FF93], a
 Jump_1FBD:
-	call Func_1D93
+	call GetLevelCellTileAndAttr
 	ld a, $01
 	ldh [rVBK], a
 Jump_1FC4:

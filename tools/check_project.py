@@ -708,6 +708,17 @@ def check_level_banks() -> None:
     if actual != expected:
         fail(f"levels: assets.txt ranges differ: {sorted(actual ^ expected)[:4]}")
 
+    manifest = {str(path): (start, size) for path, start, size in read_manifest()}
+    bank5_assets = {
+        "assets/bank_05/40B1.bin": (0x140B1, 0x24F),
+        "assets/bank_05/431E.bin": (0x1431E, 0xE2),
+        "assets/bank_05/452C.bin": (0x1452C, 0xC12),
+        "assets/bank_05/517A.bin": (0x1517A, 0x2E86),
+    }
+    for path, where in bank5_assets.items():
+        if manifest.get(path) != where:
+            fail(f"levels: bank $05 asset {path} is {manifest.get(path)}, expected {where}")
+
     inc = (ROOT / "include" / "level_data.inc").read_text()
     consts = {
         match[0]: int(match[1])
@@ -731,6 +742,36 @@ def check_level_banks() -> None:
             fail(f"levels: src/bank_{bank:02X}.asm lost its structured layout")
         if bank % 2 and ("_AttrLookup:" not in source or "_BGPalettes:" not in source):
             fail(f"levels: src/bank_{bank:02X}.asm must define its tables explicitly")
+
+    bank5_source = (ROOT / "src" / "bank_05.asm").read_text()
+    for symbol in ("LevelRecordPointers", "Level00_Record", "Level14_Record",
+                   "LevelAttributeLookupPointers"):
+        if f"{symbol}:" not in bank5_source:
+            fail(f"levels: bank $05 is missing {symbol}")
+
+    sym = ROOT / "battletanx.sym"
+    if sym.exists():
+        symbols = {}
+        for line in sym.read_text().splitlines():
+            match = re.fullmatch(r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip())
+            if match:
+                symbols[match.group(3)] = (int(match.group(1), 16), int(match.group(2), 16))
+        expected_symbols = {
+            "LoadLevelRecord": (0x00, 0x188B),
+            "LoadLevelData": (0x00, 0x18EE),
+            "BuildLevelRowOffsets": (0x00, 0x1A10),
+            "LoadLevelTiles": (0x00, 0x1A33),
+            "LoadLevelPalettes": (0x00, 0x1A86),
+            "LoadLevelCellMap": (0x00, 0x1AA4),
+            "GetLevelCellTileAndAttr": (0x00, 0x1D93),
+            "LevelRecordPointers": (0x05, 0x4300),
+            "Level00_Record": (0x05, 0x4400),
+            "Level14_Record": (0x05, 0x4518),
+            "LevelAttributeLookupPointers": (0x05, 0x513E),
+        }
+        for name, where in expected_symbols.items():
+            if symbols.get(name) != where:
+                fail(f"levels: symbol {name} is at {symbols.get(name)}, expected {where}")
 
     print(
         f"levels: {len(levels)} levels in banks $09-$26, every byte in one range, "

@@ -150,7 +150,10 @@ bytes are zero; `$7FFF` holds the bank number.
   extracted from the ROM by `make assets`, untracked, and listed one per
   range in `assets.txt`; they replace the 30 whole-bank blobs.
 - `include/level_data.inc`: per-level width, height, tile count and palette
-  count, plus the `level_bank_end` macro.
+  count, plus macros for bank endings, level records, and lookup references.
+- `src/bank_05.asm`: the 15 record pointers, 20-byte records, and attribute
+  lookup references are explicit symbolic source rather than part of the
+  former `$40B1-$7FFF` opaque asset.
 - `make levels` (`tools/extract_level_data.py`) writes `build/levels/level_NN/`:
   `record.json`, `cellmap.csv`, `tilemap.csv`, `attrmap.csv`, `cells.csv`
   (decoded tile number, palette, bank, flips, priority, cell byte),
@@ -213,7 +216,7 @@ battletanx.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 trace: 38772 direct bytes, 0 heuristic bytes, 31 RAM code images, 7 RAM data images
 audio: 37 patches, 25 sfx sequences, 10 music sequences, 32 queued ids checked
 levels: 15 levels in banks $09-$26, every byte in one range, 10 negative tests rejected
-project: OK (126 assets, baserom sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
+project: OK (129 assets, baserom sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 graphics: 61 sheets extracted and round-trip verified
 scene maps: 11 fixed scenes (2640 cells), 36 scrolling scenes (709 rows, 14180 cells) rendered and verified
 levels: 15 levels, 112000 cells; CSV, palette and PNG outputs round-trip verified

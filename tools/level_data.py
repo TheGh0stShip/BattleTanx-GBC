@@ -4,13 +4,13 @@
 Every fact here is derived from baserom.gbc and from the routines that read
 it (see DATA_BANKS_09_26.md):
 
-  ROM0 $18EE  level load: a = level, reads pointer table $05:$4300
-  ROM0 $188B  copies record bytes +2..+19 to $C8B9-$C8CA
-  ROM0 $1A33  copies 440 tiles from [$C8C1] in bank [$C8B9] to VRAM
-  ROM0 $1A86  loads [$C8C0] BG palettes from [$C8C3] in bank [$C8BA]
-  ROM0 $1AA4  copies width*height cell bytes from [$C8C9] in bank [$C8BB]
+  ROM0 LoadLevelData reads pointer table $05:$4300
+  ROM0 LoadLevelRecord copies record bytes +2..+19 to $C8B9-$C8CA
+  ROM0 LoadLevelTiles copies 440 tiles from [$C8C1] in bank [$C8B9] to VRAM
+  ROM0 LoadLevelPalettes loads [$C8C0] BG palettes from [$C8C3] in bank [$C8BA]
+  ROM0 LoadLevelCellMap copies width*height bytes from [$C8C9] in bank [$C8BB]
               to WRAM banks 2-3 at $D000
-  ROM0 $1D93  per-cell lookup: tile = [$C8C7 + off], attributes =
+  ROM0 GetLevelCellTileAndAttr: tile = [$C8C7 + off], attributes =
               [$C8C5 + off] in bank [$C8BC]; cells with bit 7 set use the
               160-byte table at [$C8D0] in bank [$C8D2]
   $05:$4088   copies $05:$513E entry (dw table, db bank) to $C8D0-$C8D2

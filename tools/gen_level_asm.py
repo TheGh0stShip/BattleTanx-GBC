@@ -19,7 +19,13 @@ inc = ["; Level data constants for ROM banks $09-$26. Values are copied from the
        "; level records at $05:$4400 (see DATA_BANKS_09_26.md); tools/check_project.py\n"
        "; verifies that they still match the base ROM.\n\n"
        "; Pads a level bank with zeros up to its bank-number marker at $7FFF.\n"
-       "MACRO level_bank_end\n\tds $7FFF - @, $00\n\tdb BANK(@)\nENDM\n"]
+       "MACRO level_bank_end\n\tds $7FFF - @, $00\n\tdb BANK(@)\nENDM\n\n"
+       "; Twenty-byte record consumed by ROM0 LoadLevelData/LoadLevelRecord.\n"
+       "MACRO level_record\n\tdb \\1, \\2\n"
+       "\tdb BANK(\\3), BANK(\\4), BANK(\\5), BANK(\\6), BANK(\\7)\n"
+       "\tdw \\8 - 1\n\tdb \\9\n\tdw \\3, \\4, \\7, \\6, \\5\nENDM\n\n"
+       "; Address, bank, and reserved zero for bank $05:$4088.\n"
+       "MACRO level_attr_lookup\n\tdw \\1\n\tdb BANK(\\1), $00\nENDM\n"]
 assets = []
 for lv in levels:
     n, p = lv.number, f"LEVEL{lv.number:02}"

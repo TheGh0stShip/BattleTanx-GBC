@@ -85,7 +85,10 @@ marker. All 491,520 bytes are covered exactly once.
 
 The source now uses typed assets for the four large ranges in each level,
 explicit lookup tables and palettes, and assembly assertions for every derived
-boundary. `tools/level_data.py` validates all 15 record layouts, legal palette
+boundary. Bank `$05` also expresses all 15 record pointers, 20-byte records,
+and lookup references symbolically. The record, tile, palette, cell-map,
+row-offset, and cell-lookup routines now have behavioral names.
+`tools/level_data.py` validates all 15 record layouts, legal palette
 and tile indexes, zero-filled intervals, markers, and total coverage. Ten
 deliberate corruptions must be rejected. `make levels` emits CSV, JSON, palette,
 tile, and map inspection outputs and verifies their round trips.

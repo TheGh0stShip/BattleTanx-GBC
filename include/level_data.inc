@@ -8,6 +8,23 @@ MACRO level_bank_end
 	db BANK(@)
 ENDM
 
+; Twenty-byte record consumed by ROM0 LoadLevelData/LoadLevelRecord.
+; Arguments: width, height, tiles, palettes, cell map, tile map, attribute map,
+; tile count, palette count.
+MACRO level_record
+	db \1, \2
+	db BANK(\3), BANK(\4), BANK(\5), BANK(\6), BANK(\7)
+	dw \8 - 1
+	db \9
+	dw \3, \4, \7, \6, \5
+ENDM
+
+; Four-byte entry consumed by bank $05:$4088: address, bank, reserved zero.
+MACRO level_attr_lookup
+	dw \1
+	db BANK(\1), $00
+ENDM
+
 DEF LEVEL00_WIDTH EQU 64
 DEF LEVEL00_HEIGHT EQU 64
 DEF LEVEL00_TILE_COUNT EQU 401 ; record +7 holds this minus 1
