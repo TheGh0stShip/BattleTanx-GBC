@@ -3,12 +3,12 @@
 SECTION "ROM Bank $08", ROMX[$4000], BANK[$08]
 	INCBIN "assets/bank_08/4000.bin" ; $4A0 bytes
 
-	LOAD UNION "RAM code $C721", WRAM0[$C721] ; copied from $08:44A0
+	LOAD UNION "RAM data $C721", WRAM0[$C721] ; copied from $08:44A0
 	db $84, $0C, $4A, $31, $51, $4E, $38, $67
 	ENDL
 	INCBIN "assets/bank_08/44A8.bin" ; $22A3 bytes
 
-	LOAD UNION "RAM code $C6F9", WRAM0[$C6F9] ; copied from $08:674B
+	LOAD UNION "RAM data $C6F9", WRAM0[$C6F9] ; copied from $08:674B
 	db $00, $00, $A3, $10, $00, $32, $E0, $42
 	ENDL
 	db $E7, $00, $BD, $42, $81, $7E, $BD, $42, $99, $66, $C3, $3C, $66, $18, $3C, $00
@@ -41,7 +41,7 @@ SECTION "ROM Bank $08", ROMX[$4000], BANK[$08]
 	db $00, $FF, $FF, $0F, $FF, $0F, $F0, $0F, $F0, $0F, $CC, $FF, $CC, $FF, $0C, $FF
 	db $0C, $FF, $FC, $FF, $FC, $FF, $00, $FF, $00, $FF
 
-	LOAD UNION "RAM code $C701", WRAM0[$C701] ; copied from $08:691D
+	LOAD UNION "RAM data $C701", WRAM0[$C701] ; copied from $08:691D
 	db $00, $00, $A3, $10, $15, $15, $FF, $1F
 	ENDL
 	db $00, $FF, $01, $FE, $03, $FC, $07, $F8, $07, $F8, $07, $FF, $07, $FF, $07, $FF
@@ -49,7 +49,7 @@ SECTION "ROM Bank $08", ROMX[$4000], BANK[$08]
 	db $07, $FF, $07, $FF, $07, $FF, $07, $FE, $0F, $F6, $1F, $E6, $3F, $C6, $7F, $86
 	db $E0, $FF, $E0, $FF, $E0, $FF, $E0, $7F, $F0, $6F, $F8, $67, $FC, $63, $FE, $61
 
-	LOAD UNION "RAM code $C709", WRAM0[$C709] ; copied from $08:6965
+	LOAD UNION "RAM data $C709", WRAM0[$C709] ; copied from $08:6965
 	db $00, $00, $1F, $00, $A3, $10, $FF, $7F
 	ENDL
 	db $07, $FF, $07, $FF, $1F, $FF, $0F, $FF, $07, $FF, $07, $FF, $03, $FF, $01, $FF
@@ -57,7 +57,7 @@ SECTION "ROM Bank $08", ROMX[$4000], BANK[$08]
 	db $00, $FF, $FE, $FF, $FE, $FF, $FC, $FF, $FC, $FF, $78, $FF, $78, $FF, $30, $FF
 	db $00, $FF, $7F, $FF, $7F, $FF, $3F, $FF, $3F, $FF, $1E, $FF, $1E, $FF, $0C, $FF
 
-	LOAD UNION "RAM code $C711", WRAM0[$C711] ; copied from $08:69AD
+	LOAD UNION "RAM data $C711", WRAM0[$C711] ; copied from $08:69AD
 	db $00, $00, $00, $00, $00, $00, $FE, $03
 	ENDL
 	INCBIN "assets/bank_08/69B5.bin" ; $420 bytes

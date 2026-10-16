@@ -187,7 +187,9 @@ class Emitter:
                 flush()
                 ld = self.loads[i]
                 region = "HRAM" if ld.dst >= 0xFF80 else ("WRAM0" if ld.dst < 0xD000 else "WRAMX")
-                out.append(f'\n\tLOAD UNION "RAM code ${ld.dst:04X}", {region}[${ld.dst:04X}] ; copied from ${b:02X}:{self.addr_rom(i):04X}\n')
+                has_code = any(ld.src <= off < ld.src + ld.len for off in self.insn)
+                kind = "code" if has_code else "data"
+                out.append(f'\n\tLOAD UNION "RAM {kind} ${ld.dst:04X}", {region}[${ld.dst:04X}] ; copied from ${b:02X}:{self.addr_rom(i):04X}\n')
                 in_load = ld
             if i in self.emitted_labels:
                 flush()

@@ -2404,7 +2404,7 @@ Jump_01_51CB:
 	ret
 
 
-	LOAD UNION "RAM code $D70A", WRAMX[$D70A] ; copied from $01:51CC
+	LOAD UNION "RAM data $D70A", WRAMX[$D70A] ; copied from $01:51CC
 	db $7B, $B7, $28, $25, $D5, $CD, $D9, $3C, $D1, $CB, $7B, $20, $1D, $CB, $73, $20
 	db $1A, $CB, $6B, $20, $17, $CB, $63, $20, $18, $CB, $5B, $20, $1A, $CB, $53, $20
 	db $17, $CB, $4B, $20, $14, $CB, $43, $20, $50, $C9, $C9, $C9, $AF, $CD, $AA, $4C
@@ -2917,7 +2917,7 @@ Jump_01_565E:
 	ret
 
 
-	LOAD UNION "RAM code $D7CA", WRAMX[$D7CA] ; copied from $01:565F
+	LOAD UNION "RAM data $D7CA", WRAMX[$D7CA] ; copied from $01:565F
 	db $C9
 	ENDL
 	db $00
@@ -4794,7 +4794,7 @@ Func_01_6580:
 	ret
 
 
-	LOAD UNION "RAM code $D260", WRAMX[$D260] ; copied from $01:6599
+	LOAD UNION "RAM data $D260", WRAMX[$D260] ; copied from $01:6599
 	db $C9
 	ENDL
 	db $00

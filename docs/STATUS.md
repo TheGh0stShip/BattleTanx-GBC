@@ -18,7 +18,7 @@ claim.
 - Toolchain: RGBDS 1.0.4
 - Whole-ROM match: 1,048,576 / 1,048,576 bytes (100%)
 - ROM banks represented: 64 / 64
-- RAM relocation blocks detected: 38
+- Copied RAM images detected: 38 (30 executable, 8 data-only)
 
 This is complete binary reconstruction. It is not complete semantic recovery.
 
@@ -26,10 +26,10 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 | Area | Current state | Next gate |
 | --- | --- | --- |
-| Reviewed code | 37,612 bytes traced from known entries, pointers, RAM relocations, and reviewed standalone entries | Name and document routines from behavior |
+| Reviewed code | 37,612 bytes traced from known entries, pointers, executable RAM images, and reviewed standalone entries | Name and document routines from behavior |
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, OAM DMA, MBC5 bank selection, VBlank synchronization, and the runtime callback named | Continue naming routines and RAM state from evidence |
-| RAM code | ROM source and runtime address represented with `LOAD` blocks | Verify every copy site and execution entry |
+| RAM images | 30 executable and 8 data-only images retain ROM source and runtime addresses with `LOAD` blocks | Name each image and verify every copy site |
 | Graphics | Preserved in extracted binary ranges | Identify formats and add lossless conversion tools |
 | Maps | Preserved in extracted binary ranges | Identify pointer tables, compression, and layouts |
 | Audio | Preserved in extracted binary ranges | Identify engine, sequences, instruments, and samples |

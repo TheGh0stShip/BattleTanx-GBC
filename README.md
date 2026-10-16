@@ -36,7 +36,7 @@ make            # verifies baserom, extracts assets, builds, compares
 1. `tools/verify_rom.py` verifies the base ROM hash before anything else.
 2. `tools/trace.py` does recursive-descent tracing from the reset/interrupt vectors,
    tracking MBC5 bank writes (`ld a, n` / `ld [$2000], a`), the bank-1 screen table at
-   `$47EC`, stored code pointers, and code copied into WRAM/HRAM by `CopyBytes`
+   `$47EC`, stored code pointers, and regions copied into WRAM/HRAM by `CopyBytes`
    (`$0A8F`) / `CopyBytesShort` (`$0AA4`). A conservative gap-fill pass picks up
    functions reached only indirectly.
 3. `tools/disasm.py` emits RGBDS source. RAM-resident code is emitted inside
@@ -52,7 +52,7 @@ only to bootstrap; from then on `src/` is the source of truth.
 
 All 1,048,576 bytes reconstruct exactly. That establishes a complete binary
 rebuild, not a complete understanding of the source. The tracer currently reaches
-37,612 instruction bytes from known entry points, pointers, RAM relocations, and
+37,612 instruction bytes from known entry points, pointers, executable RAM images, and
 reviewed standalone routine entries. The optional gap pass currently adds zero
 bytes; confirmed data ranges are explicitly excluded from instruction tracing.
 

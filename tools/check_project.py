@@ -80,6 +80,15 @@ def check_tracing() -> None:
             "tracing baseline changed; review it and update docs deliberately "
             f"(bytes={direct_bytes}, loads={len(traced.loads)})"
         )
+    executable_loads = sum(
+        any(load.src <= off < load.src + load.len for off in traced.code)
+        for load in traced.loads.values()
+    )
+    if executable_loads != 30:
+        fail(
+            "RAM image classification changed; review it deliberately "
+            f"(code={executable_loads}, data={len(traced.loads) - executable_loads})"
+        )
     trace.gap_fill(traced, hints.CODE_BANKS, hints.DATA_RANGES)
     total_bytes = sum(traced.code.values())
     if total_bytes != 37612:
@@ -87,7 +96,8 @@ def check_tracing() -> None:
     print(
         "trace: "
         f"{direct_bytes} direct bytes, {total_bytes - direct_bytes} heuristic bytes, "
-        f"{len(traced.loads)} RAM loads"
+        f"{executable_loads} RAM code images, "
+        f"{len(traced.loads) - executable_loads} RAM data images"
     )
 
 
