@@ -3394,7 +3394,165 @@ SceneBackgroundDescriptors:
 SceneDescriptorIndexTable:
 	db 6, 7, 8, 9, 10
 
-	INCBIN "assets/bank_01/5A60.bin" ; $15A bytes
+; bank, 16-byte metatile records, 12-byte row records, row count, palette
+ScrollingSceneDescriptors:
+	db $3B
+	dw $6218, $6E88
+	db $23
+	dw $7428
+	db $39
+	dw $4000, $5400
+	db $28
+	dw $5A68
+	db $39
+	dw $5A70, $6B50
+	db $23
+	dw $70F0
+	db $3A
+	dw $4000, $5460
+	db $25
+	dw $5A50
+	db $3A
+	dw $5A58, $6A48
+	db $25
+	dw $7038
+	db $3B
+	dw $5090, $5D60
+	db $1D
+	dw $6210
+	db $34
+	dw $4000, $4E40
+	db $19
+	dw $5250
+	db $34
+	dw $5258, $60D8
+	db $1A
+	dw $6510
+	db $34
+	dw $6518, $71F8
+	db $1A
+	dw $7630
+	db $35
+	dw $4000, $4A60
+	db $1A
+	dw $4E98
+	db $35
+	dw $4EA0, $5AD0
+	db $19
+	dw $5EE0
+	db $35
+	dw $5EE8, $6D88
+	db $1A
+	dw $71C0
+	db $36
+	dw $4000, $4D30
+	db $1A
+	dw $5168
+	db $36
+	dw $5170, $5BB0
+	db $1A
+	dw $5FE8
+	db $36
+	dw $5FF0, $6D30
+	db $1A
+	dw $7168
+	db $37
+	dw $4000, $4B80
+	db $1A
+	dw $4FB8
+	db $37
+	dw $4FC0, $5B30
+	db $1A
+	dw $5F68
+	db $37
+	dw $5F70, $6AC0
+	db $1A
+	dw $6EF8
+	db $38
+	dw $4000, $4B00
+	db $19
+	dw $4F10
+	db $38
+	dw $4F18, $5D88
+	db $19
+	dw $6198
+	db $38
+	dw $61A0, $6CA0
+	db $19
+	dw $70B0
+	db $2F
+	dw $4000, $4460
+	db $05
+	dw $4550
+	db $2F
+	dw $4558, $4998
+	db $05
+	dw $4A88
+	db $2F
+	dw $4A90, $4EE0
+	db $05
+	dw $4FD0
+	db $2F
+	dw $4FD8, $54C8
+	db $05
+	dw $55B8
+	db $2F
+	dw $55C0, $5A90
+	db $05
+	dw $5B80
+	db $2F
+	dw $5B88, $5FD8
+	db $05
+	dw $60C8
+	db $2F
+	dw $60D0, $6520
+	db $05
+	dw $6610
+	db $2F
+	dw $6618, $6A28
+	db $05
+	dw $6B18
+	db $2F
+	dw $6B20, $6F40
+	db $05
+	dw $7030
+	db $2F
+	dw $7038, $7438
+	db $05
+	dw $7528
+	db $2F
+	dw $7530, $79F0
+	db $05
+	dw $7AE0
+	db $30
+	dw $4000, $44A0
+	db $05
+	dw $4590
+	db $30
+	dw $4598, $49F8
+	db $05
+	dw $4AE8
+	db $30
+	dw $4AF0, $5020
+	db $05
+	dw $5110
+	db $30
+	dw $5118, $5648
+	db $05
+	dw $5738
+
+SceneScrollVariantIndexTable:
+	db $15, $16, $17, $00, $18, $19, $1A, $00, $1B, $1C
+	db $1D, $00, $1E, $1F, $20, $00, $21, $22, $23
+
+SceneScrollDescriptorIndexTable:
+	db $06, $07, $08, $00, $09, $0A, $0B, $00, $0C, $0D
+	db $0E, $00, $0F, $10, $11, $00, $12, $13, $14
+
+SceneScrollInitialRowTable:
+	db $13, $14, $14, $00, $14, $14, $14, $00, $14, $14
+	db $14, $00, $14, $14, $14, $00, $13, $13, $13
+	db $00 ; alignment before the RAM image at $5BBA
 
 	LOAD UNION "RAM code $D120", WRAMX[$D120] ; copied from $01:5BBA
 
@@ -4467,7 +4625,7 @@ Func_01_6367:
 	add a, a
 	add a, a
 	add a, c
-	ld hl, $5B80
+	ld hl, SceneScrollVariantIndexTable
 	ld a, a
 	add a, l
 	ld l, a
@@ -4562,7 +4720,7 @@ Func_01_63D1:
 	ld h, a
 	ld a, [hl]
 	ldh [$FF81], a
-	ld hl, $5B93
+	ld hl, SceneScrollDescriptorIndexTable
 	pop bc
 	ld a, b
 	add a, a
@@ -4895,7 +5053,7 @@ Func_01_6580:
 	db $00
 
 Func_01_659B:
-	ld hl, $5A60
+	ld hl, ScrollingSceneDescriptors
 	ldh a, [$FF82]
 	ld c, a
 	ld b, $00

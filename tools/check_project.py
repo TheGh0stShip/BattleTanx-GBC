@@ -101,6 +101,34 @@ def check_scene_descriptors(rom: bytes) -> None:
     if rom[0x5A5B:0x5A60] != bytes((6, 7, 8, 9, 10)):
         fail("scene descriptor index table changed")
 
+    table = 0x5A60
+    row_counts = []
+    for index in range(36):
+        record = rom[table + index * 8 : table + (index + 1) * 8]
+        bank = record[0]
+        metatiles = int.from_bytes(record[1:3], "little")
+        rows = int.from_bytes(record[3:5], "little")
+        row_count = record[5]
+        palette = int.from_bytes(record[6:8], "little")
+        if bank not in range(0x2F, 0x3C):
+            fail(f"scrolling-scene descriptor {index} has unexpected bank {bank:#x}")
+        if not 0x4000 <= metatiles < 0x8000:
+            fail(f"scrolling-scene descriptor {index} metatiles lie outside its bank")
+        if rows < 0x4000 or rows + row_count * 12 > 0x8000:
+            fail(f"scrolling-scene descriptor {index} row data lies outside its bank")
+        if palette < 0x4000 or palette + 8 > 0x8000:
+            fail(f"scrolling-scene descriptor {index} palette lies outside its bank")
+        row_counts.append(row_count)
+
+    variant_indices = rom[0x5B80:0x5B93]
+    descriptor_indices = rom[0x5B93:0x5BA6]
+    initial_rows = rom[0x5BA6:0x5BB9]
+    if max(variant_indices) >= 36 or max(descriptor_indices) >= 36:
+        fail("scrolling-scene lookup selects a nonexistent descriptor")
+    for slot, (index, row) in enumerate(zip(descriptor_indices, initial_rows)):
+        if row >= row_counts[index]:
+            fail(f"scrolling-scene lookup {slot} starts outside its row data")
+
 
 def check_tracing() -> None:
     sys.path.insert(0, str(ROOT / "tools"))
