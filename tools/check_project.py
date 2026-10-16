@@ -71,6 +71,10 @@ def check_assets(entries: list[tuple[pathlib.Path, int, int]]) -> None:
 def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -> None:
     expected = {
         pathlib.Path("assets/bank_08/ui_font_tiles.bin"): (0x20000, 0x4A0),
+        pathlib.Path("assets/bank_08/interface_tiles_60F8.bin"): (0x220F8, 0x10),
+        pathlib.Path("assets/bank_08/interface_tiles_611A.bin"): (0x2211A, 0x100),
+        pathlib.Path("assets/bank_08/interface_tiles_6222.bin"): (0x22222, 0x20),
+        pathlib.Path("assets/bank_08/interface_tiles_626B.bin"): (0x2226B, 0x4E0),
         pathlib.Path("assets/bank_08/hud_icon_tiles.bin"): (0x22753, 0xA0),
         pathlib.Path("assets/bank_08/interface_tiles_6815.bin"): (0x22815, 0xC0),
         pathlib.Path("assets/bank_08/interface_tiles_68DD.bin"): (0x228DD, 0x40),
@@ -97,7 +101,6 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
     palettes = {
         0x204A0: (0x0C84, 0x314A, 0x4E51, 0x6738),
         0x2274B: (0x0000, 0x10A3, 0x3200, 0x42E0),
-        0x2280D: (0x1FFF, 0x0000, 0x5818, 0x7E9F),
         0x228D5: (0x0000, 0x001F, 0x465F, 0x7FFF),
         0x2291D: (0x0000, 0x10A3, 0x1515, 0x1FFF),
         0x22965: (0x0000, 0x001F, 0x10A3, 0x7FFF),
@@ -113,16 +116,35 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
 
     if rom[0x227F3:0x227FD] != bytes((0, 1, 0, 2, 3, 1, 2, 0, 3, 0)):
         fail("bank 08 palette-index table changed")
-    if rom[0x227FD:0x2280D] != bytes.fromhex(
-        "00 00 02 70 fe 03 12 0c 1f 00 ff 7f 15 15 de 15"
-    ):
-        fail("bank 08 sprite-layout record changed")
+    object_palettes = {
+        0x20512: (0x0000, 0x0000, 0x0000),
+        0x206EA: (0x001C, 0x025C, 0x03FF),
+        0x227FD: (
+            0x0000, 0x7002, 0x03FE,
+            0x0C12, 0x001F, 0x7FFF,
+            0x1515, 0x15DE, 0x1FFF,
+            0x0000, 0x5818, 0x7E9F,
+        ),
+    }
+    for offset, expected_colors in object_palettes.items():
+        colors = tuple(
+            int.from_bytes(rom[pos : pos + 2], "little")
+            for pos in range(offset, offset + len(expected_colors) * 2, 2)
+        )
+        if colors != expected_colors or any(color & 0x8000 for color in colors):
+            fail(f"bank 08 object palette at ROM offset {offset:#x} changed")
 
     sym = ROOT / "battletanx.sym"
     if sym.exists():
         expected_symbols = {
             "Bank08UiFontTiles": (0x08, 0x4000),
             "Bank08UiFontPalette": (0x08, 0x44A0),
+            "Bank08ObjectPalette4512": (0x08, 0x4512),
+            "Bank08ObjectPalette46EA": (0x08, 0x46EA),
+            "Bank08InterfaceTiles60F8": (0x08, 0x60F8),
+            "Bank08InterfaceTiles611A": (0x08, 0x611A),
+            "Bank08InterfaceTiles6222": (0x08, 0x6222),
+            "Bank08InterfaceTiles626B": (0x08, 0x626B),
             "Bank08HudIconPalette": (0x08, 0x674B),
             "Bank08HudIconTiles": (0x08, 0x6753),
             "Bank08ArrowUpPalette": (0x08, 0x691D),
@@ -132,8 +154,7 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
             "Bank08AlphanumericFontPalette": (0x08, 0x69AD),
             "Bank08AlphanumericFontTiles": (0x08, 0x69B5),
             "Bank08PaletteIndexTable": (0x08, 0x67F3),
-            "Bank08SpriteLayout67FD": (0x08, 0x67FD),
-            "Bank08InterfacePalette680D": (0x08, 0x680D),
+            "Bank08ObjectPalettes67FD": (0x08, 0x67FD),
             "Bank08InterfaceTiles6815": (0x08, 0x6815),
             "Bank08InterfacePalette68D5": (0x08, 0x68D5),
             "Bank08InterfaceTiles68DD": (0x08, 0x68DD),

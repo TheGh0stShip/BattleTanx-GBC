@@ -1254,31 +1254,31 @@ Func_07A7:
 	ld [rROMB0], a
 	ld a, $27
 	ld [rROMB0], a
-	ld hl, $4512
+	ld hl, Bank08ObjectPalette4512
 	ld b, $00
 	ld c, $01
 	call Func_057D
 	ld a, $28
 	ld [rROMB0], a
-	ld hl, $4512
+	ld hl, Bank08ObjectPalette4512
 	ld b, $01
 	ld c, $01
 	call Func_057D
 	ld a, $29
 	ld [rROMB0], a
-	ld hl, $4512
+	ld hl, Bank08ObjectPalette4512
 	ld b, $02
 	ld c, $01
 	call Func_057D
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $46EA
+	ld hl, Bank08ObjectPalette46EA
 	ld b, $03
 	ld c, $01
 	call Func_057D
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $67FD
+	ld hl, Bank08ObjectPalettes67FD
 	ld b, $04
 	ld c, $04
 	call Func_057D
@@ -1299,17 +1299,17 @@ Func_0807:
 	ld e, $40
 	ld d, $01
 	ld a, $80
-	ld bc, $60F8
+	ld bc, Bank08InterfaceTiles60F8
 	call Func_0622
 	ld e, $41
 	ld d, $02
 	ld a, $80
-	ld bc, $6222
+	ld bc, Bank08InterfaceTiles6222
 	call Func_0622
 	ld e, $43
 	ld d, $10
 	ld a, $80
-	ld bc, $611A
+	ld bc, Bank08InterfaceTiles611A
 	call Func_0622
 	ld a, $08
 	ld [rROMB0], a
@@ -1352,7 +1352,7 @@ Func_0879:
 	ld e, $00
 	ld d, $4E
 	ld a, $80
-	ld bc, $626B
+	ld bc, Bank08InterfaceTiles626B
 	call Func_0622
 	ld e, $4E
 	ld d, $04

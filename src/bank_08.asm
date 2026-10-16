@@ -9,7 +9,32 @@ Bank08UiFontPalette:
 wUiFontPalette:
 	dw $0C84, $314A, $4E51, $6738
 	ENDL
-	INCBIN "assets/bank_08/44A8.bin" ; $22A3 bytes
+	INCBIN "assets/bank_08/unknown_44A8.bin"
+
+Bank08ObjectPalette4512:
+	dw $0000, $0000, $0000
+
+	INCBIN "assets/bank_08/unknown_4518.bin"
+
+Bank08ObjectPalette46EA:
+	dw $001C, $025C, $03FF
+
+	INCBIN "assets/bank_08/unknown_46F0.bin"
+
+Bank08InterfaceTiles60F8:
+	INCBIN "assets/bank_08/interface_tiles_60F8.bin" ; 1 native 2bpp tile
+	INCBIN "assets/bank_08/unknown_6108.bin"
+
+Bank08InterfaceTiles611A:
+	INCBIN "assets/bank_08/interface_tiles_611A.bin" ; 16 native 2bpp tiles
+	INCBIN "assets/bank_08/unknown_621A.bin"
+
+Bank08InterfaceTiles6222:
+	INCBIN "assets/bank_08/interface_tiles_6222.bin" ; 2 native 2bpp tiles
+	INCBIN "assets/bank_08/unknown_6242.bin"
+
+Bank08InterfaceTiles626B:
+	INCBIN "assets/bank_08/interface_tiles_626B.bin" ; 78 native 2bpp tiles
 
 Bank08HudIconPalette:
 	LOAD UNION "RAM data $C6F9", WRAM0[$C6F9] ; copied from $08:674B
@@ -22,12 +47,13 @@ Bank08HudIconTiles:
 Bank08PaletteIndexTable:
 	db 0, 1, 0, 2, 3, 1, 2, 0, 3, 0
 
-Bank08SpriteLayout67FD:
-	db $00, $00, $02, $70, $FE, $03, $12, $0C
-	db $1F, $00, $FF, $7F, $15, $15, $DE, $15
-
-Bank08InterfacePalette680D:
-	dw $1FFF, $0000, $5818, $7E9F
+; Four object palettes. The loader supplies color zero, then reads these three
+; 15-bit colors into the remaining slots of each palette.
+Bank08ObjectPalettes67FD:
+	dw $0000, $7002, $03FE
+	dw $0C12, $001F, $7FFF
+	dw $1515, $15DE, $1FFF
+	dw $0000, $5818, $7E9F
 
 Bank08InterfaceTiles6815:
 	INCBIN "assets/bank_08/interface_tiles_6815.bin" ; 12 native 2bpp tiles

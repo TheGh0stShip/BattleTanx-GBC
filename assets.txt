@@ -12,7 +12,16 @@ assets/bank_04/6575.bin 0x12575 0x1a8b
 assets/bank_05/40B1.bin 0x140b1 0x3f4f
 assets/bank_07/4000.bin 0x1c000 0x4000
 assets/bank_08/ui_font_tiles.bin 0x20000 0x4a0
-assets/bank_08/44A8.bin 0x204a8 0x22a3
+assets/bank_08/unknown_44A8.bin 0x204a8 0x6a
+assets/bank_08/unknown_4518.bin 0x20518 0x1d2
+assets/bank_08/unknown_46F0.bin 0x206f0 0x1a08
+assets/bank_08/interface_tiles_60F8.bin 0x220f8 0x10
+assets/bank_08/unknown_6108.bin 0x22108 0x12
+assets/bank_08/interface_tiles_611A.bin 0x2211a 0x100
+assets/bank_08/unknown_621A.bin 0x2221a 0x8
+assets/bank_08/interface_tiles_6222.bin 0x22222 0x20
+assets/bank_08/unknown_6242.bin 0x22242 0x29
+assets/bank_08/interface_tiles_626B.bin 0x2226b 0x4e0
 assets/bank_08/hud_icon_tiles.bin 0x22753 0xa0
 assets/bank_08/interface_tiles_6815.bin 0x22815 0xc0
 assets/bank_08/interface_tiles_68DD.bin 0x228dd 0x40
