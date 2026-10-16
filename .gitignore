@@ -1,0 +1,9 @@
+# Never commit ROMs or ROM-extracted data
+*.gbc
+*.gb
+assets/
+build/
+*.sym
+*.map
+__pycache__/
+AGENTS.md
