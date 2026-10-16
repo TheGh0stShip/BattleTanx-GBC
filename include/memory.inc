@@ -18,6 +18,20 @@ DEF wMusicSetting   EQU $D55B
 DEF wControlSetting EQU $D55C
 DEF wSkillSetting   EQU $D55D
 
+; Menu/flow state. The state pointers address the five-byte headers followed
+; by their fixed-size choice records in bank 1. The input loop compares the
+; requested state with the last rendered state before rebuilding the screen.
+DEF wMenuState                EQU $D557 ; 2-byte pointer
+DEF wMenuRenderedState        EQU $D559 ; 2-byte pointer
+DEF wMenuActive               EQU $D55E
+DEF wMenuPreviousButtons      EQU $D55F
+DEF wMenuRepeatTimer          EQU $D560
+DEF wMenuScrollDirection      EQU $D563 ; 0 idle, 1 right, 2 left
+DEF wMenuState05Selection     EQU $D566 ; wraps through 0..2
+DEF wMenuGridColumn           EQU $D567 ; wraps through 0..2
+DEF wMenuGridRow              EQU $D568 ; wraps through 0..4
+DEF wMenuCursorSpritesEnabled EQU $D569
+
 ; Active fixed-background descriptor, copied from SceneBackgroundDescriptors.
 DEF wFixedSceneGraphicsBank  EQU $D3E0
 DEF wFixedSceneGraphics      EQU $D3E1

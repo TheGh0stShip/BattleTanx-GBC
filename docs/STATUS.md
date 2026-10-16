@@ -55,6 +55,17 @@ callback is copied from bank `$01:$51CC` and executes from WRAM at `$D70A`.
 Every known indirect site is therefore structurally modeled, although each
 remains an indirect transfer at runtime.
 
+## Menu state
+
+The main menu loop keeps separate two-byte pointers for the requested state
+and the last state rendered. It rebuilds the screen only when those pointers
+differ, then dispatches the input callback stored in the requested state's
+header. The associated WRAM fields now have checked symbols for the active
+flag, previous button state, repeat timer, horizontal scroll direction, the
+three-value state-`$05` selection, and the state-`$06` 3-by-5 grid selection.
+The cursor-sprite enable flag is also named from its use in the installed STAT
+interrupt routine. Fields whose behavior is not yet established remain raw.
+
 ## Immediate roadmap
 
 1. Introduce evidence-based WRAM/HRAM symbols and hardware-state documentation.

@@ -222,6 +222,39 @@ def check_menu_states(rom: bytes) -> None:
                 fail(f"menu symbol {name} is at {symbols.get(name)}, expected {where}")
 
 
+def check_menu_memory_symbols() -> None:
+    expected = {
+        "wMenuState": 0xD557,
+        "wMenuRenderedState": 0xD559,
+        "wMenuActive": 0xD55E,
+        "wMenuPreviousButtons": 0xD55F,
+        "wMenuRepeatTimer": 0xD560,
+        "wMenuScrollDirection": 0xD563,
+        "wMenuState05Selection": 0xD566,
+        "wMenuGridColumn": 0xD567,
+        "wMenuGridRow": 0xD568,
+        "wMenuCursorSpritesEnabled": 0xD569,
+    }
+    memory = (ROOT / "include" / "memory.inc").read_text()
+    definitions = {
+        match.group(1): int(match.group(2), 16)
+        for match in re.finditer(
+            r"^DEF\s+(\w+)\s+EQU\s+\$([0-9A-Fa-f]+)", memory, re.MULTILINE
+        )
+    }
+    for name, address in expected.items():
+        if definitions.get(name) != address:
+            fail(
+                f"menu memory symbol {name} is {definitions.get(name)}, "
+                f"expected {address:#06x}"
+            )
+
+    source = (ROOT / "src" / "bank_01.asm").read_text()
+    for address in expected.values():
+        if re.search(rf"\${address:04X}\b", source):
+            fail(f"raw menu address {address:#06x} returned to bank 1 source")
+
+
 def check_tracing() -> None:
     sys.path.insert(0, str(ROOT / "tools"))
     import hints  # pylint: disable=import-outside-toplevel
@@ -425,6 +458,7 @@ def main() -> None:
     rom = (ROOT / "baserom.gbc").read_bytes()
     check_scene_descriptors(rom)
     check_menu_states(rom)
+    check_menu_memory_symbols()
     check_tracing()
     check_audio()
     digest = hashlib.sha1((ROOT / "baserom.gbc").read_bytes()).hexdigest()

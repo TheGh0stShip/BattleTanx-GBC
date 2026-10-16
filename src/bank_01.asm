@@ -1327,14 +1327,14 @@ MenuState03:
 MenuState05:
 	menu_state $05, $04, $00, HandleMenuState05Input
 	menu_choice $00, $00, MenuState00, $00, $14
-	menu_choice $01, $03, $D566, $00, $14
+	menu_choice $01, $03, wMenuState05Selection, $00, $14
 	menu_choice $02, $00, MenuState06, $00, $14
 	db $FF
 
 MenuState06:
 	menu_state $06, $0B, $00, HandleMenuState06Input
 	menu_choice $00, $00, MenuState05, $00, $14
-	menu_choice $01, $03, $D567, $00, $14
+	menu_choice $01, $03, wMenuGridColumn, $00, $14
 	menu_choice $02, $01, 0, $00, $14
 	db $FF
 OptionsOnText:
@@ -1369,7 +1369,7 @@ RAM_D56A:
 	res 5, a
 	ldh [rLCDC], a
 	ld a, $14
-	ld [$D560], a
+	ld [wMenuRepeatTimer], a
 	ld a, $01
 	ldh [rSVBK], a
 	ld hl, RAM_D702
@@ -1379,27 +1379,27 @@ RAM_D56A:
 	ld [$D562], a
 	xor a
 	ld [$C6CD], a
-	ld [$D567], a
-	ld [$D568], a
-	ld [$D563], a
-	ld [$D569], a
+	ld [wMenuGridColumn], a
+	ld [wMenuGridRow], a
+	ld [wMenuScrollDirection], a
+	ld [wMenuCursorSpritesEnabled], a
 	ld a, [$C6CF]
 	ld [wSkillSetting], a
 	call Func_01_4A62
 	ld a, [$C6B5]
-	ld [$D55F], a
+	ld [wMenuPreviousButtons], a
 	call Func_01_4B4A
 	call Func_0781
 	ld a, $01
-	ld [$D55E], a
+	ld [wMenuActive], a
 	ld [$D550], a
 	ld hl, $4855
 	ld a, l
-	ld [$D557], a
-	ld [$D559], a
+	ld [wMenuState], a
+	ld [wMenuRenderedState], a
 	ld a, h
-	ld [$D558], a
-	ld [$D55A], a
+	ld [wMenuState + 1], a
+	ld [wMenuRenderedState + 1], a
 	call Func_01_4E90
 	call RAM_D9CB
 	call Func_01_5377
@@ -1446,7 +1446,7 @@ RAM_D62A:
 	push de
 	push hl
 RAM_D62E:
-	ld a, [$D55E]
+	ld a, [wMenuActive]
 	or a
 	jr nz, RAM_D650
 	pop hl
@@ -1464,22 +1464,22 @@ RAM_D62E:
 	ret
 
 RAM_D650:
-	ld a, [$D557]
+	ld a, [wMenuState]
 	ld b, a
-	ld a, [$D559]
+	ld a, [wMenuRenderedState]
 	cp b
 	jr nz, RAM_D664
-	ld a, [$D558]
+	ld a, [wMenuState + 1]
 	ld b, a
-	ld a, [$D55A]
+	ld a, [wMenuRenderedState + 1]
 	cp b
 	jr z, RAM_D6C7
 RAM_D664:
 	call Func_06F8
 	call Func_01_5400
-	ld a, [$D557]
+	ld a, [wMenuState]
 	ld l, a
-	ld a, [$D558]
+	ld a, [wMenuState + 1]
 	ld h, a
 	ld a, $01
 	ld [$D550], a
@@ -1490,9 +1490,9 @@ RAM_D664:
 	ld [$D556], a
 	xor a
 	call Func_01_4C15
-	ld a, [$D557]
+	ld a, [wMenuState]
 	ld l, a
-	ld a, [$D558]
+	ld a, [wMenuState + 1]
 	ld h, a
 	ld a, $01
 	add a, l
@@ -1516,10 +1516,10 @@ RAM_D6B4:
 	call Func_01_4FE0
 	cp $FF
 	jr nz, RAM_D6B4
-	ld a, [$D557]
-	ld [$D559], a
-	ld a, [$D558]
-	ld [$D55A], a
+	ld a, [wMenuState]
+	ld [wMenuRenderedState], a
+	ld a, [wMenuState + 1]
+	ld [wMenuRenderedState + 1], a
 RAM_D6C7:
 	call Audio_Update
 	xor a
@@ -1541,9 +1541,9 @@ RAM_D6CE:
 	call Func_01_54FA
 	ld bc, RAM_D702
 	push bc
-	ld a, [$D557]
+	ld a, [wMenuState]
 	ld l, a
-	ld a, [$D558]
+	ld a, [wMenuState + 1]
 	ld h, a
 	ld a, $03
 	add a, l
@@ -1585,20 +1585,99 @@ Func_01_4B4A:
 
 
 	LOAD UNION "RAM code $C729", WRAM0[$C729] ; copied from $01:4B72
-	db $F5, $E5, $C5, $FA, $56, $D5, $B7, $20, $06, $3E, $08, $E0, $42, $18, $11, $F0
-	db $44, $06, $00, $4F, $CB, $21, $CB, $10, $21, $FB, $D9, $09, $2A, $7E, $E0, $42
-	db $C1, $E1, $F1, $D9
+
+RAM_C729_01_4B72:
+	push af
+	push hl
+	push bc
+	ld a, [$D556]
+	or a
+	jr nz, RAM_C738
+	ld a, $08
+	ldh [rSCY], a
+	jr RAM_C749
+RAM_C738:
+	ldh a, [rLY]
+	ld b, $00
+	ld c, a
+	sla c
+	rl b
+	ld hl, $D9FB
+	add hl, bc
+	ld a, [hli]
+	ld a, [hl]
+	ldh [rSCY], a
+RAM_C749:
+	pop bc
+	pop hl
+	pop af
+	reti
 	ENDL
 
 	LOAD UNION "RAM code $C7F1", WRAM0[$C7F1] ; copied from $01:4B96
-	db $F5, $D5, $C5, $E5, $FA, $FC, $D9, $E0, $42, $F0, $70, $E6, $03, $F5, $3E, $01
-	db $E0, $70, $FA, $69, $D5, $B7, $28, $1F, $FA, $53, $D5, $C6, $10, $EA, $00, $FE
-	db $EA, $04, $FE, $EA, $10, $FE, $EA, $14, $FE, $C6, $08, $EA, $08, $FE, $EA, $0C
-	db $FE, $EA, $18, $FE, $EA, $1C, $FE, $F0, $40, $CB, $A7, $E0, $40, $FA, $B7, $C6
-	db $E6, $01, $28, $0F, $CD, $59, $0A, $FA, $B5, $C6, $E6, $F0, $FE, $F0, $20, $03
-	db $C3, $DA, $00, $FA, $FF, $7F, $F5, $3E, $01, $EA, $00, $20, $CD, $19, $56, $F1
-	db $EA, $00, $20, $FA, $B7, $C6, $3C, $EA, $B7, $C6, $FA, $B8, $C6, $CE, $00, $EA
-	db $B8, $C6, $3E, $01, $EA, $C0, $C6, $F1, $E0, $70, $E1, $C1, $D1, $F1, $D9
+
+RAM_C7F1_01_4B96:
+	push af
+	push de
+	push bc
+	push hl
+	ld a, [$D9FC]
+	ldh [rSCY], a
+	ldh a, [rSVBK]
+	and $03
+	push af
+	ld a, $01
+	ldh [rSVBK], a
+	ld a, [wMenuCursorSpritesEnabled]
+	or a
+	jr z, RAM_C828
+	ld a, [$D553]
+	add a, $10
+	ld [$FE00], a
+	ld [$FE04], a
+	ld [$FE10], a
+	ld [$FE14], a
+	add a, $08
+	ld [$FE08], a
+	ld [$FE0C], a
+	ld [$FE18], a
+	ld [$FE1C], a
+RAM_C828:
+	ldh a, [rLCDC]
+	res 4, a
+	ldh [rLCDC], a
+	ld a, [$C6B7]
+	and $01
+	jr z, RAM_C844
+	call Func_0A59
+	ld a, [$C6B5]
+	and $F0
+	cp $F0
+	jr nz, RAM_C844
+	jp Jump_00DA
+RAM_C844:
+	ld a, [ROM_BANK_MARKER]
+	push af
+	ld a, $01
+	ld [rROMB0], a
+	call Func_01_5619
+	pop af
+	ld [rROMB0], a
+	ld a, [$C6B7]
+	inc a
+	ld [$C6B7], a
+	ld a, [$C6B8]
+	adc a, $00
+	ld [$C6B8], a
+	ld a, $01
+	ld [wVBlankPending], a
+	pop af
+	ldh [rSVBK], a
+	pop hl
+	pop bc
+	pop de
+	pop af
+	reti
 	ENDL
 
 Func_01_4C15:
@@ -1683,9 +1762,9 @@ Jump_01_4C77:
 Func_01_4C81:
 	push de
 	ld d, a
-	ld a, [$D557]
+	ld a, [wMenuState]
 	ld l, a
-	ld a, [$D558]
+	ld a, [wMenuState + 1]
 	ld h, a
 	ld a, $05
 	add a, l
@@ -1728,15 +1807,15 @@ Func_01_4CAA:
 	cp $01
 	jr nz, Jump_01_4CDD
 	xor a
-	ld [$D55E], a
-	ld a, [$D566]
+	ld [wMenuActive], a
+	ld a, [wMenuState05Selection]
 	ld [$CD08], a
-	ld a, [$D568]
+	ld a, [wMenuGridRow]
 	ld b, a
 	add a, a
 	add a, b
 	ld b, a
-	ld a, [$D567]
+	ld a, [wMenuGridColumn]
 	add a, b
 	ld [$CA06], a
 	call Func_300A
@@ -1758,7 +1837,7 @@ Jump_01_4CDD:
 	call Func_3004
 Jump_01_4CF7:
 	xor a
-	ld [$D55E], a
+	ld [wMenuActive], a
 	pop hl
 	ret
 
@@ -1772,9 +1851,9 @@ Jump_01_4CFD:
 	adc a, h
 	ld h, a
 	ld a, [hli]
-	ld [$D557], a
+	ld [wMenuState], a
 	ld a, [hl]
-	ld [$D558], a
+	ld [wMenuState + 1], a
 	ld a, $01
 	ld [$D550], a
 Jump_01_4D14:
@@ -1836,7 +1915,7 @@ Jump_01_4D4D:
 	cp $01
 	jr nz, Jump_01_4D6B
 	ld a, $00
-	ld [$D55E], a
+	ld [wMenuActive], a
 	ret
 
 Jump_01_4D6B:
@@ -2051,9 +2130,9 @@ Jump_01_4E85:
 
 
 Func_01_4E90:
-	ld a, [$D557]
+	ld a, [wMenuState]
 	ld l, a
-	ld a, [$D558]
+	ld a, [wMenuState + 1]
 	ld h, a
 	ld a, [hl]
 	cp $03
@@ -2400,7 +2479,7 @@ Jump_01_5144:
 	or a
 	jr z, Jump_01_5140
 	xor a
-	ld [$D559], a
+	ld [wMenuRenderedState], a
 	ld a, $01
 	call Func_01_4CAA
 	ret
@@ -2419,7 +2498,7 @@ Jump_01_5164:
 	ld a, $02
 	ld [$C6CD], a
 	xor a
-	ld [$D559], a
+	ld [wMenuRenderedState], a
 	ld a, $02
 	call Func_01_4CAA
 	ret
@@ -2525,18 +2604,18 @@ RAM_D743:
 	ld e, $13
 	call Audio_QueueSound
 	ld a, $02
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	call Func_01_7CA2
 	xor a
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	call Func_3960
-	ld a, [$D566]
+	ld a, [wMenuState05Selection]
 	dec a
 	cp $FF
 	jr nz, RAM_D761
 	ld a, $02
 RAM_D761:
-	ld [$D566], a
+	ld [wMenuState05Selection], a
 	call RAM_D7CB
 	call Func_01_7BC5
 	ld hl, $DC03
@@ -2545,28 +2624,28 @@ RAM_D761:
 	ld a, h
 	ld [$D565], a
 	ld a, $01
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	call Func_01_7C3F
 	xor a
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	jr RAM_D7C3
 
 RAM_D783:
 	ld e, $13
 	call Audio_QueueSound
 	ld a, $02
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	call Func_01_7CEF
 	xor a
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	call Func_3960
-	ld a, [$D566]
+	ld a, [wMenuState05Selection]
 	inc a
 	cp $03
 	jr nz, RAM_D7A1
 	ld a, $00
 RAM_D7A1:
-	ld [$D566], a
+	ld [wMenuState05Selection], a
 	call RAM_D7CB
 	call Func_01_7BC5
 	ld hl, $DC03
@@ -2575,10 +2654,10 @@ RAM_D7A1:
 	ld a, h
 	ld [$D565], a
 	ld a, $01
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	call Func_01_7BE0
 	xor a
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	jr RAM_D7C3
 
 RAM_D7C3:
@@ -2628,8 +2707,8 @@ Jump_01_52B5:
 	call Func_01_6AEF
 	call Func_01_4A62
 	xor a
-	ld [$D568], a
-	ld [$D567], a
+	ld [wMenuGridRow], a
+	ld [wMenuGridColumn], a
 	call Func_01_4CAA
 	ret
 
@@ -2638,9 +2717,9 @@ Jump_01_52D7:
 	call Audio_QueueSound
 	ld a, $01
 	ld [$C6CD], a
-	ld a, [$D568]
+	ld a, [wMenuGridRow]
 	ld b, a
-	ld a, [$D567]
+	ld a, [wMenuGridColumn]
 	ld c, a
 	call Func_01_6247
 	ld a, $02
@@ -2649,14 +2728,14 @@ Jump_01_52D7:
 
 Jump_01_52F2:
 	call Func_01_5323
-	ld a, [$D568]
+	ld a, [wMenuGridRow]
 	dec a
 	call Func_01_5340
 	ret
 
 Jump_01_52FD:
 	call Func_01_5323
-	ld a, [$D568]
+	ld a, [wMenuGridRow]
 	inc a
 	call Func_01_5340
 	ret
@@ -2664,7 +2743,7 @@ Jump_01_52FD:
 Jump_01_5308:
 	ld e, $0B
 	call Audio_QueueSound
-	ld a, [$D567]
+	ld a, [wMenuGridColumn]
 	inc a
 	call Func_01_535D
 	ret
@@ -2672,7 +2751,7 @@ Jump_01_5308:
 Jump_01_5315:
 	ld e, $0B
 	call Audio_QueueSound
-	ld a, [$D567]
+	ld a, [wMenuGridColumn]
 	dec a
 	call Func_01_535D
 	ret
@@ -2711,8 +2790,8 @@ Jump_01_5348:
 	ld a, $00
 Jump_01_534E:
 	ld b, a
-	ld [$D568], a
-	ld a, [$D567]
+	ld [wMenuGridRow], a
+	ld a, [wMenuGridColumn]
 	ld c, a
 	call Func_01_61CE
 	call Func_01_6233
@@ -2729,8 +2808,8 @@ Jump_01_5365:
 	ld a, $02
 Jump_01_536B:
 	ld c, a
-	ld [$D567], a
-	ld a, [$D568]
+	ld [wMenuGridColumn], a
+	ld a, [wMenuGridRow]
 	ld b, a
 	call Func_01_6367
 	ret
@@ -2821,7 +2900,7 @@ Func_01_5400:
 	push de
 	push hl
 	xor a
-	ld [$D569], a
+	ld [wMenuCursorSpritesEnabled], a
 	ld e, $08
 	ld bc, $0004
 	ld hl, $FE00
@@ -2847,7 +2926,7 @@ Jump_01_5416:
 
 Func_01_5427:
 	ld a, $01
-	ld [$D569], a
+	ld [wMenuCursorSpritesEnabled], a
 	xor a
 	ld [wVBlankPending], a
 Jump_01_5430:
@@ -2879,9 +2958,9 @@ Func_01_5448:
 	ld hl, $5967
 	ld b, $00
 	call Func_0553
-	ld a, [$D557]
+	ld a, [wMenuState]
 	ld l, a
-	ld a, [$D558]
+	ld a, [wMenuState + 1]
 	ld h, a
 	ld a, [hl]
 	cp $03
@@ -2892,7 +2971,7 @@ Func_01_5448:
 	jr z, Jump_01_54C7
 	call Func_01_5377
 	ld a, $01
-	ld [$D569], a
+	ld [wMenuCursorSpritesEnabled], a
 	ld a, $00
 	ldh [rSCX], a
 	ld a, $01
@@ -2914,7 +2993,7 @@ Jump_01_5480:
 Jump_01_5493:
 	call Func_3960
 	ld a, $01
-	ld [$D566], a
+	ld [wMenuState05Selection], a
 	call RAM_D7CB
 	call Func_01_7BC5
 	ld hl, $DC03
@@ -2923,12 +3002,12 @@ Jump_01_5493:
 	ld a, h
 	ld [$D565], a
 	ld a, $01
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	call Func_01_7C3F
 	xor a
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	ld a, $00
-	ld [$D569], a
+	ld [wMenuCursorSpritesEnabled], a
 	ld e, $00
 	ldh a, [rLCDC]
 	set 1, a
@@ -2939,9 +3018,9 @@ Jump_01_54C7:
 	ld e, $01
 	ld de, $0000
 	call Func_01_5BF1
-	ld a, [$D568]
+	ld a, [wMenuGridRow]
 	ld b, a
-	ld a, [$D567]
+	ld a, [wMenuGridColumn]
 	ld c, a
 	call Func_01_6233
 Jump_01_54DA:
@@ -2969,11 +3048,11 @@ Jump_01_54EC:
 
 
 Func_01_54FA:
-	ld a, [$D560]
+	ld a, [wMenuRepeatTimer]
 	ld c, a
 	ld a, [$C6B5]
 	ld d, a
-	ld a, [$D55F]
+	ld a, [wMenuPreviousButtons]
 	ld e, $00
 	bit 7, d
 	jr z, Jump_01_551E
@@ -3168,14 +3247,14 @@ Jump_01_5607:
 	jr Jump_01_5611
 
 Jump_01_5611:
-	ld [$D55F], a
+	ld [wMenuPreviousButtons], a
 	ld a, c
-	ld [$D560], a
+	ld [wMenuRepeatTimer], a
 	ret
 
 
 Func_01_5619:
-	ld a, [$D563]
+	ld a, [wMenuScrollDirection]
 	or a
 	jr z, Jump_01_565E
 	ld d, a
@@ -3197,7 +3276,7 @@ Jump_01_5630:
 	ld a, $1F
 	ld [$C924], a
 	xor a
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	jr Jump_01_565E
 
 Jump_01_5647:
@@ -3210,7 +3289,7 @@ Jump_01_5647:
 	ld a, $00
 	ld [$C924], a
 	xor a
-	ld [$D563], a
+	ld [wMenuScrollDirection], a
 	jr Jump_01_565E
 
 Jump_01_565E:
