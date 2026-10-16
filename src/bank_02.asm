@@ -76,11 +76,39 @@ Jump_02_40C7:
 	db $00, $01, $00, $01, $01, $03, $01, $02, $01, $01, $00, $01, $00, $02, $00
 
 	LOAD UNION "RAM code $C729", WRAM0[$C729] ; copied from $02:40EC
-	db $F5, $C5, $D5, $E5, $21, $F1, $C6, $11, $69, $FF, $3E, $B0, $E0, $68, $F0, $41
-	db $E6, $03, $20, $FA, $2A, $12, $2A, $12, $2A, $12, $2A, $12, $2A, $12, $2A, $12
-	db $2A, $12, $2A, $12, $2A, $12, $2A, $12, $2A, $12, $2A, $12, $2A, $12, $2A, $12
-	db $2A, $12, $2A, $12, $F0, $40, $F6, $10, $E0, $40, $F0, $44, $CD, $21, $2F, $F0
-	db $44, $F0, $44, $FE, $8F, $38, $00, $E1, $D1, $C1, $F1, $D9
+
+RAM_C729_02_40EC:
+	push af
+	push bc
+	push de
+	push hl
+	ld hl, $C6F1
+	ld de, $FF69
+	ld a, $B0
+	ldh [rBCPS], a
+RAM_C737:
+	ldh a, [rSTAT]
+	and $03
+	jr nz, RAM_C737
+	REPT 16
+	ld a, [hli]
+	ld [de], a
+	ENDR
+	ldh a, [rLCDC]
+	or $10
+	ldh [rLCDC], a
+	ldh a, [rLY]
+	call Audio_Update
+	ldh a, [rLY]
+	ldh a, [rLY]
+	cp $8F
+	jr c, RAM_C770
+RAM_C770:
+	pop hl
+	pop de
+	pop bc
+	pop af
+	reti
 	ENDL
 
 	LOAD UNION "RAM code $C7F1", WRAM0[$C7F1] ; copied from $02:4138

@@ -255,6 +255,32 @@ def check_menu_memory_symbols() -> None:
             fail(f"raw menu address {address:#06x} returned to bank 1 source")
 
 
+def check_executable_ram_source() -> None:
+    """Require executable copied images to be assembly, not raw byte arrays."""
+    images = 0
+    for path in sorted((ROOT / "src").glob("bank_*.asm")):
+        in_image = False
+        start = 0
+        for number, line in enumerate(path.read_text().splitlines(), 1):
+            if 'LOAD UNION "RAM code' in line:
+                if in_image:
+                    fail(f"{path.name}:{number}: nested RAM code image")
+                in_image = True
+                start = number
+                images += 1
+            elif in_image and line.strip() == "ENDL":
+                in_image = False
+            elif in_image and line.strip().startswith("db "):
+                fail(
+                    f"{path.name}:{number}: executable RAM image beginning at "
+                    f"line {start} contains raw bytes"
+                )
+        if in_image:
+            fail(f"{path.name}:{start}: unterminated RAM code image")
+    if images != 31:
+        fail(f"expected 31 executable RAM source images, found {images}")
+
+
 def check_tracing() -> None:
     sys.path.insert(0, str(ROOT / "tools"))
     import hints  # pylint: disable=import-outside-toplevel
@@ -459,6 +485,7 @@ def main() -> None:
     check_scene_descriptors(rom)
     check_menu_states(rom)
     check_menu_memory_symbols()
+    check_executable_ram_source()
     check_tracing()
     check_audio()
     digest = hashlib.sha1((ROOT / "baserom.gbc").read_bytes()).hexdigest()

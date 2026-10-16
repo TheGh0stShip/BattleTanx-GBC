@@ -1559,7 +1559,7 @@ RAM_D6CE:
 RAM_D702:
 	jp RAM_D62E
 
-	db $C9
+	ret
 	ENDL
 	db $00
 
@@ -4176,16 +4176,109 @@ Jump_01_5D6A:
 
 
 	LOAD UNION "RAM code $C729", WRAM0[$C729] ; copied from $01:5D77
-	db $F5, $C5, $D5, $E5, $F0, $80, $B7, $20, $2A, $F0, $41, $CB, $57, $20, $29, $F0
-	db $A9, $B7, $28, $1F, $F0, $AC, $B7, $28, $08, $F0, $AF, $47, $F0, $AA, $B8, $20
-	db $0A, $AF, $E0, $A9, $E0, $AA, $CD, $F0, $D2, $18, $08, $47, $CD, $E0, $5E, $78
-	db $3C, $E0, $AA, $E1, $D1, $C1, $F1, $D9, $F0, $44, $5F, $F0, $86, $BB, $20, $24
-	db $F0, $41, $E6, $03, $20, $FA, $CD, $10, $D3, $CD, $20, $D1, $F0, $86, $C6, $5F
-	db $FE, $8F, $30, $07, $E0, $45, $AF, $E0, $A9, $18, $3F, $3E, $8F, $E0, $45, $AF
-	db $E0, $A9, $18, $36, $F0, $41, $E6, $03, $20, $FA, $F0, $AC, $B7, $28, $12, $11
-	db $69, $FF, $3E, $B8, $E0, $68, $AF, $12, $12, $12, $12, $12, $12, $12, $12, $18
-	db $03, $CD, $F0, $D2, $CD, $30, $D1, $F0, $86, $C6, $60, $C6, $08, $FE, $8F, $30
-	db $06, $3E, $01, $E0, $A9, $18, $03, $AF, $E0, $A9, $E1, $D1, $C1, $F1, $D9
+
+RAM_C729_01_5D77:
+	push af
+	push bc
+	push de
+	push hl
+	ldh a, [$FF80]
+	or a
+	jr nz, RAM_C75C
+	ldh a, [rSTAT]
+	bit 2, a
+	jr nz, RAM_C761
+	ldh a, [$FFA9]
+	or a
+	jr z, RAM_C75C
+	ldh a, [$FFAC]
+	or a
+	jr z, RAM_C74A
+	ldh a, [$FFAF]
+	ld b, a
+	ldh a, [$FFAA]
+	cp b
+	jr nz, RAM_C754
+RAM_C74A:
+	xor a
+	ldh [$FFA9], a
+	ldh [$FFAA], a
+	call RAM_D2F0
+	jr RAM_C75C
+RAM_C754:
+	ld b, a
+	call $5EE0
+	ld a, b
+	inc a
+	ldh [$FFAA], a
+RAM_C75C:
+	pop hl
+	pop de
+	pop bc
+	pop af
+	reti
+RAM_C761:
+	ldh a, [rLY]
+	ld e, a
+	ldh a, [$FF86]
+	cp e
+	jr nz, RAM_C78D
+RAM_C769:
+	ldh a, [rSTAT]
+	and $03
+	jr nz, RAM_C769
+	call RAM_D310
+	call RAM_D120
+	ldh a, [$FF86]
+	add a, $5F
+	cp $8F
+	jr nc, RAM_C784
+	ldh [rLYC], a
+	xor a
+	ldh [$FFA9], a
+	jr RAM_C7C3
+RAM_C784:
+	ld a, $8F
+	ldh [rLYC], a
+	xor a
+	ldh [$FFA9], a
+	jr RAM_C7C3
+RAM_C78D:
+	ldh a, [rSTAT]
+	and $03
+	jr nz, RAM_C78D
+	ldh a, [$FFAC]
+	or a
+	jr z, RAM_C7AA
+	ld de, $FF69
+	ld a, $B8
+	ldh [rBCPS], a
+	xor a
+	REPT 8
+	ld [de], a
+	ENDR
+	jr RAM_C7AD
+RAM_C7AA:
+	call RAM_D2F0
+RAM_C7AD:
+	call RAM_D130
+	ldh a, [$FF86]
+	add a, $60
+	add a, $08
+	cp $8F
+	jr nc, RAM_C7C0
+	ld a, $01
+	ldh [$FFA9], a
+	jr RAM_C7C3
+RAM_C7C0:
+	xor a
+	ldh [$FFA9], a
+RAM_C7C3:
+	pop hl
+	pop de
+	pop bc
+	pop af
+	reti
 	ENDL
 
 	LOAD UNION "RAM code $C7F1", WRAM0[$C7F1] ; copied from $01:5E16
@@ -4328,15 +4421,44 @@ RAM_D295:
 	db $00
 
 	LOAD UNION "RAM code $D2C0", WRAMX[$D2C0] ; copied from $01:5EE0
-	db $4F, $3E, $07, $91, $87, $87, $87, $21, $F8, $D3, $7F, $85, $6F, $3E, $00, $8C
-	db $67, $11, $69, $FF, $3E, $B8, $E0, $68, $2A, $12, $2A, $12, $2A, $12, $2A, $12
-	db $2A, $12, $2A, $12, $2A, $12, $2A, $12, $C9
+
+RAM_D2C0:
+	ld c, a
+	ld a, $07
+	sub c
+	add a, a
+	add a, a
+	add a, a
+	ld hl, $D3F8
+	ld a, a
+	add a, l
+	ld l, a
+	ld a, $00
+	adc a, h
+	ld h, a
+	ld de, $FF69
+	ld a, $B8
+	ldh [rBCPS], a
+	REPT 8
+	ld a, [hli]
+	ld [de], a
+	ENDR
+	ret
 	ENDL
 	db $00
 
 	LOAD UNION "RAM code $D2F0", WRAMX[$D2F0] ; copied from $01:5F0A
-	db $21, $A0, $FF, $11, $69, $FF, $3E, $B8, $E0, $68, $2A, $12, $2A, $12, $2A, $12
-	db $2A, $12, $2A, $12, $2A, $12, $2A, $12, $2A, $12, $C9
+
+RAM_D2F0:
+	ld hl, $FFA0
+	ld de, $FF69
+	ld a, $B8
+	ldh [rBCPS], a
+	REPT 8
+	ld a, [hli]
+	ld [de], a
+	ENDR
+	ret
 	ENDL
 	db $00
 
