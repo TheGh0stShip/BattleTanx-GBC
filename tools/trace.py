@@ -22,8 +22,9 @@ class Load:
 
 
 class Tracer:
-    def __init__(self, rom, hints=None):
+    def __init__(self, rom, data_ranges=()):
         self.rom = rom
+        self.data_ranges = tuple(data_ranges)
         self.code = {}            # rom offset -> instr length
         self.ctxof = {}           # rom offset -> context of first visit
         self.labels = collections.defaultdict(set)
@@ -106,6 +107,8 @@ class Tracer:
             if m is None:
                 return
             off, ctx = m
+            if any(start <= off < end for start, end in self.data_ranges):
+                return
             r = decode(rom, off)
             if r is None:
                 self.labels[off].add('BAD')
@@ -196,8 +199,8 @@ class Tracer:
             self.add(('rom', 0), None, a, 'call')
 
 
-def run(rom, extra=()):
-    t = Tracer(rom)
+def run(rom, extra=(), data_ranges=()):
+    t = Tracer(rom, data_ranges)
     for v in [0x100, 0x40, 0x48, 0x50, 0x58, 0x60]:
         t.add(('rom', 0), None, v, 'entry')
     for bank, addr in extra:
@@ -237,7 +240,7 @@ def speculative_ok(t, off, end, base_addr):
     return False
 
 
-def gap_fill(t, banks):
+def gap_fill(t, banks, data_ranges=()):
     changed = True
     while changed:
         changed = False
@@ -254,6 +257,9 @@ def gap_fill(t, banks):
                 j = i
                 while j < e and not cov[j]:
                     j += 1
+                if any(start < j and i < end for start, end in data_ranges):
+                    i = j
+                    continue
                 in_load = any(l.src <= i < l.src + l.len for l in t.loads.values())
                 if not in_load and speculative_ok(t, i, j, None):
                     addr = i if b == 0 else 0x4000 + i - s
@@ -269,8 +275,8 @@ def gap_fill(t, banks):
 if __name__ == "__main__":
     import hints
     rom = open(sys.argv[1], 'rb').read()
-    t = run(rom, hints.extra_entries(rom))
-    gap_fill(t, hints.CODE_BANKS)
+    t = run(rom, hints.extra_entries(rom), hints.DATA_RANGES)
+    gap_fill(t, hints.CODE_BANKS, hints.DATA_RANGES)
     per = collections.Counter()
     for off, ln in t.code.items():
         per[off >> 14] += ln

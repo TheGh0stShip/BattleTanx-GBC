@@ -36,8 +36,8 @@ def cpu_addr(off, ctx, loads):
 class Emitter:
     def __init__(self, rom):
         self.rom = rom
-        t = trace.run(rom, hints.extra_entries(rom))
-        trace.gap_fill(t, hints.CODE_BANKS)
+        t = trace.run(rom, hints.extra_entries(rom), hints.DATA_RANGES)
+        trace.gap_fill(t, hints.CODE_BANKS, hints.DATA_RANGES)
         self.t = t
         # drop loads overlapping an earlier one or crossing a bank
         self.loads = {}

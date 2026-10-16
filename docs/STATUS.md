@@ -27,7 +27,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Area | Current state | Next gate |
 | --- | --- | --- |
 | Reachable code | 33,140 bytes traced from known entries and pointers | Resolve indirect control flow and validate boundaries |
-| Heuristic decoding | 4,375 additional bytes accepted by gap fill | Classify each range as code, table, or padding |
+| Heuristic decoding | 4,059 additional bytes accepted by gap fill | Classify each range as code, table, or padding |
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, and OAM DMA named | Name routines and RAM state from evidence |
 | RAM code | ROM source and runtime address represented with `LOAD` blocks | Verify every copy site and execution entry |
 | Graphics | Preserved in extracted binary ranges | Identify formats and add lossless conversion tools |

@@ -14,6 +14,16 @@ ENTITY_HANDLER_TABLE = (1, 0x44E0, 10)
 # Bank 1 routines at $4E35/$4E60 select and identify the active callback.
 RUNTIME_CALLBACK_TABLE = (1, 0x4E2F, 3)
 
+# Confirmed non-code ranges, expressed as half-open ROM offsets. These prevent
+# the conservative gap pass from interpreting pointer bytes as instructions.
+DATA_RANGES = (
+    (0x0104, 0x0150),  # cartridge header
+    (0x44E0, 0x44F4),  # entity handler pointers
+    (0x47EC, 0x4854),  # banked screen mode records
+    (0x4E2F, 0x4E35),  # runtime callback pointers
+    (0xE85A, 0xE878),  # state check pointers
+)
+
 
 def screen_entries(rom):
     out = []
