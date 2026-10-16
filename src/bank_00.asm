@@ -1254,19 +1254,19 @@ Func_07A7:
 	ld [rROMB0], a
 	ld a, $27
 	ld [rROMB0], a
-	ld hl, Bank08ObjectPalette4512
+	ld hl, Bank27ObjectPalette
 	ld b, $00
 	ld c, $01
 	call Func_057D
 	ld a, $28
 	ld [rROMB0], a
-	ld hl, Bank08ObjectPalette4512
+	ld hl, Bank28ObjectPalette
 	ld b, $01
 	ld c, $01
 	call Func_057D
 	ld a, $29
 	ld [rROMB0], a
-	ld hl, Bank08ObjectPalette4512
+	ld hl, Bank29ObjectPalette
 	ld b, $02
 	ld c, $01
 	call Func_057D

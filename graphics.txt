@@ -10,10 +10,6 @@ bank_08/interface_tiles_68DD.png       0x228dd     0x040      2
 bank_08/arrow_up_tiles.png            0x22925     0x40       2
 bank_08/arrow_down_tiles.png          0x2296d     0x40       2
 bank_08/alphanumeric_font_tiles.png   0x229b5     0x420      11
-bank_27/sprite_tiles.png              0x9c000     0xc00       16
-bank_28/sprite_tiles.png              0xa0000     0xc00       16
-bank_29/sprite_tiles.png              0xa4000     0xc00       16
-
 # Fixed backgrounds: each loader transfers exactly 255 tiles ($0FF0 bytes).
 bank_33/fixed_scene_00_tiles.png       0xcd1a0     0xff0       16
 bank_31/fixed_scene_01_tiles.png       0xc6ba0     0xff0       16

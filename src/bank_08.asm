@@ -11,11 +11,6 @@ wUiFontPalette:
 	ENDL
 	INCBIN "assets/bank_08/unknown_44A8.bin"
 
-Bank08ObjectPalette4512:
-	dw $0000, $0000, $0000
-
-	INCBIN "assets/bank_08/unknown_4518.bin"
-
 Bank08ObjectPalette46EA:
 	dw $001C, $025C, $03FF
 

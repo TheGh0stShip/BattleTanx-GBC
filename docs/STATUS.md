@@ -30,7 +30,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
-| Graphics | 61 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three sprite sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Identify final layouts and remaining graphics ranges |
+| Graphics | 58 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Establish the mixed graphics/data formats in banks `$27-$29` and identify remaining layouts |
 | Maps | Eleven fixed backgrounds and 36 scrolling scenes render from 2,640 fixed cells plus 709 scrolling rows/14,180 cells, with validated indices, attributes, flips, and palettes | Name the individual scenes and connect them to game progression |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
@@ -92,19 +92,20 @@ table used by `SelectObjectSpritePalette` at bank `$08:$6DD5` and four
 consecutive six-byte object-palette records; their loader supplies the
 transparent first color. The routine maps an object's type field to sprite
 palette indices 4 through 7 before bank `$01:$4687` writes the OAM attribute.
-Two additional
-six-byte object palettes at `$4512` and `$46EA` are shared with other sprite
-sets. Another complete four-color palette separates the second and third tile
-groups. The unresolved portions are now limited to `$44A8-$4511`,
-`$4518-$46E9`, `$46F0-$60F7`, `$6108-$6119`, `$621A-$6221`, and
-`$6242-$626A` (7,303 bytes total); they are not counted as understood graphics.
+A further six-byte object palette is present at `$46EA`. Another complete
+four-color palette separates the second and third tile groups. The unresolved
+portions are now limited to `$44A8-$46E9`, `$46F0-$60F7`, `$6108-$6119`,
+`$621A-$6221`, and `$6242-$626A` (7,309 bytes total); they are not counted as
+understood graphics.
 
-Banks `$27`, `$28`, and `$29` each begin with exactly `$0C00` bytes (192
-tiles) of native Game Boy 2bpp graphics. Code selects these banks and copies
-16-byte tile records from them; each graphics range is followed by `$33FF`
-zero bytes and its one-byte bank marker at `$7FFF`. The three sheets are kept
-separate because their gameplay role and palette relationship have not yet
-been established.
+Banks `$27`, `$28`, and `$29` each begin with `$0C00` bytes of mixed sprite
+data, followed by `$33FF` zero bytes and the bank marker at `$7FFF`. They were
+previously treated as continuous 192-tile sheets, but the palette loader proves
+that each contains a six-byte object-palette record at `$4512`. Those palettes
+are now explicit source and are loaded into object palette slots 0, 1, and 2.
+The surrounding ranges remain lossless, narrowly split binary data until their
+graphics and metadata boundaries are established; they are no longer counted
+as confirmed graphics.
 
 ## Scene-background descriptors
 

@@ -117,7 +117,6 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
     if rom[0x227F3:0x227FD] != bytes((0, 1, 0, 2, 3, 1, 2, 0, 3, 0)):
         fail("bank 08 palette-index table changed")
     object_palettes = {
-        0x20512: (0x0000, 0x0000, 0x0000),
         0x206EA: (0x001C, 0x025C, 0x03FF),
         0x227FD: (
             0x0000, 0x7002, 0x03FE,
@@ -140,7 +139,6 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
             "SelectObjectSpritePaletteFar": (0x00, 0x37AC),
             "Bank08UiFontTiles": (0x08, 0x4000),
             "Bank08UiFontPalette": (0x08, 0x44A0),
-            "Bank08ObjectPalette4512": (0x08, 0x4512),
             "Bank08ObjectPalette46EA": (0x08, 0x46EA),
             "Bank08InterfaceTiles60F8": (0x08, 0x60F8),
             "Bank08InterfaceTiles611A": (0x08, 0x611A),
@@ -179,6 +177,63 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
         for name, where in expected_symbols.items():
             if symbols.get(name) != where:
                 fail(f"bank 08 symbol {name} is at {symbols.get(name)}, expected {where}")
+
+
+def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> None:
+    expected_assets = {
+        pathlib.Path(f"assets/bank_{bank:02X}/sprite_data_4000.bin"):
+            (bank * 0x4000, 0x512)
+        for bank in (0x27, 0x28, 0x29)
+    }
+    expected_assets.update({
+        pathlib.Path(f"assets/bank_{bank:02X}/sprite_data_4518.bin"):
+            (bank * 0x4000 + 0x518, 0x6E8)
+        for bank in (0x27, 0x28, 0x29)
+    })
+    manifest = {path: (start, size) for path, start, size in entries}
+    for path, where in expected_assets.items():
+        if manifest.get(path) != where:
+            fail(f"sprite data asset {path} is {manifest.get(path)}, expected {where}")
+
+    rom = (ROOT / "baserom.gbc").read_bytes()
+    palettes = {
+        0x9C512: (0x0040, 0x0260, 0x03E5),
+        0xA0512: (0x7E51, 0x0000, 0x60E8),
+        0xA4512: (0x0006, 0x1CFF, 0x52BF),
+    }
+    for offset, expected in palettes.items():
+        colors = tuple(
+            int.from_bytes(rom[pos : pos + 2], "little")
+            for pos in range(offset, offset + 6, 2)
+        )
+        if colors != expected or any(color & 0x8000 for color in colors):
+            fail(f"object palette at ROM offset {offset:#x} changed")
+
+    for bank in (0x27, 0x28, 0x29):
+        source = (ROOT / "src" / f"bank_{bank:02X}.asm").read_text()
+        if "sprite_tiles.bin" in source:
+            fail(f"bank {bank:#04x} returned to an overbroad graphics asset")
+
+    sym = ROOT / "battletanx.sym"
+    if sym.exists():
+        expected_symbols = {
+            "Bank27ObjectPalette": (0x27, 0x4512),
+            "Bank28ObjectPalette": (0x28, 0x4512),
+            "Bank29ObjectPalette": (0x29, 0x4512),
+        }
+        symbols = {}
+        for line in sym.read_text().splitlines():
+            match = re.fullmatch(
+                r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip()
+            )
+            if match:
+                symbols[match.group(3)] = (
+                    int(match.group(1), 16),
+                    int(match.group(2), 16),
+                )
+        for name, where in expected_symbols.items():
+            if symbols.get(name) != where:
+                fail(f"sprite palette symbol {name} is at {symbols.get(name)}, expected {where}")
 
 
 def check_scene_descriptors(rom: bytes) -> None:
@@ -595,6 +650,7 @@ def main() -> None:
     entries = read_manifest()
     check_assets(entries)
     check_bank08_graphics_assets(entries)
+    check_sprite_bank_palettes(entries)
     rom = (ROOT / "baserom.gbc").read_bytes()
     check_scene_descriptors(rom)
     check_menu_states(rom)
