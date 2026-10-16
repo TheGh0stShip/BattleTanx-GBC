@@ -26,8 +26,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 | Area | Current state | Next gate |
 | --- | --- | --- |
-| Reachable code | 32,815 bytes traced from known entries and pointers | Resolve indirect control flow and validate boundaries |
-| Heuristic decoding | 4,059 additional bytes accepted by gap fill | Classify each range as code, table, or padding |
+| Reviewed code | 37,612 bytes traced from known entries, pointers, RAM relocations, and reviewed standalone entries | Name and document routines from behavior |
+| Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen dispatch, and OAM DMA named | Name routines and RAM state from evidence |
 | RAM code | ROM source and runtime address represented with `LOAD` blocks | Verify every copy site and execution entry |
 | Graphics | Preserved in extracted binary ranges | Identify formats and add lossless conversion tools |
@@ -53,11 +53,10 @@ screen dispatch sites are already modeled despite remaining indirect at runtime.
 
 ## Immediate roadmap
 
-1. Remove false code classifications introduced by heuristic gap filling.
-2. Model the callback slots used by the remaining indirect jumps.
-3. Introduce evidence-based WRAM/HRAM symbols and hardware-state documentation.
-4. Split mixed code/data banks into named tables and resources.
-5. Add lossless graphics, map, text, and audio extraction/rebuild paths.
-6. Run relocation/shift tests before declaring source freely editable.
-7. Validate timing-sensitive and RAM-executed behavior on physical hardware.
+1. Model the runtime object records used by the remaining indirect jump.
+2. Introduce evidence-based WRAM/HRAM symbols and hardware-state documentation.
+3. Split mixed code/data banks into named tables and resources.
+4. Add lossless graphics, map, text, and audio extraction/rebuild paths.
+5. Run relocation/shift tests before declaring source freely editable.
+6. Validate timing-sensitive and RAM-executed behavior on physical hardware.
 

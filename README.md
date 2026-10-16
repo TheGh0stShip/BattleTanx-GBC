@@ -52,9 +52,9 @@ only to bootstrap; from then on `src/` is the source of truth.
 
 All 1,048,576 bytes reconstruct exactly. That establishes a complete binary
 rebuild, not a complete understanding of the source. The tracer currently reaches
-32,815 instruction bytes from known entry points, pointers, and RAM relocations.
-Its optional gap pass decodes another 4,059 bytes, some of which are still tables
-or padding and must not be counted as confirmed code.
+37,612 instruction bytes from known entry points, pointers, RAM relocations, and
+reviewed standalone routine entries. The optional gap pass currently adds zero
+bytes; confirmed data ranges are explicitly excluded from instruction tracing.
 
 Detailed recovery status, control-flow gaps, and the current roadmap are tracked
 in [`docs/STATUS.md`](docs/STATUS.md). Run `make check` before committing; it pins
