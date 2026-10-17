@@ -194,19 +194,17 @@ loop. Each sequence is followed by `FE FF` (`$07`: `00 FF FF`), never read.
 
 ## 7. Unresolved
 
-1. Bank `$07`: no traced path selects it, but not every computed bank
-   value is bounded (section 8).
-2. `$C8E3`: gates music note-ons when non-zero; nothing in traced code
+1. `$C8E3`: gates music note-ons when non-zero; nothing in traced code
    sets it non-zero.
-3. `$C8E4`, `$C8F6`: written, never read.
-4. Unread bytes: `06:415A-415B`, `4660-4661`, `4740-4743`, `476C-476D`,
+2. `$C8E4`, `$C8F6`: written, never read.
+3. Unread bytes: `06:415A-415B`, `4660-4661`, `4740-4743`, `476C-476D`,
    patch `$00` bytes 6-7, music-pointer byte 3, sequence trailers.
-5. Instruments 4, 6, 7 and music id `$89` (`Music_09`) have no static
+4. Instruments 4, 6, 7 and music id `$89` (`Music_09`) have no static
    reference. Dynamic id sources (ROM0 `$1042` uses `b` in {4, 5, `$1B`};
    random `$81-$86`) were inspected; others may exist in untraced code.
-6. Musical meaning (pitch names for NoteFrequencies, track titles) is not
+5. Musical meaning (pitch names for NoteFrequencies, track titles) is not
    assigned.
-7. Hardware behavior was not checked on a physical Game Boy Color.
+6. Hardware behavior was not checked on a physical Game Boy Color.
 
 ## 8. Bank `$07` follow-up
 
@@ -216,24 +214,35 @@ marked "checked" were re-verified against the ROM for this report.
 | Site (bank `$00` unless noted) | Value source | Possible banks |
 | --- | --- | --- |
 | `bank_00.asm:1050` | `ld b,$3B` before the loop | `$3B` |
-| `:2560` | `[$FF80] + $27` | `>= $27` for the small values seen; `$FF80` not fully bounded |
+| `:2560` | `[$FF80] + $27` | `$27-$29`; the type-1 field is 0-3 and value 3 skips the copy (checked) |
 | `:4617-5480` (`$C8B9-$C8BC`) | 18-byte record copied by `$188B` via bank-`$05` pointer table `$4300` (15 records `$4400-$4518`, stride `$14`) | `$09-$26` (checked) |
 | `:5241` (`$C8D2`) | bank `$05` table `$513E`, byte +2 | 9, 11, ..., 37 (checked) |
 | `:8484` (`wMusicBank`) | MusicPointers byte 2; only writer `06:7EB8` (checked) | 6 for ids `$80-$89`; indexes 15 and 26 past the table would give 7 (ids `$8F`, `$9A`), and no traced caller passes them |
 | `:10497`, `:10532` | ScreenModeTable bank byte | `$2A-$2D` |
 | `:10654` | caller's `[ROM_BANK_MARKER]` (11 calls) or `[$DBFB]` | caller banks; see next row |
-| `bank_01` `3008`, `3110`, `3214`; `bank_00` `10981` | `$DBFB` / `$C943` from bank `$01:$596D` | `$2E` for entries 0-2; index not bounded |
-| `bank_01` `3813` | bank `$01:$59AB` table | out of scope for this task |
-| `bank_01` `4018`, `4569`, `4725` | `$FF92` from bank `$01:$5A60` | out of scope for this task |
+| `bank_01` `3008`, `3110`, `3214`; `bank_00` `10981` | `$DBFB` / `$C943` from bank `$01:$596D` | `$2E` for the three-entry selector, bounded 0-2 (checked) |
+| `bank_01` `3813` | bank `$01:$59AB` fixed-scene table | `$30-$33` (checked) |
+| `bank_01` `4018`, `4569`, `4725` | `$FF92` from bank `$01:$5A60` scrolling-scene table | `$2F`, `$30`, `$34-$3B` (checked) |
 
 No other write to `$2000-$3FFF` was found. The audit also claimed a second
 `wMusicBank` writer in `01:7C3F`; that is wrong (that routine writes no
 audio state), and the claim is not used.
 
-The five register-sourced ids passed to Audio_QueueSound are bounded:
-ROM0 `$0242` and `$3AFD` (random `$81-$86`), `$1042` (`$04`, `$05`, `$1B`),
-`$3CFB` (`$4F`), and `06:7D2A` (a `$FE` music event; none exists in the
-data). So `wMusicBank` is always 6.
+All 57 machine-code calls to `Audio_QueueSound` are now inventoried. Fifty
+have an adjacent immediate id. The other seven are:
 
-Conclusion: no traced path maps bank `$07`. This is not a proof. Still open:
-the index bounds above, `$FF80`, and code not yet disassembled.
+- three random selectors bounded to `$81-$86` (ROM0 `$0242`, `$3AFF`, and
+  bank `$01:$5333`);
+- ROM0 `$1043`, bounded to `$04`, `$05`, or `$1B`;
+- ROM0 `$3D68`, fixed through `a` at `$4F`;
+- bank `$01:$6947`, which reuses the input byte only after bits 7-4 have
+  branched elsewhere, so the two callers can pass only `$04-$0F`;
+- bank `$06:$7D2A`, reachable only from a music `$FE` queue event; none of
+  the ten parsed music sequences contains that event.
+
+The call-site set and each bound are checked against the ROM. Consequently
+the only music ids are `$80-$89`, every MusicPointers entry names bank `$06`,
+and `wMusicBank` is always 6. Together with the now-bounded object, level,
+screen and scene selectors, no directly traced program path selects bank
+`$07`; it is classified as unused build residue rather than an open selector
+risk. This does not make its duplicated bytes semantically meaningful.

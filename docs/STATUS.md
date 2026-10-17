@@ -568,11 +568,12 @@ Semantic understanding:
   terminator; raw sfx op bytes; musical meaning of notes and tracks.
 - Not audio: bank `$05` (sprite layouts and level parameters).
 - Bank `$07`: after one malformed sound-patch slot, `$4008-$4BFB` duplicates
-  bank `$06`; no traced path maps it.
-  Not proven unused, because some computed bank indexes are unbounded.
+  bank `$06`. All 57 sound-queue call sites and every computed bank selector
+  in the directly traced program are now bounded; none can select bank `$07`,
+  so it is classified as unused build residue.
 - Not checked on hardware.
 
 `tools/check_project.py` re-derives every table boundary, record format and
 range listed above from `baserom.gbc`, rejects any return of a bank-`$06`
-INCBIN, checks every immediate sound id in `src/`, and checks the audio
+INCBIN, checks all 57 immediate and register-sourced sound-id call sites, and checks the audio
 symbol addresses in `battletanx.sym`.

@@ -842,6 +842,51 @@ def check_audio() -> None:
         if not ok or sid == 0:
             fail(f"audio: source queues unplayable sound id {sid:#04x}")
 
+    # Account for every machine-code call, including sites whose id comes
+    # from a register rather than an adjacent `ld e, n`. This closes the only
+    # path that could make Music_Update select bank $07: an out-of-range music
+    # id would index past MusicPointers and read a residue byte as its bank.
+    queue_call = bytes.fromhex("cd732f")
+    call_sites = []
+    cursor = 0
+    while True:
+        cursor = rom.find(queue_call, cursor)
+        if cursor < 0:
+            break
+        call_sites.append(cursor)
+        cursor += len(queue_call)
+    dynamic_sites = {site for site in call_sites if rom[site - 2] != 0x1E}
+    expected_dynamic = {0x0242, 0x1043, 0x3AFF, 0x3D68, 0x5333, 0x6947, 0x1BD2A}
+    if len(call_sites) != 57 or dynamic_sites != expected_dynamic:
+        fail(f"audio: queue call-site inventory changed ({len(call_sites)} calls, {sorted(dynamic_sites)})")
+    for site in set(call_sites) - dynamic_sites:
+        sid = rom[site - 1]
+        if not ((1 <= sid < au.PATCH_COUNT)
+                or (0x40 <= sid < 0x40 + au.SFX_SEQ_COUNT)
+                or (0x80 <= sid < 0x80 + au.MUSIC_COUNT)):
+            fail(f"audio: immediate queue call at ROM offset {site:#x} uses {sid:#04x}")
+
+    random_prefix = bytes.fromhex("cd2104e607fe0630f7c6815f")
+    if any(rom[site - len(random_prefix):site] != random_prefix
+           for site in (0x0242, 0x3AFF, 0x5333)):
+        fail("audio: random music selectors are no longer bounded to $81-$86")
+    if rom[0x1023:0x1047] != bytes.fromhex(
+            "f5c5d5e57de6c0c6266f7ea720157b0604fe01200406051806fe022002061b58cd732fe1"):
+        fail("audio: vehicle action sound selector is no longer bounded to $04/$05/$1B")
+    if rom[0x3D62:0x3D68] != bytes.fromhex("3e4fea1cc95f"):
+        fail("audio: screen-effect queue id is no longer fixed at $4F")
+    input_dispatch = bytes.fromhex("cb7b202ecb73202acb6b2027cb63202ccb5b2031cb53203fcb4b204c")
+    if rom[0x507F:0x507F + len(input_dispatch)] != input_dispatch:
+        fail("audio: code-entry input priority no longer bounds the dynamic sound id")
+    if [i for i in range(len(rom)) if rom.startswith(bytes.fromhex("cd4069"), i)] != [0x50D1, 0x50E2]:
+        fail("audio: dynamic code-entry sound helper caller set changed")
+    if rom[0x6940:0x695C] != bytes.fromhex("d51e0acd732fd1cd732ffa0bdf2100df7f856f3e008c67fa07df77c9"):
+        fail("audio: dynamic code-entry sound helper changed")
+    queued_music_events = [event for start, _, _ in music
+                           for event in au.parse_music(rom, start)[0] if event[0] == "queue"]
+    if queued_music_events:
+        fail(f"audio: music data now queues sound ids: {queued_music_events}")
+
     # Symbol placement, when a linked symbol file is available.
     sym = ROOT / "battletanx.sym"
     if sym.exists():
@@ -856,7 +901,7 @@ def check_audio() -> None:
 
     print(
         f"audio: {au.PATCH_COUNT} patches, {au.SFX_SEQ_COUNT} sfx sequences, "
-        f"{au.MUSIC_COUNT} music sequences, {len(ids)} queued ids checked"
+        f"{au.MUSIC_COUNT} music sequences, {len(ids)} queued ids and {len(call_sites)} call sites checked"
         + ("" if sym.exists() else " (symbol check skipped: no battletanx.sym)")
     )
 
