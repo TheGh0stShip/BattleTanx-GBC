@@ -22,8 +22,16 @@ DEF OBJECT_FRAME_DX_OFFSET    EQU $1B ; current X low minus previous X low
 DEF OBJECT_FRAME_DY_OFFSET    EQU $1C ; current Y low minus previous Y low
 DEF OBJECT_STATUS_OFFSET      EQU $1D ; 0 free, nonzero allocated
 
-; Fields established from initialization and every health reader/writer.
-DEF OBJECT_TYPE_OFFSET       EQU $1E
-DEF OBJECT_HEALTH_OFFSET     EQU $1F
-DEF OBJECT_HEALTH_DELTA_MASK EQU $3F
-DEF OBJECT_COUNT             EQU $40
+; Fields established from initialization and the sprite-rendering path.
+; Byte +$1F is type-dependent: core vehicle records use it as health, while
+; timed type-3 effect records use it as their current animation age.
+DEF OBJECT_TYPE_OFFSET             EQU $1E
+DEF OBJECT_HEALTH_OR_AGE_OFFSET    EQU $1F
+DEF OBJECT_HEALTH_OFFSET           EQU OBJECT_HEALTH_OR_AGE_OFFSET
+DEF OBJECT_EFFECT_AGE_OFFSET       EQU OBJECT_HEALTH_OR_AGE_OFFSET
+DEF OBJECT_MAX_HEALTH_OR_LIFE_OFFSET EQU $20
+DEF OBJECT_FRAME_TABLE_OFFSET      EQU $21 ; bank-$02 pointer
+DEF OBJECT_OAM_LAYOUT_OFFSET       EQU $23 ; bank-$02 pointer
+DEF OBJECT_TILE_COUNT_OFFSET       EQU $25
+DEF OBJECT_HEALTH_DELTA_MASK       EQU $3F
+DEF OBJECT_COUNT                   EQU $40

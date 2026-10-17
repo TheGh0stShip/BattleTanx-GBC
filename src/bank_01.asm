@@ -19,7 +19,7 @@ Jump_01_4009:
 	xor a
 	ld [wVBlankPending], a
 	ld b, $02
-	call Func_3252
+	call MoveHudWindow
 	dec d
 	jr nz, Jump_01_4005
 	call Func_32DE
@@ -37,7 +37,7 @@ Jump_01_4027:
 	xor a
 	ld [wVBlankPending], a
 	ld b, $FE
-	call Func_3252
+	call MoveHudWindow
 	dec d
 	jr nz, Jump_01_4023
 Jump_01_403C:
@@ -79,10 +79,10 @@ Jump_01_406A:
 	xor a
 	ld [wVBlankPending], a
 	ld b, $02
-	call Func_3252
+	call MoveHudWindow
 	dec d
 	jr nz, Jump_01_4066
-	call Func_325B
+	call RefreshHud
 	ld d, $08
 Jump_01_4084:
 	xor a
@@ -97,7 +97,7 @@ Jump_01_4088:
 	xor a
 	ld [wVBlankPending], a
 	ld b, $FE
-	call Func_3252
+	call MoveHudWindow
 	dec d
 	jr nz, Jump_01_4084
 	ret

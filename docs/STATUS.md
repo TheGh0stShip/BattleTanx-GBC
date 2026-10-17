@@ -133,13 +133,13 @@ are held in `wPlayerLives`, initialized to three, clamped to nine by
 `GainPlayerLife`, decremented on the destruction flow, and rendered as one HUD
 digit by `DrawPlayerLivesDigit`.
 
-Object-record byte `+$1F` is health. `ObjectMaxHealthByType` supplies maxima
-35, 50, 65, and 40 for the four object types; the set/add/subtract helpers all
-clamp against those bounds. `wPlayerHealthRecoveryTicks` restores one health
-point every other VBlank while nonzero. Its direct producer remains unknown.
-The verified 64-byte record size, alignment mask, type offset, health offset,
-and six-bit health-delta mask are centralized in `include/object.inc` so later
-field recovery does not duplicate numeric layout assumptions.
+Object-record byte `+$1F` is type-dependent. Core vehicle types use it as
+health: `ObjectMaxHealthByType` supplies maxima 35, 50, 65, and 40, and the
+set/add/subtract helpers clamp against those bounds. Timed type-3 effects reuse
+the byte as animation age and release their record when it reaches byte `+$20`.
+`wPlayerHealthRecoveryTicks` restores one vehicle-health point every other
+VBlank while nonzero; its direct producer remains unknown. These interpretations
+and the six-bit health-delta mask are centralized in `include/object.inc`.
 The same include now records current and previous 16-bit pixel-coordinate
 offsets and the two per-frame displacement bytes. `CenterLevelViewOnObject`
 converts those coordinates to cells and clamps the 21-by-19 visible region to
@@ -161,6 +161,14 @@ direction is installed in the same initialization path.
 four-entry type profile, and maximum-health setup. The original routine does
 not test allocation failure before initializing the returned record; this
 behavior remains unchanged and is not presented as safe.
+`RenderObjectSprite` derives a frame index from byte `+$1F`, resolves the
+bank-`$08` tile frame through the bank-`$02` pointer at `+$21`, copies the
+`+$25` tile count into the shared staging buffer, and emits shadow-OAM entries
+from the bank-`$02` layout pointer at `+$23`. `AdvanceTimedObjectEffect` is
+confined to the type-3 update path, establishing the age/lifetime reuse above.
+The HUD window setup, signed vertical movement, two-bank tilemap refresh, and
+shutdown paths are now named; the refresh transfers five 16-byte blocks from
+each of `$C400` and `$C440` to VRAM `$9C00` during VBlank.
 
 ## Level banks `$09-$26`
 

@@ -247,7 +247,7 @@ Jump_01B4:
 	call CenterLevelViewOnObject
 	call RefreshLevelViewport
 	call ResetOamState
-	call Func_322D
+	call InitializeHudWindow
 	call LoadLevelPalettes
 	call LoadInterfacePalettes
 	call LoadObjectPalettes
@@ -266,7 +266,7 @@ Jump_0218:
 	xor a
 	ld [wVBlankPending], a
 	ld b, $FE
-	call Func_3252
+	call MoveHudWindow
 	dec d
 	jr nz, Jump_0214
 	call Func_35F7
@@ -437,7 +437,7 @@ Jump_0360:
 	jr z, Jump_0360
 	xor a
 	ld [wVBlankPending], a
-	call Func_32EF
+	call DisableHudWindow
 	call ClearCgbPalettes
 	call Func_0AC4
 	call ResetOamState
@@ -6379,9 +6379,9 @@ Jump_23A9:
 	xor a
 	or b
 	jr z, Jump_23B0
-	call Func_3104
+	call RenderObjectSprite
 Jump_23B0:
-	call Func_31E3
+	call AdvanceTimedObjectEffect
 	jp Jump_232B
 
 
@@ -9013,6 +9013,11 @@ Func_30F3:
 	ret
 
 
+; Render the object at HL through the shared tile and shadow-OAM allocators.
+; The frame index is byte +$1F divided by four: health for core vehicles and
+; elapsed age for timed effects. Frame and layout pointers reside in bank $02;
+; the selected native 2bpp frame resides in bank $08.
+RenderObjectSprite:
 Func_3104:
 	push de
 	push bc
@@ -9029,33 +9034,33 @@ Func_3104:
 	ldh [$FF81], a
 	ld a, [hl]
 	ldh [$FF82], a
-	ld a, $1F
+	ld a, OBJECT_HEALTH_OR_AGE_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
 	srl a
 	srl a
 	ldh [$FF85], a
-	ld a, $1E
+	ld a, OBJECT_TYPE_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
 	ldh [$FF80], a
-	ld a, $21
+	ld a, OBJECT_FRAME_TABLE_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hli]
 	ldh [$FF86], a
 	ld a, [hl]
 	ldh [$FF87], a
-	ld a, $23
+	ld a, OBJECT_OAM_LAYOUT_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hli]
 	ldh [$FF88], a
 	ld a, [hl]
 	ldh [$FF89], a
-	ld a, $25
+	ld a, OBJECT_TILE_COUNT_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
@@ -9064,8 +9069,8 @@ Func_3104:
 	cp $FF
 	jr z, Jump_3157
 	ldh [$FF84], a
-	call Func_3190
-	call Func_315F
+	call LoadObjectAnimationTiles
+	call BuildObjectOamEntries
 Jump_3157:
 	pop af
 	ld [rROMB0], a
@@ -9075,6 +9080,9 @@ Jump_3157:
 	ret
 
 
+; Append the object's bank-$02 four-byte layout records to shadow OAM, adding
+; its screen position and the tile index allocated by RenderObjectSprite.
+BuildObjectOamEntries:
 Func_315F:
 	ld a, $02
 	ld [rROMB0], a
@@ -9115,6 +9123,9 @@ Jump_316D:
 	ret
 
 
+; Resolve the selected frame through a bank-$02 pointer table and copy the
+; requested number of 16-byte tiles from bank $08 to the staging buffer at DE.
+LoadObjectAnimationTiles:
 Func_3190:
 	ld a, $02
 	ld [rROMB0], a
@@ -9190,17 +9201,21 @@ Jump_31AF:
 	ret
 
 
+; Increment a timed type-3 effect's age and release its object record once the
+; age reaches byte +$20. Core vehicle records interpret the same two offsets as
+; current and maximum health, so this routine is only used by the type-3 path.
+AdvanceTimedObjectEffect:
 Func_31E3:
 	push de
 	push hl
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_MAX_HEALTH_OR_LIFE_OFFSET
 	ld l, a
 	ld d, [hl]
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_EFFECT_AGE_OFFSET
 	ld l, a
 	ld a, [hl]
 	inc a
@@ -9261,6 +9276,9 @@ Func_321E:
 	ret
 
 
+; Position the HUD window below the screen, enable its LCD/LYC machinery, and
+; build and transfer the initial tile and attribute maps.
+InitializeHudWindow:
 Func_322D:
 	ld a, $90
 	ldh [rWY], a
@@ -9279,10 +9297,12 @@ Func_322D:
 	ldh a, [rIE]
 	set 1, a
 	ldh [rIE], a
-	call Func_325B
+	call RefreshHud
 	ret
 
 
+; Move the HUD window by signed delta B and keep its LYC trigger one line above.
+MoveHudWindow:
 Func_3252:
 	ldh a, [rWY]
 	add a, b
@@ -9292,6 +9312,9 @@ Func_3252:
 	ret
 
 
+; Rebuild the two 5-row HUD maps at $C400/$C440, wait for VBlank, then transfer
+; them to VRAM bank 1 and bank 0 at $9C00.
+RefreshHud:
 Func_325B:
 	call Func_32A3
 	call Func_3302
@@ -9393,6 +9416,8 @@ Func_32DE:
 	ret
 
 
+; Hide the HUD window and disable the STAT LYC interrupt used at its boundary.
+DisableHudWindow:
 Func_32EF:
 	ldh a, [rLCDC]
 	and $DF
