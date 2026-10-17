@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate reviewed RGBDS source for the simple scrolling-scene banks $34-$3A."""
+"""Generate RGBDS source for the simple scrolling-scene banks $2F/$34-$3A."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import sys
 
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-BANKS = range(0x34, 0x3B)
+BANKS = (0x2F, *range(0x34, 0x3B))
 DESCRIPTOR_START = 0x5A60
 DESCRIPTOR_COUNT = 36
 ROW_WIDTH = 20

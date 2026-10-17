@@ -361,8 +361,8 @@ def check_scene_descriptors(rom: bytes) -> None:
 def check_structured_scrolling_scene_banks(
     rom: bytes, entries: list[tuple[pathlib.Path, int, int]]
 ) -> None:
-    """Validate explicit scrolling-scene source in banks $34-$3A."""
-    banks = range(0x34, 0x3B)
+    """Validate explicit scrolling-scene source in banks $2F/$34-$3A."""
+    banks = (0x2F, *range(0x34, 0x3B))
     scenes = {bank: [] for bank in banks}
     for index in range(36):
         record = rom[0x5A60 + index * 8:0x5A68 + index * 8]
@@ -405,10 +405,10 @@ def check_structured_scrolling_scene_banks(
         if manifest.get(path) != where:
             fail(f"scrolling source: asset {path} is {manifest.get(path)}, expected {where}")
     if any(
-        0x34 * 0x4000 <= offset < 0x3B * 0x4000 and path not in expected_assets
+        offset // 0x4000 in banks and path not in expected_assets
         for path, offset, _ in entries
     ):
-        fail("scrolling source: banks $34-$3A contain an unexpected asset")
+        fail("scrolling source: structured banks contain an unexpected asset")
     for bank in banks:
         source = (ROOT / "src" / f"bank_{bank:02X}.asm").read_text()
         if f'assets/bank_{bank:02X}/4000.bin' in source:
@@ -440,7 +440,7 @@ def check_structured_scrolling_scene_banks(
     if total != len(banks) * 0x4000:
         fail(f"scrolling source: accounted for {total} bytes, expected {len(banks) * 0x4000}")
     print(
-        f"scrolling source: 19 scenes in banks $34-$3A "
+        f"scrolling source: 30 scenes in banks $2F/$34-$3A "
         f"({counts['graphics']} graphics, {counts['rows']} rows, "
         f"{counts['palettes']} palettes, {counts['padding']} padding)"
     )
