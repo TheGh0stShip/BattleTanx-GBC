@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 141 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 240 remain. `make progress` recomputes the per-bank
+At this revision, 144 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 237 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -173,7 +173,10 @@ by `wControlSetting`; their button layouts retain scheme-neutral names. The
 shared vehicle fields now identify the bounded speed, maximum speed,
 reverse-vector flag, turn-repeat interval, and turn timer; their acceleration,
 deceleration, stop, and clockwise/counterclockwise turn helpers are named
-accordingly.
+accordingly. Forward and reverse velocity loaders index eight-byte bank-`$05`
+records by speed and direction, copy signed 24-bit X/Y deltas into the object,
+and `CalculateVehicleNextPosition` integrates them into its candidate 16.8
+position.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 

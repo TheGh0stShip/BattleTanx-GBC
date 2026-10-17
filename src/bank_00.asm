@@ -1939,7 +1939,8 @@ Func_0B65: ; legacy alias
 	ret
 
 
-Func_0BA1:
+CalculateVehicleNextPosition:
+Func_0BA1: ; legacy alias
 	push de
 	push bc
 	push hl
@@ -1953,14 +1954,14 @@ Func_0BA1:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2295
+	call LoadVehicleReverseVelocity
 	jr Jump_0BBF
 
 Jump_0BB8:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2241
+	call LoadVehicleForwardVelocity
 Jump_0BBF:
 	ld a, l
 	and $C0
@@ -1971,7 +1972,7 @@ Jump_0BBF:
 	jp z, Jump_0C12
 	ld a, l
 	and $C0
-	add a, $0D
+	add a, OBJECT_VEHICLE_VELOCITY_X_OFFSET
 	ld l, a
 	ld c, [hl]
 	inc l
@@ -2001,7 +2002,7 @@ Jump_0BBF:
 	ld [hl], e
 	ld a, l
 	and $C0
-	add a, $10
+	add a, OBJECT_VEHICLE_VELOCITY_Y_OFFSET
 	ld l, a
 	ld c, [hl]
 	inc l
@@ -6189,7 +6190,8 @@ Func_221F:
 	ret
 
 
-Func_2241:
+LoadVehicleForwardVelocity:
+Func_2241: ; legacy alias
 	push af
 	push bc
 	push de
@@ -6207,7 +6209,7 @@ Func_2241:
 	ldh [$FF80], a
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
 	ldh [$FF81], a
@@ -6227,7 +6229,7 @@ Func_2241:
 	add hl, bc
 	ld bc, $4600
 	add hl, bc
-	ld a, $0D
+	ld a, OBJECT_VEHICLE_VELOCITY_X_OFFSET
 	add a, e
 	ld c, a
 	ld b, d
@@ -6257,7 +6259,8 @@ Jump_2290:
 	ret
 
 
-Func_2295:
+LoadVehicleReverseVelocity:
+Func_2295: ; legacy alias
 	push af
 	push bc
 	push de
@@ -6275,7 +6278,7 @@ Func_2295:
 	ldh [$FF80], a
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
 	add a, $08
@@ -6297,7 +6300,7 @@ Func_2295:
 	add hl, bc
 	ld bc, $4600
 	add hl, bc
-	ld a, $0D
+	ld a, OBJECT_VEHICLE_VELOCITY_X_OFFSET
 	add a, e
 	ld c, a
 	ld b, d
@@ -6390,7 +6393,7 @@ Jump_2345:
 	inc a
 	ld [$CA08], a
 Jump_2353:
-	call Func_0BA1
+	call CalculateVehicleNextPosition
 	call Func_104B
 	jr z, Jump_2335
 	ld a, $26
@@ -8189,7 +8192,7 @@ Func_2C58:
 	ld a, [hl]
 	and a
 	ld l, e
-	call z, Func_2241
+	call z, LoadVehicleForwardVelocity
 	ld a, l
 	and $C0
 	add a, $1A
