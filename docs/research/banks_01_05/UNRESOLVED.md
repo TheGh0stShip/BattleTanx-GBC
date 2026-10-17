@@ -72,8 +72,9 @@
 5. **Unread bytes**:
    - `Bank02Unknown5E80` (one byte); the following eight bytes form the
      bounded `Bank02UnusedPaletteRecord5E81`, but that record's purpose is
-     unknown and it has no reader;
-   - `$D7CA`/`$D260` single-`ret` data images.
+     unknown and it has no reader.
+   - The copied `$D7CA`/`$D260` bytes are now explicit callerless `ret` stubs,
+     not unread data; their intended call sites remain unknown.
 6. **RAM**:
    - Bank `$01` writes `hLevelRegionTop` (`$FF92`) to `rROMB0` and clears
      `hLevelRegionX` (`$FF95`), which looks like reuse of HRAM.

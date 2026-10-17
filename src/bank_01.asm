@@ -3349,8 +3349,9 @@ Jump_01_565E:
 
 
 Bank01RomImage_565F:
-	LOAD UNION "RAM data $D7CA", WRAMX[$D7CA] ; copied from $01:565F
-	db $C9
+	LOAD UNION "RAM code (callerless) $D7CA", WRAMX[$D7CA] ; copied from $01:565F
+UnusedMenuRamNoOp:
+	ret
 	ENDL
 	db $00
 
@@ -5733,8 +5734,9 @@ StartSceneTileRowHdma:
 
 
 Bank01RomImage_6599:
-	LOAD UNION "RAM data $D260", WRAMX[$D260] ; copied from $01:6599
-	db $C9
+	LOAD UNION "RAM code (callerless) $D260", WRAMX[$D260] ; copied from $01:6599
+UnusedSceneRamNoOp:
+	ret
 	ENDL
 	db $00
 

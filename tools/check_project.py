@@ -641,8 +641,8 @@ def check_executable_ram_source() -> None:
                 )
         if in_image:
             fail(f"{path.name}:{start}: unterminated RAM code image")
-    if images != 31:
-        fail(f"expected 31 executable RAM source images, found {images}")
+    if images != 33:
+        fail(f"expected 33 executable RAM source images, found {images}")
 
 
 def check_tracing() -> None:
@@ -668,7 +668,7 @@ def check_tracing() -> None:
     )
     reviewed_bytes = sum(traced.code.values())
     if ((automatic_bytes, standalone_bytes, callerless_bytes, reviewed_bytes) !=
-            (35303, 3265, 204, 38772) or len(traced.loads) != 38):
+            (35303, 3265, 206, 38774) or len(traced.loads) != 38):
         fail(
             "tracing baseline changed; review it and update docs deliberately "
             f"(automatic={automatic_bytes}, standalone={standalone_bytes}, "
@@ -678,7 +678,7 @@ def check_tracing() -> None:
         any(load.src <= off < load.src + load.len for off in traced.code)
         for load in traced.loads.values()
     )
-    if executable_loads != 31:
+    if executable_loads != 33:
         fail(
             "RAM image classification changed; review it deliberately "
             f"(code={executable_loads}, data={len(traced.loads) - executable_loads})"
@@ -690,7 +690,7 @@ def check_tracing() -> None:
     print(
         "trace: "
         f"{automatic_bytes} root/table bytes, {standalone_bytes} reviewed standalone bytes, "
-        f"{callerless_bytes} callerless template bytes, {total_bytes - reviewed_bytes} heuristic bytes, "
+        f"{callerless_bytes} callerless bytes, {total_bytes - reviewed_bytes} heuristic bytes, "
         f"{executable_loads} RAM code images, "
         f"{len(traced.loads) - executable_loads} RAM data images"
     )

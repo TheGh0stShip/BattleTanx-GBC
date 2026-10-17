@@ -75,8 +75,9 @@ Exact scene totals from the validators:
 - fixed (`$30-$33`): 43,968 graphics, 6,984 structured, 14,584 padding,
   5,872 dual-use.
 
-Reviewed code: 38,772 bytes (35,303 root/table traced, 3,265 reviewed
-standalone-seed bytes, and 204 callerless bank-`$2E` template bytes).
+Reviewed code: 38,774 bytes (35,303 root/table traced, 3,265 reviewed
+standalone-seed bytes, and 206 callerless bytes: two copied RAM no-op stubs
+plus 204 bank-`$2E` template bytes).
 Heuristic gap-fill: 0.
 
 ## 3. Recovered structures and consumers
@@ -200,7 +201,7 @@ fixed source: 11 fixed and 4 scrolling scenes in banks $30-$33 (43968 graphics, 
 text: 3 option entries, 11 strings, 2 renderer calls, 4 negative tests rejected
 object sequences: 15 level tables, 203 sequences, 626 records, 4 negative tests rejected
 level objects: 15 levels, 548/600 active spawn records, 37/120 enabled auxiliary records, 3 negative tests rejected
-trace: 35303 root/table bytes, 3265 reviewed standalone bytes, 204 callerless template bytes, 0 heuristic bytes, 31 RAM code images, 7 RAM data images
+trace: 35303 root/table bytes, 3265 reviewed standalone bytes, 206 callerless bytes, 0 heuristic bytes, 33 RAM code images, 5 RAM data images
 audio: 37 patches, 25 sfx sequences, 10 music sequences, 32 queued ids and 57 call sites checked
 screens: banks $2A-$2E fully classified (code 2803, data 13694, graphics 51792, padding 13631), 13 screen packages, 18 negative tests rejected
 levels: 15 levels in banks $09-$26, every byte in one range, 11 negative tests rejected

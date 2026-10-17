@@ -6,10 +6,10 @@
 - Immutable baseline: commit `42b4125d1c11b96ddc99383009bd9c24924d72dc`,
   exported with `git archive` into `BattleTanx-GBC-banks2A-2E-baseline`.
 - Baseline `make clean && make check`: SHA-1
-  `5078584e86c0b6f4687c424cc00bbd762ba6573a`; 38,772 decoded instruction
+  `5078584e86c0b6f4687c424cc00bbd762ba6573a`; 38,774 decoded instruction
   bytes and 0 heuristic bytes. Current accounting separates 35,303 root/table
-  bytes, 3,265 reviewed standalone bytes, and the 204 callerless bank-`$2E`
-  template bytes. At the baseline,
+  bytes, 3,265 reviewed standalone bytes, two callerless copied-RAM no-op
+  bytes, and the 204 callerless bank-`$2E` template bytes. At the baseline,
   banks `$2A`-`$2E` had 59 address-based labels and 13 opaque INCBIN ranges
   (63,613 bytes).
 - After this pass the SHA-1 and trace counts are unchanged.
@@ -310,7 +310,7 @@ make clean
 make check
 baserom.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 battletanx.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
-trace: 35303 root/table bytes, 3265 reviewed standalone bytes, 204 callerless template bytes, 0 heuristic bytes, 31 RAM code images, 7 RAM data images
+trace: 35303 root/table bytes, 3265 reviewed standalone bytes, 206 callerless bytes, 0 heuristic bytes, 33 RAM code images, 5 RAM data images
 audio: 37 patches, 25 sfx sequences, 10 music sequences, 32 queued ids and 57 call sites checked
 screens: banks $2A-$2E fully classified (code 2803, data 13694, graphics 51792, padding 13631), 13 screen packages, 18 negative tests rejected
 project: OK (98 assets, baserom sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)

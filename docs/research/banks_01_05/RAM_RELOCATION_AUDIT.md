@@ -1,8 +1,9 @@
 # RAM-executed images
 
-There are 31 code images and 7 data images project-wide, matching the
-tracer. Banks `$01`/`$02` hold 26 + 4 code images and 2 data images. Banks
-`$03`-`$05` hold none. Every copy length equals its ROM span.
+There are 33 code images and 5 data images project-wide, matching the tracer.
+Banks `$01`/`$02` hold 28 + 4 code images; two bank-`$01` images are callerless
+one-byte no-op stubs. Banks `$03`-`$05` hold none. Every copy length equals its
+ROM span.
 
 ## Installers
 
@@ -28,8 +29,10 @@ tracer. Banks `$01`/`$02` hold 26 + 4 code images and 2 data images. Banks
 
   Both work because bank `$01` is mapped at the time and the callees do not
   branch internally.
-- **Data images**: `$D7CA` and `$D260` are single `$C9` bytes with no
-  reference. They are kept as data images.
+- **Callerless no-op images**: installers explicitly copy exactly one `$C9`
+  opcode to `$D7CA` and `$D260`, excluding the following zero byte in both
+  cases. They are represented as `ret` instructions, but no direct, pointer,
+  or traced indirect reference to either destination exists.
 
 ## Bank assumptions
 

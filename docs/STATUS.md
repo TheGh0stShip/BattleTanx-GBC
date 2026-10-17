@@ -18,7 +18,8 @@ claim.
 - Toolchain: RGBDS 1.0.4
 - Whole-ROM match: 1,048,576 / 1,048,576 bytes (100%)
 - ROM banks represented: 64 / 64
-- Copied RAM images detected: 38 (31 executable, 7 data-only)
+- Copied RAM images detected: 38 (33 executable, including two callerless
+  one-byte no-op stubs, and 5 data-only)
 - Banks `$3C-$3F` are confirmed unused cartridge capacity: all 65,536 bytes
   are explicit `$FF` padding rather than opaque assets.
 - Bank `$07` is explicit as one malformed eight-byte sound-patch slot, an
@@ -36,10 +37,10 @@ does not substitute for traced-byte coverage or semantic verification.
 
 | Area | Current state | Next gate |
 | --- | --- | --- |
-| Reviewed code | 38,772 decoded bytes: 35,303 from roots/tables, 3,265 from reviewed standalone seeds, and 204 in the callerless bank `$2E` template pair | Resolve remaining semantics without describing seeded code as caller-reached |
+| Reviewed code | 38,774 decoded bytes: 35,303 from roots/tables, 3,265 from reviewed standalone seeds, and 206 callerless bytes (two copied RAM no-op stubs plus the bank `$2E` template pair) | Resolve remaining semantics without describing seeded code as caller-reached |
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | `make progress` reports reviewed companion names for automatic function entries per bank, separately from traced-byte coverage; interrupts, startup, copy helpers, screen dispatch, OAM DMA, rendering state, and scene descriptors are among the recovered groups | Continue naming routines and RAM state from evidence |
-| RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
+| RAM images | All 33 executable images are explicit instructions, while 5 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Verify any newly discovered execution reference to the two callerless no-op stubs |
 | Graphics | 65 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly; bank `$08` additionally has a lossless 85-range inspection export for its interleaved interface/object graphics | Identify gameplay roles for the remaining neutral graphics labels |
 | Maps | All eleven descriptor-driven fixed backgrounds, the referenced Game Boy Color warning in bank `$3B`, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions and indices | Name individual scenes and levels |
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |

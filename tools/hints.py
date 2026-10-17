@@ -59,7 +59,10 @@ MANUAL_ENTRIES = (
 # Template-identical screen routines with no recovered caller. They are kept
 # separate from the reviewed standalone entries so progress accounting does
 # not imply that tracing reached them through a program reference.
-CALLERLESS_ENTRIES = ((0x2E, 0x4000), (0x2E, 0x4058))
+CALLERLESS_ENTRIES = (
+    (0x01, 0x565F), (0x01, 0x6599),
+    (0x2E, 0x4000), (0x2E, 0x4058),
+)
 
 # Literal options-menu strings. Other visible game text is stored as graphics
 # or encoded data rather than plain ASCII.
