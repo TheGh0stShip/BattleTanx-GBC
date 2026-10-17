@@ -1,5 +1,9 @@
 ; BattleTanx (USA) - ROM bank $05
 
+MACRO object_velocity ; X, Y (signed 32-bit, 1/256 px per frame)
+	dl \1, \2
+ENDM
+
 SECTION "ROM Bank $05", ROMX[$4000], BANK[$05]
 ObjectOrientationLayoutPointers:
 	dw ObjectLayoutNormal, ObjectLayoutNormal, ObjectLayoutNormal, ObjectLayoutNormal
@@ -9,8 +13,10 @@ ObjectOrientationLayoutPointers:
 	dw ObjectLayoutXFlipped, ObjectLayoutXFlipped, ObjectLayoutXFlipped, ObjectLayoutXFlipped
 
 ObjectOrientationTilePointers:
-	dw $4000, $4090, $4120, $41B0, $4240, $42D0, $4360, $43F0
-	dw $4480, $43F0, $4360, $42D0, $4240, $41B0, $4120, $4090
+; Offsets into the object bank selected at run time ($27 + [$FF80]); banks $27-$29
+; share one layout (pinned in each bank), so bank $27's frame labels give the offsets.
+	dw Bank27OrientationFrame0, Bank27OrientationFrame1, Bank27OrientationFrame2, Bank27OrientationFrame3, Bank27OrientationFrame4, Bank27OrientationFrame5, Bank27OrientationFrame6, Bank27OrientationFrame7
+	dw Bank27OrientationFrame8, Bank27OrientationFrame7, Bank27OrientationFrame6, Bank27OrientationFrame5, Bank27OrientationFrame4, Bank27OrientationFrame3, Bank27OrientationFrame2, Bank27OrientationFrame1
 
 ObjectLayoutNormal:
 	db $F4, $F4, $00, $00, $F4, $FC, $01, $00, $F4, $04, $02, $00, $FC, $F4, $03, $00
@@ -47,14 +53,16 @@ LoadLevelLookupPointers:
 	ld [wLevelAttributeLookupBank], a
 	ret
 
-	INCBIN "assets/bank_05/40B1.bin"
+Bank05Bank04Copy40B1: ; byte-identical copy of bank $04 $40B1-$42FF (level 0-3 spawn records); no reader in bank $05
+	INCBIN "assets/bank_05/bank04_copy_40B1.bin"
 
 LevelRecordPointers:
 	dw Level00_Record, Level01_Record, Level02_Record, Level03_Record, Level04_Record
 	dw Level05_Record, Level06_Record, Level07_Record, Level08_Record, Level09_Record
 	dw Level10_Record, Level11_Record, Level12_Record, Level13_Record, Level14_Record
 
-	INCBIN "assets/bank_05/431E.bin"
+Bank05Bank04Copy431E: ; byte-identical copy of bank $04 $431E-$43FF; no reader in bank $05
+	INCBIN "assets/bank_05/bank04_copy_431E.bin"
 
 Level00_Record:
 	level_record LEVEL00_WIDTH, LEVEL00_HEIGHT, Level00_Tiles, Level00_BGPalettes, Level00_CellMap, Level00_TileMap, Level00_AttrMap, LEVEL00_TILE_COUNT, LEVEL00_PALETTE_COUNT
@@ -87,7 +95,290 @@ Level13_Record:
 Level14_Record:
 	level_record LEVEL14_WIDTH, LEVEL14_HEIGHT, Level14_Tiles, Level14_BGPalettes, Level14_CellMap, Level14_TileMap, Level14_AttrMap, LEVEL14_TILE_COUNT, LEVEL14_PALETTE_COUNT
 
-	INCBIN "assets/bank_05/452C.bin"
+Bank05Bank04Copy452C: ; byte-identical copy of bank $04 $452C-$45FF; no reader in bank $05
+	INCBIN "assets/bank_05/bank04_copy_452C.bin"
+
+ObjectVelocityTable: ; 16 speed classes x 16 directions; X then Y, signed 32-bit, 1/256 px per frame
+; Read by ROM0 Func_2241/Func_2295 (class = object +$1A, direction = object +$19).
+; Magnitude = (class + 1) * $60; direction 0 = -Y, 4 = +X, 8 = +Y, 12 = -X.
+; ObjectTypeParameterTable caps the class index at 14, so class 15 is never selected.
+	; speed class 0
+	object_velocity 0, -96 ; direction 0
+	object_velocity 37, -89 ; direction 1
+	object_velocity 68, -68 ; direction 2
+	object_velocity 89, -37 ; direction 3
+	object_velocity 96, 0 ; direction 4
+	object_velocity 89, 37 ; direction 5
+	object_velocity 68, 68 ; direction 6
+	object_velocity 37, 89 ; direction 7
+	object_velocity 0, 96 ; direction 8
+	object_velocity -37, 89 ; direction 9
+	object_velocity -68, 68 ; direction 10
+	object_velocity -89, 37 ; direction 11
+	object_velocity -96, 0 ; direction 12
+	object_velocity -89, -37 ; direction 13
+	object_velocity -68, -68 ; direction 14
+	object_velocity -37, -89 ; direction 15
+	; speed class 1
+	object_velocity 0, -192 ; direction 0
+	object_velocity 73, -177 ; direction 1
+	object_velocity 136, -136 ; direction 2
+	object_velocity 177, -73 ; direction 3
+	object_velocity 192, 0 ; direction 4
+	object_velocity 177, 73 ; direction 5
+	object_velocity 136, 136 ; direction 6
+	object_velocity 73, 177 ; direction 7
+	object_velocity 0, 192 ; direction 8
+	object_velocity -73, 177 ; direction 9
+	object_velocity -136, 136 ; direction 10
+	object_velocity -177, 73 ; direction 11
+	object_velocity -192, 0 ; direction 12
+	object_velocity -177, -73 ; direction 13
+	object_velocity -136, -136 ; direction 14
+	object_velocity -73, -177 ; direction 15
+	; speed class 2
+	object_velocity 0, -288 ; direction 0
+	object_velocity 110, -266 ; direction 1
+	object_velocity 204, -204 ; direction 2
+	object_velocity 266, -110 ; direction 3
+	object_velocity 288, 0 ; direction 4
+	object_velocity 266, 110 ; direction 5
+	object_velocity 204, 204 ; direction 6
+	object_velocity 110, 266 ; direction 7
+	object_velocity 0, 288 ; direction 8
+	object_velocity -110, 266 ; direction 9
+	object_velocity -204, 204 ; direction 10
+	object_velocity -266, 110 ; direction 11
+	object_velocity -288, 0 ; direction 12
+	object_velocity -266, -110 ; direction 13
+	object_velocity -204, -204 ; direction 14
+	object_velocity -110, -266 ; direction 15
+	; speed class 3
+	object_velocity 0, -384 ; direction 0
+	object_velocity 147, -355 ; direction 1
+	object_velocity 272, -272 ; direction 2
+	object_velocity 355, -147 ; direction 3
+	object_velocity 384, 0 ; direction 4
+	object_velocity 355, 147 ; direction 5
+	object_velocity 272, 272 ; direction 6
+	object_velocity 147, 355 ; direction 7
+	object_velocity 0, 384 ; direction 8
+	object_velocity -147, 355 ; direction 9
+	object_velocity -272, 272 ; direction 10
+	object_velocity -355, 147 ; direction 11
+	object_velocity -384, 0 ; direction 12
+	object_velocity -355, -147 ; direction 13
+	object_velocity -272, -272 ; direction 14
+	object_velocity -147, -355 ; direction 15
+	; speed class 4
+	object_velocity 0, -480 ; direction 0
+	object_velocity 184, -443 ; direction 1
+	object_velocity 339, -339 ; direction 2
+	object_velocity 443, -184 ; direction 3
+	object_velocity 480, 0 ; direction 4
+	object_velocity 443, 184 ; direction 5
+	object_velocity 339, 339 ; direction 6
+	object_velocity 184, 443 ; direction 7
+	object_velocity 0, 480 ; direction 8
+	object_velocity -184, 443 ; direction 9
+	object_velocity -339, 339 ; direction 10
+	object_velocity -443, 184 ; direction 11
+	object_velocity -480, 0 ; direction 12
+	object_velocity -443, -184 ; direction 13
+	object_velocity -339, -339 ; direction 14
+	object_velocity -184, -443 ; direction 15
+	; speed class 5
+	object_velocity 0, -576 ; direction 0
+	object_velocity 220, -532 ; direction 1
+	object_velocity 407, -407 ; direction 2
+	object_velocity 532, -220 ; direction 3
+	object_velocity 576, 0 ; direction 4
+	object_velocity 532, 220 ; direction 5
+	object_velocity 407, 407 ; direction 6
+	object_velocity 220, 532 ; direction 7
+	object_velocity 0, 576 ; direction 8
+	object_velocity -220, 532 ; direction 9
+	object_velocity -407, 407 ; direction 10
+	object_velocity -532, 220 ; direction 11
+	object_velocity -576, 0 ; direction 12
+	object_velocity -532, -220 ; direction 13
+	object_velocity -407, -407 ; direction 14
+	object_velocity -220, -532 ; direction 15
+	; speed class 6
+	object_velocity 0, -672 ; direction 0
+	object_velocity 257, -621 ; direction 1
+	object_velocity 475, -475 ; direction 2
+	object_velocity 621, -257 ; direction 3
+	object_velocity 672, 0 ; direction 4
+	object_velocity 621, 257 ; direction 5
+	object_velocity 475, 475 ; direction 6
+	object_velocity 257, 621 ; direction 7
+	object_velocity 0, 672 ; direction 8
+	object_velocity -257, 621 ; direction 9
+	object_velocity -475, 475 ; direction 10
+	object_velocity -621, 257 ; direction 11
+	object_velocity -672, 0 ; direction 12
+	object_velocity -621, -257 ; direction 13
+	object_velocity -475, -475 ; direction 14
+	object_velocity -257, -621 ; direction 15
+	; speed class 7
+	object_velocity 0, -768 ; direction 0
+	object_velocity 294, -710 ; direction 1
+	object_velocity 543, -543 ; direction 2
+	object_velocity 710, -294 ; direction 3
+	object_velocity 768, 0 ; direction 4
+	object_velocity 710, 294 ; direction 5
+	object_velocity 543, 543 ; direction 6
+	object_velocity 294, 710 ; direction 7
+	object_velocity 0, 768 ; direction 8
+	object_velocity -294, 710 ; direction 9
+	object_velocity -543, 543 ; direction 10
+	object_velocity -710, 294 ; direction 11
+	object_velocity -768, 0 ; direction 12
+	object_velocity -710, -294 ; direction 13
+	object_velocity -543, -543 ; direction 14
+	object_velocity -294, -710 ; direction 15
+	; speed class 8
+	object_velocity 0, -864 ; direction 0
+	object_velocity 331, -798 ; direction 1
+	object_velocity 611, -611 ; direction 2
+	object_velocity 798, -331 ; direction 3
+	object_velocity 864, 0 ; direction 4
+	object_velocity 798, 331 ; direction 5
+	object_velocity 611, 611 ; direction 6
+	object_velocity 331, 798 ; direction 7
+	object_velocity 0, 864 ; direction 8
+	object_velocity -331, 798 ; direction 9
+	object_velocity -611, 611 ; direction 10
+	object_velocity -798, 331 ; direction 11
+	object_velocity -864, 0 ; direction 12
+	object_velocity -798, -331 ; direction 13
+	object_velocity -611, -611 ; direction 14
+	object_velocity -331, -798 ; direction 15
+	; speed class 9
+	object_velocity 0, -960 ; direction 0
+	object_velocity 367, -887 ; direction 1
+	object_velocity 679, -679 ; direction 2
+	object_velocity 887, -367 ; direction 3
+	object_velocity 960, 0 ; direction 4
+	object_velocity 887, 367 ; direction 5
+	object_velocity 679, 679 ; direction 6
+	object_velocity 367, 887 ; direction 7
+	object_velocity 0, 960 ; direction 8
+	object_velocity -367, 887 ; direction 9
+	object_velocity -679, 679 ; direction 10
+	object_velocity -887, 367 ; direction 11
+	object_velocity -960, 0 ; direction 12
+	object_velocity -887, -367 ; direction 13
+	object_velocity -679, -679 ; direction 14
+	object_velocity -367, -887 ; direction 15
+	; speed class 10
+	object_velocity 0, -1056 ; direction 0
+	object_velocity 404, -976 ; direction 1
+	object_velocity 747, -747 ; direction 2
+	object_velocity 976, -404 ; direction 3
+	object_velocity 1056, 0 ; direction 4
+	object_velocity 976, 404 ; direction 5
+	object_velocity 747, 747 ; direction 6
+	object_velocity 404, 976 ; direction 7
+	object_velocity 0, 1056 ; direction 8
+	object_velocity -404, 976 ; direction 9
+	object_velocity -747, 747 ; direction 10
+	object_velocity -976, 404 ; direction 11
+	object_velocity -1056, 0 ; direction 12
+	object_velocity -976, -404 ; direction 13
+	object_velocity -747, -747 ; direction 14
+	object_velocity -404, -976 ; direction 15
+	; speed class 11
+	object_velocity 0, -1152 ; direction 0
+	object_velocity 441, -1064 ; direction 1
+	object_velocity 815, -815 ; direction 2
+	object_velocity 1064, -441 ; direction 3
+	object_velocity 1152, 0 ; direction 4
+	object_velocity 1064, 441 ; direction 5
+	object_velocity 815, 815 ; direction 6
+	object_velocity 441, 1064 ; direction 7
+	object_velocity 0, 1152 ; direction 8
+	object_velocity -441, 1064 ; direction 9
+	object_velocity -815, 815 ; direction 10
+	object_velocity -1064, 441 ; direction 11
+	object_velocity -1152, 0 ; direction 12
+	object_velocity -1064, -441 ; direction 13
+	object_velocity -815, -815 ; direction 14
+	object_velocity -441, -1064 ; direction 15
+	; speed class 12
+	object_velocity 0, -1248 ; direction 0
+	object_velocity 478, -1153 ; direction 1
+	object_velocity 882, -882 ; direction 2
+	object_velocity 1153, -478 ; direction 3
+	object_velocity 1248, 0 ; direction 4
+	object_velocity 1153, 478 ; direction 5
+	object_velocity 882, 882 ; direction 6
+	object_velocity 478, 1153 ; direction 7
+	object_velocity 0, 1248 ; direction 8
+	object_velocity -478, 1153 ; direction 9
+	object_velocity -882, 882 ; direction 10
+	object_velocity -1153, 478 ; direction 11
+	object_velocity -1248, 0 ; direction 12
+	object_velocity -1153, -478 ; direction 13
+	object_velocity -882, -882 ; direction 14
+	object_velocity -478, -1153 ; direction 15
+	; speed class 13
+	object_velocity 0, -1344 ; direction 0
+	object_velocity 514, -1242 ; direction 1
+	object_velocity 950, -950 ; direction 2
+	object_velocity 1242, -514 ; direction 3
+	object_velocity 1344, 0 ; direction 4
+	object_velocity 1242, 514 ; direction 5
+	object_velocity 950, 950 ; direction 6
+	object_velocity 514, 1242 ; direction 7
+	object_velocity 0, 1344 ; direction 8
+	object_velocity -514, 1242 ; direction 9
+	object_velocity -950, 950 ; direction 10
+	object_velocity -1242, 514 ; direction 11
+	object_velocity -1344, 0 ; direction 12
+	object_velocity -1242, -514 ; direction 13
+	object_velocity -950, -950 ; direction 14
+	object_velocity -514, -1242 ; direction 15
+	; speed class 14
+	object_velocity 0, -1440 ; direction 0
+	object_velocity 551, -1330 ; direction 1
+	object_velocity 1018, -1018 ; direction 2
+	object_velocity 1330, -551 ; direction 3
+	object_velocity 1440, 0 ; direction 4
+	object_velocity 1330, 551 ; direction 5
+	object_velocity 1018, 1018 ; direction 6
+	object_velocity 551, 1330 ; direction 7
+	object_velocity 0, 1440 ; direction 8
+	object_velocity -551, 1330 ; direction 9
+	object_velocity -1018, 1018 ; direction 10
+	object_velocity -1330, 551 ; direction 11
+	object_velocity -1440, 0 ; direction 12
+	object_velocity -1330, -551 ; direction 13
+	object_velocity -1018, -1018 ; direction 14
+	object_velocity -551, -1330 ; direction 15
+	; speed class 15 (not selected)
+	object_velocity 0, -1536 ; direction 0
+	object_velocity 588, -1419 ; direction 1
+	object_velocity 1086, -1086 ; direction 2
+	object_velocity 1419, -588 ; direction 3
+	object_velocity 1536, 0 ; direction 4
+	object_velocity 1419, 588 ; direction 5
+	object_velocity 1086, 1086 ; direction 6
+	object_velocity 588, 1419 ; direction 7
+	object_velocity 0, 1536 ; direction 8
+	object_velocity -588, 1419 ; direction 9
+	object_velocity -1086, 1086 ; direction 10
+	object_velocity -1419, 588 ; direction 11
+	object_velocity -1536, 0 ; direction 12
+	object_velocity -1419, -588 ; direction 13
+	object_velocity -1086, -1086 ; direction 14
+	object_velocity -588, -1419 ; direction 15
+ObjectVelocityTableEnd:
+	ds $4EA0 - @, $00 ; no reader
+
+	ASSERT ObjectVelocityTableEnd - ObjectVelocityTable == 16 * 16 * 8
+
 
 ; Indexed by the object's type field; GetObjectScoreValue returns the selected
 ; 16-bit value and AddToScore adds it to the four-byte score accumulator.
@@ -128,7 +419,7 @@ LevelAttributeLookupPointers:
 
 	INCLUDE "src/level_tile_animation.asm"
 
-	INCBIN "assets/bank_05/59E0.bin"
+	INCLUDE "src/screen_effect_tables.asm"
 
 	ASSERT LevelRecordPointers == $4300
 	ASSERT Level14_Record == $4518
@@ -137,3 +428,6 @@ LevelAttributeLookupPointers:
 	ASSERT LevelTileAnimationPointers == $5120
 	ASSERT LevelAttributeLookupPointers == $513E
 	ASSERT LevelTileAnimationSet0 == $517A
+
+; Relocation pin: ROM0 Func_2241/Func_2295 use ld bc, $4600 (src/bank_00.asm is not edited here).
+	ASSERT BANK(ObjectVelocityTable) == $05 && ObjectVelocityTable == $4600, "raw pointer: ROM0 ld bc, $4600"

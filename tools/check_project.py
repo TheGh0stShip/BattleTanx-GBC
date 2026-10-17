@@ -1039,10 +1039,9 @@ def check_level_banks() -> None:
 
     manifest = {str(path): (start, size) for path, start, size in read_manifest()}
     bank5_assets = {
-        "assets/bank_05/40B1.bin": (0x140B1, 0x24F),
-        "assets/bank_05/431E.bin": (0x1431E, 0xE2),
-        "assets/bank_05/452C.bin": (0x1452C, 0x974),
-        "assets/bank_05/59E0.bin": (0x159E0, 0x2620),
+        "assets/bank_05/bank04_copy_40B1.bin": (0x140B1, 0x24F),
+        "assets/bank_05/bank04_copy_431E.bin": (0x1431E, 0xE2),
+        "assets/bank_05/bank04_copy_452C.bin": (0x1452C, 0xD4),
     }
     for path, where in bank5_assets.items():
         if manifest.get(path) != where:

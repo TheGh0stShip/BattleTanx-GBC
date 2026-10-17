@@ -22,7 +22,7 @@ LevelObjectSequenceTables:
 	dw Level06ObjectSequences, Level07ObjectSequences, Level08ObjectSequences
 	dw Level09ObjectSequences, Level10ObjectSequences, Level11ObjectSequences
 	dw Level12ObjectSequences, Level13ObjectSequences, Level14ObjectSequences
-ASSERT @ == $5C11
+ASSERT @ - LevelObjectSequenceTables == $1E
 
 InitializeObjectSequenceState:
 	push af
@@ -176,7 +176,8 @@ InitializeObjectSequenceState:
 	ret
 
 
-Func_03_5CD0:
+UpdateObjectSequenceMovement:
+Func_03_5CD0: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -192,9 +193,9 @@ Func_03_5CD0:
 	ld a, [de]
 	cp $02
 	jp nz, Jump_03_5CED
-	ld a, [$CD2A]
+	ld a, [wSequenceObjectsInState2Count]
 	inc a
-	ld [$CD2A], a
+	ld [wSequenceObjectsInState2Count], a
 Jump_03_5CED:
 	ld a, e
 	and $C0
@@ -209,10 +210,10 @@ Jump_03_5CED:
 	ld e, a
 	ld a, [de]
 	cp $03
-	jp z, Jump_03_5FBA
-	ld a, [$CD28]
+	jp z, ObjectSequenceUpdateExit
+	ld a, [wObjectSequenceThrottleCounter]
 	inc a
-	ld [$CD28], a
+	ld [wObjectSequenceThrottleCounter], a
 	and $07
 	jr z, Jump_03_5D1A
 	ld a, e
@@ -221,7 +222,7 @@ Jump_03_5CED:
 	ld e, a
 	xor a
 	ld [de], a
-	jp Jump_03_5FBA
+	jp ObjectSequenceUpdateExit
 
 Jump_03_5D1A:
 	call Func_03_6429
@@ -272,7 +273,7 @@ Jump_03_5D54:
 	ld e, a
 	xor a
 	ld [de], a
-	jp Jump_03_5FBA
+	jp ObjectSequenceUpdateExit
 
 Jump_03_5D65:
 	ld a, e
@@ -303,7 +304,7 @@ Jump_03_5D65:
 	jr z, Jump_03_5D8E
 	dec a
 	ld [de], a
-	jp Jump_03_5FBA
+	jp ObjectSequenceUpdateExit
 
 Jump_03_5D8E:
 	push de
@@ -335,7 +336,7 @@ Jump_03_5D8E:
 	ld a, [de]
 	bit 7, a
 	jr nz, Jump_03_5DB9
-	jp Jump_03_5FBA
+	jp ObjectSequenceUpdateExit
 
 Jump_03_5DB9:
 	ld a, e
@@ -366,12 +367,12 @@ Jump_03_5DD1:
 	inc a
 	and $0F
 	ld [de], a
-	jp Jump_03_5FBA
+	jp ObjectSequenceUpdateExit
 
 Jump_03_5DE2:
 	ld a, [wObjectSlowTickCounter]
 	and a
-	jp nz, Jump_03_5FBA
+	jp nz, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
 	add a, $3C
@@ -379,7 +380,7 @@ Jump_03_5DE2:
 	ld a, b
 	dec a
 	ld [de], a
-	jp Jump_03_5FBA
+	jp ObjectSequenceUpdateExit
 
 Jump_03_5DF5:
 	ld a, e
@@ -388,7 +389,7 @@ Jump_03_5DF5:
 	ld e, a
 	ld a, [de]
 	bit 7, a
-	jp nz, Jump_03_5FBA
+	jp nz, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
 	add a, $2F
@@ -401,18 +402,18 @@ Jump_03_5DF5:
 	ld e, a
 	ld a, [de]
 	cp b
-	jp nz, Jump_03_5FBA
+	jp nz, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
 	add a, $38
 	ld e, a
 	ld a, [de]
 	and $F0
-	jp z, Jump_03_5FBA
+	jp z, ObjectSequenceUpdateExit
 	push de
 	ld l, e
 	ld h, d
-	ld bc, Func_03_5E5C
+	ld bc, HandleSequenceWaypointArrival
 	push bc
 	ld a, l
 	and $C0
@@ -454,9 +455,9 @@ Jump_03_5DF5:
 	ld l, a
 	ld a, [hl]
 	ld h, a
-	jp Jump_03_6987
+	jp TestObjectPassedSequenceTarget
 
-Func_03_5E5C:
+HandleSequenceWaypointArrival:
 	pop de
 	ld a, l
 	and a
@@ -499,7 +500,7 @@ Func_03_5E5C:
 	inc de
 	ld a, b
 	ld [de], a
-	jr Jump_03_5EB0
+	jr AdvanceObjectSequenceRecord
 
 Jump_03_5E91:
 	ld a, e
@@ -508,7 +509,7 @@ Jump_03_5E91:
 	ld e, a
 	ld a, [de]
 	and $F0
-	jp z, Jump_03_5FBA
+	jp z, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
 	add a, $39
@@ -521,9 +522,9 @@ Jump_03_5E91:
 	ld e, a
 	pop af
 	ld [de], a
-	jp Jump_03_5FBA
+	jp ObjectSequenceUpdateExit
 
-Jump_03_5EB0:
+AdvanceObjectSequenceRecord:
 	ld a, e
 	and $C0
 	add a, $2E
@@ -668,18 +669,18 @@ Jump_03_5F46:
 	pop hl
 	inc hl
 	inc hl
-	jr Jump_03_5F68
+	jr ApplySequenceRecordEndAction
 
 Jump_03_5F66:
 	inc hl
 	inc hl
-Jump_03_5F68:
-	call Func_03_5FF2
+ApplySequenceRecordEndAction:
+	call LoadObjectSequenceTargetPosition
 	inc hl
 	inc hl
 	ld a, [hli]
 	and a
-	jr z, Jump_03_5FBA
+	jr z, ObjectSequenceUpdateExit
 	cp $01
 	jr z, Jump_03_5F9A
 	cp $02
@@ -689,7 +690,7 @@ Jump_03_5F68:
 	cp $04
 	jr z, Jump_03_5F8F
 	cp $05
-	jr z, Jump_03_5FBA
+	jr z, ObjectSequenceUpdateExit
 Jump_03_5F85:
 	ld a, e
 	and $C0
@@ -697,7 +698,7 @@ Jump_03_5F85:
 	ld e, a
 	ld a, [hl]
 	ld [de], a
-	jr Jump_03_5FBA
+	jr ObjectSequenceUpdateExit
 
 Jump_03_5F8F:
 	ld a, e
@@ -706,7 +707,7 @@ Jump_03_5F8F:
 	ld e, a
 	ld a, $91
 	ld [de], a
-	jr Jump_03_5FBA
+	jr ObjectSequenceUpdateExit
 
 Jump_03_5F9A:
 	ld a, e
@@ -715,11 +716,11 @@ Jump_03_5F9A:
 	ld e, a
 	ld a, $FF
 	ld [de], a
-	jr Jump_03_5FBA
+	jr ObjectSequenceUpdateExit
 
 Jump_03_5FA5:
 	cp $02
-	jr nz, Jump_03_5FBA
+	jr nz, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
 	add a, $31
@@ -730,10 +731,10 @@ Jump_03_5FA5:
 	dec hl
 	dec hl
 	dec hl
-	call Func_03_5FF2
-	jr Jump_03_5FBA
+	call LoadObjectSequenceTargetPosition
+	jr ObjectSequenceUpdateExit
 
-Jump_03_5FBA:
+ObjectSequenceUpdateExit:
 	pop hl
 	pop de
 	pop bc
@@ -741,7 +742,7 @@ Jump_03_5FBA:
 	ret
 
 
-Func_03_5FBF:
+LoadFollowingSequenceTargetPosition:
 	push de
 	push hl
 	push de
@@ -789,7 +790,7 @@ Jump_03_5FC8:
 	ret
 
 
-Func_03_5FF2:
+LoadObjectSequenceTargetPosition:
 	push de
 	push hl
 	push de
@@ -1507,23 +1508,23 @@ Jump_03_637E:
 Func_03_6391:
 	call UpdatePendingLevelObjectsFar
 	ld a, $01
-	ld [$CD13], a
+	ld [wLevelAuxType2AllReached], a
 	xor a
-	ld [$CD11], a
-	ld [$CD12], a
+	ld [wLevelAuxTimerExpiredCount], a
+	ld [wLevelAuxType3Pending], a
 	ld a, [wPlayerObject]
 	ld e, a
 	ld a, [wPlayerObject + 1]
 	ld d, a
 	call Func_03_6429
 	ld e, $01
-	ld a, [$CD10]
+	ld a, [wLevelAuxTimerDivider]
 	inc a
 	cp $1E
 	jr nz, Jump_03_63B6
 	xor a
 Jump_03_63B6:
-	ld [$CD10], a
+	ld [wLevelAuxTimerDivider], a
 	ld e, $01
 	and a
 	jr z, Jump_03_63BF
@@ -1555,11 +1556,11 @@ Jump_03_63CA:
 
 Jump_03_63E2:
 	ld a, $01
-	ld [$CD14], a
-	ld a, [$CA07]
+	ld [wLevelAuxType4Active], a
+	ld a, [wActiveFlag26ObjectCount]
 	and a
 	jr nz, Jump_03_641F
-	ld [$CD14], a
+	ld [wLevelAuxType4Active], a
 	jr Jump_03_641F
 
 Jump_03_63F2:
@@ -1569,7 +1570,7 @@ Jump_03_63F2:
 	cp $02
 	jr z, Jump_03_641F
 	xor a
-	ld [$CD13], a
+	ld [wLevelAuxType2AllReached], a
 	jr Jump_03_641F
 
 Jump_03_63FF:
@@ -1584,9 +1585,9 @@ Jump_03_63FF:
 	jr Jump_03_641F
 
 Jump_03_640A:
-	ld a, [$CD11]
+	ld a, [wLevelAuxTimerExpiredCount]
 	inc a
-	ld [$CD11], a
+	ld [wLevelAuxTimerExpiredCount], a
 	jr Jump_03_641F
 
 Jump_03_6413:
@@ -1596,7 +1597,7 @@ Jump_03_6413:
 	cp $01
 	jr z, Jump_03_641F
 	ld a, $01
-	ld [$CD12], a
+	ld [wLevelAuxType3Pending], a
 Jump_03_641F:
 	pop hl
 	ld bc, LEVEL_OBJECT_AUX_STATE_SIZE
@@ -2500,119 +2501,119 @@ DispatchStateCheck:
 
 
 Level00StateCheck:
-	ld a, [$CD14]
+	ld a, [wLevelAuxType4Active]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level01StateCheck:
-	ld a, [$C6EF]
+	ld a, [wBonusPickupCount]
 	cp $06
 	ret nz
-	ld a, [$CD12]
+	ld a, [wLevelAuxType3Pending]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level02StateCheck:
-	ld a, [$CD14]
+	ld a, [wLevelAuxType4Active]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level03StateCheck:
-	ld a, [$CD12]
+	ld a, [wLevelAuxType3Pending]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level04StateCheck:
-	ld a, [$CD12]
+	ld a, [wLevelAuxType3Pending]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level05StateCheck:
-	ld a, [$CD13]
+	ld a, [wLevelAuxType2AllReached]
 	and a
-	jp nz, Jump_03_6911
+	jp nz, AwardLevelCompletion
 	ret
 
 
 Level06StateCheck:
-	ld a, [$CD12]
+	ld a, [wLevelAuxType3Pending]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level07StateCheck:
-	ld a, [$CD2A]
+	ld a, [wSequenceObjectsInState2Count]
 	and a
 	ret nz
-	jp Jump_03_6911
+	jp AwardLevelCompletion
 
 
 Level08StateCheck:
-	ld a, [$C6EF]
+	ld a, [wBonusPickupCount]
 	cp $08
 	ret nz
-	ld a, [$CD12]
+	ld a, [wLevelAuxType3Pending]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level09StateCheck:
-	ld a, [$C6F0]
+	ld a, [wPowerupType3PickupCount]
 	cp $07
 	ret nz
-	ld a, [$CD12]
+	ld a, [wLevelAuxType3Pending]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level10StateCheck:
-	ld a, [$CD14]
+	ld a, [wLevelAuxType4Active]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level11StateCheck:
-	ld a, [$CD12]
+	ld a, [wLevelAuxType3Pending]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level12StateCheck:
-	ld a, [$CD14]
+	ld a, [wLevelAuxType4Active]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
 
 Level13StateCheck:
-	ld a, [$CD2A]
+	ld a, [wSequenceObjectsInState2Count]
 	and a
 	ret nz
-	jp Jump_03_6911
+	jp AwardLevelCompletion
 
 
 Level14StateCheck:
-	ld a, [$CD14]
+	ld a, [wLevelAuxType4Active]
 	and a
-	jp z, Jump_03_6911
+	jp z, AwardLevelCompletion
 	ret
 
-Jump_03_6911:
+AwardLevelCompletion:
 	ld a, [wLevelComplete]
 	and a
 	ret nz
@@ -2623,11 +2624,12 @@ Jump_03_6911:
 	ret
 
 
-Func_03_6923:
+MarkMatchingAuxTargetReached:
+Func_03_6923: ; legacy alias, used by src/bank_00.asm
 	ld a, e
-	ld [$CD23], a
+	ld [wLevelObjectRecordIndex], a
 	ld a, d
-	ld [$CD24], a
+	ld [wLevelObjectRespawnsLeft], a
 	ld hl, wLevelObjectAuxState
 	ld a, LEVEL_OBJECT_AUX_COUNT
 Jump_03_6930:
@@ -2652,9 +2654,9 @@ Jump_03_6930:
 
 Jump_03_6946:
 	push hl
-	ld a, [$CD23]
+	ld a, [wLevelObjectRecordIndex]
 	ld l, a
-	ld a, [$CD24]
+	ld a, [wLevelObjectRespawnsLeft]
 	ld h, a
 	ld a, l
 	and $C0
@@ -2686,7 +2688,7 @@ Jump_03_6946:
 	jr z, Jump_03_697D
 	ld a, $01
 	ld [hl], a
-	ld [$CD12], a
+	ld [wLevelAuxType3Pending], a
 	push hl
 Jump_03_697C:
 	pop hl
@@ -2699,7 +2701,7 @@ Jump_03_697D:
 	jr nz, Jump_03_6930
 	ret
 
-Jump_03_6987:
+TestObjectPassedSequenceTarget:
 	pop bc
 	pop de
 	ld a, h
@@ -2777,10 +2779,9 @@ Jump_03_69D1:
 ; them as data rather than claiming another routine.
 Bank03UnreferencedTailBytes:
 	db $C9, $C1, $D1, $C9
-ASSERT @ == $69DB
+ASSERT @ - Bank03UnreferencedTailBytes == $4
 
 Bank03ZeroFill:
 	ds $7FFF - @, 0
 Bank03BankMarker:
 	db $03
-ASSERT @ == $8000

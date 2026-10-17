@@ -42,7 +42,7 @@ Level00ObjectSpawns:
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 37
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 38
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 39
-ASSERT @ == $41E0
+ASSERT @ - Level00ObjectSpawns == $1E0
 
 Level01ObjectSpawns:
 	db $03, $60, $01, $3C, $00, $88, $02, $00, $00, $00, $00, $00 ; record 0
@@ -85,7 +85,7 @@ Level01ObjectSpawns:
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 37
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 38
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 39
-ASSERT @ == $43C0
+ASSERT @ - Level01ObjectSpawns == $1E0
 
 Level02ObjectSpawns:
 	db $03, $FC, $00, $CB, $02, $84, $02, $01, $00, $00, $00, $00 ; record 0
@@ -128,7 +128,7 @@ Level02ObjectSpawns:
 	db $06, $08, $02, $25, $00, $80, $00, $06, $00, $00, $00, $00 ; record 37
 	db $01, $C0, $01, $D8, $01, $01, $00, $00, $00, $00, $01, $00 ; record 38
 	db $01, $C0, $01, $20, $02, $0C, $00, $00, $00, $00, $00, $00 ; record 39
-ASSERT @ == $45A0
+ASSERT @ - Level02ObjectSpawns == $1E0
 
 Level03ObjectSpawns:
 	db $03, $36, $00, $4D, $01, $80, $01, $02, $00, $00, $00, $00 ; record 0
@@ -171,7 +171,7 @@ Level03ObjectSpawns:
 	db $06, $68, $03, $68, $00, $80, $00, $05, $00, $00, $00, $00 ; record 37
 	db $06, $2F, $04, $90, $00, $80, $00, $01, $00, $00, $00, $00 ; record 38
 	db $06, $90, $04, $8A, $00, $80, $00, $01, $00, $00, $00, $00 ; record 39
-ASSERT @ == $4780
+ASSERT @ - Level03ObjectSpawns == $1E0
 
 Level04ObjectSpawns:
 	db $03, $52, $00, $5B, $00, $84, $01, $01, $00, $00, $00, $00 ; record 0
@@ -214,7 +214,7 @@ Level04ObjectSpawns:
 	db $06, $3E, $01, $2A, $00, $80, $00, $04, $00, $00, $00, $00 ; record 37
 	db $06, $88, $01, $8D, $00, $80, $00, $05, $00, $00, $00, $00 ; record 38
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 39
-ASSERT @ == $4960
+ASSERT @ - Level04ObjectSpawns == $1E0
 
 Level05ObjectSpawns:
 	db $03, $3A, $01, $21, $03, $8C, $01, $00, $00, $00, $00, $00 ; record 0
@@ -257,7 +257,7 @@ Level05ObjectSpawns:
 	db $06, $41, $01, $AA, $00, $80, $00, $05, $00, $00, $00, $00 ; record 37
 	db $06, $39, $01, $50, $00, $80, $00, $06, $00, $00, $00, $00 ; record 38
 	db $06, $8A, $00, $9D, $00, $80, $00, $02, $00, $00, $00, $00 ; record 39
-ASSERT @ == $4B40
+ASSERT @ - Level05ObjectSpawns == $1E0
 
 Level06ObjectSpawns:
 	db $03, $FD, $01, $4B, $02, $80, $01, $02, $00, $00, $02, $06 ; record 0
@@ -300,7 +300,7 @@ Level06ObjectSpawns:
 	db $01, $B0, $00, $F8, $00, $0C, $00, $00, $02, $15, $00, $00 ; record 37
 	db $01, $A0, $01, $40, $00, $0E, $00, $00, $02, $15, $00, $00 ; record 38
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 39
-ASSERT @ == $4D20
+ASSERT @ - Level06ObjectSpawns == $1E0
 
 Level07ObjectSpawns:
 	db $03, $61, $01, $5F, $03, $80, $00, $01, $00, $00, $00, $00 ; record 0
@@ -343,7 +343,7 @@ Level07ObjectSpawns:
 	db $06, $10, $02, $7D, $00, $80, $00, $05, $00, $00, $00, $00 ; record 37
 	db $06, $EA, $01, $71, $00, $80, $00, $05, $00, $00, $00, $00 ; record 38
 	db $01, $98, $00, $E0, $00, $0D, $00, $00, $02, $15, $00, $00 ; record 39
-ASSERT @ == $4F00
+ASSERT @ - Level07ObjectSpawns == $1E0
 
 Level08ObjectSpawns:
 	db $03, $34, $00, $66, $01, $84, $00, $00, $00, $00, $02, $08 ; record 0
@@ -386,7 +386,7 @@ Level08ObjectSpawns:
 	db $06, $31, $02, $27, $00, $80, $00, $07, $00, $00, $00, $00 ; record 37
 	db $06, $34, $02, $3C, $00, $80, $00, $07, $00, $00, $00, $00 ; record 38
 	db $06, $3E, $02, $31, $00, $80, $00, $07, $00, $00, $00, $00 ; record 39
-ASSERT @ == $50E0
+ASSERT @ - Level08ObjectSpawns == $1E0
 
 Level09ObjectSpawns:
 	db $03, $4F, $00, $29, $00, $88, $00, $00, $00, $00, $01, $09 ; record 0
@@ -429,7 +429,7 @@ Level09ObjectSpawns:
 	db $06, $B2, $00, $45, $02, $80, $00, $01, $00, $00, $00, $00 ; record 37
 	db $06, $17, $01, $4E, $01, $80, $00, $01, $00, $00, $00, $00 ; record 38
 	db $06, $79, $01, $80, $02, $80, $00, $01, $00, $00, $00, $00 ; record 39
-ASSERT @ == $52C0
+ASSERT @ - Level09ObjectSpawns == $1E0
 
 Level10ObjectSpawns:
 	db $03, $7E, $02, $83, $02, $80, $01, $02, $00, $00, $00, $00 ; record 0
@@ -472,7 +472,7 @@ Level10ObjectSpawns:
 	db $06, $86, $00, $46, $01, $80, $00, $07, $00, $00, $00, $00 ; record 37
 	db $06, $B1, $01, $F1, $01, $80, $00, $05, $00, $00, $00, $00 ; record 38
 	db $01, $30, $01, $70, $00, $10, $00, $00, $00, $00, $00, $00 ; record 39
-ASSERT @ == $54A0
+ASSERT @ - Level10ObjectSpawns == $1E0
 
 Level11ObjectSpawns:
 	db $03, $47, $00, $7D, $00, $88, $00, $01, $00, $00, $00, $00 ; record 0
@@ -515,7 +515,7 @@ Level11ObjectSpawns:
 	db $02, $98, $03, $78, $00, $0F, $00, $00, $00, $00, $00, $00 ; record 37
 	db $00, $F8, $02, $00, $01, $10, $00, $00, $02, $15, $00, $00 ; record 38
 	db $00, $C0, $02, $28, $00, $11, $00, $00, $02, $15, $00, $00 ; record 39
-ASSERT @ == $5680
+ASSERT @ - Level11ObjectSpawns == $1E0
 
 Level12ObjectSpawns:
 	db $03, $C5, $01, $F7, $00, $80, $00, $00, $00, $00, $00, $00 ; record 0
@@ -558,7 +558,7 @@ Level12ObjectSpawns:
 	db $06, $F5, $01, $CD, $00, $80, $00, $01, $00, $00, $00, $00 ; record 37
 	db $06, $26, $02, $23, $01, $80, $00, $01, $00, $00, $00, $00 ; record 38
 	db $02, $D8, $00, $D0, $01, $07, $00, $00, $00, $00, $00, $00 ; record 39
-ASSERT @ == $5860
+ASSERT @ - Level12ObjectSpawns == $1E0
 
 Level13ObjectSpawns:
 	db $03, $59, $00, $8E, $02, $80, $01, $01, $00, $00, $00, $00 ; record 0
@@ -601,7 +601,7 @@ Level13ObjectSpawns:
 	db $06, $CF, $00, $1D, $01, $80, $00, $01, $00, $00, $00, $00 ; record 37
 	db $06, $20, $00, $8E, $00, $80, $00, $05, $00, $00, $00, $00 ; record 38
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 39
-ASSERT @ == $5A40
+ASSERT @ - Level13ObjectSpawns == $1E0
 
 Level14ObjectSpawns:
 	db $01, $28, $00, $A0, $03, $00, $00, $00, $00, $00, $02, $02 ; record 0
@@ -644,7 +644,7 @@ Level14ObjectSpawns:
 	db $05, $68, $01, $D0, $00, $80, $00, $00, $00, $00, $00, $00 ; record 37
 	db $05, $E8, $00, $F0, $01, $80, $00, $00, $00, $00, $00, $00 ; record 38
 	db $80, $00, $00, $00, $00, $80, $00, $00, $00, $00, $00, $00 ; record 39
-ASSERT @ == $5C20
+ASSERT @ - Level14ObjectSpawns == $1E0
 
 Level00ObjectAuxRecords:
 	db $40, $00, $9D, $00, $3F, $2C, $04, $00 ; record 0
@@ -655,7 +655,7 @@ Level00ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5C60
+ASSERT @ - Level00ObjectAuxRecords == $40
 
 Level01ObjectAuxRecords:
 	db $44, $00, $13, $00, $08, $08, $03, $05 ; record 0
@@ -666,7 +666,7 @@ Level01ObjectAuxRecords:
 	db $9D, $00, $73, $02, $08, $08, $03, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5CA0
+ASSERT @ - Level01ObjectAuxRecords == $40
 
 Level02ObjectAuxRecords:
 	db $E4, $00, $E8, $02, $68, $32, $04, $00 ; record 0
@@ -677,7 +677,7 @@ Level02ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5CE0
+ASSERT @ - Level02ObjectAuxRecords == $40
 
 Level03ObjectAuxRecords:
 	db $07, $05, $77, $00, $2D, $1C, $03, $00 ; record 0
@@ -688,7 +688,7 @@ Level03ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5D20
+ASSERT @ - Level03ObjectAuxRecords == $40
 
 Level04ObjectAuxRecords:
 	db $99, $01, $80, $01, $45, $37, $03, $00 ; record 0
@@ -699,7 +699,7 @@ Level04ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5D60
+ASSERT @ - Level04ObjectAuxRecords == $40
 
 Level05ObjectAuxRecords:
 	db $F2, $00, $F9, $02, $75, $38, $02, $01 ; record 0
@@ -710,7 +710,7 @@ Level05ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5DA0
+ASSERT @ - Level05ObjectAuxRecords == $40
 
 Level06ObjectAuxRecords:
 	db $4C, $02, $0F, $00, $49, $3F, $03, $00 ; record 0
@@ -721,7 +721,7 @@ Level06ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5DE0
+ASSERT @ - Level06ObjectAuxRecords == $40
 
 Level07ObjectAuxRecords:
 	db $D5, $00, $0B, $00, $82, $7F, $01, $03 ; record 0
@@ -732,7 +732,7 @@ Level07ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5E20
+ASSERT @ - Level07ObjectAuxRecords == $40
 
 Level08ObjectAuxRecords:
 	db $F3, $00, $92, $01, $08, $08, $03, $00 ; record 0
@@ -743,7 +743,7 @@ Level08ObjectAuxRecords:
 	db $12, $00, $E2, $01, $08, $08, $03, $00 ; record 5
 	db $14, $00, $8A, $00, $08, $08, $03, $00 ; record 6
 	db $64, $02, $4B, $00, $08, $08, $03, $00 ; record 7
-ASSERT @ == $5E60
+ASSERT @ - Level08ObjectAuxRecords == $40
 
 Level09ObjectAuxRecords:
 	db $2D, $00, $F9, $00, $08, $08, $03, $00 ; record 0
@@ -754,7 +754,7 @@ Level09ObjectAuxRecords:
 	db $BD, $01, $7E, $03, $08, $08, $03, $00 ; record 5
 	db $DC, $00, $AB, $01, $08, $08, $03, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5EA0
+ASSERT @ - Level09ObjectAuxRecords == $40
 
 Level10ObjectAuxRecords:
 	db $6A, $00, $58, $02, $6F, $41, $04, $00 ; record 0
@@ -765,7 +765,7 @@ Level10ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5EE0
+ASSERT @ - Level10ObjectAuxRecords == $40
 
 Level11ObjectAuxRecords:
 	db $4A, $03, $09, $00, $70, $4D, $03, $00 ; record 0
@@ -776,7 +776,7 @@ Level11ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5F20
+ASSERT @ - Level11ObjectAuxRecords == $40
 
 Level12ObjectAuxRecords:
 	db $3D, $00, $0D, $00, $37, $31, $04, $00 ; record 0
@@ -787,7 +787,7 @@ Level12ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5F60
+ASSERT @ - Level12ObjectAuxRecords == $40
 
 Level13ObjectAuxRecords:
 	db $2E, $02, $09, $00, $6C, $58, $01, $01 ; record 0
@@ -798,7 +798,7 @@ Level13ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5FA0
+ASSERT @ - Level13ObjectAuxRecords == $40
 
 Level14ObjectAuxRecords:
 	db $A7, $00, $11, $00, $36, $2E, $04, $01 ; record 0
@@ -809,7 +809,7 @@ Level14ObjectAuxRecords:
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 5
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 6
 	db $00, $00, $00, $00, $00, $00, $00, $00 ; record 7
-ASSERT @ == $5FE0
+ASSERT @ - Level14ObjectAuxRecords == $40
 
 LevelObjectDataPointers:
 	dw Level00ObjectSpawns, Level00ObjectAuxRecords
@@ -827,4 +827,4 @@ LevelObjectDataPointers:
 	dw Level12ObjectSpawns, Level12ObjectAuxRecords
 	dw Level13ObjectSpawns, Level13ObjectAuxRecords
 	dw Level14ObjectSpawns, Level14ObjectAuxRecords
-ASSERT @ == $601C
+ASSERT @ - LevelObjectDataPointers == $3C

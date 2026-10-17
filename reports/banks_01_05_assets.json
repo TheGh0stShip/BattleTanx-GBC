@@ -1,0 +1,52 @@
+{
+ "assets/bank_01/menu_cursor_sprite_tiles.2bpp": {
+  "bank": "$01",
+  "bytes": 128,
+  "sha1": "023fb609e5b718205114c74c47f76ecb6e87ef9a"
+ },
+ "assets/bank_01/password_screen_tiles.2bpp": {
+  "bank": "$01",
+  "bytes": 2064,
+  "sha1": "f117bbd925183b67a1461834dc0471f4eb7d12b7"
+ },
+ "assets/bank_01/sprite_tiles_7871.2bpp": {
+  "bank": "$01",
+  "bytes": 64,
+  "sha1": "c8d7d0ef0eedfa82d2ea1aa592845b9a6d4b02b7"
+ },
+ "assets/bank_01/sprite_tiles_78B1.2bpp": {
+  "bank": "$01",
+  "bytes": 64,
+  "sha1": "8d926825774a8e146520ef5eb7b27563d74e3c78"
+ },
+ "assets/bank_02/burst_tiles.2bpp": {
+  "bank": "$02",
+  "bytes": 528,
+  "sha1": "fba343be08aa598ce99e869121f1c92ab2a9f7cf"
+ },
+ "assets/bank_02/tracker_direction_lookup.bin": {
+  "bank": "$02",
+  "bytes": 2048,
+  "sha1": "bc3392db623b91add8fedead651e6343497ca4ed"
+ },
+ "assets/bank_02/unread_481E.bin": {
+  "bank": "$02",
+  "bytes": 1332,
+  "sha1": "9380d7e9d86d7571f6d7e24a86b83b3530a29b7a"
+ },
+ "assets/bank_05/bank04_copy_40B1.bin": {
+  "bank": "$05",
+  "bytes": 591,
+  "sha1": "792cffcbd524b60e0d27cf502338bde0cea167d9"
+ },
+ "assets/bank_05/bank04_copy_431E.bin": {
+  "bank": "$05",
+  "bytes": 226,
+  "sha1": "c6a46c321fd468fa326334348905a76eee4a1f51"
+ },
+ "assets/bank_05/bank04_copy_452C.bin": {
+  "bank": "$05",
+  "bytes": 212,
+  "sha1": "c56bb413a4cecfa6e10d45085786ca13c571ab0a"
+ }
+}

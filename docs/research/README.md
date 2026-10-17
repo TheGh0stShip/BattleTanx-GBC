@@ -6,6 +6,8 @@ remaining unknowns. The concise project-wide summary and roadmap live in
 
 ## Program and runtime behavior
 
+- [`banks_01_05/`](banks_01_05/) — control flow, RAM, data formats, relocation,
+  byte accounting, and unresolved work for banks `$01-$05`
 - [`GBC_WARNING_RESEARCH.md`](GBC_WARNING_RESEARCH.md) — CGB warning path
 - [`TEXT_RESEARCH.md`](TEXT_RESEARCH.md) — encoded text and option strings
 - [`OBJECT_SEQUENCES_RESEARCH.md`](OBJECT_SEQUENCES_RESEARCH.md) — bank `$03`

@@ -60,6 +60,8 @@ make check      # runs the complete structural and lossless round-trip suite
 - `make screens` - exports and round-trips all seventeen full-screen pictures
 - `make bank08` - validates and renders the interleaved interface, font,
   metatile, object-animation, and effect ranges in bank `$08`
+- `make banks0105` - validates recovered banks `$01-$05` structures and runs
+  their relocation and fail-safe shift cases
 - `tools/` - tracer/disassembler used to generate the initial source
 - `make progress` - reports evidence-based names attached to the original
   automatic function entries, per bank and in total

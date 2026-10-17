@@ -9,60 +9,61 @@ SECTION "ROM Bank $02", ROMX[$4000], BANK[$02]
 	db $53, $AF, $E0, $54, $3E, $04, $E0, $55, $AF, $E0, $4F, $3E, $C4, $E0, $51, $3E
 	db $40, $E0, $52, $3E, $9C, $E0, $53, $AF, $E0, $54, $3E, $04, $E0, $55, $C9
 
-Func_02_406F:
-	ld a, [$C8D9]
+ResetNearestObjectTracker:
+Func_02_406F: ; legacy alias, used by src/bank_00.asm
+	ld a, [wNearestTargetDistance + 1]
 	inc a
 	ret z
 Jump_02_4074:
 	xor a
-	ld [$C8DA], a
-	ld [$C8D6], a
-	ld [$C8D7], a
+	ld [wNearestTargetScanIndex], a
+	ld [wNearestTargetPtr], a
+	ld [wNearestTargetPtr + 1], a
 	ld a, $FF
-	ld [$C8D8], a
-	ld [$C8D9], a
+	ld [wNearestTargetDistance], a
+	ld [wNearestTargetDistance + 1], a
 	ld a, [$CA06]
-	ld hl, $40DD
+	ld hl, Bank02Data_40DD
 	ld c, a
 	ld b, $00
 	add hl, bc
 	ld a, [hl]
 	cp $00
 	jr nz, Jump_02_409D
-	ld de, $4D6A
+	ld de, TrackerScanStatus1Objects
 	ld hl, $CFDD
 	jr Jump_02_40C7
 
 Jump_02_409D:
 	cp $01
 	jr nz, Jump_02_40A9
-	ld de, $4E0E
+	ld de, TrackerScanAuxRecords
 	ld hl, $CD65
 	jr Jump_02_40C7
 
 Jump_02_40A9:
 	cp $03
 	jr nz, Jump_02_40B5
-	ld de, $4E84
+	ld de, TrackerSelectAuxRecord
 	ld hl, $CD6F
 	jr Jump_02_40C7
 
 Jump_02_40B5:
 	cp $02
 	jr nz, Jump_02_40C1
-	ld de, $4E9F
+	ld de, TrackerScanType2Objects
 	ld hl, $CFDD
 	jr Jump_02_40C7
 
 Jump_02_40C1:
-	ld de, $4D6A
+	ld de, TrackerScanStatus1Objects
 	ld hl, $CFDD
 Jump_02_40C7:
 	ld a, l
-	ld [$C8D4], a
+	ld [wNearestTargetScanPtr], a
 	ld a, h
-	ld [$C8D5], a
-	ld hl, $C8DB
+	ld [wNearestTargetScanPtr + 1], a
+	ld hl, wNearestTargetScanJump
 	ld a, $C3
 	ld [hli], a
 	ld a, e
@@ -73,11 +74,13 @@ Jump_02_40C7:
 	ld [hli], a
 	ret
 
+Bank02Data_40DD:
 	db $00, $01, $00, $01, $01, $03, $01, $02, $01, $01, $00, $01, $00, $02, $00
 
+Bank02RomImage_40EC:
 	LOAD UNION "RAM code $C729", WRAM0[$C729] ; copied from $02:40EC
 
-RAM_C729_02_40EC:
+PaletteStatHandler:
 	push af
 	push bc
 	push de
@@ -111,14 +114,15 @@ RAM_C770:
 	reti
 	ENDL
 
+Bank02RomImage_4138:
 	LOAD UNION "RAM code $C7F1", WRAM0[$C7F1] ; copied from $02:4138
 
-RAM_C7F1_02_4138:
+PaletteVBlankHandler:
 	push af
 	push bc
 	push de
 	push hl
-	ld hl, $C719
+	ld hl, wBgPalette6To7Shadow
 	ld de, $FF69
 	ld a, $B0
 	ldh [rBCPS], a
@@ -179,17 +183,18 @@ RAM_C82F:
 
 	ENDL
 
-Func_02_418A:
+InstallPaletteStatInterruptHandlers:
+Func_02_418A: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
 	push hl
 	di
-	ld hl, $40EC
+	ld hl, Bank02RomImage_40EC
 	ld de, $004C
 	ld bc, $C729
 	call CopyBytes
-	ld hl, $4138
+	ld hl, Bank02RomImage_4138
 	ld de, $0052
 	ld bc, $C7F1
 	call CopyBytes
@@ -213,17 +218,19 @@ Func_02_418A:
 	ret
 
 
+Bank02RomImage_41C2:
 	LOAD UNION "RAM code $C729", WRAM0[$C729] ; copied from $02:41C2
 
-RAM_C729:
+StatHandlerReti:
 	reti
 
 	ENDL
 	db $D9
 
+Bank02RomImage_41C4:
 	LOAD UNION "RAM code $C7F1", WRAM0[$C7F1] ; copied from $02:41C4
 
-RAM_C7F1_02_41C4:
+VBlankHandlerWithSoftReset:
 	push af
 	push bc
 	push de
@@ -254,23 +261,31 @@ RAM_C80B:
 	reti
 
 	ENDL
-	db $D0, $4A, $30, $20, $30, $48, $20, $40, $87, $FC, $FC, $00, $00, $F8, $F8, $00
-	db $00, $F8, $00, $01, $00, $00, $F8, $02, $00, $00, $00, $03, $00, $F4, $F4, $00
+Bank02Data_41F7:
+	db $D0, $4A, $30, $20, $30, $48, $20, $40, $87
+Bank02Data_4200:
+	db $FC, $FC, $00, $00
+Bank02Data_4204:
+	db $F8, $F8, $00
+	db $00, $F8, $00, $01, $00, $00, $F8, $02, $00, $00, $00, $03, $00
+Bank02Data_4214:
+	db $F4, $F4, $00
 	db $00, $F4, $FC, $01, $00, $F4, $04, $02, $00, $FC, $F4, $03, $00, $FC, $FC, $04
 	db $00, $FC, $04, $05, $00, $04, $F4, $06, $00, $04, $FC, $07, $00, $04, $04, $08
 	db $00
 
-Func_02_4238:
+InstallVBlankOnlyInterruptHandlers:
+Func_02_4238: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
 	push hl
 	di
-	ld hl, $41C2
+	ld hl, Bank02RomImage_41C2
 	ld de, $0001
 	ld bc, $C729
 	call CopyBytes
-	ld hl, $41C4
+	ld hl, Bank02RomImage_41C4
 	ld de, $0033
 	ld bc, $C7F1
 	call CopyBytes
@@ -346,7 +361,8 @@ SetLevelViewCellPositionBank2:
 	db $0D, $00, $F5, $FF, $0A, $00, $F0, $FF, $07, $00, $F0, $FF, $FF, $FF, $F1, $FF
 	db $F7, $FF, $F3, $FF, $F4, $FF, $F7, $FF, $F1, $FF
 
-Func_02_43EC:
+GetObjectDirectionalOffsetPosition:
+Func_02_43EC: ; legacy alias, used by src/bank_00.asm
 	push af
 	push hl
 	ld a, l
@@ -425,6 +441,7 @@ Jump_02_4406:
 	pop af
 	ret
 
+Bank02Data_4448:
 	db $00, $01, $02, $03, $04, $05, $06, $07, $08, $F9, $FA, $FB, $FC, $FD, $FE, $FF
 	db $FF, $00, $01, $02, $03, $04, $05, $06, $07, $08, $F9, $FA, $FB, $FC, $FD, $FE
 	db $FE, $FF, $00, $01, $02, $03, $04, $05, $06, $07, $08, $F9, $FA, $FB, $FC, $FD
@@ -442,10 +459,11 @@ Jump_02_4406:
 	db $02, $03, $04, $05, $06, $07, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF, $00, $01
 	db $01, $02, $03, $04, $05, $06, $07, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF, $00
 
-Func_02_4548:
+GetSignedDirectionDifference:
+Func_02_4548: ; legacy alias, used by src/bank_00.asm
 	push af
 	push hl
-	ld hl, $4448
+	ld hl, Bank02Data_4448
 	ld a, b
 	swap a
 	and $F0
@@ -467,14 +485,28 @@ Jump_02_4561:
 	pop af
 	ret
 
+ObjectAnimationFrames4565:
 	db $A8, $44, $38, $45, $C8, $45, $58, $46, $58, $46, $C8, $45, $38, $45, $A8, $44
-	db $F0, $46, $80, $47, $10, $48, $A0, $48, $30, $49, $C8, $49, $58, $4A, $E8, $4A
+ObjectAnimationFrames4575:
+	db $F0, $46, $80, $47, $10, $48, $A0, $48, $30, $49
+ObjectAnimationFrames457F:
+	db $C8, $49, $58, $4A, $E8, $4A
 	db $78, $4B, $08, $4C, $98, $4C, $28, $4D, $B8, $4D, $48, $4E, $D8, $4E, $68, $4F
-	db $00, $50, $40, $50, $80, $50, $C0, $50, $08, $51, $48, $51, $88, $51, $C8, $51
-	db $10, $52, $50, $52, $90, $52, $D0, $52, $18, $53, $58, $53, $98, $53, $D8, $53
-	db $20, $54, $30, $54, $40, $54, $58, $54, $68, $54, $78, $54
+ObjectAnimationFrames4595:
+	db $00, $50, $40, $50, $80, $50, $C0, $50
+ObjectAnimationFrames459D:
+	db $08, $51, $48, $51, $88, $51, $C8, $51
+ObjectAnimationFrames45A5:
+	db $10, $52, $50, $52, $90, $52, $D0, $52
+ObjectAnimationFrames45AD:
+	db $18, $53, $58, $53, $98, $53, $D8, $53
+ObjectAnimationFrames45B5:
+	db $20, $54, $30, $54, $40, $54
+ObjectAnimationFrames45BB:
+	db $58, $54, $68, $54, $78, $54
 
-Func_02_45C1:
+SpawnDirectionalOffsetEffect:
+Func_02_45C1: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -493,8 +525,8 @@ Func_02_45C1:
 	add a, $1F
 	ld l, a
 	ld [hl], $00
-	ld de, $45BB
-	ld bc, $5452
+	ld de, ObjectAnimationFrames45BB
+	ld bc, TrackerDirectionLookup + $12
 	ld a, l
 	and $C0
 	add a, $20
@@ -512,7 +544,7 @@ Func_02_45C1:
 	and $C0
 	add a, $23
 	ld l, a
-	ld bc, $4200
+	ld bc, Bank02Data_4200
 	ld [hl], c
 	inc l
 	ld [hl], b
@@ -528,9 +560,10 @@ Func_02_45C1:
 	ret
 
 
-Func_02_4611:
+InitEffectSubtype1Animation:
+Func_02_4611: ; legacy alias, used by src/bank_00.asm
 	push af
-	ld de, $45B5
+	ld de, ObjectAnimationFrames45B5
 	ld a, l
 	and $C0
 	add a, $20
@@ -548,7 +581,7 @@ Func_02_4611:
 	and $C0
 	add a, $23
 	ld l, a
-	ld bc, $4200
+	ld bc, Bank02Data_4200
 	ld [hl], c
 	inc l
 	ld [hl], b
@@ -561,7 +594,8 @@ Func_02_4611:
 	ret
 
 
-Func_02_463D:
+InitEffectSubtype0Animation:
+Func_02_463D: ; legacy alias, used by src/bank_00.asm
 	push af
 	call Func_0421
 	and $03
@@ -569,17 +603,17 @@ Func_02_463D:
 	jr z, Jump_02_4659
 	cp $01
 	jr z, Jump_02_4652
-	ld de, $4575
+	ld de, ObjectAnimationFrames4575
 	ld a, $14
 	jr Jump_02_4660
 
 Jump_02_4652:
-	ld de, $4565
+	ld de, ObjectAnimationFrames4565
 	ld a, $20
 	jr Jump_02_4660
 
 Jump_02_4659:
-	ld de, $457F
+	ld de, ObjectAnimationFrames457F
 	ld a, $2C
 	jr Jump_02_4660
 
@@ -602,7 +636,7 @@ Jump_02_4660:
 	and $C0
 	add a, $23
 	ld l, a
-	ld bc, $4214
+	ld bc, Bank02Data_4214
 	ld [hl], c
 	inc l
 	ld [hl], b
@@ -615,7 +649,8 @@ Jump_02_4660:
 	ret
 
 
-Func_02_4688:
+InitEffectSubtype2Animation:
+Func_02_4688: ; legacy alias, used by src/bank_00.asm
 	push af
 	call Func_0421
 	and $03
@@ -625,23 +660,23 @@ Func_02_4688:
 	jr z, Jump_02_46AA
 	cp $01
 	jr z, Jump_02_46A2
-	ld de, $4595
-	ld bc, $5102
+	ld de, ObjectAnimationFrames4595
+	ld bc, TrackerPointerFrames + $C2
 	jr Jump_02_46BA
 
 Jump_02_46A2:
-	ld de, $459D
-	ld bc, $520A
+	ld de, ObjectAnimationFrames459D
+	ld bc, TrackerPointerFrames + $1CA
 	jr Jump_02_46BA
 
 Jump_02_46AA:
-	ld de, $45A5
-	ld bc, $5312
+	ld de, ObjectAnimationFrames45A5
+	ld bc, TrackerPointerFrames + $2D2
 	jr Jump_02_46BA
 
 Jump_02_46B2:
-	ld de, $45AD
-	ld bc, $541A
+	ld de, ObjectAnimationFrames45AD
+	ld bc, TrackerPointerFrames + $3DA
 	jr Jump_02_46BA
 
 Jump_02_46BA:
@@ -661,7 +696,7 @@ Jump_02_46BA:
 	and $C0
 	add a, $23
 	ld l, a
-	ld bc, $4204
+	ld bc, Bank02Data_4204
 	ld [hl], c
 	inc l
 	ld [hl], b
@@ -674,7 +709,8 @@ Jump_02_46BA:
 	ret
 
 
-Func_02_46E1:
+ClearBackgroundPalettesImpl:
+Func_02_46E1: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -709,7 +745,8 @@ Jump_02_46ED:
 	ret
 
 
-Func_02_4710:
+DarkenObjectPalettesImpl:
+Func_02_4710: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -754,7 +791,8 @@ Jump_02_472D:
 	ret
 
 
-Func_02_474B:
+BuildBackgroundPaletteFadeFramesImpl:
+Func_02_474B: ; legacy alias, used by src/bank_00.asm
 	ld a, $02
 	ldh [rSVBK], a
 	ld a, $1F
@@ -820,7 +858,8 @@ Jump_02_478D:
 	ret
 
 
-Func_02_47AF:
+DivideScoreByThousand:
+Func_02_47AF: ; legacy alias, used by src/bank_00.asm
 	ld a, [wScore]
 	ldh [$FFC2], a
 	ld a, [wScore + 1]
@@ -878,7 +917,8 @@ Jump_02_4809:
 	ret
 
 
-Func_02_4810:
+ClearAndTransferShadowOam:
+Func_02_4810: ; legacy alias, used by src/bank_00.asm
 	ld hl, $C600
 	xor a
 	ld e, $A0
@@ -889,35 +929,43 @@ Jump_02_4816:
 	call $FFF0
 	ret
 
-	INCBIN "assets/bank_02/481E.bin" ; $53A bytes
 
-Func_02_4D58:
-	ld a, [$CA08]
+; no reader found
+Bank02Unread481E:
+	INCBIN "assets/bank_02/unread_481E.bin"
+
+; OBJ palette 7 colours 1-3 (Func_02_5D6D via Func_057D)
+Bank02ObjPalette7Colours:
+	dw $0000, $001F, $03DF
+
+UpdateNearestObjectTracker:
+Func_02_4D58: ; legacy alias, used by src/bank_00.asm
+	ld a, [wVisibleStatus1ObjectCount]
 	cp $02
-	jp nc, Func_02_406F
+	jp nc, ResetNearestObjectTracker
 	ld a, [wScreenEffectActive]
 	and a
-	jp nz, Func_02_406F
-	jp $C8DB
+	jp nz, ResetNearestObjectTracker
+	jp wNearestTargetScanJump
 
 
-Func_02_4D6A:
-	ld a, [$C8DA]
+TrackerScanStatus1Objects:
+	ld a, [wNearestTargetScanIndex]
 	cp $40
 	jp nc, Jump_02_4F7C
-	ld a, [$C8D4]
+	ld a, [wNearestTargetScanPtr]
 	ld l, a
-	ld a, [$C8D5]
+	ld a, [wNearestTargetScanPtr + 1]
 	ld h, a
 	ld bc, $0040
 	add hl, bc
 	ld a, h
-	ld [$C8D5], a
+	ld [wNearestTargetScanPtr + 1], a
 	ld a, l
-	ld [$C8D4], a
-	ld a, [$C8DA]
+	ld [wNearestTargetScanPtr], a
+	ld a, [wNearestTargetScanIndex]
 	inc a
-	ld [$C8DA], a
+	ld [wNearestTargetScanIndex], a
 	ld a, [hl]
 	cp $01
 	ret nz
@@ -959,7 +1007,7 @@ Func_02_4D6A:
 	ld a, [hl]
 	sbc a, d
 	ld d, a
-Jump_02_4DC0:
+TrackerCompareApproxDistance:
 	bit 7, b
 	jr z, Jump_02_4DCB
 	ld a, b
@@ -999,42 +1047,42 @@ Jump_02_4DEA:
 	ld l, e
 	ld h, d
 	add hl, bc
-	ld a, [$C8D9]
+	ld a, [wNearestTargetDistance + 1]
 	cp h
 	ret c
 	jr nz, Jump_02_4DF9
-	ld a, [$C8D8]
+	ld a, [wNearestTargetDistance]
 	cp l
 	ret c
 Jump_02_4DF9:
 	ld a, h
-	ld [$C8D9], a
+	ld [wNearestTargetDistance + 1], a
 	ld a, l
-	ld [$C8D8], a
-	ld a, [$C8D4]
-	ld [$C8D6], a
-	ld a, [$C8D5]
-	ld [$C8D7], a
+	ld [wNearestTargetDistance], a
+	ld a, [wNearestTargetScanPtr]
+	ld [wNearestTargetPtr], a
+	ld a, [wNearestTargetScanPtr + 1]
+	ld [wNearestTargetPtr + 1], a
 	ret
 
 
-Func_02_4E0E:
-	ld a, [$C8DA]
+TrackerScanAuxRecords:
+	ld a, [wNearestTargetScanIndex]
 	cp $08
 	jp nc, Jump_02_4F43
-	ld a, [$C8D4]
+	ld a, [wNearestTargetScanPtr]
 	ld l, a
-	ld a, [$C8D5]
+	ld a, [wNearestTargetScanPtr + 1]
 	ld h, a
 	ld bc, $000A
 	add hl, bc
 	ld a, h
-	ld [$C8D5], a
+	ld [wNearestTargetScanPtr + 1], a
 	ld a, l
-	ld [$C8D4], a
-	ld a, [$C8DA]
+	ld [wNearestTargetScanPtr], a
+	ld a, [wNearestTargetScanIndex]
 	inc a
-	ld [$C8DA], a
+	ld [wNearestTargetScanIndex], a
 	ld bc, $0006
 	add hl, bc
 	ld a, [hli]
@@ -1101,11 +1149,11 @@ Func_02_4E0E:
 	ld a, h
 	sbc a, d
 	ld d, a
-	jp Jump_02_4DC0
+	jp TrackerCompareApproxDistance
 
 
-Func_02_4E84:
-	ld a, [$C8D7]
+TrackerSelectAuxRecord:
+	ld a, [wNearestTargetPtr + 1]
 	and a
 	jr nz, Jump_02_4F00
 	ld hl, $CD79
@@ -1115,29 +1163,29 @@ Func_02_4E84:
 	ld hl, $CD6F
 Jump_02_4E96:
 	ld a, l
-	ld [$C8D6], a
+	ld [wNearestTargetPtr], a
 	ld a, h
-	ld [$C8D7], a
+	ld [wNearestTargetPtr + 1], a
 	ret
 
 
-Func_02_4E9F:
-	ld a, [$C8DA]
+TrackerScanType2Objects:
+	ld a, [wNearestTargetScanIndex]
 	cp $40
 	jp nc, Jump_02_4F7C
-	ld a, [$C8D4]
+	ld a, [wNearestTargetScanPtr]
 	ld l, a
-	ld a, [$C8D5]
+	ld a, [wNearestTargetScanPtr + 1]
 	ld h, a
 	ld bc, $0040
 	add hl, bc
 	ld a, h
-	ld [$C8D5], a
+	ld [wNearestTargetScanPtr + 1], a
 	ld a, l
-	ld [$C8D4], a
-	ld a, [$C8DA]
+	ld [wNearestTargetScanPtr], a
+	ld a, [wNearestTargetScanIndex]
 	inc a
-	ld [$C8DA], a
+	ld [wNearestTargetScanIndex], a
 	ld a, [hl]
 	cp $01
 	ret nz
@@ -1184,7 +1232,7 @@ Func_02_4E9F:
 	ld a, [hl]
 	sbc a, d
 	ld d, a
-	jp Jump_02_4DC0
+	jp TrackerCompareApproxDistance
 
 Jump_02_4F00:
 	ld a, [wPlayerAlive]
@@ -1207,9 +1255,9 @@ Jump_02_4F00:
 	ld e, a
 	ld a, [hli]
 	ld d, a
-	ld a, [$C8D6]
+	ld a, [wNearestTargetPtr]
 	ld l, a
-	ld a, [$C8D7]
+	ld a, [wNearestTargetPtr + 1]
 	ld h, a
 	ld a, [hli]
 	sub c
@@ -1237,13 +1285,13 @@ Jump_02_4F00:
 	ld a, $00
 	adc a, d
 	ld d, a
-	jr Jump_02_4FB8
+	jr TrackerDrawPointerSprites
 
 Jump_02_4F43:
 	ld a, [wPlayerAlive]
 	and a
 	ret z
-	ld a, [$C8D7]
+	ld a, [wNearestTargetPtr + 1]
 	and a
 	jp z, Jump_02_4074
 	ld a, [wPlayerObject]
@@ -1263,9 +1311,9 @@ Jump_02_4F43:
 	ld e, a
 	ld a, [hli]
 	ld d, a
-	ld a, [$C8D6]
+	ld a, [wNearestTargetPtr]
 	ld l, a
-	ld a, [$C8D7]
+	ld a, [wNearestTargetPtr + 1]
 	ld h, a
 	ld a, [hli]
 	sub c
@@ -1279,13 +1327,13 @@ Jump_02_4F43:
 	ld a, [hli]
 	sbc a, d
 	ld d, a
-	jp Jump_02_4FB8
+	jp TrackerDrawPointerSprites
 
 Jump_02_4F7C:
 	ld a, [wPlayerAlive]
 	and a
 	ret z
-	ld a, [$C8D7]
+	ld a, [wNearestTargetPtr + 1]
 	and a
 	ret z
 	ld a, [wPlayerObject]
@@ -1305,10 +1353,10 @@ Jump_02_4F7C:
 	ld e, a
 	ld a, [hli]
 	ld d, a
-	ld a, [$C8D6]
+	ld a, [wNearestTargetPtr]
 	and $C0
 	ld l, a
-	ld a, [$C8D7]
+	ld a, [wNearestTargetPtr + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1327,7 +1375,7 @@ Jump_02_4F7C:
 	ld a, [hl]
 	sbc a, d
 	ld d, a
-Jump_02_4FB8:
+TrackerDrawPointerSprites:
 	ld h, $10
 	bit 7, d
 	jr z, Jump_02_4FC7
@@ -1365,7 +1413,7 @@ Jump_02_4FE0:
 	adc a, d
 	ld d, a
 	ld b, h
-	ld hl, $5440
+	ld hl, TrackerDirectionLookup
 	add hl, de
 	ld a, [hl]
 	bit 7, c
@@ -1374,7 +1422,7 @@ Jump_02_4FE0:
 Jump_02_4FF3:
 	and $0F
 	add a, b
-	ld hl, $5040
+	ld hl, TrackerPointerFrames
 	add a, a
 	add a, a
 	ld c, a
@@ -1434,9 +1482,336 @@ Jump_02_4FF3:
 	ld [de], a
 	ret
 
-	INCBIN "assets/bank_02/5040.bin" ; $C00 bytes
 
-Func_02_5C40:
+; 64 frames x 4 OAM entries (y, x, tile, attribute); TrackerDrawPointerSprites
+TrackerPointerFrames:
+	; frame 0
+	db 20, 80, $5D, $0D
+	db 20, 88, $5E, $0D
+	db 28, 80, $5F, $0D
+	db 28, 88, $60, $0D
+	; frame 1
+	db 20, 85, $5D, $0D
+	db 20, 93, $5E, $0D
+	db 28, 85, $5F, $0D
+	db 28, 93, $60, $0D
+	; frame 2
+	db 20, 91, $5D, $0D
+	db 20, 99, $5E, $0D
+	db 28, 91, $5F, $0D
+	db 28, 99, $60, $0D
+	; frame 3
+	db 20, 97, $61, $0D
+	db 20, 105, $62, $0D
+	db 28, 97, $63, $0D
+	db 28, 105, $64, $0D
+	; frame 4
+	db 20, 103, $61, $0D
+	db 20, 111, $62, $0D
+	db 28, 103, $63, $0D
+	db 28, 111, $64, $0D
+	; frame 5
+	db 20, 110, $61, $0D
+	db 20, 118, $62, $0D
+	db 28, 110, $63, $0D
+	db 28, 118, $64, $0D
+	; frame 6
+	db 20, 118, $61, $0D
+	db 20, 126, $62, $0D
+	db 28, 118, $63, $0D
+	db 28, 126, $64, $0D
+	; frame 7
+	db 20, 127, $61, $0D
+	db 20, 135, $62, $0D
+	db 28, 127, $63, $0D
+	db 28, 135, $64, $0D
+	; frame 8
+	db 20, 138, $61, $0D
+	db 20, 146, $62, $0D
+	db 28, 138, $63, $0D
+	db 28, 146, $64, $0D
+	; frame 9
+	db 23, 148, $61, $0D
+	db 23, 156, $62, $0D
+	db 31, 148, $63, $0D
+	db 31, 156, $64, $0D
+	; frame 10
+	db 33, 148, $61, $0D
+	db 33, 156, $62, $0D
+	db 41, 148, $63, $0D
+	db 41, 156, $64, $0D
+	; frame 11
+	db 42, 148, $61, $0D
+	db 42, 156, $62, $0D
+	db 50, 148, $63, $0D
+	db 50, 156, $64, $0D
+	; frame 12
+	db 50, 148, $61, $0D
+	db 50, 156, $62, $0D
+	db 58, 148, $63, $0D
+	db 58, 156, $64, $0D
+	; frame 13
+	db 58, 148, $65, $0D
+	db 58, 156, $66, $0D
+	db 66, 148, $67, $0D
+	db 66, 156, $68, $0D
+	; frame 14
+	db 65, 148, $65, $0D
+	db 65, 156, $66, $0D
+	db 73, 148, $67, $0D
+	db 73, 156, $68, $0D
+	; frame 15
+	db 72, 148, $65, $0D
+	db 72, 156, $66, $0D
+	db 80, 148, $67, $0D
+	db 80, 156, $68, $0D
+	; frame 16
+	db 124, 80, $5F, $4D
+	db 124, 88, $60, $4D
+	db 132, 80, $5D, $4D
+	db 132, 88, $5E, $4D
+	; frame 17
+	db 124, 85, $5F, $4D
+	db 124, 93, $60, $4D
+	db 132, 85, $5D, $4D
+	db 132, 93, $5E, $4D
+	; frame 18
+	db 124, 91, $5F, $4D
+	db 124, 99, $60, $4D
+	db 132, 91, $5D, $4D
+	db 132, 99, $5E, $4D
+	; frame 19
+	db 124, 97, $63, $4D
+	db 124, 105, $64, $4D
+	db 132, 97, $61, $4D
+	db 132, 105, $62, $4D
+	; frame 20
+	db 124, 103, $63, $4D
+	db 124, 111, $64, $4D
+	db 132, 103, $61, $4D
+	db 132, 111, $62, $4D
+	; frame 21
+	db 124, 110, $63, $4D
+	db 124, 118, $64, $4D
+	db 132, 110, $61, $4D
+	db 132, 118, $62, $4D
+	; frame 22
+	db 124, 118, $63, $4D
+	db 124, 126, $64, $4D
+	db 132, 118, $61, $4D
+	db 132, 126, $62, $4D
+	; frame 23
+	db 124, 127, $63, $4D
+	db 124, 135, $64, $4D
+	db 132, 127, $61, $4D
+	db 132, 135, $62, $4D
+	; frame 24
+	db 124, 138, $63, $4D
+	db 124, 146, $64, $4D
+	db 132, 138, $61, $4D
+	db 132, 146, $62, $4D
+	; frame 25
+	db 121, 148, $63, $4D
+	db 121, 156, $64, $4D
+	db 129, 148, $61, $4D
+	db 129, 156, $62, $4D
+	; frame 26
+	db 111, 148, $63, $4D
+	db 111, 156, $64, $4D
+	db 119, 148, $61, $4D
+	db 119, 156, $62, $4D
+	; frame 27
+	db 102, 148, $63, $4D
+	db 102, 156, $64, $4D
+	db 110, 148, $61, $4D
+	db 110, 156, $62, $4D
+	; frame 28
+	db 94, 148, $63, $4D
+	db 94, 156, $64, $4D
+	db 102, 148, $61, $4D
+	db 102, 156, $62, $4D
+	; frame 29
+	db 86, 148, $67, $4D
+	db 86, 156, $68, $4D
+	db 94, 148, $65, $4D
+	db 94, 156, $66, $4D
+	; frame 30
+	db 79, 148, $67, $4D
+	db 79, 156, $68, $4D
+	db 87, 148, $65, $4D
+	db 87, 156, $66, $4D
+	; frame 31
+	db 72, 148, $67, $4D
+	db 72, 156, $68, $4D
+	db 80, 148, $65, $4D
+	db 80, 156, $66, $4D
+	; frame 32
+	db 20, 80, $5E, $2D
+	db 20, 88, $5D, $2D
+	db 28, 80, $60, $2D
+	db 28, 88, $5F, $2D
+	; frame 33
+	db 20, 75, $5E, $2D
+	db 20, 83, $5D, $2D
+	db 28, 75, $60, $2D
+	db 28, 83, $5F, $2D
+	; frame 34
+	db 20, 69, $5E, $2D
+	db 20, 77, $5D, $2D
+	db 28, 69, $60, $2D
+	db 28, 77, $5F, $2D
+	; frame 35
+	db 20, 63, $62, $2D
+	db 20, 71, $61, $2D
+	db 28, 63, $64, $2D
+	db 28, 71, $63, $2D
+	; frame 36
+	db 20, 57, $62, $2D
+	db 20, 65, $61, $2D
+	db 28, 57, $64, $2D
+	db 28, 65, $63, $2D
+	; frame 37
+	db 20, 50, $62, $2D
+	db 20, 58, $61, $2D
+	db 28, 50, $64, $2D
+	db 28, 58, $63, $2D
+	; frame 38
+	db 20, 42, $62, $2D
+	db 20, 50, $61, $2D
+	db 28, 42, $64, $2D
+	db 28, 50, $63, $2D
+	; frame 39
+	db 20, 33, $62, $2D
+	db 20, 41, $61, $2D
+	db 28, 33, $64, $2D
+	db 28, 41, $63, $2D
+	; frame 40
+	db 20, 22, $62, $2D
+	db 20, 30, $61, $2D
+	db 28, 22, $64, $2D
+	db 28, 30, $63, $2D
+	; frame 41
+	db 23, 12, $62, $2D
+	db 23, 20, $61, $2D
+	db 31, 12, $64, $2D
+	db 31, 20, $63, $2D
+	; frame 42
+	db 33, 12, $62, $2D
+	db 33, 20, $61, $2D
+	db 41, 12, $64, $2D
+	db 41, 20, $63, $2D
+	; frame 43
+	db 42, 12, $62, $2D
+	db 42, 20, $61, $2D
+	db 50, 12, $64, $2D
+	db 50, 20, $63, $2D
+	; frame 44
+	db 50, 12, $62, $2D
+	db 50, 20, $61, $2D
+	db 58, 12, $64, $2D
+	db 58, 20, $63, $2D
+	; frame 45
+	db 58, 12, $66, $2D
+	db 58, 20, $65, $2D
+	db 66, 12, $68, $2D
+	db 66, 20, $67, $2D
+	; frame 46
+	db 65, 12, $66, $2D
+	db 65, 20, $65, $2D
+	db 73, 12, $68, $2D
+	db 73, 20, $67, $2D
+	; frame 47
+	db 72, 12, $66, $2D
+	db 72, 20, $65, $2D
+	db 80, 12, $68, $2D
+	db 80, 20, $67, $2D
+	; frame 48
+	db 124, 80, $60, $6D
+	db 124, 88, $5F, $6D
+	db 132, 80, $5E, $6D
+	db 132, 88, $5D, $6D
+	; frame 49
+	db 124, 75, $60, $6D
+	db 124, 83, $5F, $6D
+	db 132, 75, $5E, $6D
+	db 132, 83, $5D, $6D
+	; frame 50
+	db 124, 69, $60, $6D
+	db 124, 77, $5F, $6D
+	db 132, 69, $5E, $6D
+	db 132, 77, $5D, $6D
+	; frame 51
+	db 124, 63, $64, $6D
+	db 124, 71, $63, $6D
+	db 132, 63, $62, $6D
+	db 132, 71, $61, $6D
+	; frame 52
+	db 124, 57, $64, $6D
+	db 124, 65, $63, $6D
+	db 132, 57, $62, $6D
+	db 132, 65, $61, $6D
+	; frame 53
+	db 124, 50, $64, $6D
+	db 124, 58, $63, $6D
+	db 132, 50, $62, $6D
+	db 132, 58, $61, $6D
+	; frame 54
+	db 124, 42, $64, $6D
+	db 124, 50, $63, $6D
+	db 132, 42, $62, $6D
+	db 132, 50, $61, $6D
+	; frame 55
+	db 124, 33, $64, $6D
+	db 124, 41, $63, $6D
+	db 132, 33, $62, $6D
+	db 132, 41, $61, $6D
+	; frame 56
+	db 124, 22, $64, $6D
+	db 124, 30, $63, $6D
+	db 132, 22, $62, $6D
+	db 132, 30, $61, $6D
+	; frame 57
+	db 121, 12, $64, $6D
+	db 121, 20, $63, $6D
+	db 129, 12, $62, $6D
+	db 129, 20, $61, $6D
+	; frame 58
+	db 111, 12, $64, $6D
+	db 111, 20, $63, $6D
+	db 119, 12, $62, $6D
+	db 119, 20, $61, $6D
+	; frame 59
+	db 102, 12, $64, $6D
+	db 102, 20, $63, $6D
+	db 110, 12, $62, $6D
+	db 110, 20, $61, $6D
+	; frame 60
+	db 94, 12, $64, $6D
+	db 94, 20, $63, $6D
+	db 102, 12, $62, $6D
+	db 102, 20, $61, $6D
+	; frame 61
+	db 86, 12, $68, $6D
+	db 86, 20, $67, $6D
+	db 94, 12, $66, $6D
+	db 94, 20, $65, $6D
+	; frame 62
+	db 79, 12, $68, $6D
+	db 79, 20, $67, $6D
+	db 87, 12, $66, $6D
+	db 87, 20, $65, $6D
+	; frame 63
+	db 72, 12, $68, $6D
+	db 72, 20, $67, $6D
+	db 80, 12, $66, $6D
+	db 80, 20, $65, $6D
+
+; $800 bytes, two 4-bit directions per byte indexed by dx/dy (TrackerDrawPointerSprites)
+TrackerDirectionLookup:
+	INCBIN "assets/bank_02/tracker_direction_lookup.bin"
+
+RunBootScreenSequence:
+Func_02_5C40: ; legacy alias, used by src/bank_00.asm, src/bank_2B.asm
 	call Func_3BB0
 	ld a, $0A
 	call ScreenTable_CallInit
@@ -1568,7 +1943,8 @@ Jump_02_5D06:
 	ret
 
 
-Func_02_5D33:
+SetScoreFromThousands:
+Func_02_5D33: ; legacy alias, used by src/bank_00.asm
 	xor a
 	ld [wScore], a
 	ld [wScore + 1], a
@@ -1606,7 +1982,7 @@ Func_02_5D6D:
 	ld a, e
 	add a, a
 	add a, a
-	ld hl, $41F7
+	ld hl, Bank02Data_41F7
 	ld a, a
 	add a, l
 	ld l, a
@@ -1639,7 +2015,7 @@ Jump_02_5D86:
 	ldh [rHDMA4], a
 	ld a, $27
 	ldh [rHDMA5], a
-	ld hl, $4D52
+	ld hl, Bank02ObjPalette7Colours
 	ld b, $07
 	ld c, $01
 	call Func_057D
@@ -1679,13 +2055,196 @@ Jump_02_5DD6:
 	call OAMDMARoutine
 	ret
 
-	INCBIN "assets/bank_02/5DE0.bin" ; $48D bytes
 
-Func_02_626D:
+; 8 OBJ palettes (Bank02LoadObjPalettes)
+BurstObjPalettes:
+	dw $0000, $7FFF, $7FFF, $7FFF
+	dw $0000, $7D20, $7E41, $7F63
+	dw $0000, $4340, $2340, $0741
+	dw $0000, $0321, $032A, $03EE
+	dw $0000, $03FF, $02DF, $059F
+	dw $0000, $001D, $001A, $0018
+	dw $0000, $3C3C, $4C1E, $6C1F
+	dw $0000, $7815, $780B, $7C03
+
+; six 4x4 tile grids; tile = byte - $62
+BurstBlockTileGrids:
+	db $64, $64, $64, $64
+	db $64, $65, $64, $64
+	db $64, $66, $67, $64
+	db $64, $64, $64, $64
+	db $64, $64, $64, $64
+	db $64, $68, $64, $64
+	db $64, $69, $6A, $64
+	db $64, $64, $64, $64
+	db $64, $64, $64, $64
+	db $64, $6B, $6C, $64
+	db $64, $6D, $6E, $64
+	db $64, $64, $64, $64
+	db $64, $64, $64, $64
+	db $64, $6F, $70, $64
+	db $64, $71, $72, $64
+	db $64, $73, $64, $64
+	db $64, $74, $64, $64
+	db $75, $76, $77, $64
+	db $65, $78, $79, $64
+	db $64, $74, $64, $64
+	db $7A, $7B, $64, $7C
+	db $64, $7D, $7E, $64
+	db $64, $7F, $80, $64
+	db $81, $65, $64, $82
+
+; no reader
+Bank02Unread5E80:
+	db $08, $00, $00, $00, $00, $00, $00, $FF
+	db $7F
+
+; 33 tiles; Bank02LoadObjTiles -> VRAM $8000
+BurstTiles:
+	INCBIN "assets/bank_02/burst_tiles.2bpp"
+
+; pairs read when a burst object expires
+BurstChildOffsets:
+	db $10, $00
+	db $0F, $02
+	db $0F, $04
+	db $0E, $07
+	db $0C, $09
+	db $0B, $0B
+	db $09, $0C
+	db $07, $0E
+	db $04, $0F
+	db $02, $0F
+	db $00, $10
+	db $FD, $0F
+	db $FB, $0F
+	db $F8, $0E
+	db $F6, $0C
+	db $F4, $0B
+	db $F3, $09
+	db $F1, $07
+	db $F0, $04
+	db $F0, $02
+	db $F0, $00
+	db $F0, $FD
+	db $F0, $FB
+	db $F1, $F8
+	db $F3, $F6
+	db $F4, $F4
+	db $F6, $F3
+	db $F8, $F1
+	db $FB, $F0
+	db $FD, $F0
+	db $FF, $F0
+	db $02, $F0
+	db $04, $F0
+	db $07, $F1
+	db $09, $F3
+	db $0B, $F4
+	db $0C, $F6
+	db $0E, $F8
+	db $0F, $FB
+	db $0F, $FD
+	db $10, $FF
+	db $0F, $02
+	db $0F, $04
+	db $0E, $07
+	db $0C, $09
+	db $0B, $0B
+	db $09, $0C
+	db $07, $0E
+	db $04, $0F
+	db $02, $0F
+	db $00, $10
+	db $FD, $0F
+	db $FB, $0F
+	db $F8, $0E
+	db $F6, $0C
+	db $F4, $0B
+	db $F3, $09
+	db $F1, $07
+	db $F0, $04
+	db $F0, $02
+	db $F0, $00
+	db $F0, $FD
+	db $F0, $FB
+	db $F1, $F8
+	db $F3, $F6
+	db $F4, $F4
+	db $F6, $F3
+	db $F8, $F1
+	db $FB, $F0
+	db $FD, $F0
+	db $FF, $F0
+	db $02, $F0
+	db $04, $F0
+	db $07, $F1
+	db $09, $F3
+	db $0B, $F4
+	db $0C, $F6
+	db $0E, $F8
+	db $0F, $FB
+	db $0F, $FD
+	db $10, $FF
+	db $0F, $02
+	db $0F, $04
+	db $0E, $07
+	db $0C, $09
+	db $0B, $0B
+	db $09, $0C
+	db $07, $0E
+	db $04, $0F
+	db $02, $0F
+	db $00, $10
+
+; 256 bytes indexed by wBurstRandomIndex (Bank02NextTableRandom)
+BurstRandomTable:
+	db $D8, $CB, $25, $43, $B6, $AE, $4D, $A3, $B2, $13, $A5, $90, $2D, $FB, $54, $5B
+	db $8E, $31, $4A, $E2, $59, $49, $2C, $2E, $05, $77, $24, $C6, $83, $CA, $BA, $BF
+	db $A9, $50, $68, $9B, $71, $EE, $9E, $DF, $C4, $10, $01, $2B, $61, $69, $9A, $BD
+	db $6D, $9F, $40, $B8, $52, $3F, $DE, $D0, $98, $34, $AD, $87, $80, $85, $A2, $D9
+	db $79, $E7, $81, $8E, $50, $7C, $E6, $B2, $8C, $A3, $2C, $B3, $5A, $29, $6F, $DB
+	db $29, $26, $89, $51, $C5, $65, $C0, $D2, $E3, $B9, $44, $09, $77, $76, $63, $BB
+	db $FA, $5E, $43, $39, $46, $07, $9F, $F5, $A7, $6B, $5D, $64, $49, $B3, $DE, $19
+	db $EE, $70, $2F, $2E, $42, $B8, $E3, $70, $66, $B6, $09, $38, $04, $9D, $68, $75
+	db $65, $60, $39, $54, $17, $36, $12, $4D, $99, $67, $94, $0B, $94, $D8, $2A, $02
+	db $A7, $F1, $7F, $80, $31, $36, $BE, $00, $FE, $3F, $52, $9D, $64, $9E, $8E, $41
+	db $85, $90, $EB, $8B, $53, $8D, $77, $A8, $9C, $38, $99, $16, $CB, $22, $D6, $17
+	db $EE, $E7, $AA, $34, $BC, $DB, $39, $8A, $44, $BD, $94, $C3, $B2, $E0, $D2, $02
+	db $08, $1E, $D9, $AA, $2F, $D9, $FE, $ED, $BE, $2F, $DC, $8D, $81, $ED, $62, $5C
+	db $F7, $E9, $05, $39, $4F, $F2, $1C, $6E, $03, $DB, $9E, $E1, $3C, $00, $5A, $2F
+	db $35, $DF, $73, $37, $EA, $14, $F6, $41, $3C, $8F, $1D, $56, $CB, $0E, $AF, $AB
+	db $5C, $60, $F6, $2A, $6F, $8C, $8D, $12, $55, $1A, $86, $14, $A1, $CE, $BE, $7B
+
+; $FF $FF
+BurstRandomTableEnd:
+	db $FF, $FF
+
+; count pairs
+BurstChildCountTable:
+	db $04, $0A
+	db $07, $06
+	db $09, $05
+	db $0A, $04
+	db $0E, $03
+	db $14, $02
+	db $28, $01
+	db $04, $0A
+	db $04, $0A
+	db $04, $0A
+
+; four start positions
+BurstStartPositions:
+	db $46, $44
+	db $38, $44
+	db $3A, $23
+	db $35, $31
+
+InitBurstEffectScreen:
 	ld a, $02
 	ldh [rSVBK], a
 	ld a, $02
-	ld [$C8E6], a
+	ld [wC8E6], a
 	ld hl, $D000
 	xor a
 	ld b, $28
@@ -1696,7 +2255,7 @@ Jump_02_627C:
 	ld [hli], a
 	dec b
 	jr nz, Jump_02_627C
-	ld hl, $D0A0
+	ld hl, wBurstObjects
 	ld b, $28
 Jump_02_6288:
 	ld [hli], a
@@ -1710,11 +2269,11 @@ Jump_02_6288:
 	dec b
 	jr nz, Jump_02_6288
 	xor a
-	ld [$C9E9], a
-	ld [$C9EC], a
-	ld [$C9ED], a
+	ld [wBurstActiveObjectCount], a
+	ld [wBurstBlockAnimTick], a
+	ld [wBurstSpawnCooldown], a
 	ld a, $FF
-	ld [$C9EB], a
+	ld [wBurstBlockAnimStep], a
 	xor a
 	ldh [rSCX], a
 	ldh [rSCY], a
@@ -1734,15 +2293,15 @@ Jump_02_62B0:
 	res 4, a
 	set 1, a
 	ldh [rLCDC], a
-	call Func_02_62EC
-	call Func_02_62CD
+	call Bank02LoadObjTiles
+	call Bank02LoadObjPalettes
 	ld a, $01
 	ldh [$FF88], a
 	ret
 
 
-Func_02_62CD:
-	ld hl, $5DE0
+Bank02LoadObjPalettes:
+	ld hl, BurstObjPalettes
 Jump_02_62D0:
 	ldh a, [rSTAT]
 	and $02
@@ -1763,9 +2322,9 @@ Jump_02_62DC:
 	ret
 
 
-Func_02_62EC:
+Bank02LoadObjTiles:
 	ld hl, $8000
-	ld de, $5E89
+	ld de, BurstTiles
 	ld b, $21
 Jump_02_62F4:
 	ld c, $10
@@ -1783,21 +2342,22 @@ Jump_02_62F6:
 	ret
 
 
-Func_02_6306:
-	call Func_02_626D
+RunBurstEffectUntilButton:
+Func_02_6306: ; legacy alias, used by src/bank_00.asm
+	call InitBurstEffectScreen
 	ld a, $FF
-	ld [$C9EA], a
+	ld [wBurstFrameCountdown], a
 Jump_02_630E:
-	call Func_02_634F
+	call UpdateBurstEffectFrame
 	call Audio_Update
-	call Func_02_66D4
-	call Func_02_6337
-	ld a, [$C9EA]
+	call WaitForLY91
+	call CopyBurstShadowOamToOam
+	ld a, [wBurstFrameCountdown]
 	dec a
-	ld [$C9EA], a
+	ld [wBurstFrameCountdown], a
 	jr nz, Jump_02_630E
 	inc a
-	ld [$C9EA], a
+	ld [wBurstFrameCountdown], a
 	ld a, [$C6B5]
 	and a
 	jr z, Jump_02_630E
@@ -1808,7 +2368,7 @@ Jump_02_630E:
 	ret
 
 
-Func_02_6337:
+CopyBurstShadowOamToOam:
 	ld de, $FE00
 	ld hl, $D000
 	ld b, $28
@@ -1830,47 +2390,47 @@ Jump_02_633F:
 	ret
 
 
-Func_02_634F:
-	call Func_02_662A
-	call Func_02_649E
-	ld a, [$C9ED]
+UpdateBurstEffectFrame:
+	call SpawnBurstEffectObjectOnTimer
+	call UpdateBurstEffectObjects
+	ld a, [wBurstSpawnCooldown]
 	and a
 	ret z
 	dec a
-	ld [$C9ED], a
+	ld [wBurstSpawnCooldown], a
 	ret
 
 
-Func_02_635F:
-	ld a, [$C9E9]
+SpawnBurstSpriteBlock:
+	ld a, [wBurstActiveObjectCount]
 	cp $18
 	ret nc
-	ld a, [$C9ED]
+	ld a, [wBurstSpawnCooldown]
 	and a
 	ret nz
-	ld a, [$C9EB]
+	ld a, [wBurstBlockAnimStep]
 	cp $FF
 	ret nz
 	xor a
-	ld [$C9EC], a
-	ld [$C9EB], a
-	ld a, [$C9E9]
+	ld [wBurstBlockAnimTick], a
+	ld [wBurstBlockAnimStep], a
+	ld a, [wBurstActiveObjectCount]
 	add a, $10
-	ld [$C9E9], a
-	call Func_02_66C0
+	ld [wBurstActiveObjectCount], a
+	call Bank02NextTableRandom
 	and $03
 	add a, a
 	ld e, a
 	ld d, $00
-	ld hl, $6265
+	ld hl, BurstStartPositions
 	add hl, de
 	ld a, [hli]
 	ldh [$FF80], a
 	ld a, [hl]
 	ldh [$FF81], a
-	ld bc, $5E20
+	ld bc, BurstBlockTileGrids
 	ld hl, $D000
-	ld de, $D0A0
+	ld de, wBurstObjects
 	ld a, $04
 	ldh [$FF84], a
 Jump_02_639F:
@@ -1933,30 +2493,30 @@ Jump_02_63B9:
 	ret
 
 
-Func_02_63F4:
-	ld a, [$C9EB]
+AnimateBurstSpriteBlock:
+	ld a, [wBurstBlockAnimStep]
 	cp $FF
 	ret z
 	ld b, a
-	ld a, [$C9EC]
+	ld a, [wBurstBlockAnimTick]
 	inc a
-	ld [$C9EC], a
+	ld [wBurstBlockAnimTick], a
 	cp $06
 	ret nz
 	xor a
-	ld [$C9EC], a
+	ld [wBurstBlockAnimTick], a
 	ld a, b
 	inc a
-	ld [$C9EB], a
+	ld [wBurstBlockAnimStep], a
 	cp $06
 	jr z, Jump_02_6454
 	swap a
 	ld e, a
 	ld d, $00
-	ld hl, $5E20
+	ld hl, BurstBlockTileGrids
 	add hl, de
 	ld de, $D002
-	ld bc, $D0A0
+	ld bc, wBurstObjects
 	ld a, $10
 	ldh [$FF80], a
 Jump_02_6425:
@@ -2002,15 +2562,15 @@ Jump_02_6454:
 
 Jump_02_6457:
 	ld a, $FF
-	ld [$C9EB], a
-	call Func_02_66C0
+	ld [wBurstBlockAnimStep], a
+	call Bank02NextTableRandom
 	and $3F
-	ld [$C9ED], a
-	ld a, [$C9E9]
+	ld [wBurstSpawnCooldown], a
+	ld a, [wBurstActiveObjectCount]
 	sub $10
-	ld [$C9E9], a
+	ld [wBurstActiveObjectCount], a
 	ld hl, $D000
-	ld de, $D0A0
+	ld de, wBurstObjects
 	ld b, $10
 	xor a
 Jump_02_6475:
@@ -2049,8 +2609,8 @@ Jump_02_648C:
 	ret
 
 
-Func_02_649E:
-	ld hl, $D0A0
+UpdateBurstEffectObjects:
+	ld hl, wBurstObjects
 	ld de, $D000
 	ld a, $28
 	ldh [$FF87], a
@@ -2076,15 +2636,15 @@ Jump_02_64BF:
 	ld a, [hli]
 	ldh [$FF80], a
 	dec [hl]
-	call z, Func_02_6548
+	call z, ExpireBurstEffectObject
 	inc hl
 	ldh a, [$FF81]
-	call Func_02_652E
+	call AddSignedVelocityToPosition
 	sub $10
 	cp $91
 	jr nc, Jump_02_6506
 	ldh a, [$FF80]
-	call Func_02_652E
+	call AddSignedVelocityToPosition
 	sub $08
 	cp $A1
 	jr nc, Jump_02_6504
@@ -2126,9 +2686,9 @@ Jump_02_6506:
 	ld a, [de]
 	and a
 	jr z, Jump_02_6511
-	ld a, [$C9E9]
+	ld a, [wBurstActiveObjectCount]
 	dec a
-	ld [$C9E9], a
+	ld [wBurstActiveObjectCount], a
 Jump_02_6511:
 	dec hl
 	dec hl
@@ -2156,7 +2716,7 @@ Jump_02_6511:
 	jr Jump_02_64EA
 
 
-Func_02_652E:
+AddSignedVelocityToPosition:
 	ld b, $00
 	bit 7, a
 	jr z, Jump_02_6535
@@ -2177,7 +2737,7 @@ Jump_02_6535:
 	ret
 
 
-Func_02_6548:
+ExpireBurstEffectObject:
 	push hl
 	push de
 	push af
@@ -2204,7 +2764,7 @@ Func_02_6548:
 	ldh [$FF85], a
 	xor a
 	ld [de], a
-	ld hl, $C9E9
+	ld hl, wBurstActiveObjectCount
 	dec [hl]
 	pop de
 	pop hl
@@ -2212,13 +2772,13 @@ Func_02_6548:
 	cp $01
 	ret z
 	push hl
-	ld hl, $6251
+	ld hl, BurstChildCountTable
 	sub $02
 	add a, a
 	ld c, a
 	ld b, $00
 	add hl, bc
-	ld a, [$C9E9]
+	ld a, [wBurstActiveObjectCount]
 	ld b, a
 	ld a, $28
 	sub b
@@ -2239,18 +2799,18 @@ Jump_02_6587:
 Jump_02_6593:
 	ld b, a
 	ldh [$FF8A], a
-	ld a, [$C9E9]
+	ld a, [wBurstActiveObjectCount]
 	add a, b
-	ld [$C9E9], a
+	ld [wBurstActiveObjectCount], a
 	inc hl
 	ld a, [hl]
 	add a, a
 	ldh [$FF89], a
 	push de
-	ld hl, $D0A0
+	ld hl, wBurstObjects
 	ld de, $D000
-	ld bc, $6099
-	call Func_02_66C0
+	ld bc, BurstChildOffsets
+	call Bank02NextTableRandom
 	and $0F
 	add a, a
 	add a, c
@@ -2259,7 +2819,7 @@ Jump_02_6593:
 	adc a, b
 	ld b, a
 Jump_02_65B8:
-	call Func_02_65D7
+	call ComputeBurstChildPosition
 	ldh a, [$FF89]
 	add a, c
 	ld c, a
@@ -2267,7 +2827,7 @@ Jump_02_65B8:
 	adc a, b
 	ld b, a
 	push bc
-	call Func_02_65EA
+	call AllocBurstEffectObject
 	pop bc
 	ldh a, [$FF8A]
 	dec a
@@ -2281,7 +2841,7 @@ Jump_02_65B8:
 	ret
 
 
-Func_02_65D7:
+ComputeBurstChildPosition:
 	push de
 	ldh a, [$FF80]
 	ld d, a
@@ -2299,7 +2859,7 @@ Func_02_65D7:
 	ret
 
 
-Func_02_65EA:
+AllocBurstEffectObject:
 	ld a, [hl]
 	and a
 	jr z, Jump_02_6600
@@ -2315,7 +2875,7 @@ Func_02_65EA:
 	ld a, $00
 	adc a, d
 	ld d, a
-	jr Func_02_65EA
+	jr AllocBurstEffectObject
 
 Jump_02_6600:
 	ld a, $01
@@ -2343,26 +2903,26 @@ Jump_02_6600:
 	ld a, $02
 	ld [de], a
 	inc de
-	call Func_02_66C0
+	call Bank02NextTableRandom
 	and $07
 	ld [de], a
 	inc de
 	ret
 
 
-Func_02_662A:
+SpawnBurstEffectObjectOnTimer:
 	ld hl, $FF88
 	dec [hl]
 	ret nz
-	call Func_02_66C0
+	call Bank02NextTableRandom
 	srl a
 	srl a
 	or $08
 	ldh [$FF88], a
-	ld a, [$C9E9]
+	ld a, [wBurstActiveObjectCount]
 	cp $1E
 	ret nc
-	ld hl, $D0A0
+	ld hl, wBurstObjects
 	ld de, $0008
 	ld b, $28
 Jump_02_6648:
@@ -2375,9 +2935,9 @@ Jump_02_6648:
 	ret
 
 Jump_02_6651:
-	ld a, [$C9E9]
+	ld a, [wBurstActiveObjectCount]
 	inc a
-	ld [$C9E9], a
+	ld [wBurstActiveObjectCount], a
 	ld de, $D000
 	ld a, $28
 	sub b
@@ -2392,24 +2952,24 @@ Jump_02_6665:
 	ld [de], a
 	inc de
 Jump_02_6669:
-	call Func_02_66C0
+	call Bank02NextTableRandom
 	cp $64
 	jr nc, Jump_02_6669
 	ld [de], a
 	ld b, a
 	inc de
-	call Func_02_66C0
+	call Bank02NextTableRandom
 	and $07
 	add a, $02
 	ld [hli], a
 	ld [de], a
 	inc de
 	ld c, a
-	call Func_02_66C0
+	call Bank02NextTableRandom
 	and $07
 	ld [de], a
 	ld d, c
-	call Func_02_66C0
+	call Bank02NextTableRandom
 	and $0F
 	add a, $0A
 	or $80
@@ -2438,7 +2998,7 @@ Jump_02_66A6:
 	sra a
 	ld [hli], a
 Jump_02_66B1:
-	call Func_02_66C0
+	call Bank02NextTableRandom
 	and $0F
 	add a, $28
 	ld [hli], a
@@ -2451,14 +3011,14 @@ Jump_02_66B1:
 	ret
 
 
-Func_02_66C0:
+Bank02NextTableRandom:
 	push hl
 	push de
-	ld hl, $614F
+	ld hl, BurstRandomTable
 	ld d, $00
-	ld a, [$C9E8]
+	ld a, [wBurstRandomIndex]
 	inc a
-	ld [$C9E8], a
+	ld [wBurstRandomIndex], a
 	ld e, a
 	add hl, de
 	ld a, [hl]
@@ -2467,7 +3027,7 @@ Func_02_66C0:
 	ret
 
 
-Func_02_66D4:
+WaitForLY91:
 	ld b, $91
 Jump_02_66D6:
 	ldh a, [rLY]
@@ -2475,4 +3035,6 @@ Jump_02_66D6:
 	jr nz, Jump_02_66D6
 	ret
 
-	INCBIN "assets/bank_02/66DC.bin" ; $1924 bytes
+Bank02ZeroFill: ; no reader; zero fill to the bank marker
+	ds $7FFF - @, $00
+	db BANK(@) ; ROM bank marker

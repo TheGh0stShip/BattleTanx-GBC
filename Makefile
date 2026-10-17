@@ -4,11 +4,11 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation progress disasm clean tidy
+.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 progress disasm clean tidy
 
 all: compare
 
-check: compare check-project graphics maps levels screens objects bank08 relocation progress
+check: compare check-project graphics maps levels screens objects bank08 relocation banks0105 progress
 
 check-project:
 	$(PYTHON) tools/check_project.py
@@ -43,6 +43,11 @@ relocation: compare
 	$(PYTHON) tools/relocation_audit.py
 	$(PYTHON) tools/level_comparison.py --check
 	$(PYTHON) tools/shift_test.py .
+
+# Banks $01-$05 structure, reports and shift tests (needs the linked symbols).
+banks0105: compare
+	$(PYTHON) tools/banks_01_05.py
+	$(PYTHON) tools/shift_test_01_05.py .
 
 # Semantic naming progress, kept separate from traced-byte coverage.
 progress: $(ROM)

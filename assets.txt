@@ -1,14 +1,6 @@
-assets/bank_01/58DF.bin 0x58df 0xbe
-assets/bank_01/6E8A.bin 0x6e8a 0xa67
-assets/bank_01/7D5D.bin 0x7d5d 0x2a3
-assets/bank_02/481E.bin 0x881e 0x53a
-assets/bank_02/5040.bin 0x9040 0xc00
-assets/bank_02/5DE0.bin 0x9de0 0x48d
-assets/bank_02/66DC.bin 0xa6dc 0x1924
-assets/bank_05/40B1.bin 0x140b1 0x24f
-assets/bank_05/431E.bin 0x1431e 0xe2
-assets/bank_05/452C.bin 0x1452c 0x974
-assets/bank_05/59E0.bin 0x159e0 0x2620
+assets/bank_05/bank04_copy_40B1.bin 0x140b1 0x24f
+assets/bank_05/bank04_copy_431E.bin 0x1431e 0xe2
+assets/bank_05/bank04_copy_452C.bin 0x1452c 0xd4
 assets/bank_07/audio_build_residue.bin 0x1c007 0xbf5
 assets/bank_08/ui_font_tiles.bin 0x20000 0x3e0
 assets/bank_08/interface_tiles_60F8.bin 0x220f8 0x10
@@ -156,3 +148,14 @@ assets/scenes/scroll_scene_04_tiles.2bpp 0xe9a58 0xff0
 assets/scenes/bank_3B_gbc_warning_tiles.2bpp 0xec000 0xdd0
 assets/scenes/scroll_scene_05_tiles.2bpp 0xed090 0xcd0
 assets/scenes/scroll_scene_00_tiles.2bpp 0xee218 0xc70
+assets/bank_01/menu_cursor_sprite_tiles.2bpp 0x58df 0x80
+
+assets/bank_01/password_screen_tiles.2bpp 0x6e8a 0x810
+assets/bank_01/sprite_tiles_7871.2bpp 0x7871 0x40
+assets/bank_01/sprite_tiles_78B1.2bpp 0x78b1 0x40
+
+assets/bank_02/unread_481E.bin 0x881e 0x534
+
+assets/bank_02/tracker_direction_lookup.bin 0x9440 0x800
+
+assets/bank_02/burst_tiles.2bpp 0x9e89 0x210

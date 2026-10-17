@@ -37,7 +37,7 @@ Level00ObjectSequence03:
 	db $0C, $90, $00, $3C, $08, $00, $00, $00 ; point 0
 	db $04, $40, $00, $2A, $08, $02, $00, $00 ; point 1
 
-ASSERT @ == $4104
+ASSERT @ - Level00ObjectSequence03 == $11
 
 Level01ObjectSequences:
 	dw Level01ObjectSequence00, Level01ObjectSequence01, Level01ObjectSequence02, Level01ObjectSequence03, Level01ObjectSequence04, Level01ObjectSequence05, Level01ObjectSequence06, Level01ObjectSequence07
@@ -118,7 +118,7 @@ Level01ObjectSequence09:
 	db $00, $30, $00, $4F, $52, $00, $14, $14 ; point 1
 	db $08, $00, $00, $4F, $4C, $02, $00, $00 ; point 2
 
-ASSERT @ == $42C6
+ASSERT @ - Level01ObjectSequence09 == $19
 
 Level02ObjectSequences:
 	dw Level02ObjectSequence00, Level02ObjectSequence01, Level02ObjectSequence02, Level02ObjectSequence03, Level02ObjectSequence04, Level02ObjectSequence05, Level02ObjectSequence06, Level02ObjectSequence07
@@ -213,7 +213,7 @@ Level02ObjectSequence12:
 	db $08, $38, $00, $38, $44, $00, $00, $00 ; point 0
 	db $00, $60, $00, $38, $4B, $02, $2C, $2C ; point 1
 
-ASSERT @ == $44B3
+ASSERT @ - Level02ObjectSequence12 == $11
 
 Level03ObjectSequences:
 	dw Level03ObjectSequence00, Level03ObjectSequence01, Level03ObjectSequence02, Level03ObjectSequence03, Level03ObjectSequence04, Level03ObjectSequence05, Level03ObjectSequence06, Level03ObjectSequence07
@@ -309,7 +309,7 @@ Level03ObjectSequence11:
 	db $00, $50, $00, $19, $29, $00, $18, $18 ; point 2
 	db $08, $18, $00, $19, $1F, $02, $18, $18 ; point 3
 
-ASSERT @ == $46BF
+ASSERT @ - Level03ObjectSequence11 == $21
 
 Level04ObjectSequences:
 	dw Level04ObjectSequence00, $0000, Level04ObjectSequence02, Level04ObjectSequence03, Level04ObjectSequence04, Level04ObjectSequence05, Level04ObjectSequence06, Level04ObjectSequence07
@@ -401,7 +401,7 @@ Level04ObjectSequence14:
 	db $08, $48, $00, $36, $1F, $00, $00, $00 ; point 0
 	db $00, $00, $01, $36, $28, $02, $00, $00 ; point 1
 
-ASSERT @ == $487D
+ASSERT @ - Level04ObjectSequence14 == $11
 
 Level05ObjectSequences:
 	dw Level05ObjectSequence00, Level05ObjectSequence01, Level05ObjectSequence02, Level05ObjectSequence03, Level05ObjectSequence04, Level05ObjectSequence05, Level05ObjectSequence06, Level05ObjectSequence07
@@ -509,7 +509,7 @@ Level05ObjectSequence14:
 	db $08, $48, $00, $1E, $0B, $00, $00, $00 ; point 1
 	db $00, $40, $00, $1E, $14, $02, $00, $00 ; point 2
 
-ASSERT @ == $4AA4
+ASSERT @ - Level05ObjectSequence14 == $19
 
 Level06ObjectSequences:
 	dw Level06ObjectSequence00, Level06ObjectSequence01, Level06ObjectSequence02, Level06ObjectSequence03, Level06ObjectSequence04, Level06ObjectSequence05, Level06ObjectSequence06, Level06ObjectSequence07
@@ -615,7 +615,7 @@ Level06ObjectSequence15:
 	db $04, $50, $00, $4A, $10, $00, $00, $00 ; point 0
 	db $0C, $38, $00, $54, $10, $00, $05, $05 ; point 1
 
-ASSERT @ == $4CA4
+ASSERT @ - Level06ObjectSequence15 == $11
 
 Level07ObjectSequences:
 	dw Level07ObjectSequence00, Level07ObjectSequence01, Level07ObjectSequence02, Level07ObjectSequence03, Level07ObjectSequence04, Level07ObjectSequence05, Level07ObjectSequence06, Level07ObjectSequence07
@@ -719,7 +719,7 @@ Level07ObjectSequence14:
 	db $00, $28, $00, $42, $1C, $00, $00, $00 ; point 1
 	db $08, $00, $00, $42, $17, $02, $00, $00 ; point 2
 
-ASSERT @ == $4EAB
+ASSERT @ - Level07ObjectSequence14 == $19
 
 Level08ObjectSequences:
 	dw Level08ObjectSequence00, Level08ObjectSequence01, Level08ObjectSequence02, Level08ObjectSequence03, Level08ObjectSequence04, Level08ObjectSequence05, Level08ObjectSequence06, Level08ObjectSequence07
@@ -791,7 +791,7 @@ Level08ObjectSequence10:
 	db $08, $88, $00, $58, $08, $00, $00, $00 ; point 0
 	db $00, $40, $00, $58, $19, $02, $00, $00 ; point 1
 
-ASSERT @ == $500E
+ASSERT @ - Level08ObjectSequence10 == $11
 
 Level09ObjectSequences:
 	dw $0000, Level09ObjectSequence01, Level09ObjectSequence02, Level09ObjectSequence03, Level09ObjectSequence04, Level09ObjectSequence05, Level09ObjectSequence06, Level09ObjectSequence07
@@ -899,7 +899,7 @@ Level09ObjectSequence15:
 	db $08, $10, $00, $20, $72, $00, $00, $00 ; point 1
 	db $00, $3D, $02, $20, $74, $02, $00, $00 ; point 2
 
-ASSERT @ == $5235
+ASSERT @ - Level09ObjectSequence15 == $19
 
 Level10ObjectSequences:
 	dw Level10ObjectSequence00, Level10ObjectSequence01, Level10ObjectSequence02, Level10ObjectSequence03, Level10ObjectSequence04, Level10ObjectSequence05, Level10ObjectSequence06, Level10ObjectSequence07
@@ -1025,7 +1025,7 @@ Level10ObjectSequence19:
 	db $00, $58, $00, $06, $3A, $00, $00, $00 ; point 0
 	db $08, $C6, $00, $06, $2F, $02, $00, $00 ; point 1
 
-ASSERT @ == $5490
+ASSERT @ - Level10ObjectSequence19 == $11
 
 Level11ObjectSequences:
 	dw Level11ObjectSequence00, Level11ObjectSequence01, $0000, Level11ObjectSequence03, Level11ObjectSequence04, Level11ObjectSequence05, Level11ObjectSequence06, Level11ObjectSequence07
@@ -1130,7 +1130,7 @@ Level11ObjectSequence17:
 	db $0C, $28, $00, $58, $0B, $00, $00, $00 ; point 1
 	db $04, $A8, $00, $53, $0B, $02, $00, $00 ; point 2
 
-ASSERT @ == $5688
+ASSERT @ - Level11ObjectSequence17 == $19
 
 Level12ObjectSequences:
 	dw Level12ObjectSequence00, Level12ObjectSequence01, Level12ObjectSequence02, Level12ObjectSequence03, Level12ObjectSequence04, Level12ObjectSequence05, Level12ObjectSequence06, Level12ObjectSequence07
@@ -1222,7 +1222,7 @@ Level12ObjectSequence13:
 	db $08, $48, $00, $02, $2E, $00, $00, $00 ; point 1
 	db $00, $C0, $00, $02, $37, $02, $00, $00 ; point 2
 
-ASSERT @ == $5846
+ASSERT @ - Level12ObjectSequence13 == $19
 
 Level13ObjectSequences:
 	dw Level13ObjectSequence00, Level13ObjectSequence01, Level13ObjectSequence02, Level13ObjectSequence03, Level13ObjectSequence04, Level13ObjectSequence05, Level13ObjectSequence06, Level13ObjectSequence07
@@ -1315,7 +1315,7 @@ Level13ObjectSequence13:
 	db $04, $28, $00, $1C, $34, $00, $00, $00 ; point 0
 	db $0C, $28, $00, $21, $34, $02, $00, $00 ; point 1
 
-ASSERT @ == $5A0C
+ASSERT @ - Level13ObjectSequence13 == $11
 
 Level14ObjectSequences:
 	dw Level14ObjectSequence00, Level14ObjectSequence01, Level14ObjectSequence02, Level14ObjectSequence03, Level14ObjectSequence04, Level14ObjectSequence05, Level14ObjectSequence06, Level14ObjectSequence07
@@ -1415,4 +1415,4 @@ Level14ObjectSequence14:
 	db $04, $40, $00, $2B, $74, $00, $01, $01 ; point 2
 	db $0C, $00, $00, $33, $74, $02, $00, $00 ; point 3
 
-ASSERT @ == $5BF3
+ASSERT @ - Level14ObjectSequence14 == $21

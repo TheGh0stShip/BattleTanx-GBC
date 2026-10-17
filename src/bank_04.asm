@@ -5,27 +5,27 @@ SECTION "ROM Bank $04", ROMX[$4000], BANK[$04]
 
 InitializeLevelObjects:
 	xor a
-	ld [$CD10], a
-	ld [$C6EF], a
-	ld [$C6F0], a
-	ld [$CD11], a
-	ld [$CD12], a
-	ld [$CD13], a
+	ld [wLevelAuxTimerDivider], a
+	ld [wBonusPickupCount], a
+	ld [wPowerupType3PickupCount], a
+	ld [wLevelAuxTimerExpiredCount], a
+	ld [wLevelAuxType3Pending], a
+	ld [wLevelAuxType2AllReached], a
 	ld a, $01
-	ld [$CD14], a
+	ld [wLevelAuxType4Active], a
 	xor a
 	ld [$CD15], a
 	ld [$CD16], a
 	ld [$CD17], a
-	ld [$CD19], a
+	ld [wLevelObjectRecordType], a
 	ld [wLevelObjectSequenceTable], a
 	ld [wLevelObjectSpawnTable], a
 	ld [wLevelObjectAuxTable], a
-	ld [$CD23], a
+	ld [wLevelObjectRecordIndex], a
 	ld [$CD26], a
-	ld [$CD24], a
+	ld [wLevelObjectRespawnsLeft], a
 	ld [wObjectSlowTickCounter], a
-	ld [$CD28], a
+	ld [wObjectSequenceThrottleCounter], a
 	ld [$CD29], a
 	ld a, [$CA06]
 	ld h, $00
@@ -70,14 +70,14 @@ Jump_04_608C:
 	ld h, a
 	ld b, $28
 	xor a
-	ld [$CD23], a
+	ld [wLevelObjectRecordIndex], a
 Jump_04_60AC:
 	push bc
 	push hl
 	ld a, [hli]
 	bit 7, a
 	jp nz, Jump_04_6243
-	ld [$CD19], a
+	ld [wLevelObjectRecordType], a
 	ld c, [hl]
 	inc hl
 	ld b, [hl]
@@ -88,9 +88,9 @@ Jump_04_60AC:
 	inc hl
 	inc hl
 	ld a, [hl]
-	ld [$CD22], a
+	ld [wLevelObjectSkillScratch], a
 	dec hl
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
 	cp $06
 	jr nz, Jump_04_60DE
 	inc hl
@@ -110,13 +110,13 @@ Jump_04_60DE:
 	bit 7, a
 	jr nz, Jump_04_6133
 	push hl
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
 	push de
-	call Func_04_62A7
+	call GetLevelObjectHealthPenalty
 	ld a, d
-	ld [$CD18], a
+	ld [wLevelSpawnHealthPenalty], a
 	pop de
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
 	ld b, $01
 	ld c, $04
 	and a
@@ -131,7 +131,7 @@ Jump_04_6106:
 	ld a, b
 	push bc
 	call CreateObjectAtOrigin
-	ld a, [$CD18]
+	ld a, [wLevelSpawnHealthPenalty]
 	ld b, a
 	ld a, l
 	and $C0
@@ -160,7 +160,7 @@ Jump_04_6106:
 	jp Jump_04_61E7
 
 Jump_04_6133:
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
 	cp $03
 	jr nz, Jump_04_616B
 	ld a, [hl]
@@ -176,26 +176,26 @@ Jump_04_6133:
 	ld [wPlayerSpawnY + 1], a
 	inc hl
 	inc hl
-	ld a, [$C6CD]
+	ld a, [wGameStartMode]
 	cp $01
 	jp z, Jump_04_6243
 	ld a, [hl]
 	ld [wPlayerObjectType], a
-	ld a, [$CD19]
-	call Func_04_62A7
+	ld a, [wLevelObjectRecordType]
+	call GetLevelObjectHealthPenalty
 	ld a, d
-	ld [$CD1A], a
+	ld [wPlayerSpawnHealthPenalty], a
 	jp Jump_04_6243
 
 Jump_04_616B:
 	cp $05
 	jr nz, Jump_04_6182
 	push bc
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
 	push de
-	call Func_04_62A7
+	call GetLevelObjectHealthPenalty
 	ld a, d
-	ld [$CD18], a
+	ld [wLevelSpawnHealthPenalty], a
 	pop de
 	ld b, $03
 	ld c, $00
@@ -203,13 +203,13 @@ Jump_04_616B:
 
 Jump_04_6182:
 	push bc
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
 	push de
-	call Func_04_62A7
+	call GetLevelObjectHealthPenalty
 	ld a, d
-	ld [$CD18], a
+	ld [wLevelSpawnHealthPenalty], a
 	pop de
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
 	ld b, $01
 	ld c, $04
 	and a
@@ -224,7 +224,7 @@ Jump_04_61A5:
 	ld a, b
 	push bc
 	call CreateObjectAtOrigin
-	ld a, [$CD18]
+	ld a, [wLevelSpawnHealthPenalty]
 	ld b, a
 	ld a, l
 	and $C0
@@ -296,7 +296,7 @@ Jump_04_61E7:
 	and $C0
 	add a, $3B
 	ld e, a
-	ld a, [$CD23]
+	ld a, [wLevelObjectRecordIndex]
 	ld [de], a
 	ld a, e
 	and $C0
@@ -332,9 +332,9 @@ Jump_04_622A:
 	ld a, $01
 	ld [de], a
 Jump_04_6243:
-	ld a, [$CD23]
+	ld a, [wLevelObjectRecordIndex]
 	inc a
-	ld [$CD23], a
+	ld [wLevelObjectRecordIndex], a
 	pop hl
 	ld de, $000C
 	add hl, de
@@ -412,10 +412,10 @@ Jump_04_6296:
 	ret
 
 
-Func_04_62A7:
+GetLevelObjectHealthPenalty:
 	ld e, a
-	ld a, [$C6CF]
-	ld [$CD22], a
+	ld a, [wActiveSkillLevel]
+	ld [wLevelObjectSkillScratch], a
 	ld d, $26
 	and a
 	jr z, Jump_04_62BB
@@ -427,7 +427,7 @@ Jump_04_62BB:
 	ld a, e
 	and a
 	ret z
-	ld a, [$CD22]
+	ld a, [wLevelObjectSkillScratch]
 	ld d, $1D
 	and a
 	jr z, Jump_04_62CE
@@ -439,7 +439,7 @@ Jump_04_62CE:
 	ld a, e
 	cp $01
 	ret z
-	ld a, [$CD22]
+	ld a, [wLevelObjectSkillScratch]
 	ld d, $2F
 	and a
 	jr z, Jump_04_62E2
@@ -451,7 +451,7 @@ Jump_04_62E2:
 	ld a, e
 	cp $02
 	ret z
-	ld a, [$CD22]
+	ld a, [wLevelObjectSkillScratch]
 	ld d, $1C
 	and a
 	jr z, Jump_04_62F6
@@ -463,8 +463,8 @@ Jump_04_62F6:
 	ret
 
 
-Func_04_62F7:
-	ld a, [$CD22]
+GetLevelObjectHealthPenaltyNoLoad:
+	ld a, [wLevelObjectSkillScratch]
 	ld d, $26
 	and a
 	jr z, Jump_04_6307
@@ -476,7 +476,7 @@ Jump_04_6307:
 	ld a, e
 	and a
 	ret z
-	ld a, [$CD22]
+	ld a, [wLevelObjectSkillScratch]
 	ld d, $1D
 	and a
 	jr z, Jump_04_631A
@@ -488,7 +488,7 @@ Jump_04_631A:
 	ld a, e
 	cp $01
 	ret z
-	ld a, [$CD22]
+	ld a, [wLevelObjectSkillScratch]
 	ld d, $2F
 	and a
 	jr z, Jump_04_632E
@@ -500,7 +500,7 @@ Jump_04_632E:
 	ld a, e
 	cp $02
 	ret z
-	ld a, [$CD22]
+	ld a, [wLevelObjectSkillScratch]
 	ld d, $1C
 	and a
 	jr z, Jump_04_6342
@@ -629,9 +629,9 @@ Jump_04_63C6:
 
 TrySpawnPendingLevelObject:
 	ld a, c
-	ld [$CD24], a
+	ld [wLevelObjectRespawnsLeft], a
 	ld a, b
-	ld [$CD23], a
+	ld [wLevelObjectRecordIndex], a
 	ld h, $00
 	ld l, a
 	add hl, hl
@@ -647,7 +647,7 @@ TrySpawnPendingLevelObject:
 	add hl, bc
 	push hl
 	ld a, [hli]
-	ld [$CD19], a
+	ld [wLevelObjectRecordType], a
 	ld a, [wLevelCameraX + 1]
 	ld d, a
 	ld a, [wLevelCameraX]
@@ -661,7 +661,7 @@ TrySpawnPendingLevelObject:
 	ld b, [hl]
 	inc hl
 	xor a
-	ld [$CD25], a
+	ld [wPendingSpawnOutsideView], a
 	push bc
 	push de
 	call AbsoluteDifferenceBCDE
@@ -672,7 +672,7 @@ TrySpawnPendingLevelObject:
 	sub e
 	jr nc, Jump_04_6418
 	ld a, $01
-	ld [$CD25], a
+	ld [wPendingSpawnOutsideView], a
 Jump_04_6418:
 	pop de
 	pop bc
@@ -698,11 +698,11 @@ Jump_04_6418:
 	sub e
 	jr nc, Jump_04_643F
 	ld a, $01
-	ld [$CD25], a
+	ld [wPendingSpawnOutsideView], a
 Jump_04_643F:
 	pop de
 	pop bc
-	ld a, [$CD25]
+	ld a, [wPendingSpawnOutsideView]
 	and a
 	jr nz, Jump_04_6449
 	pop hl
@@ -712,10 +712,10 @@ Jump_04_6449:
 	ld a, [hl]
 	bit 7, a
 	jr nz, Jump_04_6495
-	ld a, [$CD19]
-	call Func_04_62A7
+	ld a, [wLevelObjectRecordType]
+	call GetLevelObjectHealthPenalty
 	push hl
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
 	ld b, $01
 	ld c, $05
 	and a
@@ -759,11 +759,11 @@ Jump_04_646B:
 	jr Jump_04_6506
 
 Jump_04_6495:
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
 	cp $05
 	jr nz, Jump_04_64A9
-	ld a, [$CD19]
-	call Func_04_62A7
+	ld a, [wLevelObjectRecordType]
+	call GetLevelObjectHealthPenalty
 	push bc
 	ld b, $03
 	ld c, $00
@@ -771,9 +771,9 @@ Jump_04_6495:
 
 Jump_04_64A9:
 	push bc
-	ld a, [$CD19]
-	call Func_04_62A7
-	ld a, [$CD19]
+	ld a, [wLevelObjectRecordType]
+	call GetLevelObjectHealthPenalty
+	ld a, [wLevelObjectRecordType]
 	ld b, $01
 	ld c, $04
 	and a
@@ -852,7 +852,7 @@ Jump_04_6506:
 	and $C0
 	add a, $3A
 	ld e, a
-	ld a, [$CD24]
+	ld a, [wLevelObjectRespawnsLeft]
 	ld [de], a
 	inc hl
 	inc hl
@@ -860,7 +860,7 @@ Jump_04_6506:
 	and $C0
 	add a, $3B
 	ld e, a
-	ld a, [$CD23]
+	ld a, [wLevelObjectRecordIndex]
 	ld [de], a
 	ld a, [hli]
 	ld b, $00
@@ -920,4 +920,3 @@ Bank04ZeroFill:
 	ds $7FFF - @, 0
 Bank04BankMarker:
 	db $04
-ASSERT @ == $8000

@@ -1,0 +1,38 @@
+{
+ "$01": {
+  "asset": 2320,
+  "code (direct)": 8442,
+  "fill": 804,
+  "marker": 1,
+  "ram code source": 2308,
+  "ram data source": 2,
+  "structured data": 2507
+ },
+ "$02": {
+  "asset": 3908,
+  "code (direct)": 3293,
+  "fill": 6435,
+  "marker": 1,
+  "ram code source": 210,
+  "structured data": 2537
+ },
+ "$03": {
+  "code (direct)": 3496,
+  "fill": 5668,
+  "marker": 1,
+  "structured data": 7219
+ },
+ "$04": {
+  "code (direct)": 1369,
+  "fill": 6794,
+  "marker": 1,
+  "structured data": 8220
+ },
+ "$05": {
+  "asset": 1029,
+  "code (direct)": 41,
+  "fill": 7663,
+  "marker": 1,
+  "structured data": 7650
+ }
+}

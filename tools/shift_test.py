@@ -107,7 +107,8 @@ def run_case(root, base, name, rel, label, mode, min_refs, n=None):
         return False, f"assembly failed: {err}"
     rom1, sym1 = res
     bank, start = sym0[label]
-    moved = {k for k, (b, a) in sym0.items() if b == bank and a >= start and 0x4000 <= a < 0x8000}
+    # labels at the bank marker ($7FFF) stay put: computed fills absorb the padding
+    moved = {k for k, (b, a) in sym0.items() if b == bank and a >= start and 0x4000 <= a < 0x7FFF}
     for k, (b, a) in sym0.items():
         want = (b, a + N) if k in moved else (b, a)
         if sym1.get(k) != want:

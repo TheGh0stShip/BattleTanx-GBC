@@ -1,8 +1,11 @@
 ; BattleTanx (USA) - ROM bank $01
 
+INCLUDE "include/banks_01_05_ram.inc"
+
 SECTION "ROM Bank $01", ROMX[$4000], BANK[$01]
 
-Func_01_4000:
+RunPauseHudSequence:
+Func_01_4000: ; legacy alias, used by src/bank_00.asm
 	xor a
 	ldh [rNR51], a
 	ld d, $08
@@ -53,7 +56,7 @@ Jump_01_4040:
 	xor a
 	ld [wVBlankPending], a
 	call Func_3608
-	ld a, [$C6C1]
+	ld a, [wGamePaused]
 	or a
 	jp z, Jump_01_4064
 	xor a
@@ -103,7 +106,8 @@ Jump_01_4088:
 	ret
 
 
-Func_01_409E:
+LosePlayerLifeAndWaitForMusic:
+Func_01_409E: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -136,7 +140,8 @@ Jump_01_40C9:
 	ret
 
 
-Func_01_40CE:
+ByteToBcd16:
+Func_01_40CE: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -146,7 +151,7 @@ Func_01_40CE:
 	ld [hl], a
 	ld e, l
 	ld d, h
-	ld hl, $4F00
+	ld hl, Bank01Data_4F00
 	ld c, $08
 Jump_01_40DC:
 	rr b
@@ -184,7 +189,8 @@ Jump_01_40FA:
 	ret
 
 
-Func_01_4102:
+AddWordToBcd24:
+Func_01_4102: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -194,7 +200,7 @@ Func_01_4102:
 	push bc
 	inc de
 	inc de
-	ld hl, $4F10
+	ld hl, Bank01Data_4F10
 	ld a, $02
 	ldh [$FF80], a
 Jump_01_4112:
@@ -241,7 +247,8 @@ Jump_01_4134:
 	ret
 
 
-Func_01_4143:
+LongToBcd40:
+Func_01_4143: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -260,7 +267,7 @@ Func_01_4143:
 	ld [hl], a
 	ld e, l
 	ld d, h
-	ld hl, $4F40
+	ld hl, Bank01Data_4F40
 	ld a, $04
 	ldh [$FF80], a
 Jump_01_415C:
@@ -308,30 +315,36 @@ Jump_01_4180:
 	pop af
 	ret
 
+ScoreThresholdTable:
 	db $50, $C3, $00, $00, $A0, $86, $01, $00, $F0, $49, $02, $00, $40, $0D, $03, $00
 	db $90, $D0, $03, $00, $E0, $93, $04, $00, $30, $57, $05, $00, $80, $1A, $06, $00
 	db $D0, $DD, $06, $00, $20, $A1, $07, $00, $70, $64, $08, $00, $C0, $27, $09, $00
 	db $10, $EB, $09, $00, $60, $AE, $0A, $00, $B0, $71, $0B, $00, $00, $35, $0C, $00
 	db $50, $F8, $0C, $00, $A0, $BB, $0D, $00, $F0, $7E, $0E, $00, $40, $42, $0F, $00
-	db $FF, $FF, $FF, $FF, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87
+	db $FF, $FF, $FF, $FF
+Bank01Data_41E3:
+	db $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87
 	db $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87
-	db $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $00, $01, $2F, $01
+	db $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87
+Bank01Data_420B:
+	db $00, $01, $2F, $01
 	db $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $02
 	db $03, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04
 	db $04, $04, $04, $05
 
-Func_01_4233:
+LoadHudTopRows:
+Func_01_4233: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
 	push hl
 	ld d, $02
 	ld hl, $C400
-	ld bc, $41E3
+	ld bc, Bank01Data_41E3
 	call Func_3202
 	ld d, $02
 	ld hl, $C440
-	ld bc, $420B
+	ld bc, Bank01Data_420B
 	call Func_3202
 	pop hl
 	pop de
@@ -339,24 +352,28 @@ Func_01_4233:
 	pop af
 	ret
 
+Bank01Data_4252:
 	db $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87
 	db $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87
-	db $87, $87, $87, $87, $87, $87, $87, $87, $00, $01, $01, $01, $01, $01, $06, $07
+	db $87, $87, $87, $87, $87, $87, $87, $87
+Bank01Data_427A:
+	db $00, $01, $01, $01, $01, $01, $06, $07
 	db $08, $09, $0A, $0B, $0C, $0D, $01, $01, $01, $01, $01, $02, $03, $04, $04, $04
 	db $04, $04, $0E, $0F, $10, $11, $12, $13, $14, $15, $04, $04, $04, $04, $04, $05
 
-Func_01_42A2:
+LoadPauseHudTopRowsAndTransfer:
+Func_01_42A2: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
 	push hl
 	ld d, $02
 	ld hl, $C400
-	ld bc, $4252
+	ld bc, Bank01Data_4252
 	call Func_3202
 	ld d, $02
 	ld hl, $C440
-	ld bc, $427A
+	ld bc, Bank01Data_427A
 	call Func_3202
 	ld a, $01
 	ldh [rVBK], a
@@ -393,7 +410,7 @@ Func_01_42EE:
 	ret
 
 
-Func_01_42EF:
+DrawObjectStatusCountsToWindow:
 	push af
 	push bc
 	push de
@@ -637,7 +654,8 @@ Jump_01_445D:
 	ret
 
 
-Func_01_446E:
+AnimatePlayerHealthRefill:
+Func_01_446E: ; legacy alias, used by src/bank_00.asm
 	push hl
 	push bc
 	ld a, [wPlayerObject]
@@ -708,16 +726,16 @@ Jump_01_4486:
 	ret
 
 EntityHandlerTable:
-	dw Func_01_451A
-	dw Func_01_453D
-	dw Func_01_455E
-	dw Func_01_4582
-	dw Func_01_45AB
-	dw Func_01_45CD
-	dw Func_01_45EE
-	dw Func_01_4615
-	dw Func_01_4648
-	dw Func_01_467B
+	dw PickupRestoreQuarterHealth
+	dw PickupRestoreHalfHealth
+	dw PickupHandler02
+	dw PickupBonusScore3000
+	dw PickupExtraLife
+	dw PickupPowerupType2
+	dw PickupPowerupType1
+	dw PickupPowerupType3
+	dw PickupTriggerHudAlert
+	dw PickupHandlerNoOp
 
 DispatchEntityHandler:
 	push de
@@ -743,7 +761,7 @@ DispatchEntityHandler:
 	jp hl
 
 
-Func_01_450F:
+FinishPickupFreeObject:
 	pop hl
 	call FreeObjectRecord
 	pop bc
@@ -751,14 +769,14 @@ Func_01_450F:
 	ret
 
 
-Func_01_4516:
+FinishPickupKeepObject:
 	pop hl
 	pop bc
 	pop de
 	ret
 
 
-Func_01_451A:
+PickupRestoreQuarterHealth:
 	pop hl
 	call GetObjectMaxHealth
 	ld b, a
@@ -769,7 +787,7 @@ Func_01_451A:
 	ld a, [hl]
 	cp b
 	jr c, Jump_01_452C
-	jp Func_01_4516
+	jp FinishPickupKeepObject
 
 Jump_01_452C:
 	ld a, b
@@ -779,10 +797,10 @@ Jump_01_452C:
 	call AddObjectHealth
 	ld e, $4A
 	call Audio_QueueSound
-	jp Func_01_450F
+	jp FinishPickupFreeObject
 
 
-Func_01_453D:
+PickupRestoreHalfHealth:
 	pop hl
 	call GetObjectMaxHealth
 	ld b, a
@@ -793,7 +811,7 @@ Func_01_453D:
 	ld a, [hl]
 	cp b
 	jr c, Jump_01_454F
-	jp Func_01_4516
+	jp FinishPickupKeepObject
 
 Jump_01_454F:
 	ld a, b
@@ -802,10 +820,10 @@ Jump_01_454F:
 	call AddObjectHealth
 	ld e, $4B
 	call Audio_QueueSound
-	jp Func_01_450F
+	jp FinishPickupFreeObject
 
 
-Func_01_455E:
+PickupHandler02:
 	pop hl
 	ld a, l
 	and $C0
@@ -813,7 +831,7 @@ Func_01_455E:
 	ld l, a
 	ld a, [hl]
 	or a
-	jp nz, Func_01_4516
+	jp nz, FinishPickupKeepObject
 	ld a, l
 	and $C0
 	add a, $27
@@ -826,47 +844,47 @@ Func_01_455E:
 	ld [hl], $00
 	ld e, $53
 	call Audio_QueueSound
-	jp Func_01_450F
+	jp FinishPickupFreeObject
 
 
-Func_01_4582:
+PickupBonusScore3000:
 	pop hl
 	ld a, [wPlayerObject]
 	cp l
-	jr nz, Func_01_450F
+	jr nz, FinishPickupFreeObject
 	ld a, [wPlayerObject + 1]
 	cp h
-	jp nz, Func_01_450F
+	jp nz, FinishPickupFreeObject
 	call Func_3845
 	ld bc, $0BB8
 	call AddToScore
 	ld e, $54
 	call Audio_QueueSound
-	ld a, [$C6EF]
+	ld a, [wBonusPickupCount]
 	inc a
-	ld [$C6EF], a
+	ld [wBonusPickupCount], a
 	call Func_0A48
-	jp Func_01_450F
+	jp FinishPickupFreeObject
 
 
-Func_01_45AB:
+PickupExtraLife:
 	pop hl
 	ld a, [wPlayerObject]
 	cp l
-	jp nz, Func_01_4516
+	jp nz, FinishPickupKeepObject
 	ld a, [wPlayerObject + 1]
 	cp h
-	jp nz, Func_01_4516
+	jp nz, FinishPickupKeepObject
 	ld a, [wPlayerLives]
 	cp $09
-	jp z, Func_01_4516
+	jp z, FinishPickupKeepObject
 	call GainPlayerLife
 	ld e, $49
 	call Audio_QueueSound
-	jp Func_01_450F
+	jp FinishPickupFreeObject
 
 
-Func_01_45CD:
+PickupPowerupType2:
 	pop hl
 	ld a, l
 	and $C0
@@ -874,7 +892,7 @@ Func_01_45CD:
 	ld l, a
 	ld a, [hl]
 	cp $00
-	jp nz, Func_01_4516
+	jp nz, FinishPickupKeepObject
 	ld a, $02
 	ld [hl], a
 	ld a, l
@@ -885,10 +903,10 @@ Func_01_45CD:
 	ld [hl], a
 	ld e, $55
 	call Audio_QueueSound
-	jp Func_01_450F
+	jp FinishPickupFreeObject
 
 
-Func_01_45EE:
+PickupPowerupType1:
 	pop hl
 	ld a, l
 	and $C0
@@ -896,7 +914,7 @@ Func_01_45EE:
 	ld l, a
 	ld a, [hl]
 	cp $00
-	jp nz, Func_01_4516
+	jp nz, FinishPickupKeepObject
 	ld a, l
 	and $C0
 	add a, $29
@@ -911,10 +929,10 @@ Func_01_45EE:
 	ld [hl], a
 	ld e, $56
 	call Audio_QueueSound
-	jp Func_01_450F
+	jp FinishPickupFreeObject
 
 
-Func_01_4615:
+PickupPowerupType3:
 	pop hl
 	ld a, l
 	and $C0
@@ -922,7 +940,7 @@ Func_01_4615:
 	ld l, a
 	ld a, [hl]
 	cp $00
-	jp nz, Func_01_4516
+	jp nz, FinishPickupKeepObject
 	push hl
 	call Func_3845
 	pop hl
@@ -940,13 +958,13 @@ Func_01_4615:
 	ld [hl], a
 	ld e, $51
 	call Audio_QueueSound
-	ld a, [$C6F0]
+	ld a, [wPowerupType3PickupCount]
 	inc a
-	ld [$C6F0], a
-	jp Func_01_450F
+	ld [wPowerupType3PickupCount], a
+	jp FinishPickupFreeObject
 
 
-Func_01_4648:
+PickupTriggerHudAlert:
 	pop hl
 	ld a, l
 	and $C0
@@ -954,13 +972,13 @@ Func_01_4648:
 	ld l, a
 	ld a, [hl]
 	and a
-	jp nz, Func_01_4516
+	jp nz, FinishPickupKeepObject
 	ld a, $01
 	ld [wHudAlertActive], a
 	ld e, $53
 	call Audio_QueueSound
 	xor a
-	ld [$C8D9], a
+	ld [wNearestTargetDistance + 1], a
 	call Func_0A48
 	pop hl
 	push hl
@@ -972,19 +990,20 @@ Func_01_4648:
 	inc a
 	ld [hl], a
 	ld a, l
-	ld [$C91E], a
+	ld [wAlertObjectTypePtr], a
 	ld a, h
-	ld [$C91F], a
-	jp Func_01_4516
+	ld [wAlertObjectTypePtr + 1], a
+	jp FinishPickupKeepObject
 
 
-Func_01_467B:
+PickupHandlerNoOp:
 	pop hl
-	jp Func_01_4516
+	jp FinishPickupKeepObject
 
 	db $53, $54, $55, $56, $57, $58, $59, $5A
 
-Func_01_4687:
+DrawObjectTypeMarkerSprite:
+Func_01_4687: ; legacy alias, used by src/bank_00.asm
 	push de
 	push bc
 	push hl
@@ -1018,7 +1037,8 @@ Func_01_4687:
 	ret
 
 
-Func_01_46B1:
+SubtractRgb555Saturating:
+Func_01_46B1: ; legacy alias, used by src/bank_00.asm
 	push de
 	ld a, b
 	srl a
@@ -1082,7 +1102,8 @@ Jump_01_46FB:
 	ret
 
 
-Func_01_4703:
+AddRgb555Saturating:
+Func_01_4703: ; legacy alias, used by src/bank_00.asm
 	push de
 	ld a, b
 	srl a
@@ -1149,7 +1170,8 @@ Jump_01_4756:
 	ret
 
 
-Func_01_475E:
+DarkenAllBgPaletteColors:
+Func_01_475E: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -1194,7 +1216,8 @@ Jump_01_477B:
 	ret
 
 
-Func_01_4799:
+CaptureBgPalettesAndFadeToWhite:
+Func_01_4799: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -1266,19 +1289,19 @@ MACRO menu_choice
 ENDM
 
 ScreenModeTable:
-	screen_mode $2D, Func_2D_54FA, Func_2D_5552
-	screen_mode $2A, Func_2A_61D8, Func_2A_6230
-	screen_mode $2C, Func_2C_4000, Func_2C_4058
-	screen_mode $2C, Func_2C_5ED3, Func_2C_5F2B
-	screen_mode $2B, Func_2B_6E6C, Func_2B_6EC4
-	screen_mode $2C, Func_2C_4B3A, Func_2C_4B92
-	screen_mode $2C, Func_2C_5F9F, Func_2C_5FF7
-	screen_mode $2B, Func_2B_4000, Func_2B_4058
-	screen_mode $2D, Func_2D_4000, Func_2D_4058
-	screen_mode $2B, Func_2B_5BDA, Func_2B_5C32
-	screen_mode $2B, Func_2B_5BDA, Func_2B_5C32
-	screen_mode $2C, Func_2C_55C4, Func_2C_561C
-	screen_mode $2A, Func_2A_6A22, Func_2A_6A7A
+	screen_mode BANK(Func_2D_54FA), Func_2D_54FA, Func_2D_5552
+	screen_mode BANK(Func_2A_61D8), Func_2A_61D8, Func_2A_6230
+	screen_mode BANK(Func_2C_4000), Func_2C_4000, Func_2C_4058
+	screen_mode BANK(Func_2C_5ED3), Func_2C_5ED3, Func_2C_5F2B
+	screen_mode BANK(Func_2B_6E6C), Func_2B_6E6C, Func_2B_6EC4
+	screen_mode BANK(Func_2C_4B3A), Func_2C_4B3A, Func_2C_4B92
+	screen_mode BANK(Func_2C_5F9F), Func_2C_5F9F, Func_2C_5FF7
+	screen_mode BANK(Func_2B_4000), Func_2B_4000, Func_2B_4058
+	screen_mode BANK(Func_2D_4000), Func_2D_4000, Func_2D_4058
+	screen_mode BANK(Func_2B_5BDA), Func_2B_5BDA, Func_2B_5C32
+	screen_mode BANK(Func_2B_5BDA), Func_2B_5BDA, Func_2B_5C32
+	screen_mode BANK(Func_2C_55C4), Func_2C_55C4, Func_2C_561C
+	screen_mode BANK(Func_2A_6A22), Func_2A_6A22, Func_2A_6A7A
 
 	db $C9
 
@@ -1376,9 +1399,11 @@ ASSERT @ - SkillHardText == 8
 SkillTextsEnd:
 ASSERT SkillTextsEnd - SkillTexts == 3 * 8
 
+Bank01RomImage_49CB:
 	LOAD UNION "RAM code $D56A", WRAMX[$D56A] ; copied from $01:49CB
 
-RAM_D56A:
+InitMenuSystem:
+RAM_D56A: ; legacy alias, used by src/bank_00.asm
 	ld a, $01
 	ldh [rSVBK], a
 	ldh a, [rLCDC]
@@ -1388,42 +1413,42 @@ RAM_D56A:
 	ld [wMenuRepeatTimer], a
 	ld a, $01
 	ldh [rSVBK], a
-	ld hl, RAM_D702
+	ld hl, MenuHandlerReturn
 	ld a, l
 	ld [$D561], a
 	ld a, h
 	ld [$D562], a
 	xor a
-	ld [$C6CD], a
+	ld [wGameStartMode], a
 	ld [wMenuGridColumn], a
 	ld [wMenuGridRow], a
 	ld [wMenuScrollDirection], a
 	ld [wMenuCursorSpritesEnabled], a
-	ld a, [$C6CF]
+	ld a, [wActiveSkillLevel]
 	ld [wSkillSetting], a
 	call Func_01_4A62
 	ld a, [$C6B5]
 	ld [wMenuPreviousButtons], a
-	call Func_01_4B4A
+	call InstallMenuInterruptHandlers
 	call Func_0781
 	ld a, $01
 	ld [wMenuActive], a
-	ld [$D550], a
-	ld hl, $4855
+	ld [wMenuCursorChoice], a
+	ld hl, MenuState00
 	ld a, l
 	ld [wMenuState], a
 	ld [wMenuRenderedState], a
 	ld a, h
 	ld [wMenuState + 1], a
 	ld [wMenuRenderedState + 1], a
-	call Func_01_4E90
-	call RAM_D9CB
-	call Func_01_5377
-	call Func_01_6AEF
+	call InitMenuCursorForState
+	call LoadEncodedFontTilesToVram1
+	call LoadMenuCursorSprites
+	call MovePasswordCursorOffscreen
 	ld a, $01
-	ld [$D556], a
+	ld [wMenuScanlineScrollEnabled], a
 	xor a
-	call Func_01_4C15
+	call UpdateMenuCursorPosition
 	ld a, $00
 	call ScreenTable_CallInit
 	ld a, $01
@@ -1435,9 +1460,9 @@ RAM_D56A:
 	ld [rROMB0], a
 	ld a, $01
 	ld e, $01
-	call Func_01_4D15
-	call Func_01_4C15
-	call Func_01_5427
+	call SetMenuCursorChoice
+	call UpdateMenuCursorPosition
+	call EnableMenuCursorSpritesWaitVBlank
 	ret
 
 	ENDL
@@ -1445,7 +1470,7 @@ RAM_D56A:
 
 Func_01_4A62:
 	ld d, $05
-	ld hl, $DF00
+	ld hl, wPasswordEntryChars
 	xor a
 Jump_01_4A68:
 	ld [hli], a
@@ -1454,58 +1479,60 @@ Jump_01_4A68:
 	ret
 
 
+Bank01RomImage_4A6D:
 	LOAD UNION "RAM code $D62A", WRAMX[$D62A] ; copied from $01:4A6D
 
-RAM_D62A:
+RunMenuLoop:
+RAM_D62A: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
 	push hl
-RAM_D62E:
+MenuLoopTop:
 	ld a, [wMenuActive]
 	or a
-	jr nz, RAM_D650
+	jr nz, MenuCheckStateChange
 	pop hl
 	pop de
 	pop bc
 	pop af
 	ld a, [wMusicSetting]
-	ld [$C92E], a
+	ld [wCommittedMusicSetting], a
 	ld a, [wControlSetting]
-	ld [$C92F], a
+	ld [wCommittedControlSetting], a
 	ld a, [wSkillSetting]
-	ld [$C6CF], a
+	ld [wActiveSkillLevel], a
 	ld a, $01
 	ld [rROMB0], a
 	ret
 
-RAM_D650:
+MenuCheckStateChange:
 	ld a, [wMenuState]
 	ld b, a
 	ld a, [wMenuRenderedState]
 	cp b
-	jr nz, RAM_D664
+	jr nz, MenuEnterNewState
 	ld a, [wMenuState + 1]
 	ld b, a
 	ld a, [wMenuRenderedState + 1]
 	cp b
-	jr z, RAM_D6C7
-RAM_D664:
+	jr z, MenuFrameWait
+MenuEnterNewState:
 	call Func_06F8
-	call Func_01_5400
+	call HideMenuCursorSprites
 	ld a, [wMenuState]
 	ld l, a
 	ld a, [wMenuState + 1]
 	ld h, a
 	ld a, $01
-	ld [$D550], a
-	call Func_01_4E90
+	ld [wMenuCursorChoice], a
+	call InitMenuCursorForState
 	ld a, $00
 	ldh [rSCX], a
 	ld a, $01
-	ld [$D556], a
+	ld [wMenuScanlineScrollEnabled], a
 	xor a
-	call Func_01_4C15
+	call UpdateMenuCursorPosition
 	ld a, [wMenuState]
 	ld l, a
 	ld a, [wMenuState + 1]
@@ -1525,18 +1552,18 @@ RAM_D664:
 	call ScreenTable_CallUpdate
 	ld a, $01
 	ld [rROMB0], a
-	call Func_01_5427
-	call Func_01_5448
+	call EnableMenuCursorSpritesWaitVBlank
+	call InitMenuStateScreen
 	ld a, $01
-RAM_D6B4:
+MenuDrawOptionLabelsLoop:
 	call DrawOptionsEntryLabel
 	cp $FF
-	jr nz, RAM_D6B4
+	jr nz, MenuDrawOptionLabelsLoop
 	ld a, [wMenuState]
 	ld [wMenuRenderedState], a
 	ld a, [wMenuState + 1]
 	ld [wMenuRenderedState + 1], a
-RAM_D6C7:
+MenuFrameWait:
 	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
@@ -1550,12 +1577,12 @@ RAM_D6CE:
 	xor a
 	ld [wVBlankPending], a
 	ld a, $00
-	call Func_01_4C15
-	ld a, [$D555]
+	call UpdateMenuCursorPosition
+	ld a, [wMenuCursorMoving]
 	or a
-	jp nz, RAM_D62E
-	call Func_01_54FA
-	ld bc, RAM_D702
+	jp nz, MenuLoopTop
+	call UpdateMenuInputRepeat
+	ld bc, MenuHandlerReturn
 	push bc
 	ld a, [wMenuState]
 	ld l, a
@@ -1572,20 +1599,20 @@ RAM_D6CE:
 	ld l, a
 	jp hl
 
-RAM_D702:
-	jp RAM_D62E
+MenuHandlerReturn:
+	jp MenuLoopTop
 
 	ret
 	ENDL
 	db $00
 
-Func_01_4B4A:
+InstallMenuInterruptHandlers:
 	di
-	ld hl, $4B72
+	ld hl, Bank01RomImage_4B72
 	ld bc, $C729
 	ld de, $0024
 	call CopyBytesShort
-	ld hl, $4B96
+	ld hl, Bank01RomImage_4B96
 	ld bc, $C7F1
 	ld de, $007F
 	call CopyBytesShort
@@ -1600,13 +1627,14 @@ Func_01_4B4A:
 	ret
 
 
+Bank01RomImage_4B72:
 	LOAD UNION "RAM code $C729", WRAM0[$C729] ; copied from $01:4B72
 
-RAM_C729_01_4B72:
+MenuStatHandler:
 	push af
 	push hl
 	push bc
-	ld a, [$D556]
+	ld a, [wMenuScanlineScrollEnabled]
 	or a
 	jr nz, RAM_C738
 	ld a, $08
@@ -1618,7 +1646,7 @@ RAM_C738:
 	ld c, a
 	sla c
 	rl b
-	ld hl, $D9FB
+	ld hl, wMenuScanlineScrollTable
 	add hl, bc
 	ld a, [hli]
 	ld a, [hl]
@@ -1630,9 +1658,10 @@ RAM_C749:
 	reti
 	ENDL
 
+Bank01RomImage_4B96:
 	LOAD UNION "RAM code $C7F1", WRAM0[$C7F1] ; copied from $01:4B96
 
-RAM_C7F1_01_4B96:
+MenuVBlankHandler:
 	push af
 	push de
 	push bc
@@ -1647,7 +1676,7 @@ RAM_C7F1_01_4B96:
 	ld a, [wMenuCursorSpritesEnabled]
 	or a
 	jr z, RAM_C828
-	ld a, [$D553]
+	ld a, [wMenuCursorY]
 	add a, $10
 	ld [$FE00], a
 	ld [$FE04], a
@@ -1676,7 +1705,7 @@ RAM_C844:
 	push af
 	ld a, $01
 	ld [rROMB0], a
-	call Func_01_5619
+	call StepMenuScroll
 	pop af
 	ld [rROMB0], a
 	ld a, [$C6B7]
@@ -1696,15 +1725,15 @@ RAM_C844:
 	reti
 	ENDL
 
-Func_01_4C15:
+UpdateMenuCursorPosition:
 	push af
 	push bc
 	push de
 	push hl
 	ld d, a
 	ld a, $01
-	ld [$D555], a
-	call Func_01_69AB
+	ld [wMenuCursorMoving], a
+	call StepPasswordCursorSprites
 	or a
 	jr z, Jump_01_4C2A
 	pop hl
@@ -1717,9 +1746,9 @@ Jump_01_4C2A:
 	ld a, d
 	or a
 	jr nz, Jump_01_4C49
-	ld a, [$D554]
+	ld a, [wMenuCursorTargetY]
 	ld b, a
-	ld a, [$D553]
+	ld a, [wMenuCursorY]
 	cp b
 	jr z, Jump_01_4C77
 	jr c, Jump_01_4C44
@@ -1727,22 +1756,22 @@ Jump_01_4C2A:
 	jr nc, Jump_01_4C3F
 	xor a
 Jump_01_4C3F:
-	ld [$D553], a
+	ld [wMenuCursorY], a
 	jr Jump_01_4C49
 
 Jump_01_4C44:
 	add a, $01
-	ld [$D553], a
+	ld [wMenuCursorY], a
 Jump_01_4C49:
 	ld a, $01
-	ld [$D555], a
-	ld hl, $D9FB
+	ld [wMenuCursorMoving], a
+	ld hl, wMenuScanlineScrollTable
 	ld d, $00
 	ld e, $08
 Jump_01_4C55:
 	ld a, $00
 	ld [hli], a
-	ld a, [$D553]
+	ld a, [wMenuCursorY]
 	cp d
 	jr nc, Jump_01_4C6A
 	bit 0, d
@@ -1767,7 +1796,7 @@ Jump_01_4C6A:
 
 Jump_01_4C77:
 	ld a, $00
-	ld [$D555], a
+	ld [wMenuCursorMoving], a
 	pop hl
 	pop de
 	pop bc
@@ -1775,7 +1804,7 @@ Jump_01_4C77:
 	ret
 
 
-Func_01_4C81:
+GetMenuChoiceRecord:
 	push de
 	ld d, a
 	ld a, [wMenuState]
@@ -1809,8 +1838,8 @@ Jump_01_4CA8:
 	ret
 
 
-Func_01_4CAA:
-	call Func_01_4C81
+ActivateMenuChoice:
+	call GetMenuChoiceRecord
 	push hl
 	ld a, $01
 	ld a, a
@@ -1842,11 +1871,11 @@ Func_01_4CAA:
 Jump_01_4CDD:
 	cp $0F
 	jr nz, Jump_01_4CFD
-	ld a, [$C6CD]
+	ld a, [wGameStartMode]
 	cp $02
 	jr z, Jump_01_4CF7
 	ld a, $00
-	ld [$C6CD], a
+	ld [wGameStartMode], a
 	xor a
 	ld [$CA06], a
 	call ResetScore
@@ -1871,19 +1900,19 @@ Jump_01_4CFD:
 	ld a, [hl]
 	ld [wMenuState + 1], a
 	ld a, $01
-	ld [$D550], a
+	ld [wMenuCursorChoice], a
 Jump_01_4D14:
 	ret
 
 
-Func_01_4D15:
-	call Func_01_4C81
+SetMenuCursorChoice:
+	call GetMenuChoiceRecord
 	cp $FF
 	jr nz, Jump_01_4D20
 	ld a, e
-	call Func_01_4C81
+	call GetMenuChoiceRecord
 Jump_01_4D20:
-	ld [$D550], a
+	ld [wMenuCursorChoice], a
 	ld a, $05
 	add a, l
 	ld l, a
@@ -1894,7 +1923,7 @@ Jump_01_4D20:
 	add a, a
 	add a, a
 	add a, a
-	ld [$D554], a
+	ld [wMenuCursorTargetY], a
 	ret
 
 
@@ -1919,8 +1948,8 @@ Jump_01_4D4C:
 Jump_01_4D4D:
 	ld e, $07
 	call Audio_QueueSound
-	ld a, [$D550]
-	call Func_01_4C81
+	ld a, [wMenuCursorChoice]
+	call GetMenuChoiceRecord
 	ld a, $01
 	add a, l
 	ld l, a
@@ -1935,20 +1964,20 @@ Jump_01_4D4D:
 	ret
 
 Jump_01_4D6B:
-	ld a, [$D550]
+	ld a, [wMenuCursorChoice]
 	jr Jump_01_4D71
 
 Jump_01_4D70:
 	ret
 
 Jump_01_4D71:
-	call Func_01_4CAA
+	call ActivateMenuChoice
 	ret
 
 Jump_01_4D75:
 	ld e, $0A
 	call Audio_QueueSound
-	ld a, [$D550]
+	ld a, [wMenuCursorChoice]
 	ld e, a
 	inc a
 	jr Jump_01_4D90
@@ -1956,7 +1985,7 @@ Jump_01_4D75:
 Jump_01_4D81:
 	ld e, $0A
 	call Audio_QueueSound
-	ld a, [$D550]
+	ld a, [wMenuCursorChoice]
 	dec a
 	jr nz, Jump_01_4D8E
 	ld a, $01
@@ -1964,7 +1993,7 @@ Jump_01_4D8E:
 	jr Jump_01_4D90
 
 Jump_01_4D90:
-	call Func_01_4D15
+	call SetMenuCursorChoice
 	ret
 
 
@@ -1986,7 +2015,7 @@ HandleMenuState04Input:
 	bit 0, e
 	jr nz, Jump_01_4DD9
 Jump_01_4DB4:
-	call Func_01_4E35
+	call ApplyOptionsSettings
 	ld a, $01
 Jump_01_4DB9:
 	call DrawOptionsEntryValue
@@ -1998,9 +2027,9 @@ Jump_01_4DC1:
 	ret
 
 Jump_01_4DC2:
-	call Func_01_4E35
+	call ApplyOptionsSettings
 	ld a, $00
-	call Func_01_4CAA
+	call ActivateMenuChoice
 	ret
 
 Jump_01_4DCB:
@@ -2010,20 +2039,20 @@ Jump_01_4DCD:
 	ld e, $0A
 	call Audio_QueueSound
 	ld b, $FF
-	call Func_01_4E04
+	call AdjustOptionValue
 	jr Jump_01_4DB4
 
 Jump_01_4DD9:
 	ld e, $0A
 	call Audio_QueueSound
 	ld b, $01
-	call Func_01_4E04
+	call AdjustOptionValue
 	jr Jump_01_4DB4
 
 Jump_01_4DE5:
 	ld e, $0B
 	call Audio_QueueSound
-	ld a, [$D550]
+	ld a, [wMenuCursorChoice]
 	ld e, a
 	inc a
 	jr Jump_01_4E00
@@ -2031,7 +2060,7 @@ Jump_01_4DE5:
 Jump_01_4DF1:
 	ld e, $0B
 	call Audio_QueueSound
-	ld a, [$D550]
+	ld a, [wMenuCursorChoice]
 	dec a
 	jr nz, Jump_01_4DFE
 	ld a, $01
@@ -2039,14 +2068,14 @@ Jump_01_4DFE:
 	jr Jump_01_4E00
 
 Jump_01_4E00:
-	call Func_01_4D15
+	call SetMenuCursorChoice
 	ret
 
 
-Func_01_4E04:
+AdjustOptionValue:
 	push bc
-	ld a, [$D550]
-	call Func_01_4EEC
+	ld a, [wMenuCursorChoice]
+	call GetMenuChoiceValueInfo
 	pop bc
 	ld a, e
 	cp $02
@@ -2083,7 +2112,7 @@ RuntimeCallbackTable:
 	dw Func_367F
 	dw Func_36AF
 
-Func_01_4E35:
+ApplyOptionsSettings:
 	ld a, [wMusicSetting]
 	ld [wMusicEnabled], a
 	and a
@@ -2107,11 +2136,11 @@ Jump_01_4E40:
 	ld a, h
 	ld [wRuntimeCallback + 1], a
 	ld a, [wSkillSetting]
-	ld [$C6CF], a
+	ld [wActiveSkillLevel], a
 	ret
 
 
-Func_01_4E60:
+LoadOptionsSettings:
 	ld a, [wMusicEnabled]
 	ld [wMusicSetting], a
 	ld hl, RuntimeCallbackTable
@@ -2140,12 +2169,12 @@ Jump_01_4E77:
 Jump_01_4E85:
 	ld a, e
 	ld [wControlSetting], a
-	ld a, [$C6CF]
+	ld a, [wActiveSkillLevel]
 	ld [wSkillSetting], a
 	ret
 
 
-Func_01_4E90:
+InitMenuCursorForState:
 	ld a, [wMenuState]
 	ld l, a
 	ld a, [wMenuState + 1]
@@ -2155,9 +2184,9 @@ Func_01_4E90:
 	jr nz, Jump_01_4E9D
 Jump_01_4E9D:
 	xor a
-	ld [$D556], a
+	ld [wMenuScanlineScrollEnabled], a
 	ld a, $01
-	call Func_01_4C81
+	call GetMenuChoiceRecord
 	ld a, $05
 	add a, l
 	ld l, a
@@ -2168,10 +2197,10 @@ Jump_01_4E9D:
 	add a, a
 	add a, a
 	add a, a
-	ld [$D553], a
-	ld [$D554], a
+	ld [wMenuCursorY], a
+	ld [wMenuCursorTargetY], a
 	ld a, $01
-	call Func_01_4C15
+	call UpdateMenuCursorPosition
 	xor a
 	ld [wVBlankPending], a
 Jump_01_4EC1:
@@ -2191,7 +2220,7 @@ Func_01_4ECF:
 	push bc
 	push de
 	push hl
-	ld bc, $4E91
+	ld bc, $4E91 ; RGB555 colour value passed to Func_0514 (not an address)
 	ld d, $07
 	ld e, $00
 	call Func_0514
@@ -2206,8 +2235,8 @@ Func_01_4ECF:
 	ret
 
 
-Func_01_4EEC:
-	call Func_01_4C81
+GetMenuChoiceValueInfo:
+	call GetMenuChoiceRecord
 	cp $FF
 	ret z
 	push af
@@ -2225,10 +2254,13 @@ Func_01_4EEC:
 	pop af
 	ret
 
+Bank01Data_4F00:
 	db $01, $00, $02, $00, $04, $00, $08, $00, $16, $00, $32, $00, $64, $00, $28, $01
+Bank01Data_4F10:
 	db $01, $00, $00, $02, $00, $00, $04, $00, $00, $08, $00, $00, $16, $00, $00, $32
 	db $00, $00, $64, $00, $00, $28, $01, $00, $56, $02, $00, $12, $05, $00, $24, $10
 	db $00, $48, $20, $00, $96, $40, $00, $92, $81, $00, $84, $63, $01, $68, $27, $03
+Bank01Data_4F40:
 	db $01, $00, $00, $00, $00, $02, $00, $00, $00, $00, $04, $00, $00, $00, $00, $08
 	db $00, $00, $00, $00, $16, $00, $00, $00, $00, $32, $00, $00, $00, $00, $64, $00
 	db $00, $00, $00, $28, $01, $00, $00, $00, $56, $02, $00, $00, $00, $12, $05, $00
@@ -2241,7 +2273,7 @@ Func_01_4EEC:
 	db $02, $12, $09, $87, $36, $05, $24, $18, $74, $73, $10, $48, $36, $48, $47, $21
 
 DrawOptionsEntryLabel:
-	call Func_01_4C81
+	call GetMenuChoiceRecord
 	push af
 	cp $FF
 	jr nz, Jump_01_4FEA
@@ -2280,7 +2312,7 @@ Jump_01_5010:
 
 
 DrawOptionsEntryValue:
-	call Func_01_4C81
+	call GetMenuChoiceRecord
 	push af
 	cp $FF
 	jr nz, Jump_01_501D
@@ -2384,11 +2416,11 @@ HandleMenuState03Input:
 	jr nz, Jump_01_50FE
 	ld c, $00
 	ld b, $0B
-	call Func_01_6873
+	call DrawPasswordEntryChars
 	ld a, [$C6B7]
 	and $03
 	jr nz, Jump_01_50B0
-	call Func_01_6762
+	call CycleObjectPalettes12
 Jump_01_50B0:
 	ret
 
@@ -2396,88 +2428,88 @@ Jump_01_50B1:
 	ret
 
 Jump_01_50B2:
-	call Func_01_6AEF
+	call MovePasswordCursorOffscreen
 	ld a, $00
-	call Func_01_4CAA
+	call ActivateMenuChoice
 	ret
 
 Jump_01_50BB:
 	ld e, $07
 	call Audio_QueueSound
-	call Func_01_5126
+	call SubmitEnteredCode
 	ret
 
 Jump_01_50C4:
-	ld a, [$DF07]
+	ld a, [wPasswordSelectedChar]
 	dec a
 	bit 5, a
 	jr z, Jump_01_50CE
 	ld a, $1F
 Jump_01_50CE:
-	ld [$DF07], a
-	call Func_01_6940
+	ld [wPasswordSelectedChar], a
+	call StorePasswordCharWithSound
 	jr Jump_01_5114
 
 Jump_01_50D6:
-	ld a, [$DF07]
+	ld a, [wPasswordSelectedChar]
 	inc a
 	bit 5, a
 	jr z, Jump_01_50DF
 	xor a
 Jump_01_50DF:
-	ld [$DF07], a
-	call Func_01_6940
+	ld [wPasswordSelectedChar], a
+	call StorePasswordCharWithSound
 	jr Jump_01_5114
 
 Jump_01_50E7:
 	ld e, $0B
 	call Audio_QueueSound
-	ld a, [$DF0B]
+	ld a, [wPasswordCursorIndex]
 	dec a
 	cp $FF
 	jr nz, Jump_01_50F6
 	ld a, $04
 Jump_01_50F6:
-	ld [$DF0B], a
-	call Func_01_6A72
+	ld [wPasswordCursorIndex], a
+	call SetPasswordCursorTargetX
 	jr Jump_01_5114
 
 Jump_01_50FE:
 	ld e, $0B
 	call Audio_QueueSound
-	ld a, [$DF0B]
+	ld a, [wPasswordCursorIndex]
 	inc a
 	cp $05
 	jr nz, Jump_01_510C
 	xor a
 Jump_01_510C:
-	ld [$DF0B], a
-	call Func_01_6A72
+	ld [wPasswordCursorIndex], a
+	call SetPasswordCursorTargetX
 	jr Jump_01_5114
 
 Jump_01_5114:
 	ld c, $00
 	ld b, $0B
-	call Func_01_6873
+	call DrawPasswordEntryChars
 	ld a, [$C6B7]
 	and $03
 	jr nz, Jump_01_5125
-	call Func_01_6762
+	call CycleObjectPalettes12
 Jump_01_5125:
 	ret
 
 
-Func_01_5126:
-	ld hl, $DF00
-	ld bc, $C93B
+SubmitEnteredCode:
+	ld hl, wPasswordEntryChars
+	ld bc, wPasswordChars
 	ld e, $05
 	call CopyBytesShort
-	call Func_01_6D99
-	call Func_01_6C24
+	call PackPasswordChars
+	call DecodePasswordBits
 	or a
 	jr nz, Jump_01_5164
-	call Func_01_6AEF
-	call Func_01_7981
+	call MovePasswordCursorOffscreen
+	call ShowPasswordRejection
 Jump_01_5140:
 	xor a
 	ld [wVBlankPending], a
@@ -2497,31 +2529,31 @@ Jump_01_5144:
 	xor a
 	ld [wMenuRenderedState], a
 	ld a, $01
-	call Func_01_4CAA
+	call ActivateMenuChoice
 	ret
 
 Jump_01_5164:
-	ld a, [$C939]
+	ld a, [wPasswordLevel]
 	ld [$CA06], a
-	ld a, [$C938]
+	ld a, [wPasswordLives]
 	ld [wPlayerLives], a
-	ld a, [$C936]
+	ld a, [wPasswordScoreThousands]
 	ld c, a
-	ld a, [$C937]
+	ld a, [wPasswordScoreThousands + 1]
 	ld b, a
 	call Func_3BF7
-	call Func_01_518D
+	call AdvanceScoreThresholdIndex
 	ld a, $02
-	ld [$C6CD], a
+	ld [wGameStartMode], a
 	xor a
 	ld [wMenuRenderedState], a
 	ld a, $02
-	call Func_01_4CAA
+	call ActivateMenuChoice
 	ret
 
 
-Func_01_518D:
-	ld hl, $418F
+AdvanceScoreThresholdIndex:
+	ld hl, ScoreThresholdTable
 	ld a, [wScoreThresholdIndex]
 	inc a
 	ld c, a
@@ -2560,12 +2592,13 @@ Func_01_518D:
 Jump_01_51C5:
 	ld a, c
 	ld [wScoreThresholdIndex], a
-	jr Func_01_518D
+	jr AdvanceScoreThresholdIndex
 
 Jump_01_51CB:
 	ret
 
 
+Bank01RomImage_51CC:
 	LOAD UNION "RAM code $D70A", WRAMX[$D70A] ; copied from $01:51CC
 
 HandleMenuState05Input:
@@ -2588,9 +2621,9 @@ HandleMenuState05Input:
 	bit 2, e
 	jr nz, RAM_D742
 	bit 1, e
-	jr nz, RAM_D743
+	jr nz, MenuState05SelectPrevious
 	bit 0, e
-	jr nz, RAM_D783
+	jr nz, MenuState05SelectNext
 RAM_D733:
 	ret
 
@@ -2602,12 +2635,12 @@ RAM_D735:
 
 RAM_D736:
 	xor a
-	call Func_01_4CAA
+	call ActivateMenuChoice
 	ret
 
 RAM_D73B:
 	ld a, $02
-	call Func_01_4CAA
+	call ActivateMenuChoice
 	ret
 
 RAM_D741:
@@ -2616,7 +2649,7 @@ RAM_D741:
 RAM_D742:
 	ret
 
-RAM_D743:
+MenuState05SelectPrevious:
 	ld e, $13
 	call Audio_QueueSound
 	ld a, $02
@@ -2632,7 +2665,7 @@ RAM_D743:
 	ld a, $02
 RAM_D761:
 	ld [wMenuState05Selection], a
-	call RAM_D7CB
+	call LoadMenuState05Graphics
 	call Func_01_7BC5
 	ld hl, $DC03
 	ld a, l
@@ -2646,7 +2679,7 @@ RAM_D761:
 	ld [wMenuScrollDirection], a
 	jr RAM_D7C3
 
-RAM_D783:
+MenuState05SelectNext:
 	ld e, $13
 	call Audio_QueueSound
 	ld a, $02
@@ -2662,7 +2695,7 @@ RAM_D783:
 	ld a, $00
 RAM_D7A1:
 	ld [wMenuState05Selection], a
-	call RAM_D7CB
+	call LoadMenuState05Graphics
 	call Func_01_7BC5
 	ld hl, $DC03
 	ld a, l
@@ -2716,44 +2749,44 @@ Jump_01_52B4:
 Jump_01_52B5:
 	ld e, $08
 	call Audio_QueueSound
-	call Func_01_61CE
-	call Func_01_4B4A
-	call RAM_D130
-	call Func_01_5377
-	call Func_01_6AEF
+	call FadeOutSceneBackground
+	call InstallMenuInterruptHandlers
+	call DisableSceneWindow
+	call LoadMenuCursorSprites
+	call MovePasswordCursorOffscreen
 	call Func_01_4A62
 	xor a
 	ld [wMenuGridRow], a
 	ld [wMenuGridColumn], a
-	call Func_01_4CAA
+	call ActivateMenuChoice
 	ret
 
 Jump_01_52D7:
 	ld e, $07
 	call Audio_QueueSound
 	ld a, $01
-	ld [$C6CD], a
+	ld [wGameStartMode], a
 	ld a, [wMenuGridRow]
 	ld b, a
 	ld a, [wMenuGridColumn]
 	ld c, a
-	call Func_01_6247
+	call RunMenuGridSceneScroll
 	ld a, $02
-	call Func_01_4CAA
+	call ActivateMenuChoice
 	ret
 
 Jump_01_52F2:
-	call Func_01_5323
+	call QueueRandomGridSounds
 	ld a, [wMenuGridRow]
 	dec a
-	call Func_01_5340
+	call SetMenuGridRowWrapped
 	ret
 
 Jump_01_52FD:
-	call Func_01_5323
+	call QueueRandomGridSounds
 	ld a, [wMenuGridRow]
 	inc a
-	call Func_01_5340
+	call SetMenuGridRowWrapped
 	ret
 
 Jump_01_5308:
@@ -2761,7 +2794,7 @@ Jump_01_5308:
 	call Audio_QueueSound
 	ld a, [wMenuGridColumn]
 	inc a
-	call Func_01_535D
+	call SetMenuGridColumnClamped
 	ret
 
 Jump_01_5315:
@@ -2769,12 +2802,12 @@ Jump_01_5315:
 	call Audio_QueueSound
 	ld a, [wMenuGridColumn]
 	dec a
-	call Func_01_535D
+	call SetMenuGridColumnClamped
 	ret
 
 	db $C9
 
-Func_01_5323:
+QueueRandomGridSounds:
 	push af
 	push bc
 	push de
@@ -2795,7 +2828,7 @@ Jump_01_5327:
 	pop af
 	ret
 
-Func_01_5340:
+SetMenuGridRowWrapped:
 	cp $FF
 	jr nz, Jump_01_5348
 	ld a, $04
@@ -2809,11 +2842,11 @@ Jump_01_534E:
 	ld [wMenuGridRow], a
 	ld a, [wMenuGridColumn]
 	ld c, a
-	call Func_01_61CE
-	call Func_01_6233
+	call FadeOutSceneBackground
+	call ShowMenuGridScene
 	ret
 
-Func_01_535D:
+SetMenuGridColumnClamped:
 	cp $FF
 	jr nz, Jump_01_5365
 	ld a, $00
@@ -2827,18 +2860,18 @@ Jump_01_536B:
 	ld [wMenuGridColumn], a
 	ld a, [wMenuGridRow]
 	ld b, a
-	call Func_01_6367
+	call LoadScrollVariantForGridCell
 	ret
 
-Func_01_5377:
+LoadMenuCursorSprites:
 	xor a
 	ldh [rVBK], a
-	ld bc, $58DF
+	ld bc, MenuCursorSpriteTiles
 	ld a, $80
 	ld e, $78
 	ld d, $08
 	call Func_0622
-	ld bc, $595F
+	ld bc, MenuCursorSpriteTileIds
 	ld hl, $FE00
 	ld d, $08
 Jump_01_538E:
@@ -2902,7 +2935,7 @@ Jump_01_53D2:
 	ldh a, [rLCDC]
 	or $02
 	ldh [rLCDC], a
-	ld hl, $5967
+	ld hl, MenuCursorObjectPalette
 	ld b, $00
 	call Func_0553
 	call Func_01_696E
@@ -2910,7 +2943,7 @@ Jump_01_53D2:
 	ret
 
 
-Func_01_5400:
+HideMenuCursorSprites:
 	push af
 	push bc
 	push de
@@ -2940,7 +2973,7 @@ Jump_01_5416:
 	ret
 
 
-Func_01_5427:
+EnableMenuCursorSpritesWaitVBlank:
 	ld a, $01
 	ld [wMenuCursorSpritesEnabled], a
 	xor a
@@ -2957,7 +2990,7 @@ Jump_01_5430:
 	ret
 
 
-Func_01_543E:
+SubtractBCFromHL:
 	ld a, l
 	sub c
 	ld l, a
@@ -2970,8 +3003,8 @@ Jump_01_5444:
 	ret
 
 
-Func_01_5448:
-	ld hl, $5967
+InitMenuStateScreen:
+	ld hl, MenuCursorObjectPalette
 	ld b, $00
 	call Func_0553
 	ld a, [wMenuState]
@@ -2985,23 +3018,23 @@ Func_01_5448:
 	jr z, Jump_01_5493
 	cp $06
 	jr z, Jump_01_54C7
-	call Func_01_5377
+	call LoadMenuCursorSprites
 	ld a, $01
 	ld [wMenuCursorSpritesEnabled], a
 	ld a, $00
 	ldh [rSCX], a
 	ld a, $01
-	ld [$D556], a
-	call RAM_D9CB
-	call Func_01_6AEF
-	call Func_01_4E60
+	ld [wMenuScanlineScrollEnabled], a
+	call LoadEncodedFontTilesToVram1
+	call MovePasswordCursorOffscreen
+	call LoadOptionsSettings
 	ret
 
 Jump_01_5480:
 	ld a, $00
-	ld [$D556], a
+	ld [wMenuScanlineScrollEnabled], a
 	call Func_01_66F6
-	call Func_01_6A8A
+	call SnapPasswordCursorSprites
 	call Func_01_6751
 	call Func_01_6746
 	jr Jump_01_54E8
@@ -3010,7 +3043,7 @@ Jump_01_5493:
 	call Func_3960
 	ld a, $01
 	ld [wMenuState05Selection], a
-	call RAM_D7CB
+	call LoadMenuState05Graphics
 	call Func_01_7BC5
 	ld hl, $DC03
 	ld a, l
@@ -3033,12 +3066,12 @@ Jump_01_5493:
 Jump_01_54C7:
 	ld e, $01
 	ld de, $0000
-	call Func_01_5BF1
+	call InitSceneDisplay
 	ld a, [wMenuGridRow]
 	ld b, a
 	ld a, [wMenuGridColumn]
 	ld c, a
-	call Func_01_6233
+	call ShowMenuGridScene
 Jump_01_54DA:
 	ldh a, [rSTAT]
 	and $02
@@ -3063,7 +3096,7 @@ Jump_01_54EC:
 	ret
 
 
-Func_01_54FA:
+UpdateMenuInputRepeat:
 	ld a, [wMenuRepeatTimer]
 	ld c, a
 	ld a, [$C6B5]
@@ -3269,12 +3302,12 @@ Jump_01_5611:
 	ret
 
 
-Func_01_5619:
+StepMenuScroll:
 	ld a, [wMenuScrollDirection]
 	or a
 	jr z, Jump_01_565E
 	ld d, a
-	ld a, [$C924]
+	ld a, [wMenuScrollStep]
 	ld e, a
 	call Func_3A52
 	ld a, d
@@ -3283,27 +3316,27 @@ Func_01_5619:
 	cp $02
 	jr z, Jump_01_5647
 Jump_01_5630:
-	ld a, [$C924]
+	ld a, [wMenuScrollStep]
 	inc a
 	inc a
-	ld [$C924], a
+	ld [wMenuScrollStep], a
 	cp $20
 	jr c, Jump_01_565E
 	ld a, $1F
-	ld [$C924], a
+	ld [wMenuScrollStep], a
 	xor a
 	ld [wMenuScrollDirection], a
 	jr Jump_01_565E
 
 Jump_01_5647:
-	ld a, [$C924]
+	ld a, [wMenuScrollStep]
 	dec a
 	dec a
-	ld [$C924], a
+	ld [wMenuScrollStep], a
 	cp $20
 	jr c, Jump_01_565E
 	ld a, $00
-	ld [$C924], a
+	ld [wMenuScrollStep], a
 	xor a
 	ld [wMenuScrollDirection], a
 	jr Jump_01_565E
@@ -3312,15 +3345,18 @@ Jump_01_565E:
 	ret
 
 
+Bank01RomImage_565F:
 	LOAD UNION "RAM data $D7CA", WRAMX[$D7CA] ; copied from $01:565F
 	db $C9
 	ENDL
 	db $00
 
+Bank01RomImage_5661:
 	LOAD UNION "RAM code $D7CB", WRAMX[$D7CB] ; copied from $01:5661
 
-RAM_D7CB:
-	ld hl, $596D
+LoadMenuState05Graphics:
+RAM_D7CB: ; legacy alias, used by src/bank_2E.asm, tools/screen_data.py
+	ld hl, MenuState05PictureDescriptors
 	swap a
 	ld a, a
 	add a, l
@@ -3356,7 +3392,7 @@ RAM_D7CB:
 	ld [$C6D1], a
 	call Func_3A2F
 	ld a, $00
-	ld [$C924], a
+	ld [wMenuScrollStep], a
 	ld a, [$DBFB]
 	ld d, a
 	ld a, [ROM_BANK_MARKER]
@@ -3417,26 +3453,28 @@ RAM_D7CB:
 	ld [rROMB0], a
 	ld hl, $DBFB
 	ld a, [hli]
-	ld [$C953], a
+	ld [wSceneBank], a
 	inc hl
 	inc hl
 	inc hl
 	ld a, [hli]
-	ld [$C94F], a
+	ld [wSceneTileAttrPtrs], a
 	ld a, [hli]
-	ld [$C950], a
+	ld [wSceneTileAttrPtrs + 1], a
 	ld a, [hli]
-	ld [$C951], a
+	ld [wSceneTileAttrPtrs + 2], a
 	ld a, [hli]
-	ld [$C952], a
+	ld [wSceneTileAttrPtrs + 3], a
 	ret
 
 	ENDL
 	db $00
 
+Bank01RomImage_5718:
 	LOAD UNION "RAM code $D9CB", WRAMX[$D9CB] ; copied from $01:5718
 
-RAM_D9CB:
+LoadEncodedFontTilesToVram1:
+RAM_D9CB: ; legacy alias, used by src/bank_08.asm, tools/bank08.py, tools/gen_bank08_asm.py
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
@@ -3456,16 +3494,17 @@ RAM_D9CB:
 	ENDL
 	db $00
 
+Bank01RomImage_573A:
 	LOAD UNION "RAM code $D91B", WRAMX[$D91B] ; copied from $01:573A
 
-RAM_D91B:
-	ld a, [$C943]
+CopyBankedTilemapRectToBG:
+	ld a, [wBankedBgSourceBank]
 	ld b, a
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, b
 	ld [rROMB0], a
-	ld a, [$C949]
+	ld a, [wBgCopyRow]
 	ld c, a
 	ld b, $00
 	sla c
@@ -3480,21 +3519,21 @@ RAM_D91B:
 	rl b
 	ld hl, $9800
 	add hl, bc
-	ld a, [$C948]
+	ld a, [wBgCopyColumn]
 	add a, l
 	ld l, a
 	ld a, $12
 	ld [$C94D], a
-	ld a, [$C94A]
+	ld a, [wBgCopyWidth]
 	ld [$C94C], a
 	ld [$C94B], a
-	ld a, [$C944]
+	ld a, [wBankedBgSourcePtrs]
 	ld c, a
-	ld a, [$C945]
+	ld a, [wBankedBgSourcePtrs + 1]
 	ld b, a
-	ld a, [$C946]
+	ld a, [wBankedBgSourcePtrs + 2]
 	ld e, a
-	ld a, [$C947]
+	ld a, [wBankedBgSourcePtrs + 3]
 	ld d, a
 RAM_D968:
 	ld a, [$C94B]
@@ -3518,7 +3557,7 @@ RAM_D96E:
 	ld [$C94C], a
 	jr nz, RAM_D96E
 	push hl
-	ld a, [$C94A]
+	ld a, [wBgCopyWidth]
 	ld l, a
 	ld a, $14
 	sub l
@@ -3538,7 +3577,7 @@ RAM_D96E:
 	ld d, a
 	pop hl
 	push bc
-	ld a, [$C94A]
+	ld a, [wBgCopyWidth]
 	ld c, a
 	ld a, $20
 	sub c
@@ -3559,17 +3598,18 @@ RAM_D96E:
 
 	ENDL
 
+Bank01RomImage_57E1:
 	LOAD UNION "RAM code $D88B", WRAMX[$D88B] ; copied from $01:57E1
 
 RAM_D88B:
-	ld hl, $C943
+	ld hl, wBankedBgSourceBank
 	ld a, [hli]
 	ld b, a
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, b
 	ld [rROMB0], a
-	ld hl, $C949
+	ld hl, wBgCopyRow
 	ld a, [hl]
 	ld c, a
 	ld b, $00
@@ -3591,7 +3631,7 @@ RAM_D88B:
 	ld hl, $C94B
 	ld a, [hl]
 	ld [$C94D], a
-	ld hl, $C943
+	ld hl, wBankedBgSourceBank
 	ld a, [hli]
 	ld a, [hli]
 	ld c, a
@@ -3646,38 +3686,39 @@ RAM_D8DC:
 	ENDL
 	db $00
 
-Func_01_5867:
+InstallMenuRamCode:
+Func_01_5867: ; legacy alias, used by src/bank_00.asm
 	ld de, $0000
-	call Func_01_5BF1
-	ld hl, $49CB
+	call InitSceneDisplay
+	ld hl, Bank01RomImage_49CB
 	ld de, $0096
 	ld bc, $D56A
 	call CopyBytes
-	ld hl, $4A6D
+	ld hl, Bank01RomImage_4A6D
 	ld de, $00DC
 	ld bc, $D62A
 	call CopyBytes
-	ld hl, $51CC
+	ld hl, Bank01RomImage_51CC
 	ld de, $00BA
 	ld bc, $D70A
 	call CopyBytes
-	ld hl, $565F
+	ld hl, Bank01RomImage_565F
 	ld de, $0001
 	ld bc, $D7CA
 	call CopyBytes
-	ld hl, $5661
+	ld hl, Bank01RomImage_5661
 	ld de, $00B6
 	ld bc, $D7CB
 	call CopyBytes
-	ld hl, $5718
+	ld hl, Bank01RomImage_5718
 	ld de, $0021
 	ld bc, $D9CB
 	call CopyBytes
-	ld hl, $57E1
+	ld hl, Bank01RomImage_57E1
 	ld de, $0085
 	ld bc, $D88B
 	call CopyBytes
-	ld hl, $573A
+	ld hl, Bank01RomImage_573A
 	ld de, $00A7
 	ld bc, $D91B
 	call CopyBytes
@@ -3694,7 +3735,33 @@ Jump_01_58D1:
 	ld [wVBlankPending], a
 	ret
 
-	INCBIN "assets/bank_01/58DF.bin" ; $BE bytes
+
+; 8 tiles; LoadMenuCursorSprites -> VRAM $8780 (tiles $78-$7F)
+MenuCursorSpriteTiles:
+	INCBIN "assets/bank_01/menu_cursor_sprite_tiles.2bpp"
+
+; OAM tile ids written by LoadMenuCursorSprites
+MenuCursorSpriteTileIds:
+	db $78, $79, $7A, $7B, $7C, $7D, $7E, $7F
+
+; OBJ palette 0 colours 1-3 (LoadSingleObjectPalette)
+MenuCursorObjectPalette:
+	dw $001F, $03FF, $7C00
+
+; read by LoadMenuState05Graphics (RAM_D7CB); index wMenuState05Selection 0-2
+MenuState05PictureDescriptors:
+	db BANK(MenuState05Picture0_Tiles)
+	dw MenuState05Picture0_Tiles, Picture596D0_TileMap, Picture596D0_AttrMap, Picture596D0_Palettes
+	db $40 ; palette bytes copied
+	ds 6, $00 ; unread padding
+	db BANK(MenuState05Picture1_Tiles)
+	dw MenuState05Picture1_Tiles, Picture596D1_TileMap, Picture596D1_AttrMap, Picture596D1_Palettes
+	db $40 ; palette bytes copied
+	ds 6, $00 ; unread padding
+	db BANK(MenuState05Picture2_Tiles)
+	dw MenuState05Picture2_Tiles, Screen2E_TileMap, Screen2E_AttrMap, Screen2E_Palettes
+	db $40 ; palette bytes copied
+	ds 6, $00 ; unread padding
 
 ScrollingTileRowDestinations:
 	dw $9000, $9140, $9280, $93C0, $9500, $9640, $8800
@@ -3703,47 +3770,47 @@ ScrollingTileRowDestinations:
 ; 20x12 tile and attribute maps, a palette-table pointer and record count.
 ; The final six bytes of every record are reserved and zero.
 SceneBackgroundDescriptors:
-	db $33
+	db BANK(FixedScene00Tiles)
 	dw FixedScene00Tiles, FixedScene00TileMap, FixedScene00Attributes, FixedScene00Palettes
 	db $04
 	ds 6, 0
-	db $31
+	db BANK(FixedScene01Tiles)
 	dw FixedScene01Tiles, FixedScene01TileMap, FixedScene01Attributes, FixedScene01Palettes
 	db $05
 	ds 6, 0
-	db $32
+	db BANK(FixedScene02Tiles)
 	dw FixedScene02Tiles, FixedScene02TileMap, FixedScene02Attributes, FixedScene02Palettes
 	db $08
 	ds 6, 0
-	db $32
+	db BANK(FixedScene03Tiles)
 	dw FixedScene03Tiles, FixedScene03TileMap, FixedScene03Attributes, FixedScene03Palettes
 	db $08
 	ds 6, 0
-	db $32
+	db BANK(FixedScene04Tiles)
 	dw FixedScene04Tiles, FixedScene04TileMap, FixedScene04Attributes, FixedScene04Palettes
 	db $09
 	ds 6, 0
-	db $33
+	db BANK(FixedScene05Tiles)
 	dw FixedScene05Tiles, FixedScene05TileMap, FixedScene05Attributes, FixedScene05Palettes
 	db $08
 	ds 6, 0
-	db $30
+	db BANK(FixedScene06Tiles)
 	dw FixedScene06Tiles, FixedScene06TileMap, FixedScene06Attributes, FixedScene06Palettes
 	db $08
 	ds 6, 0
-	db $30
+	db BANK(FixedScene07Tiles)
 	dw FixedScene07Tiles, FixedScene07TileMap, FixedScene07Attributes, FixedScene07Palettes
 	db $08
 	ds 6, 0
-	db $31
+	db BANK(FixedScene08Tiles)
 	dw FixedScene08Tiles, FixedScene08TileMap, FixedScene08Attributes, FixedScene08Palettes
 	db $06
 	ds 6, 0
-	db $31
+	db BANK(FixedScene09Tiles)
 	dw FixedScene09Tiles, FixedScene09TileMap, FixedScene09Attributes, FixedScene09Palettes
 	db $08
 	ds 6, 0
-	db $31
+	db BANK(FixedScene10Tiles)
 	dw FixedScene10Tiles, FixedScene10TileMap, FixedScene10Attributes, FixedScene10Palettes
 	db $07
 	ds 6, 0
@@ -3753,147 +3820,147 @@ SceneDescriptorIndexTable:
 
 ; bank, 16-byte tile graphics, 40-byte index rows, last row index, palette
 ScrollingSceneDescriptors:
-	db $3B
-	dw $6218, $6E88
+	db BANK(ScrollScene00Tiles)
+	dw ScrollScene00Tiles, ScrollScene00Rows
 	db $23
-	dw $7428
-	db $39
-	dw $4000, $5400
+	dw ScrollScene00Palette
+	db BANK(ScrollScene01Tiles)
+	dw ScrollScene01Tiles, ScrollScene01Rows
 	db $28
-	dw $5A68
-	db $39
-	dw $5A70, $6B50
+	dw ScrollScene01Palette
+	db BANK(ScrollScene02Tiles)
+	dw ScrollScene02Tiles, ScrollScene02Rows
 	db $23
-	dw $70F0
-	db $3A
-	dw $4000, $5460
+	dw ScrollScene02Palette
+	db BANK(ScrollScene03Tiles)
+	dw ScrollScene03Tiles, ScrollScene03Rows
 	db $25
-	dw $5A50
-	db $3A
-	dw $5A58, $6A48
+	dw ScrollScene03Palette
+	db BANK(ScrollScene04Tiles)
+	dw ScrollScene04Tiles, ScrollScene04Rows
 	db $25
-	dw $7038
-	db $3B
-	dw $5090, $5D60
+	dw ScrollScene04Palette
+	db BANK(ScrollScene05Tiles)
+	dw ScrollScene05Tiles, ScrollScene05Rows
 	db $1D
-	dw $6210
-	db $34
-	dw $4000, $4E40
+	dw ScrollScene05Palette
+	db BANK(ScrollScene06Tiles)
+	dw ScrollScene06Tiles, ScrollScene06Rows
 	db $19
-	dw $5250
-	db $34
-	dw $5258, $60D8
+	dw ScrollScene06Palette
+	db BANK(ScrollScene07Tiles)
+	dw ScrollScene07Tiles, ScrollScene07Rows
 	db $1A
-	dw $6510
-	db $34
-	dw $6518, $71F8
+	dw ScrollScene07Palette
+	db BANK(ScrollScene08Tiles)
+	dw ScrollScene08Tiles, ScrollScene08Rows
 	db $1A
-	dw $7630
-	db $35
-	dw $4000, $4A60
+	dw ScrollScene08Palette
+	db BANK(ScrollScene09Tiles)
+	dw ScrollScene09Tiles, ScrollScene09Rows
 	db $1A
-	dw $4E98
-	db $35
-	dw $4EA0, $5AD0
+	dw ScrollScene09Palette
+	db BANK(ScrollScene10Tiles)
+	dw ScrollScene10Tiles, ScrollScene10Rows
 	db $19
-	dw $5EE0
-	db $35
-	dw $5EE8, $6D88
+	dw ScrollScene10Palette
+	db BANK(ScrollScene11Tiles)
+	dw ScrollScene11Tiles, ScrollScene11Rows
 	db $1A
-	dw $71C0
-	db $36
-	dw $4000, $4D30
+	dw ScrollScene11Palette
+	db BANK(ScrollScene12Tiles)
+	dw ScrollScene12Tiles, ScrollScene12Rows
 	db $1A
-	dw $5168
-	db $36
-	dw $5170, $5BB0
+	dw ScrollScene12Palette
+	db BANK(ScrollScene13Tiles)
+	dw ScrollScene13Tiles, ScrollScene13Rows
 	db $1A
-	dw $5FE8
-	db $36
-	dw $5FF0, $6D30
+	dw ScrollScene13Palette
+	db BANK(ScrollScene14Tiles)
+	dw ScrollScene14Tiles, ScrollScene14Rows
 	db $1A
-	dw $7168
-	db $37
-	dw $4000, $4B80
+	dw ScrollScene14Palette
+	db BANK(ScrollScene15Tiles)
+	dw ScrollScene15Tiles, ScrollScene15Rows
 	db $1A
-	dw $4FB8
-	db $37
-	dw $4FC0, $5B30
+	dw ScrollScene15Palette
+	db BANK(ScrollScene16Tiles)
+	dw ScrollScene16Tiles, ScrollScene16Rows
 	db $1A
-	dw $5F68
-	db $37
-	dw $5F70, $6AC0
+	dw ScrollScene16Palette
+	db BANK(ScrollScene17Tiles)
+	dw ScrollScene17Tiles, ScrollScene17Rows
 	db $1A
-	dw $6EF8
-	db $38
-	dw $4000, $4B00
+	dw ScrollScene17Palette
+	db BANK(ScrollScene18Tiles)
+	dw ScrollScene18Tiles, ScrollScene18Rows
 	db $19
-	dw $4F10
-	db $38
-	dw $4F18, $5D88
+	dw ScrollScene18Palette
+	db BANK(ScrollScene19Tiles)
+	dw ScrollScene19Tiles, ScrollScene19Rows
 	db $19
-	dw $6198
-	db $38
-	dw $61A0, $6CA0
+	dw ScrollScene19Palette
+	db BANK(ScrollScene20Tiles)
+	dw ScrollScene20Tiles, ScrollScene20Rows
 	db $19
-	dw $70B0
-	db $2F
-	dw $4000, $4460
+	dw ScrollScene20Palette
+	db BANK(ScrollScene21Tiles)
+	dw ScrollScene21Tiles, ScrollScene21Rows
 	db $05
-	dw $4550
-	db $2F
-	dw $4558, $4998
+	dw ScrollScene21Palette
+	db BANK(ScrollScene22Tiles)
+	dw ScrollScene22Tiles, ScrollScene22Rows
 	db $05
-	dw $4A88
-	db $2F
-	dw $4A90, $4EE0
+	dw ScrollScene22Palette
+	db BANK(ScrollScene23Tiles)
+	dw ScrollScene23Tiles, ScrollScene23Rows
 	db $05
-	dw $4FD0
-	db $2F
-	dw $4FD8, $54C8
+	dw ScrollScene23Palette
+	db BANK(ScrollScene24Tiles)
+	dw ScrollScene24Tiles, ScrollScene24Rows
 	db $05
-	dw $55B8
-	db $2F
-	dw $55C0, $5A90
+	dw ScrollScene24Palette
+	db BANK(ScrollScene25Tiles)
+	dw ScrollScene25Tiles, ScrollScene25Rows
 	db $05
-	dw $5B80
-	db $2F
-	dw $5B88, $5FD8
+	dw ScrollScene25Palette
+	db BANK(ScrollScene26Tiles)
+	dw ScrollScene26Tiles, ScrollScene26Rows
 	db $05
-	dw $60C8
-	db $2F
-	dw $60D0, $6520
+	dw ScrollScene26Palette
+	db BANK(ScrollScene27Tiles)
+	dw ScrollScene27Tiles, ScrollScene27Rows
 	db $05
-	dw $6610
-	db $2F
-	dw $6618, $6A28
+	dw ScrollScene27Palette
+	db BANK(ScrollScene28Tiles)
+	dw ScrollScene28Tiles, ScrollScene28Rows
 	db $05
-	dw $6B18
-	db $2F
-	dw $6B20, $6F40
+	dw ScrollScene28Palette
+	db BANK(ScrollScene29Tiles)
+	dw ScrollScene29Tiles, ScrollScene29Rows
 	db $05
-	dw $7030
-	db $2F
-	dw $7038, $7438
+	dw ScrollScene29Palette
+	db BANK(ScrollScene30Tiles)
+	dw ScrollScene30Tiles, ScrollScene30Rows
 	db $05
-	dw $7528
-	db $2F
-	dw $7530, $79F0
+	dw ScrollScene30Palette
+	db BANK(ScrollScene31Tiles)
+	dw ScrollScene31Tiles, ScrollScene31Rows
 	db $05
-	dw $7AE0
-	db $30
+	dw ScrollScene31Palette
+	db BANK(ScrollScene32Tiles)
 	dw ScrollScene32Tiles, ScrollScene32Rows
 	db $05
 	dw ScrollScene32Palette
-	db $30
+	db BANK(ScrollScene33Tiles)
 	dw ScrollScene33Tiles, ScrollScene33Rows
 	db $05
 	dw ScrollScene33Palette
-	db $30
+	db BANK(ScrollScene34Tiles)
 	dw ScrollScene34Tiles, ScrollScene34Rows
 	db $05
 	dw ScrollScene34Palette
-	db $30
+	db BANK(ScrollScene35Tiles)
 	dw ScrollScene35Tiles, ScrollScene35Rows
 	db $05
 	dw ScrollScene35Palette
@@ -3911,9 +3978,10 @@ SceneScrollInitialRowTable:
 	db $14, $00, $14, $14, $14, $00, $13, $13, $13
 	db $00 ; alignment before the RAM image at $5BBA
 
+Bank01RomImage_5BBA:
 	LOAD UNION "RAM code $D120", WRAMX[$D120] ; copied from $01:5BBA
 
-RAM_D120:
+EnableSceneWindow:
 	ldh a, [rLCDC]
 	set 4, a
 	ldh [rLCDC], a
@@ -3926,9 +3994,10 @@ RAM_D120:
 	ENDL
 	db $00
 
+Bank01RomImage_5BCA:
 	LOAD UNION "RAM code $D130", WRAMX[$D130] ; copied from $01:5BCA
 
-RAM_D130:
+DisableSceneWindow:
 	ldh a, [rLCDC]
 	res 4, a
 	ldh [rLCDC], a
@@ -3939,9 +4008,10 @@ RAM_D130:
 	ENDL
 	db $00
 
+Bank01RomImage_5BD6:
 	LOAD UNION "RAM code $D140", WRAMX[$D140] ; copied from $01:5BD6
 
-RAM_D140:
+StepSceneWindowSplit:
 	ldh a, [$FF86]
 	or a
 	jr z, RAM_D14B
@@ -3952,8 +4022,8 @@ RAM_D140:
 
 RAM_D14B:
 	ldh [$FF86], a
-	call $5F26
-	call RAM_D120
+	call Bank01RomImage_5F26
+	call EnableSceneWindow
 	ldh a, [$FF86]
 	add a, $5F
 	ldh [rLYC], a
@@ -3962,7 +4032,8 @@ RAM_D14B:
 	ENDL
 	db $00
 
-Func_01_5BF1:
+InitSceneDisplay:
+Func_01_5BF1: ; legacy alias, used by src/bank_00.asm
 	call Func_3960
 	ld a, $01
 	ldh [$FF83], a
@@ -3974,12 +4045,12 @@ Func_01_5BF1:
 	ldh [rSCX], a
 	ldh [$FF95], a
 	ldh [$FF8C], a
-	ldh [$FFA9], a
-	ldh [$FFA9], a
+	ldh [hSceneLcdStepPending], a
+	ldh [hSceneLcdStepPending], a
 	ldh [$FFAB], a
 	ldh [$FFB0], a
-	ldh [$FFB5], a
-	ldh [$FFB6], a
+	ldh [hSceneTileSlot], a
+	ldh [hSceneRowHdmaPending], a
 	ld e, $10
 	ld hl, $FF98
 Jump_01_5C18:
@@ -3997,14 +4068,14 @@ Jump_01_5C18:
 	ld a, $60
 	ldh [$FF96], a
 	ld a, $07
-	ldh [$FFAF], a
+	ldh [hSceneLcdStepLimit], a
 	ldh a, [rLCDC]
 	and $E3
 	or $63
 	ldh [rLCDC], a
-	call Func_01_5E6C
-	call Func_01_6618
-	call Func_01_5C56
+	call InstallSceneInterruptHandlers
+	call InstallSceneRamCode
+	call ClearSceneVram
 	xor a
 	ld [wVBlankPending], a
 Jump_01_5C48:
@@ -4019,7 +4090,7 @@ Jump_01_5C48:
 	ret
 
 
-Func_01_5C56:
+ClearSceneVram:
 	push af
 	push bc
 	push de
@@ -4191,9 +4262,10 @@ Jump_01_5D6A:
 	ret
 
 
+Bank01RomImage_5D77:
 	LOAD UNION "RAM code $C729", WRAM0[$C729] ; copied from $01:5D77
 
-RAM_C729_01_5D77:
+SceneStatHandler:
 	push af
 	push bc
 	push de
@@ -4204,29 +4276,29 @@ RAM_C729_01_5D77:
 	ldh a, [rSTAT]
 	bit 2, a
 	jr nz, RAM_C761
-	ldh a, [$FFA9]
+	ldh a, [hSceneLcdStepPending]
 	or a
 	jr z, RAM_C75C
 	ldh a, [$FFAC]
 	or a
 	jr z, RAM_C74A
-	ldh a, [$FFAF]
+	ldh a, [hSceneLcdStepLimit]
 	ld b, a
-	ldh a, [$FFAA]
+	ldh a, [hSceneLcdStepIndex]
 	cp b
 	jr nz, RAM_C754
 RAM_C74A:
 	xor a
-	ldh [$FFA9], a
-	ldh [$FFAA], a
-	call RAM_D2F0
+	ldh [hSceneLcdStepPending], a
+	ldh [hSceneLcdStepIndex], a
+	call WriteBgPalette7FromFFA0
 	jr RAM_C75C
 RAM_C754:
 	ld b, a
-	call $5EE0
+	call Bank01RomImage_5EE0
 	ld a, b
 	inc a
-	ldh [$FFAA], a
+	ldh [hSceneLcdStepIndex], a
 RAM_C75C:
 	pop hl
 	pop de
@@ -4243,21 +4315,21 @@ RAM_C769:
 	ldh a, [rSTAT]
 	and $03
 	jr nz, RAM_C769
-	call RAM_D310
-	call RAM_D120
+	call WriteBgPalette7FromFF98
+	call EnableSceneWindow
 	ldh a, [$FF86]
 	add a, $5F
 	cp $8F
 	jr nc, RAM_C784
 	ldh [rLYC], a
 	xor a
-	ldh [$FFA9], a
+	ldh [hSceneLcdStepPending], a
 	jr RAM_C7C3
 RAM_C784:
 	ld a, $8F
 	ldh [rLYC], a
 	xor a
-	ldh [$FFA9], a
+	ldh [hSceneLcdStepPending], a
 	jr RAM_C7C3
 RAM_C78D:
 	ldh a, [rSTAT]
@@ -4275,20 +4347,20 @@ RAM_C78D:
 	ENDR
 	jr RAM_C7AD
 RAM_C7AA:
-	call RAM_D2F0
+	call WriteBgPalette7FromFFA0
 RAM_C7AD:
-	call RAM_D130
+	call DisableSceneWindow
 	ldh a, [$FF86]
 	add a, $60
 	add a, $08
 	cp $8F
 	jr nc, RAM_C7C0
 	ld a, $01
-	ldh [$FFA9], a
+	ldh [hSceneLcdStepPending], a
 	jr RAM_C7C3
 RAM_C7C0:
 	xor a
-	ldh [$FFA9], a
+	ldh [hSceneLcdStepPending], a
 RAM_C7C3:
 	pop hl
 	pop de
@@ -4297,9 +4369,10 @@ RAM_C7C3:
 	reti
 	ENDL
 
+Bank01RomImage_5E16:
 	LOAD UNION "RAM code $C7F1", WRAM0[$C7F1] ; copied from $01:5E16
 
-RAM_C7F1_01_5E16:
+SceneVBlankHandler:
 	push af
 	push de
 	push bc
@@ -4307,7 +4380,7 @@ RAM_C7F1_01_5E16:
 	ldh a, [$FF80]
 	or a
 	jr nz, RAM_C7FD
-	call RAM_D140
+	call StepSceneWindowSplit
 RAM_C7FD:
 	ldh a, [$FF96]
 	dec a
@@ -4319,12 +4392,12 @@ RAM_C7FD:
 RAM_C809:
 	ldh a, [$FF87]
 	ldh [rSCY], a
-	ldh a, [$FFB6]
+	ldh a, [hSceneRowHdmaPending]
 	or a
 	jr z, RAM_C818
 	xor a
-	ldh [$FFB6], a
-	call Func_01_6580
+	ldh [hSceneRowHdmaPending], a
+	call StartSceneTileRowHdma
 RAM_C818:
 	ld a, [$C6B7]
 	and $01
@@ -4353,17 +4426,17 @@ RAM_C82E:
 
 	ENDL
 
-Func_01_5E6C:
+InstallSceneInterruptHandlers:
 	push af
 	push bc
 	push de
 	push hl
 	di
-	ld hl, $5D77
+	ld hl, Bank01RomImage_5D77
 	ld de, $009F
 	ld bc, $C729
 	call CopyBytes
-	ld hl, $5E16
+	ld hl, Bank01RomImage_5E16
 	ld de, $0056
 	ld bc, $C7F1
 	call CopyBytes
@@ -4382,13 +4455,14 @@ Func_01_5E6C:
 	ret
 
 
+Bank01RomImage_5E9C:
 	LOAD UNION "RAM code $D270", WRAMX[$D270] ; copied from $01:5E9C
 
-RAM_D270:
+BuildScenePaletteFadeTable:
 	xor a
 	ldh [$FFA8], a
 RAM_D273:
-	ld hl, $DC48
+	ld hl, wScrollingSceneColours
 	ldh a, [$FFA8]
 	sla a
 	ld a, a
@@ -4401,7 +4475,7 @@ RAM_D273:
 	ld c, a
 	ld a, [hl]
 	ld b, a
-	ld hl, $D3F8
+	ld hl, wScenePaletteFadeTable
 	ldh a, [$FFA8]
 	sla a
 	ld a, a
@@ -4436,16 +4510,17 @@ RAM_D295:
 	ENDL
 	db $00
 
+Bank01RomImage_5EE0:
 	LOAD UNION "RAM code $D2C0", WRAMX[$D2C0] ; copied from $01:5EE0
 
-RAM_D2C0:
+WriteBgPalette7FromD3F8:
 	ld c, a
 	ld a, $07
 	sub c
 	add a, a
 	add a, a
 	add a, a
-	ld hl, $D3F8
+	ld hl, wScenePaletteFadeTable
 	ld a, a
 	add a, l
 	ld l, a
@@ -4463,9 +4538,10 @@ RAM_D2C0:
 	ENDL
 	db $00
 
+Bank01RomImage_5F0A:
 	LOAD UNION "RAM code $D2F0", WRAMX[$D2F0] ; copied from $01:5F0A
 
-RAM_D2F0:
+WriteBgPalette7FromFFA0:
 	ld hl, $FFA0
 	ld de, $FF69
 	ld a, $B8
@@ -4478,9 +4554,10 @@ RAM_D2F0:
 	ENDL
 	db $00
 
+Bank01RomImage_5F26:
 	LOAD UNION "RAM code $D310", WRAMX[$D310] ; copied from $01:5F26
 
-RAM_D310:
+WriteBgPalette7FromFF98:
 	ld hl, $FF98
 	ld de, $FF69
 	ld a, $B8
@@ -4506,6 +4583,7 @@ RAM_D310:
 	ENDL
 	db $00
 
+Bank01RomImage_5F42:
 	LOAD UNION "RAM code $D000", WRAMX[$D000] ; copied from $01:5F42
 
 LoadFixedSceneResources:
@@ -4695,6 +4773,7 @@ RAM_D0DF:
 	ENDL
 	db $00
 
+Bank01RomImage_6057:
 	LOAD UNION "RAM code $D160", WRAMX[$D160] ; copied from $01:6057
 
 LoadScrollingScenePalette:
@@ -4722,10 +4801,10 @@ LoadScrollingScenePalette:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld bc, $DC48
+	ld bc, wScrollingSceneColours
 	ld e, $08
 	call CopyBytesShort
-	call RAM_D270
+	call BuildScenePaletteFadeTable
 	xor a
 	ldh [$FF8B], a
 	ld a, $01
@@ -4741,7 +4820,8 @@ LoadScrollingScenePalette:
 	ENDL
 	db $00
 
-Func_01_609A:
+RunScrollingScene:
+Func_01_609A: ; legacy alias, used by src/bank_00.asm
 	xor a
 	ld [wVBlankPending], a
 Jump_01_609E:
@@ -4759,7 +4839,7 @@ Jump_01_609E:
 	call CopyScrollingSceneDescriptor
 	call LoadFixedSceneResources
 	call LoadScrollingScenePalette
-	call Func_01_6149
+	call ApplySceneTargetPalettes
 	xor a
 	ld [wVBlankPending], a
 Jump_01_60C2:
@@ -4789,7 +4869,7 @@ Jump_01_60D9:
 	ldh a, [$FF95]
 	or a
 	jr z, Jump_01_60D2
-	call RAM_D1B0
+	call AdvanceSceneScroll
 	ldh a, [$FF84]
 	or a
 	jr nz, Jump_01_6126
@@ -4830,13 +4910,14 @@ Jump_01_6111:
 Jump_01_6126:
 	ld d, $3C
 	call Func_3971
-	call Func_01_61CE
+	call FadeOutSceneBackground
 	ld a, $01
 	ldh [$FFAB], a
 	ret
 
 
-Func_01_6133:
+ClearSceneSplitPalettes:
+Func_01_6133: ; legacy alias, used by src/bank_00.asm
 	push af
 	push bc
 	push de
@@ -4856,7 +4937,7 @@ Jump_01_6140:
 	ret
 
 
-Func_01_6149:
+ApplySceneTargetPalettes:
 	push af
 	push bc
 	push de
@@ -4890,7 +4971,7 @@ Jump_01_615F:
 	ret
 
 
-Func_01_6176:
+FadeInSceneBackground:
 	ld a, $38
 	ldh [$FFAE], a
 	ld d, $01
@@ -4910,7 +4991,7 @@ Jump_01_6180:
 	ld a, d
 	cp $10
 	jr nc, Jump_01_61A2
-	ld hl, $D3F8
+	ld hl, wScenePaletteFadeTable
 	ldh a, [$FFAE]
 	add a, l
 	ld l, a
@@ -4920,7 +5001,7 @@ Jump_01_6180:
 	jr Jump_01_61A5
 
 Jump_01_61A2:
-	ld hl, $DC48
+	ld hl, wScrollingSceneColours
 Jump_01_61A5:
 	ld bc, $FFA0
 	ld e, $08
@@ -4949,7 +5030,7 @@ Jump_01_61AA:
 	ret
 
 
-Func_01_61CE:
+FadeOutSceneBackground:
 	push af
 	push bc
 	push de
@@ -4973,14 +5054,14 @@ Jump_01_61DC:
 	ld a, d
 	cp $10
 	jr c, Jump_01_6217
-	ldh a, [$FFAF]
+	ldh a, [hSceneLcdStepLimit]
 	dec a
 	cp $FF
 	jr nz, Jump_01_61F9
 	xor a
 Jump_01_61F9:
-	ldh [$FFAF], a
-	ld hl, $D3F8
+	ldh [hSceneLcdStepLimit], a
+	ld hl, wScenePaletteFadeTable
 	ldh a, [$FFAE]
 	add a, l
 	ld l, a
@@ -5019,23 +5100,23 @@ Jump_01_6217:
 	ret
 
 
-Func_01_6233:
+ShowMenuGridScene:
 	xor a
 	ldh [$FFAC], a
 	push bc
 	ld a, b
-	call Func_01_6309
+	call LoadFixedSceneForRow
 	pop bc
-	call Func_01_6367
-	call Func_01_6176
+	call LoadScrollVariantForGridCell
+	call FadeInSceneBackground
 	ret
 
 
 Func_01_6243:
-	call Func_01_6367
+	call LoadScrollVariantForGridCell
 	ret
 
-Func_01_6247:
+RunMenuGridSceneScroll:
 	push bc
 	xor a
 	ld [wVBlankPending], a
@@ -5100,7 +5181,7 @@ Jump_01_6279:
 	ldh [$FF82], a
 	xor a
 	ldh [$FFB0], a
-	ldh [$FFB5], a
+	ldh [hSceneTileSlot], a
 	xor a
 	ldh [$FFAC], a
 	call CopyScrollingSceneDescriptor
@@ -5117,7 +5198,7 @@ Jump_01_6279:
 	ldh [$FF8B], a
 	ld a, $38
 	ldh [$FFAD], a
-	call Func_01_6149
+	call ApplySceneTargetPalettes
 Jump_01_62C7:
 	call Audio_Update
 	xor a
@@ -5131,7 +5212,7 @@ Jump_01_62CE:
 	jr z, Jump_01_62CE
 	xor a
 	ld [wVBlankPending], a
-	call RAM_D1B0
+	call AdvanceSceneScroll
 	ldh a, [$FF84]
 	or a
 	jr nz, Jump_01_62F6
@@ -5149,12 +5230,12 @@ Jump_01_62F6:
 	ldh [$FFAB], a
 	ld d, $FF
 	call Func_3971
-	call Func_01_61CE
+	call FadeOutSceneBackground
 	call Func_04B6
 	call Func_0051
 	ret
 
-Func_01_6309:
+LoadFixedSceneForRow:
 	ld hl, SceneDescriptorIndexTable
 	ld a, a
 	add a, l
@@ -5212,7 +5293,7 @@ Jump_01_6355:
 	ret
 
 
-Func_01_6367:
+LoadScrollVariantForGridCell:
 	ld a, b
 	add a, a
 	add a, a
@@ -5228,7 +5309,7 @@ Func_01_6367:
 	ldh [$FF82], a
 	xor a
 	ldh [$FFB0], a
-	ldh [$FFB5], a
+	ldh [hSceneTileSlot], a
 	ldh [$FF8B], a
 	call CopyScrollingSceneDescriptor
 	call LoadScrollingScenePalette
@@ -5246,9 +5327,9 @@ Jump_01_638C:
 	jr z, Jump_01_638C
 	xor a
 	ld [wVBlankPending], a
-	ldh a, [$FFB5]
+	ldh a, [hSceneTileSlot]
 	ld e, a
-	call RAM_D330
+	call DrawNextSceneRow
 	ldh a, [$FF8B]
 	inc a
 	ldh [$FF8B], a
@@ -5264,8 +5345,9 @@ Jump_01_638C:
 	ret
 
 
-Func_01_63B3:
-	ld hl, $65EB
+SelectLevelRowScene:
+Func_01_63B3: ; legacy alias, used by src/bank_00.asm
+	ld hl, LevelSceneGridCells
 	add a, a
 	ld a, a
 	add a, l
@@ -5274,7 +5356,7 @@ Func_01_63B3:
 	adc a, h
 	ld h, a
 	ld a, [hl]
-	ld hl, $65E1
+	ld hl, LevelRowSceneIndexPairs
 	add a, a
 	ld a, a
 	add a, l
@@ -5289,8 +5371,9 @@ Func_01_63B3:
 	ret
 
 
-Func_01_63D1:
-	ld hl, $65EB
+SelectLevelScene:
+Func_01_63D1: ; legacy alias, used by src/bank_00.asm
+	ld hl, LevelSceneGridCells
 	add a, a
 	ld a, a
 	add a, l
@@ -5329,9 +5412,10 @@ Func_01_63D1:
 	ret
 
 
+Bank01RomImage_6401:
 	LOAD UNION "RAM code $D1B0", WRAMX[$D1B0] ; copied from $01:6401
 
-RAM_D1B0:
+AdvanceSceneScroll:
 	ldh a, [$FF97]
 	ld e, a
 	ldh a, [$FF87]
@@ -5344,7 +5428,7 @@ RAM_D1B0:
 	sub $08
 	ldh [$FF8C], a
 	ld e, $00
-	call RAM_D330
+	call DrawNextSceneRow
 	ldh a, [$FF8A]
 	ld e, a
 	ldh a, [$FF8B]
@@ -5368,9 +5452,10 @@ RAM_D1DF:
 	ENDL
 	db $00
 
+Bank01RomImage_6432:
 	LOAD UNION "RAM code $D1F0", WRAMX[$D1F0] ; copied from $01:6432
 
-RAM_D1F0:
+ComputeSceneRowPointer:
 	ldh a, [$FF92]
 	ld a, a
 	ld [rROMB0], a
@@ -5406,9 +5491,10 @@ RAM_D1F0:
 	ENDL
 	db $00
 
+Bank01RomImage_6468:
 	LOAD UNION "RAM code $D230", WRAMX[$D230] ; copied from $01:6468
 
-RAM_D230:
+GetSceneTileSourceAddress:
 	ldh a, [$FF88]
 	ld l, a
 	ldh a, [$FF89]
@@ -5440,22 +5526,23 @@ RAM_D230:
 	ENDL
 	db $00
 
+Bank01RomImage_648E:
 	LOAD UNION "RAM code $D330", WRAMX[$D330] ; copied from $01:648E
 
-RAM_D330:
-	call Func_01_64BB
-	call Func_01_64F1
-	call RAM_D370
-	call Func_01_6562
+DrawNextSceneRow:
+	call ComputeSceneRowMapAddress
+	call SelectSceneTileRowDestination
+	call StageSceneRowTiles
+	call WriteSceneRowTileIndices
 	ld a, $01
-	ldh [$FFB6], a
-	ldh a, [$FFB5]
+	ldh [hSceneRowHdmaPending], a
+	ldh a, [hSceneTileSlot]
 	inc a
 	cp $07
 	jr c, RAM_D348
 	xor a
 RAM_D348:
-	ldh [$FFB5], a
+	ldh [hSceneTileSlot], a
 	ldh a, [$FFB0]
 	add a, $14
 	cp $78
@@ -5472,7 +5559,7 @@ RAM_D359:
 	ENDL
 	db $00
 
-Func_01_64BB:
+ComputeSceneRowMapAddress:
 	ldh a, [rSCY]
 	add a, $07
 	srl a
@@ -5506,8 +5593,8 @@ Jump_01_64CE:
 
 	db $00
 
-Func_01_64F1:
-	ldh a, [$FFB5]
+SelectSceneTileRowDestination:
+	ldh a, [hSceneTileSlot]
 	add a, a
 	ld hl, ScrollingTileRowDestinations
 	add a, l
@@ -5516,17 +5603,18 @@ Func_01_64F1:
 	adc a, h
 	ld h, a
 	ld a, [hli]
-	ldh [$FFB3], a
+	ldh [hSceneRowTileVramAddress], a
 	ld a, [hl]
-	ldh [$FFB4], a
+	ldh [hSceneRowTileVramAddress + 1], a
 	ret
 
 	db $00
 
+Bank01RomImage_6505:
 	LOAD UNION "RAM code $D370", WRAMX[$D370] ; copied from $01:6505
 
-RAM_D370:
-	call RAM_D1F0
+StageSceneRowTiles:
+	call ComputeSceneRowPointer
 	ldh a, [$FF92]
 	ld a, a
 	ld [rROMB0], a
@@ -5536,8 +5624,8 @@ RAM_D37C:
 	ld c, a
 	ldh a, [$FF8E]
 	ld b, a
-	call RAM_D230
-	call RAM_D3B0
+	call GetSceneTileSourceAddress
+	call CopySceneTileToStaging
 	ldh a, [$FF8D]
 	ld c, a
 	ldh a, [$FF8E]
@@ -5559,9 +5647,10 @@ RAM_D37C:
 	ENDL
 	db $00
 
+Bank01RomImage_6538:
 	LOAD UNION "RAM code $D3B0", WRAMX[$D3B0] ; copied from $01:6538
 
-RAM_D3B0:
+CopySceneTileToStaging:
 	push af
 	push bc
 	push de
@@ -5596,7 +5685,7 @@ RAM_D3CE:
 	ENDL
 	db $00
 
-Func_01_6562:
+WriteSceneRowTileIndices:
 	ld e, $14
 	ldh a, [$FFB1]
 	ld l, a
@@ -5622,10 +5711,10 @@ Jump_01_6572:
 
 	db $00
 
-Func_01_6580:
-	ldh a, [$FFB4]
+StartSceneTileRowHdma:
+	ldh a, [hSceneRowTileVramAddress + 1]
 	ldh [rHDMA3], a
-	ldh a, [$FFB3]
+	ldh a, [hSceneRowTileVramAddress]
 	ldh [rHDMA4], a
 	ld bc, $C400
 	ld a, b
@@ -5639,6 +5728,7 @@ Func_01_6580:
 	ret
 
 
+Bank01RomImage_6599:
 	LOAD UNION "RAM data $D260", WRAMX[$D260] ; copied from $01:6599
 	db $C9
 	ENDL
@@ -5683,80 +5773,87 @@ CopyFixedSceneDescriptor:
 	call CopyBytesShort
 	ret
 
-	db $01, $01, $02, $02, $03, $03, $04, $04, $05, $05, $00, $00, $00, $01, $00, $02
+LevelRowSceneIndexPairs:
+	db $01, $01, $02, $02, $03, $03, $04, $04, $05, $05
+LevelSceneGridCells:
+	db $00, $00, $00, $01, $00, $02
 	db $01, $00, $01, $01, $01, $02, $02, $00, $02, $01, $02, $02, $03, $00, $03, $01
-	db $03, $02, $04, $00, $04, $01, $04, $02, $01, $00, $00, $01, $00, $00, $01, $00
+	db $03, $02, $04, $00, $04, $01, $04, $02
+LevelRowSceneFlags:
+	db $01, $00, $00, $01, $00, $00, $01, $00
 	db $00, $01, $00, $00, $01, $00, $00
 
-Func_01_6618:
+InstallSceneRamCode:
+Func_01_6618: ; legacy alias, used by src/bank_00.asm
 	ld a, $01
 	ldh [rSVBK], a
-	ld hl, $5F42
+	ld hl, Bank01RomImage_5F42
 	ld de, $0114
 	ld bc, $D000
 	call CopyBytes
-	ld hl, $5BBA
+	ld hl, Bank01RomImage_5BBA
 	ld de, $000F
 	ld bc, $D120
 	call CopyBytes
-	ld hl, $5BCA
+	ld hl, Bank01RomImage_5BCA
 	ld de, $000B
 	ld bc, $D130
 	call CopyBytes
-	ld hl, $5BD6
+	ld hl, Bank01RomImage_5BD6
 	ld de, $001A
 	ld bc, $D140
 	call CopyBytes
-	ld hl, $6057
+	ld hl, Bank01RomImage_6057
 	ld de, $0042
 	ld bc, $D160
 	call CopyBytes
-	ld hl, $6401
+	ld hl, Bank01RomImage_6401
 	ld de, $0030
 	ld bc, $D1B0
 	call CopyBytes
-	ld hl, $6432
+	ld hl, Bank01RomImage_6432
 	ld de, $0035
 	ld bc, $D1F0
 	call CopyBytes
-	ld hl, $6468
+	ld hl, Bank01RomImage_6468
 	ld de, $0025
 	ld bc, $D230
 	call CopyBytes
-	ld hl, $6599
+	ld hl, Bank01RomImage_6599
 	ld de, $0001
 	ld bc, $D260
 	call CopyBytes
-	ld hl, $5E9C
+	ld hl, Bank01RomImage_5E9C
 	ld de, $0043
 	ld bc, $D270
 	call CopyBytes
-	ld hl, $5EE0
+	ld hl, Bank01RomImage_5EE0
 	ld de, $0029
 	ld bc, $D2C0
 	call CopyBytes
-	ld hl, $5F0A
+	ld hl, Bank01RomImage_5F0A
 	ld de, $001B
 	ld bc, $D2F0
 	call CopyBytes
-	ld hl, $5F26
+	ld hl, Bank01RomImage_5F26
 	ld de, $001B
 	ld bc, $D310
 	call CopyBytes
-	ld hl, $648E
+	ld hl, Bank01RomImage_648E
 	ld de, $002C
 	ld bc, $D330
 	call CopyBytes
-	ld hl, $6505
+	ld hl, Bank01RomImage_6505
 	ld de, $0032
 	ld bc, $D370
 	call CopyBytes
-	ld hl, $6538
+	ld hl, Bank01RomImage_6538
 	ld de, $0029
 	ld bc, $D3B0
 	call CopyBytes
 	ret
 
+Bank01Data_66DD:
 	db $00, $0A, $0E, $12, $01, $0B, $0F, $18, $02, $0C, $10, $13, $03, $0D, $11, $14
 	db $04, $05, $15, $16, $06, $07, $17, $08, $09
 
@@ -5768,7 +5865,7 @@ Func_01_66F6:
 	push af
 	ld a, $01
 	ldh [rVBK], a
-	ld bc, $6E8A
+	ld bc, PasswordScreenTiles
 	ld a, $80
 	add a, c
 	ld c, a
@@ -5779,26 +5876,26 @@ Func_01_66F6:
 	ld d, $80
 	ld e, $00
 	call Func_0622
-	ld bc, $6E8A
+	ld bc, PasswordScreenTiles
 	ld a, $90
 	ld d, $0C
 	ld e, $00
 	call Func_0622
 	call Func_01_6746
 	xor a
-	ld [$DF0B], a
-	call Func_01_695C
+	ld [wPasswordCursorIndex], a
+	call LoadSelectedPasswordChar
 	ld a, $0B
-	ld [$DF06], a
-	ld a, [$DF0B]
+	ld [wGlyphRow], a
+	ld a, [wPasswordCursorIndex]
 	add a, a
 	add a, a
 	add a, a
 	add a, $08
-	ld [$DF09], a
-	ld [$DF0A], a
+	ld [wPasswordCursorX], a
+	ld [wPasswordCursorTargetX], a
 	xor a
-	ld [$DF0C], a
+	ld [wPasswordCursorPaletteFrame], a
 	pop af
 	pop hl
 	pop de
@@ -5808,7 +5905,7 @@ Func_01_66F6:
 
 
 Func_01_6746:
-	ld hl, $77AA
+	ld hl, PasswordBgPalettes
 	ld b, $04
 	ld c, $04
 	call Func_052F
@@ -5816,28 +5913,28 @@ Func_01_6746:
 
 
 Func_01_6751:
-	ld hl, $77CA
+	ld hl, PasswordObjPaletteColours
 	ld b, $01
 	call Func_0553
-	ld hl, $77D0
+	ld hl, PasswordObjPaletteColours + $06
 	ld b, $02
 	call Func_0553
 	ret
 
 
-Func_01_6762:
+CycleObjectPalettes12:
 	ld d, $0D
-	ld a, [$DF0C]
+	ld a, [wPasswordCursorPaletteFrame]
 	cp d
 	jr nz, Jump_01_676C
 	ld a, $FF
 Jump_01_676C:
 	inc a
-	ld [$DF0C], a
+	ld [wPasswordCursorPaletteFrame], a
 	add a, a
 	add a, a
 	add a, a
-	ld hl, $77E4
+	ld hl, ObjectPaletteCycleTable
 	add a, l
 	ld l, a
 	ld a, $00
@@ -5863,7 +5960,7 @@ Jump_01_6793:
 	push af
 	add a, a
 	add a, a
-	ld hl, $769A
+	ld hl, PasswordGlyphTiles
 	ld a, a
 	add a, l
 	ld l, a
@@ -5871,7 +5968,7 @@ Jump_01_6793:
 	adc a, h
 	ld h, a
 	ld e, $04
-	ld bc, $DF0D
+	ld bc, wGlyphTileBuffer
 	inc bc
 Jump_01_67A8:
 	ld a, [hli]
@@ -5894,7 +5991,7 @@ Jump_01_67B7:
 	pop af
 	add a, a
 	add a, a
-	ld hl, $7722
+	ld hl, PasswordGlyphAttributes
 	ld a, a
 	add a, l
 	ld l, a
@@ -5902,7 +5999,7 @@ Jump_01_67B7:
 	adc a, h
 	ld h, a
 	ld e, $04
-	ld bc, $DF0D
+	ld bc, wGlyphTileBuffer
 Jump_01_67CF:
 	ld a, [hli]
 	or $0C
@@ -5914,14 +6011,14 @@ Jump_01_67CF:
 	ret
 
 
-Func_01_67D9:
+Draw2x2GlyphTiles:
 	push af
 	push bc
 	push de
 	push hl
 	call Func_01_6789
 	ld hl, $9800
-	ld a, [$DF06]
+	ld a, [wGlyphRow]
 	ld c, a
 	ld b, $00
 	sla c
@@ -5934,7 +6031,7 @@ Func_01_67D9:
 	rl b
 	sla c
 	rl b
-	ld a, [$DF05]
+	ld a, [wGlyphColumn]
 	add a, c
 	ld c, a
 	ld a, $00
@@ -5951,24 +6048,24 @@ Jump_01_680D:
 	jr nz, Jump_01_680D
 	ld a, $01
 	ldh [rVBK], a
-	ld bc, $DF0D
+	ld bc, wGlyphTileBuffer
 	ld a, [bc]
 	ld [hl], a
 	xor a
 	ldh [rVBK], a
-	ld bc, $DF0E
+	ld bc, wGlyphTileBuffer + 1
 	ld a, [bc]
 	ld [hli], a
 	inc a
 	ld d, a
 	ld a, $01
 	ldh [rVBK], a
-	ld bc, $DF0F
+	ld bc, wGlyphTileBuffer + 2
 	ld a, [bc]
 	ld [hl], a
 	xor a
 	ldh [rVBK], a
-	ld bc, $DF10
+	ld bc, wGlyphTileBuffer + 3
 	ld a, [bc]
 	ld [hl], a
 	inc a
@@ -5986,24 +6083,24 @@ Jump_01_6844:
 	jr nz, Jump_01_6844
 	ld a, $01
 	ldh [rVBK], a
-	ld bc, $DF11
+	ld bc, wGlyphTileBuffer + 4
 	ld a, [bc]
 	ld [hl], a
 	xor a
 	ldh [rVBK], a
-	ld bc, $DF12
+	ld bc, wGlyphTileBuffer + 5
 	ld a, [bc]
 	ld [hli], a
 	inc a
 	ld d, a
 	ld a, $01
 	ldh [rVBK], a
-	ld bc, $DF13
+	ld bc, wGlyphTileBuffer + 6
 	ld a, [bc]
 	ld [hl], a
 	xor a
 	ldh [rVBK], a
-	ld bc, $DF14
+	ld bc, wGlyphTileBuffer + 7
 	ld a, [bc]
 	ld [hl], a
 	pop hl
@@ -6013,13 +6110,13 @@ Jump_01_6844:
 	ret
 
 
-Func_01_6873:
+DrawPasswordEntryChars:
 	ld a, b
-	ld [$DF06], a
+	ld [wGlyphRow], a
 	ld e, $05
 Jump_01_6879:
 	push de
-	ld hl, $7854
+	ld hl, PasswordCharColumns
 	ld a, c
 	add a, l
 	ld l, a
@@ -6036,10 +6133,10 @@ Jump_01_6879:
 	adc a, h
 	ld h, a
 	ld a, [hl]
-	ld [$DF05], a
+	ld [wGlyphColumn], a
 	ld a, e
 	dec a
-	ld hl, $DF00
+	ld hl, wPasswordEntryChars
 	ld a, a
 	add a, l
 	ld l, a
@@ -6050,15 +6147,15 @@ Jump_01_6879:
 	ld b, a
 	ld a, $1F
 	sub b
-	call Func_01_67D9
+	call Draw2x2GlyphTiles
 	pop de
 	dec e
 	jr nz, Jump_01_6879
 	ret
 
 
-Func_01_68AB:
-	ld [$DF06], a
+DrawScoreDigitsAtRow:
+	ld [wGlyphRow], a
 	ld a, [wScore]
 	ld c, a
 	ld a, [wScore + 1]
@@ -6069,7 +6166,7 @@ Func_01_68AB:
 	ld d, a
 	ld hl, $FFB0
 	call Func_06E7
-	ld hl, $7866
+	ld hl, ScoreDigitColumns
 	xor a
 	ldh [$FFB8], a
 	ld bc, $FFB2
@@ -6104,29 +6201,29 @@ Jump_01_68E7:
 
 Jump_01_68F2:
 	ld a, [hl]
-	ld [$DF05], a
+	ld [wGlyphColumn], a
 	ld a, d
 	and $0F
 	or $80
-	call Func_01_67D9
+	call Draw2x2GlyphTiles
 Jump_01_68FE:
 	inc hl
 	dec e
 	jr nz, Jump_01_68CF
 	ld a, [hl]
-	ld [$DF05], a
+	ld [wGlyphColumn], a
 	ld a, [bc]
 	and $0F
 	or $80
-	call Func_01_67D9
+	call Draw2x2GlyphTiles
 	ret
 
 
-Func_01_690F:
-	ld [$DF06], a
-	ld hl, $786F
+DrawLivesDigitsAtRow:
+	ld [wGlyphRow], a
+	ld hl, LivesDigitColumns
 	ld a, [hli]
-	ld [$DF05], a
+	ld [wGlyphColumn], a
 	ld a, [wPlayerLives]
 	ld b, a
 	ld hl, $FFB0
@@ -6137,39 +6234,39 @@ Func_01_690F:
 	and $0F
 	jr z, Jump_01_6931
 	or $80
-	call Func_01_67D9
+	call Draw2x2GlyphTiles
 Jump_01_6931:
-	ld a, [$7870]
-	ld [$DF05], a
+	ld a, [LivesDigitColumns + $01]
+	ld [wGlyphColumn], a
 	ld a, d
 	and $0F
 	or $80
-	call Func_01_67D9
+	call Draw2x2GlyphTiles
 	ret
 
 
-Func_01_6940:
+StorePasswordCharWithSound:
 	push de
 	ld e, $0A
 	call Audio_QueueSound
 	pop de
 	call Audio_QueueSound
-	ld a, [$DF0B]
-	ld hl, $DF00
+	ld a, [wPasswordCursorIndex]
+	ld hl, wPasswordEntryChars
 	ld a, a
 	add a, l
 	ld l, a
 	ld a, $00
 	adc a, h
 	ld h, a
-	ld a, [$DF07]
+	ld a, [wPasswordSelectedChar]
 	ld [hl], a
 	ret
 
 
-Func_01_695C:
-	ld a, [$DF0B]
-	ld hl, $DF00
+LoadSelectedPasswordChar:
+	ld a, [wPasswordCursorIndex]
+	ld hl, wPasswordEntryChars
 	ld a, a
 	add a, l
 	ld l, a
@@ -6177,12 +6274,12 @@ Func_01_695C:
 	adc a, h
 	ld h, a
 	ld a, [hl]
-	ld [$DF07], a
+	ld [wPasswordSelectedChar], a
 	ret
 
 
 Func_01_696E:
-	ld bc, $7871
+	ld bc, Bank01SpriteTiles7871
 	ld a, $80
 	ld d, $04
 	ld e, $74
@@ -6225,13 +6322,13 @@ Jump_01_6998:
 	ret
 
 
-Func_01_69AB:
+StepPasswordCursorSprites:
 	push hl
 	push de
 	push bc
-	ld a, [$DF0A]
+	ld a, [wPasswordCursorTargetX]
 	ld b, a
-	ld a, [$DF09]
+	ld a, [wPasswordCursorX]
 	ld e, a
 	cp b
 	jr nz, Jump_01_69BF
@@ -6258,7 +6355,7 @@ Jump_01_69CC:
 	srl a
 Jump_01_69D3:
 	add a, e
-	ld [$DF09], a
+	ld [wPasswordCursorX], a
 	ld d, a
 	ld hl, $FE21
 	ld bc, $FE31
@@ -6306,7 +6403,7 @@ Jump_01_6A0E:
 
 
 Func_01_6A1D:
-	ld bc, $78B1
+	ld bc, Bank01SpriteTiles78B1
 	ld a, $80
 	ld d, $04
 	ld e, $70
@@ -6363,8 +6460,8 @@ Jump_01_6A59:
 	ret
 
 
-Func_01_6A72:
-	ld hl, $7854
+SetPasswordCursorTargetX:
+	ld hl, PasswordCharColumns
 	add a, a
 	ld a, a
 	add a, l
@@ -6377,19 +6474,19 @@ Func_01_6A72:
 	add a, a
 	add a, a
 	add a, $08
-	ld [$DF0A], a
-	call Func_01_695C
+	ld [wPasswordCursorTargetX], a
+	call LoadSelectedPasswordChar
 	ret
 
 
-Func_01_6A8A:
+SnapPasswordCursorSprites:
 	push af
 	push bc
 	push de
 	push hl
-	ld a, [$DF0B]
+	ld a, [wPasswordCursorIndex]
 	add a, a
-	ld hl, $7854
+	ld hl, PasswordCharColumns
 	ld a, a
 	add a, l
 	ld l, a
@@ -6401,8 +6498,8 @@ Func_01_6A8A:
 	add a, a
 	add a, a
 	add a, $08
-	ld [$DF09], a
-	ld [$DF0A], a
+	ld [wPasswordCursorX], a
+	ld [wPasswordCursorTargetX], a
 	ld d, a
 	ld hl, $FE21
 	ld bc, $FE31
@@ -6450,7 +6547,7 @@ Jump_01_6AD6:
 	ret
 
 
-Func_01_6AEF:
+MovePasswordCursorOffscreen:
 	xor a
 	ld [wVBlankPending], a
 Jump_01_6AF3:
@@ -6498,13 +6595,13 @@ Jump_01_6AF3:
 	ret
 
 
-Func_01_6B35:
+PasswordBitsWriteNext:
 	push hl
 	push de
 	push bc
 	ld e, a
-	ld hl, $66DD
-	ld a, [$C935]
+	ld hl, Bank01Data_66DD
+	ld a, [wPasswordBitIndex]
 	ld a, a
 	add a, l
 	ld l, a
@@ -6515,7 +6612,7 @@ Func_01_6B35:
 	srl a
 	srl a
 	srl a
-	ld bc, $C931
+	ld bc, wPasswordBits
 	ld a, a
 	add a, c
 	ld c, a
@@ -6536,21 +6633,21 @@ Jump_01_6B64:
 	ld a, d
 	or e
 	ld [bc], a
-	ld a, [$C935]
+	ld a, [wPasswordBitIndex]
 	inc a
-	ld [$C935], a
+	ld [wPasswordBitIndex], a
 	pop bc
 	pop de
 	pop hl
 	ret
 
 
-Func_01_6B72:
+PasswordBitsReadPrev:
 	push hl
 	push de
 	push bc
-	ld hl, $66DD
-	ld a, [$C935]
+	ld hl, Bank01Data_66DD
+	ld a, [wPasswordBitIndex]
 	ld a, a
 	add a, l
 	ld l, a
@@ -6561,7 +6658,7 @@ Func_01_6B72:
 	srl a
 	srl a
 	srl a
-	ld bc, $C931
+	ld bc, wPasswordBits
 	ld a, a
 	add a, c
 	ld c, a
@@ -6582,9 +6679,9 @@ Jump_01_6BA0:
 	ld a, d
 	and $01
 	ld d, a
-	ld a, [$C935]
+	ld a, [wPasswordBitIndex]
 	dec a
-	ld [$C935], a
+	ld [wPasswordBitIndex], a
 	ld a, d
 	pop bc
 	pop de
@@ -6592,39 +6689,40 @@ Jump_01_6BA0:
 	ret
 
 
-Func_01_6BB0:
-	ld hl, $C931
+ClearPasswordBits:
+	ld hl, wPasswordBits
 	xor a
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
-	ld [$C935], a
+	ld [wPasswordBitIndex], a
 	ret
 
 
-Func_01_6BBC:
+EncodePasswordFromProgress:
+Func_01_6BBC: ; legacy alias, used by src/bank_00.asm
 	ld a, [$CA06]
 	inc a
 	ldh [$FFC6], a
-	call Func_01_6BB0
+	call ClearPasswordBits
 	call Func_3BE6
 	ld a, c
-	ld [$C936], a
+	ld [wPasswordScoreThousands], a
 	ld a, b
-	ld [$C937], a
+	ld [wPasswordScoreThousands + 1], a
 	ld a, [wPlayerLives]
 	and $0F
-	ld [$C938], a
+	ld [wPasswordLives], a
 	ldh a, [$FFC6]
 	and $0F
-	ld [$C939], a
-	call Func_01_6CA6
+	ld [wPasswordLevel], a
+	call ComputePasswordChecksum
 	ld e, $0A
 Jump_01_6BE4:
 	ld a, c
 	and $01
-	call Func_01_6B35
+	call PasswordBitsWriteNext
 	srl b
 	rr c
 	dec e
@@ -6635,7 +6733,7 @@ Jump_01_6BE4:
 Jump_01_6BF7:
 	ld a, d
 	and $01
-	call Func_01_6B35
+	call PasswordBitsWriteNext
 	srl d
 	dec e
 	jr nz, Jump_01_6BF7
@@ -6645,30 +6743,31 @@ Jump_01_6BF7:
 Jump_01_6C07:
 	ld a, d
 	and $01
-	call Func_01_6B35
+	call PasswordBitsWriteNext
 	srl d
 	dec e
 	jr nz, Jump_01_6C07
-	ld a, [$C93A]
+	ld a, [wPasswordChecksum]
 	ld e, $07
 	ld d, a
 Jump_01_6C18:
 	ld a, d
 	and $01
-	call Func_01_6B35
+	call PasswordBitsWriteNext
 	srl d
 	dec e
 	jr nz, Jump_01_6C18
 	ret
 
 
-Func_01_6C24:
+DecodePasswordBits:
+Func_01_6C24: ; legacy alias, used by src/bank_2C.asm
 	ld a, $18
-	ld [$C935], a
+	ld [wPasswordBitIndex], a
 	ld e, $07
 	ld c, $00
 Jump_01_6C2D:
-	call Func_01_6B72
+	call PasswordBitsReadPrev
 	or c
 	sla a
 	ld c, a
@@ -6676,11 +6775,11 @@ Jump_01_6C2D:
 	jr nz, Jump_01_6C2D
 	srl c
 	ld a, c
-	ld [$C93A], a
+	ld [wPasswordChecksum], a
 	ld e, $04
 	ld c, $00
 Jump_01_6C41:
-	call Func_01_6B72
+	call PasswordBitsReadPrev
 	or c
 	sla a
 	ld c, a
@@ -6688,7 +6787,7 @@ Jump_01_6C41:
 	jr nz, Jump_01_6C41
 	srl c
 	ld a, c
-	ld [$C939], a
+	ld [wPasswordLevel], a
 	ld b, $0E
 	cp b
 	jr c, Jump_01_6C58
@@ -6697,7 +6796,7 @@ Jump_01_6C58:
 	ld e, $04
 	ld c, $00
 Jump_01_6C5C:
-	call Func_01_6B72
+	call PasswordBitsReadPrev
 	or c
 	sla a
 	ld c, a
@@ -6705,11 +6804,11 @@ Jump_01_6C5C:
 	jr nz, Jump_01_6C5C
 	srl c
 	ld a, c
-	ld [$C938], a
+	ld [wPasswordLives], a
 	ld bc, $0000
 	ld e, $0A
 Jump_01_6C71:
-	call Func_01_6B72
+	call PasswordBitsReadPrev
 	or c
 	ld c, a
 	sla c
@@ -6719,32 +6818,32 @@ Jump_01_6C71:
 	srl b
 	rr c
 	ld a, c
-	ld [$C936], a
+	ld [wPasswordScoreThousands], a
 	ld a, b
-	ld [$C937], a
-	ld a, [$C93A]
+	ld [wPasswordScoreThousands + 1], a
+	ld a, [wPasswordChecksum]
 	ld d, a
-	call Func_01_6CA6
-	ld a, [$C93A]
+	call ComputePasswordChecksum
+	ld a, [wPasswordChecksum]
 	cp d
 	ld a, $01
 	jr z, Jump_01_6CA5
 Jump_01_6C98:
 	xor a
-	ld [$C936], a
-	ld [$C937], a
-	ld [$C938], a
-	ld [$C939], a
+	ld [wPasswordScoreThousands], a
+	ld [wPasswordScoreThousands + 1], a
+	ld [wPasswordLives], a
+	ld [wPasswordLevel], a
 Jump_01_6CA5:
 	ret
 
 
-Func_01_6CA6:
+ComputePasswordChecksum:
 	push af
 	push de
 	push bc
 	ld d, $05
-	ld a, [$C939]
+	ld a, [wPasswordLevel]
 	ld c, a
 	ld l, $04
 Jump_01_6CB1:
@@ -6759,7 +6858,7 @@ Jump_01_6CB1:
 	srl c
 	dec l
 	jr nz, Jump_01_6CB1
-	ld a, [$C938]
+	ld a, [wPasswordLives]
 	ld c, a
 	ld l, $04
 Jump_01_6CC5:
@@ -6773,9 +6872,9 @@ Jump_01_6CC5:
 	srl c
 	dec l
 	jr nz, Jump_01_6CC5
-	ld a, [$C936]
+	ld a, [wPasswordScoreThousands]
 	ld c, a
-	ld a, [$C937]
+	ld a, [wPasswordScoreThousands + 1]
 	ld b, a
 	ld l, $0A
 Jump_01_6CDC:
@@ -6788,14 +6887,15 @@ Jump_01_6CDC:
 	dec l
 	jr nz, Jump_01_6CDC
 	ld a, d
-	ld [$C93A], a
+	ld [wPasswordChecksum], a
 	pop bc
 	pop de
 	pop af
 	ret
 
 
-Func_01_6CF0:
+ShowEarnedPasswordScreen:
+Func_01_6CF0: ; legacy alias, used by src/bank_00.asm
 	call Func_3960
 	xor a
 	ld [wVBlankPending], a
@@ -6826,34 +6926,34 @@ Jump_01_6D0D:
 	call ScreenTable_CallUpdate
 	call Func_01_66F6
 	call Func_01_6746
-	call Func_01_6D48
-	ld hl, $C93B
-	ld bc, $DF00
+	call UnpackPasswordChars
+	ld hl, wPasswordChars
+	ld bc, wPasswordEntryChars
 	ld e, $05
 	call CopyBytesShort
 	ld c, $01
 	ld b, $0E
-	call Func_01_6873
+	call DrawPasswordEntryChars
 	ld a, $04
-	call Func_01_68AB
+	call DrawScoreDigitsAtRow
 	ld a, $07
-	call Func_01_690F
+	call DrawLivesDigitsAtRow
 	ret
 
 
-Func_01_6D48:
-	ld a, [$C931]
+UnpackPasswordChars:
+	ld a, [wPasswordBits]
 	ld c, a
-	ld a, [$C932]
+	ld a, [wPasswordBits + 1]
 	ld b, a
-	ld a, [$C933]
+	ld a, [wPasswordBits + 2]
 	ld l, a
-	ld a, [$C934]
+	ld a, [wPasswordBits + 3]
 	ld h, a
 	ld d, $05
 Jump_01_6D5A:
 	push hl
-	ld hl, $C93B
+	ld hl, wPasswordChars
 	ld a, $05
 	sub d
 	ld a, a
@@ -6891,20 +6991,20 @@ Jump_01_6D5A:
 	ret
 
 
-Func_01_6D99:
-	call Func_01_6BB0
-	ld a, [$C931]
+PackPasswordChars:
+	call ClearPasswordBits
+	ld a, [wPasswordBits]
 	ld c, a
-	ld a, [$C932]
+	ld a, [wPasswordBits + 1]
 	ld b, a
-	ld a, [$C933]
+	ld a, [wPasswordBits + 2]
 	ld l, a
-	ld a, [$C934]
+	ld a, [wPasswordBits + 3]
 	ld h, a
 	ld d, $05
 Jump_01_6DAE:
 	push hl
-	ld hl, $C93B
+	ld hl, wPasswordChars
 	ld a, d
 	dec a
 	ld a, a
@@ -6945,13 +7045,13 @@ Jump_01_6DAE:
 	jr nz, Jump_01_6DAE
 Jump_01_6DF0:
 	ld a, c
-	ld [$C931], a
+	ld [wPasswordBits], a
 	ld a, b
-	ld [$C932], a
+	ld [wPasswordBits + 1], a
 	ld a, l
-	ld [$C933], a
+	ld [wPasswordBits + 2], a
 	ld a, h
-	ld [$C934], a
+	ld [wPasswordBits + 3], a
 	ret
 
 
@@ -7028,15 +7128,158 @@ Jump_01_6E64:
 	call Func_01_66F6
 	call Func_01_6746
 	ld a, $08
-	call Func_01_68AB
+	call DrawScoreDigitsAtRow
 	ld a, $0C
-	call Func_01_690F
+	call DrawLivesDigitsAtRow
 	ret
 
-	INCBIN "assets/bank_01/6E8A.bin" ; $A67 bytes
 
-Func_01_78F1:
-	ld a, [$C949]
+; Func_01_66F6 copies 12 tiles from here and $80 tiles from +$80; the second copy runs on into the glyph tables
+PasswordScreenTiles:
+	INCBIN "assets/bank_01/password_screen_tiles.2bpp"
+
+; 34 x 4 tile indices per glyph (Func_01_6789)
+PasswordGlyphTiles:
+	db $81, $82, $83, $84
+	db $85, $86, $87, $88
+	db $89, $8A, $8B, $8C
+	db $8D, $8E, $8F, $90
+	db $91, $92, $93, $94
+	db $95, $96, $97, $98
+	db $99, $9A, $9B, $9C
+	db $9D, $9E, $9F, $A0
+	db $A1, $8E, $A2, $A3
+	db $A4, $A5, $A6, $A7
+	db $95, $A8, $A9, $AA
+	db $AB, $AC, $AD, $AE
+	db $AF, $B0, $B1, $B2
+	db $B3, $B4, $B5, $B6
+	db $AB, $B7, $B8, $B9
+	db $BA, $BB, $B5, $BC
+	db $BD, $BE, $BF, $C0
+	db $C1, $C2, $C3, $C4
+	db $C5, $C6, $C7, $C8
+	db $C9, $CA, $CB, $CC
+	db $CD, $CE, $CF, $D0
+	db $D1, $D2, $D3, $D4
+	db $D5, $D6, $D7, $D8
+	db $D1, $D2, $D9, $DA
+	db $DB, $DC, $A6, $9C
+	db $DD, $DE, $DF, $E0
+	db $E1, $E2, $E3, $E4
+	db $E5, $E6, $E7, $E8
+	db $E9, $EA, $EB, $EC
+	db $ED, $EE, $EF, $F0
+	db $F1, $F2, $F3, $F4
+	db $F5, $F6, $F7, $F8
+	db $F9, $FA, $FB, $FC
+	db $FD, $FE, $FF, $00
+
+; 34 x 4 BG attributes, ORed with $0C (Func_01_6789)
+PasswordGlyphAttributes:
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $00, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $03, $03, $03, $03
+	db $00, $00, $00, $00
+	db $01, $01, $01, $01
+	db $02, $02, $02, $02
+
+; BG palettes 4-7 (Func_01_6746)
+PasswordBgPalettes:
+	dw $0000, $0C64, $03E0, $02C0
+	dw $0000, $0C64, $7E60, $61A0
+	dw $0000, $0C64, $001F, $325F
+	dw $0000, $0000, $0C64, $001F
+
+; OBJ palettes 1 and 2, colours 1-3 (Func_01_6751)
+PasswordObjPaletteColours:
+	dw $0BE0, $26E0, $1180
+	dw $0BE0, $26E0, $1180
+
+; no reader
+Bank01Unread77D6:
+	db $00, $00, $00, $7C, $E0, $03, $1F, $00
+	db $00, $7C, $FF, $03, $1F, $00
+
+; 14 x 8: bytes 0-5 = OBJ colours 1-3 for palettes 1 and 2, bytes 6-7 unread (CycleObjectPalettes12)
+ObjectPaletteCycleTable:
+	db $E0, $00, $00, $06, $20, $0F, $21, $00
+	db $20, $01, $43, $12, $45, $1F, $21, $00
+	db $60, $05, $87, $1E, $69, $2F, $21, $00
+	db $80, $05, $EA, $2A, $8E, $3F, $00, $00
+	db $C0, $09, $2D, $37, $92, $4F, $00, $00
+	db $01, $0A, $70, $43, $B6, $5F, $00, $00
+	db $41, $0E, $B3, $4F, $DB, $6F, $00, $00
+	db $81, $0E, $F6, $5B, $FF, $7F, $00, $00
+	db $41, $0E, $B3, $4F, $DB, $6F, $00, $00
+	db $01, $0A, $70, $43, $B6, $5F, $00, $00
+	db $C0, $09, $2D, $37, $92, $4F, $00, $00
+	db $80, $05, $EA, $2A, $8E, $3F, $00, $00
+	db $60, $05, $87, $1E, $69, $2F, $21, $00
+	db $20, $01, $43, $12, $45, $1F, $21, $00
+
+; 5 x 2 BG columns per character slot (DrawPasswordEntryChars)
+PasswordCharColumns:
+	db $05, $05
+	db $07, $07
+	db $09, $09
+	db $0B, $0B
+	db $0D, $0D
+
+; no reader
+Bank01Unread785E:
+	db $0F, $04, $11, $04, $13, $04, $15, $04
+
+; BG columns for the score digits (DrawScoreDigitsAtRow)
+ScoreDigitColumns:
+	db $04, $06, $08, $0A, $0C, $0E
+
+; no reader
+Bank01Unread786C:
+	db $00, $00, $00
+
+; BG columns for the lives digits (DrawLivesDigitsAtRow)
+LivesDigitColumns:
+	db $0C, $0E
+
+; 4 tiles; Func_01_696E -> VRAM $8740 (tiles $74-$77)
+Bank01SpriteTiles7871:
+	INCBIN "assets/bank_01/sprite_tiles_7871.2bpp"
+
+; 4 tiles; Func_01_6A1D -> VRAM $8700 (tiles $70-$73)
+Bank01SpriteTiles78B1:
+	INCBIN "assets/bank_01/sprite_tiles_78B1.2bpp"
+
+FillBgRectWithTileAttr:
+	ld a, [wBgCopyRow]
 	swap a
 	ld c, a
 	ld b, $00
@@ -7044,10 +7287,10 @@ Func_01_78F1:
 	rl b
 	ld hl, $9800
 	add hl, bc
-	ld a, [$C948]
+	ld a, [wBgCopyColumn]
 	add a, l
 	ld l, a
-	ld a, [$C94A]
+	ld a, [wBgCopyWidth]
 	ld e, a
 	ld d, a
 	ld c, $12
@@ -7059,11 +7302,11 @@ Jump_01_790E:
 	jr nz, Jump_01_790E
 	ld a, $01
 	ldh [rVBK], a
-	ld a, [$C956]
+	ld a, [wBgFillTileAttr + 1]
 	ld [hl], a
 	xor a
 	ldh [rVBK], a
-	ld a, [$C955]
+	ld a, [wBgFillTileAttr]
 	ld [hli], a
 	dec e
 	jr nz, Jump_01_790E
@@ -7085,9 +7328,9 @@ Jump_01_790E:
 	db $C6, $CD, $8B, $D8, $21, $4B, $C9, $7E, $3C, $77, $F1, $3D, $FE, $FF, $28, $0C
 	db $F5, $01, $E9, $6C, $01, $E9, $6C, $CD, $A3, $7A, $18, $D4, $C9
 
-Func_01_7981:
+ShowPasswordRejection:
 	ld a, $2C
-	ld hl, $C943
+	ld hl, wBankedBgSourceBank
 	ld [hl], a
 	ld a, $01
 	ld hl, $C94B
@@ -7110,22 +7353,22 @@ Jump_01_799E:
 	xor a
 	ld [wVBlankPending], a
 	ld a, $01
-	ld hl, $C949
+	ld hl, wBgCopyRow
 	ld [hl], a
 	ld a, [$C94E]
-	ld bc, $6CE9
-	ld de, $6FB9
-	call Func_01_7AA3
+	ld bc, CodeRejectedTileMap
+	ld de, CodeRejectedAttrMap
+	call SetBankedRowSourcePtrs
 	call RAM_D88B
 	ld a, [$C94E]
 	inc a
 	add a, $09
-	ld hl, $C949
+	ld hl, wBgCopyRow
 	ld [hl], a
 	ld a, $09
-	ld bc, $6CE9
-	ld de, $6FB9
-	call Func_01_7AA3
+	ld bc, CodeRejectedTileMap
+	ld de, CodeRejectedAttrMap
+	call SetBankedRowSourcePtrs
 	call RAM_D88B
 	ld a, [$C94E]
 	dec a
@@ -7154,7 +7397,7 @@ Jump_01_79EB:
 	db $FA, $52, $C9, $57, $AF, $CD, $D4, $7A, $CD, $1B, $D9, $FA, $4E, $C9, $3D, $EA
 	db $4E, $C9, $FE, $FF, $20, $BE, $C9
 
-Func_01_7AA3:
+SetBankedRowSourcePtrs:
 	push bc
 	ld hl, $0000
 	ld c, a
@@ -7174,7 +7417,7 @@ Func_01_7AA3:
 	add hl, bc
 	ld b, h
 	ld c, l
-	ld hl, $C944
+	ld hl, wBankedBgSourcePtrs
 	ld a, c
 	ld [hli], a
 	ld a, b
@@ -7183,7 +7426,7 @@ Func_01_7AA3:
 	add hl, de
 	ld d, h
 	ld e, l
-	ld hl, $C946
+	ld hl, wBankedBgSourcePtrs + 2
 	ld a, e
 	ld [hli], a
 	ld a, d
@@ -7191,7 +7434,7 @@ Func_01_7AA3:
 	ret
 
 
-Func_01_7AD4:
+SetBankedSourcePtrsOffset:
 	push af
 	ld a, a
 	add a, c
@@ -7206,7 +7449,7 @@ Func_01_7AD4:
 	ld a, $00
 	adc a, d
 	ld d, a
-	ld hl, $C944
+	ld hl, wBankedBgSourcePtrs
 	ld a, c
 	ld [hli], a
 	ld a, b
@@ -7233,46 +7476,46 @@ Func_01_7AD4:
 	db $FE, $13, $20, $AB, $C9
 
 Func_01_7BC5:
-	ld a, [$C953]
-	ld [$C943], a
+	ld a, [wSceneBank]
+	ld [wBankedBgSourceBank], a
 	xor a
-	ld [$C948], a
+	ld [wBgCopyColumn], a
 	ld a, $01
-	ld [$C949], a
+	ld [wBgCopyRow], a
 	ld a, $20
-	ld [$C94A], a
+	ld [wBgCopyWidth], a
 	call Func_3C90
-	call Func_01_78F1
+	call FillBgRectWithTileAttr
 	ret
 
 Func_01_7BE0:
-	ld a, [$C953]
-	ld [$C943], a
+	ld a, [wSceneBank]
+	ld [wBankedBgSourceBank], a
 	ld a, $14
 	ld [$C94E], a
 	ld a, $01
-	ld [$C949], a
-	ld [$C94A], a
+	ld [wBgCopyRow], a
+	ld [wBgCopyWidth], a
 Jump_01_7BF3:
-	ld a, [$C94F]
+	ld a, [wSceneTileAttrPtrs]
 	ld c, a
-	ld a, [$C950]
+	ld a, [wSceneTileAttrPtrs + 1]
 	ld b, a
-	ld a, [$C951]
+	ld a, [wSceneTileAttrPtrs + 2]
 	ld e, a
-	ld a, [$C952]
+	ld a, [wSceneTileAttrPtrs + 3]
 	ld d, a
 	ld a, [$C94E]
 	dec a
-	call Func_01_7AD4
+	call SetBankedSourcePtrsOffset
 	ldh a, [rSCX]
 	srl a
 	srl a
 	srl a
 	dec a
 	and $1F
-	ld [$C948], a
-	call RAM_D91B
+	ld [wBgCopyColumn], a
+	call CopyBankedTilemapRectToBG
 	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
@@ -7295,35 +7538,35 @@ Jump_01_7C22:
 	ret
 
 Func_01_7C3F:
-	ld a, [$C953]
-	ld [$C943], a
+	ld a, [wSceneBank]
+	ld [wBankedBgSourceBank], a
 	ld a, $14
 	ld [$C94E], a
 	ld a, $01
-	ld [$C949], a
-	ld [$C94A], a
+	ld [wBgCopyRow], a
+	ld [wBgCopyWidth], a
 Jump_01_7C52:
-	ld a, [$C94F]
+	ld a, [wSceneTileAttrPtrs]
 	ld c, a
-	ld a, [$C950]
+	ld a, [wSceneTileAttrPtrs + 1]
 	ld b, a
-	ld a, [$C951]
+	ld a, [wSceneTileAttrPtrs + 2]
 	ld e, a
-	ld a, [$C952]
+	ld a, [wSceneTileAttrPtrs + 3]
 	ld d, a
 	ld a, [$C94E]
 	ld l, a
 	ld a, $14
 	sub l
-	call Func_01_7AD4
+	call SetBankedSourcePtrsOffset
 	ldh a, [rSCX]
 	srl a
 	srl a
 	srl a
 	add a, $14
 	and $1F
-	ld [$C948], a
-	call RAM_D91B
+	ld [wBgCopyColumn], a
+	call CopyBankedTilemapRectToBG
 	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
@@ -7346,13 +7589,13 @@ Jump_01_7C85:
 	ret
 
 Func_01_7CA2:
-	ld a, [$C953]
-	ld [$C943], a
+	ld a, [wSceneBank]
+	ld [wBankedBgSourceBank], a
 	ld a, $14
 	ld [$C94E], a
 	ld a, $01
-	ld [$C949], a
-	ld [$C94A], a
+	ld [wBgCopyRow], a
+	ld [wBgCopyWidth], a
 Jump_01_7CB5:
 	call Audio_Update
 	xor a
@@ -7373,8 +7616,8 @@ Jump_01_7CBC:
 	srl a
 	add a, $14
 	and $1F
-	ld [$C948], a
-	call Func_01_78F1
+	ld [wBgCopyColumn], a
+	call FillBgRectWithTileAttr
 	ldh a, [rSCX]
 	add a, $08
 	ldh [rSCX], a
@@ -7387,13 +7630,13 @@ Jump_01_7CBC:
 	db $C9
 
 Func_01_7CEF:
-	ld a, [$C953]
-	ld [$C943], a
+	ld a, [wSceneBank]
+	ld [wBankedBgSourceBank], a
 	ld a, $14
 	ld [$C94E], a
 	ld a, $01
-	ld [$C949], a
-	ld [$C94A], a
+	ld [wBgCopyRow], a
+	ld [wBgCopyWidth], a
 Jump_01_7D02:
 	call Audio_Update
 	xor a
@@ -7414,8 +7657,8 @@ Jump_01_7D09:
 	srl a
 	dec a
 	and $1F
-	ld [$C948], a
-	call Func_01_78F1
+	ld [wBgCopyColumn], a
+	call FillBgRectWithTileAttr
 	ldh a, [rSCX]
 	sub $08
 	ldh [rSCX], a
@@ -7451,4 +7694,10 @@ Jump_01_7D51:
 	jr nz, Jump_01_7D3F
 	ret
 
-	INCBIN "assets/bank_01/7D5D.bin" ; $2A3 bytes
+Bank01ZeroFill: ; no reader; zero fill to the bank marker
+	ds $7FFF - @, $00
+	db BANK(@) ; ROM bank marker
+
+; Relocation pins: ROM0 refers to these with raw numbers (src/bank_00.asm is not edited here).
+	ASSERT BANK(ScoreThresholdTable) == $01 && ScoreThresholdTable == $418F, "raw pointer: ROM0 ld hl, $418F"
+	ASSERT BANK(LevelRowSceneFlags) == $01 && LevelRowSceneFlags == $6609, "raw pointer: ROM0 ld hl, $6609"

@@ -115,16 +115,28 @@ def raw_bank_bytes(root, rom):
     out = {}
     for bank, a, b in re.findall(r"screen_mode \$([0-9A-F]{2}), (\w+), (\w+)", src1):
         out[a] = out[b] = (int(bank, 16), "$01:ScreenModeTable")
-    blocks = re.findall(r"\tdb \$([0-9A-F]{2})\n\tdw ((?:Fixed|Scroll)Scene\w+(?:, \w+)*)", src1)
+    # Walk descriptor lines in order: a raw `db $BB` before a `dw` of scene labels is a
+    # bank byte; `db BANK(...)` is symbolic and needs no pin. The single `db` before a
+    # palette `dw` is the entry's last-row index, so palettes inherit the entry bank.
     entry_bank = None
-    for bank, names in blocks:
-        names = names.split(", ")
+    lines = src1.split("\n")
+    for i in range(len(lines) - 1):
+        a, b = lines[i].strip(), lines[i + 1].strip()
+        m = re.fullmatch(r"dw ((?:Fixed|Scroll)Scene\w+(?:, \w+)*)", b)
+        if not m:
+            continue
+        names = m.group(1).split(", ")
         if len(names) == 1 and names[0].endswith("Palette"):
-            bank = entry_bank      # the preceding db is the last-row index; the palette uses the entry bank
+            bank = entry_bank
+        elif a.startswith("db BANK("):
+            entry_bank = bank = None
         else:
-            entry_bank = bank
+            mm = re.fullmatch(r"db \$([0-9A-F]{2})", a)
+            entry_bank = bank = int(mm.group(1), 16) if mm else None
+        if bank is None:
+            continue
         for n in names:
-            out[n] = (int(bank, 16), "$01 scene descriptor bank byte")
+            out[n] = (bank, "$01 scene descriptor bank byte")
     return out
 
 
@@ -213,8 +225,18 @@ def negative_tests(root, rom, sym_path):
                       lambda: p2e.write_text(txt2e), "raw pointer not pinned"))
         p2b = t / "src" / "bank_2B.asm"
         txt2b = p2b.read_text()
-        cases.append(("dropped bank pin", lambda: p2b.write_text(re.sub(r'\tASSERT BANK\(Func_2B_4000\) == \$2B, "raw bank byte in \$01:ScreenModeTable"\n', "", txt2b)),
-                      lambda: p2b.write_text(txt2b), "raw bank byte not pinned"))
+        p01 = t / "src" / "bank_01.asm"
+        txt01 = p01.read_text()
+
+        def raw_bank_byte_without_pin():
+            # reintroduce one raw ScreenModeTable bank byte and drop its pin
+            p01.write_text(re.sub(r"screen_mode BANK\(Func_2B_4000\)", "screen_mode $2B", txt01, count=1))
+            p2b.write_text(re.sub(r'\tASSERT BANK\(Func_2B_4000\) == \$2B[^\n]*\n', "", txt2b))
+
+        def restore_bank_byte():
+            p01.write_text(txt01)
+            p2b.write_text(txt2b)
+        cases.append(("raw bank byte without pin", raw_bank_byte_without_pin, restore_bank_byte, "raw bank byte not pinned"))
         rep = t / "reports" / "asset_manifest_09_3A.json"
         rtxt = rep.read_text()
         cases.append(("stale report", lambda: rep.write_text(rtxt.replace('"bytes": 4096', '"bytes": 4097', 1)),

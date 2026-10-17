@@ -30,8 +30,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 ## Source recovery
 
 At this revision, all 190 surviving automatic function-entry labels in ROM0
-have reviewed companion names. Across the project, 217 of 381 entries are
-named and 164 remain. `make progress` recomputes the per-bank
+have reviewed companion names. Across the project, 260 of 288 entries are
+named and 28 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -41,34 +41,25 @@ does not substitute for traced-byte coverage or semantic verification.
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | `make progress` reports reviewed companion names for automatic function entries per bank, separately from traced-byte coverage; interrupts, startup, copy helpers, screen dispatch, OAM DMA, rendering state, and scene descriptors are among the recovered groups | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
-| Graphics | 64 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly; bank `$08` additionally has a lossless 83-range inspection export for its interleaved interface/object graphics | Identify gameplay roles for the remaining neutral graphics labels |
+| Graphics | 65 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly; bank `$08` additionally has a lossless 85-range inspection export for its interleaved interface/object graphics | Identify gameplay roles for the remaining neutral graphics labels |
 | Maps | All eleven descriptor-driven fixed backgrounds, the referenced Game Boy Color warning in bank `$3B`, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions and indices | Name individual scenes and levels |
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Object sequences | Bank `$03:$4000-$5C10` is explicit source: two signed-vector tables, fifteen 64-slot per-level pointer tables, 203 counted sequences, and 626 eight-byte records; the vector-direction quantizer and all 15 level-state checks are named | Determine the remaining record-field meanings and name individual sequences |
 | Level objects | Bank `$04:$4000-$601B` is explicit source: 600 fixed-size object initialization records, 120 auxiliary records, and the per-level pointer directory; the 20-entry deferred-spawn queue, active-table pointers, slow-tick counter, and camera-window spawn path are named | Determine the remaining field meanings and the role of enabled auxiliary records |
+| Banks `$01-$05` | Every byte is classified; 250 of 278 routine entries have behavior-based names, 77 RAM symbols replace 455 raw operands, and nine former opaque blobs are explicit tables or typed assets | Resolve the 28 address-named routines and 2,423 bounded but unexplained bytes; see [`research/banks_01_05/`](research/banks_01_05/) |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see [`research/BANKS_2A_2E_RESEARCH.md`](research/BANKS_2A_2E_RESEARCH.md) | Trace the caller-less bank-`$2E` routines and picture meanings |
 | Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see [`research/TEXT_RESEARCH.md`](research/TEXT_RESEARCH.md) | Glyph map reconciled ([`research/BANK08_RESEARCH.md`](research/BANK08_RESEARCH.md)); rule out indirect or constructed strings |
 
-## Known control-flow gaps
+## Indirect control flow
 
-Six indirect `jp hl` sites are present in the directly traced graph:
-
-- Bank `$00`: `$364D`, `$39C3`, `$39F0`
-- Bank `$01`: `$450E`, `$4B44`
-
-The screen init/update dispatch sites at `$39C3` and `$39F0` use the 13-entry
-banked screen table at bank `$01:$47EC`; its known destinations are seeded into
-the tracer. Bank `$03:$6886` has been resolved as a 15-entry state-check table
-at `$685A`, and bank `$01:$450E` uses the 10-entry entity-handler table at
-`$44E0`. The callback at `$364D` is selected from the three-entry table at
-bank `$01:$4E2F`. The site at `$4B44` reads one of five callbacks from the
-menu/flow-state headers at `$4855`, `$48AB`, `$48F1`, `$4927`, and `$495D`.
-Those headers and their fourteen 16-byte choice records are now explicit
-source, and all five callback destinations are seeded into the tracer. One
-callback is copied from bank `$01:$51CC` and executes from WRAM at `$D70A`.
-Every known indirect site is therefore structurally modeled, although each
-remains an indirect transfer at runtime.
+All seven indirect mechanisms have complete, checked target sets: the
+three-entry runtime callback table, both screen dispatchers, the ten-entry
+entity handler table, the fifteen-entry level-state table, the five menu-state
+handlers, and the four tracker scans selected through a self-written jump at
+WRAM `$C8DB`. The synthetic pushed returns used by the screen dispatchers are
+also modeled. Bounds and targets are documented in
+[`research/banks_01_05/INDIRECT_CONTROL_FLOW.md`](research/banks_01_05/INDIRECT_CONTROL_FLOW.md).
 
 ## Menu state
 
@@ -83,8 +74,8 @@ interrupt routine. Fields whose behavior is not yet established remain raw.
 
 ## Immediate roadmap
 
-1. Continue replacing automatic routine and RAM labels with evidence-backed names.
-2. Split the remaining mixed ranges in code banks `$01`, `$02`, and `$05`.
+1. Resolve the remaining 28 address-named routines from callers and behavior.
+2. Investigate the 2,423 bounded but unexplained bytes in banks `$01-$05`.
 3. Identify neutral level, scene, screen, object, and audio names from behavior.
 4. Run relocation/shift tests before declaring source freely editable.
 5. Validate timing-sensitive and RAM-executed behavior on physical hardware.
