@@ -1,253 +1,133 @@
-; BattleTanx (USA) - ROM bank $2D
+; BattleTanx (USA) - ROM bank $2D: full-screen pictures and their
+; load/draw routines. Layout and evidence: BANKS_2A_2E_RESEARCH.md.
 
 SECTION "ROM Bank $2D", ROMX[$4000], BANK[$2D]
 
-Func_2D_4000:
-	ld hl, $40CC
-	ld d, $00
-	xor a
-	ldh [rVBK], a
-	ld e, $00
-	ld d, $80
-	ld hl, $40CC
-	ld a, [hli]
-	ld c, a
-	ld b, [hl]
-	ld a, $88
-	call Func_0622
-	ld e, $80
-	ld d, $00
-	sla e
-	rl d
-	sla e
-	rl d
-	sla e
-	rl d
-	sla e
-	rl d
-	ld hl, $40CC
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	add hl, de
-	ld c, l
-	ld b, h
-	ld e, $00
-	ld d, $80
-	ld a, $90
-	call Func_0622
-	ld a, $01
-	ldh [rVBK], a
-	ld e, $00
-	ld d, $10
-	ld hl, $40CC
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	add hl, de
-	ld b, h
-	ld c, l
-	ld e, $00
-	ld d, $80
-	ld a, $90
-	call Func_0622
-	ret
+; ScreenModeTable entries 8.
+Func_2D_4000: ; address-based alias kept for other banks
+ScreenMode08_LoadTiles:
+	screen_load_tiles ScreenMode08_Descriptor
 
+Func_2D_4058: ; address-based alias kept for other banks
+ScreenMode08_Draw: ; fades in from black
+	screen_draw_fade ScreenMode08_Descriptor, 0
 
-Func_2D_4058:
-	ld hl, $40CC
-	ld de, $C6D2
-	ld bc, $000E
-	call Func_05B7
-	ld hl, $40CC
-	ld bc, $0002
-	add hl, bc
-	ld a, [hli]
-	ld e, a
-	ld d, [hl]
-	inc hl
-	ld a, [hli]
-	ld c, a
-	ld b, [hl]
-	push bc
-	ld hl, sp + 4
-	ld a, [hli]
-	ld b, [hl]
-	ld c, a
-	ld hl, $9800
-	add hl, bc
-	pop bc
-	call Func_05C5
-	ld hl, $40CC
-	ld a, $0C
-	add a, l
-	ld l, a
-	ld a, $00
-	adc a, h
-	ld h, a
-	ld a, [hli]
-	ld e, a
-	ld hl, $40CC
-	ld a, $06
-	add a, l
-	ld l, a
-	ld a, $00
-	adc a, h
-	ld h, a
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	ld a, [ROM_BANK_MARKER]
-	ld d, a
-	ld e, $40
-	call Func_3A88
-	ld a, $00
-	ld [$C6D1], a
-	call Func_3A2F
-	ld e, $00
-Jump_2D_40AE:
-	xor a
-	ld [wVBlankPending], a
-Jump_2D_40B2:
-	halt
-	nop
-	nop
-	ld a, [wVBlankPending]
-	or a
-	jr z, Jump_2D_40B2
-	xor a
-	ld [wVBlankPending], a
-	call Func_3A52
-	call Audio_Update
-	inc e
-	ld a, e
-	cp $20
-	jr nz, Jump_2D_40AE
-	ret
+ScreenMode08_Descriptor:
+	screen_descriptor ScreenMode08_Tiles, ScreenMode08_TileMap, ScreenMode08_AttrMap, ScreenMode08_Palettes, 273, 20, 18, 8, 0
 
-	INCBIN "assets/bank_2D/40CC.bin" ; $142E bytes
+ScreenMode08_Tiles:
+	INCBIN "assets/screens/screenmode08_tiles.2bpp"
 
-Func_2D_54FA:
-	ld hl, $55C6
-	ld d, $00
-	xor a
-	ldh [rVBK], a
-	ld e, $00
-	ld d, $80
-	ld hl, $55C6
-	ld a, [hli]
-	ld c, a
-	ld b, [hl]
-	ld a, $88
-	call Func_0622
-	ld e, $80
-	ld d, $00
-	sla e
-	rl d
-	sla e
-	rl d
-	sla e
-	rl d
-	sla e
-	rl d
-	ld hl, $55C6
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	add hl, de
-	ld c, l
-	ld b, h
-	ld e, $00
-	ld d, $80
-	ld a, $90
-	call Func_0622
-	ld a, $01
-	ldh [rVBK], a
-	ld e, $00
-	ld d, $10
-	ld hl, $55C6
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	add hl, de
-	ld b, h
-	ld c, l
-	ld e, $00
-	ld d, $80
-	ld a, $90
-	call Func_0622
-	ret
+ScreenMode08_TileMap:
+	db $81, $81, $81, $82, $83, $84, $85, $86, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81
+	db $81, $81, $81, $87, $88, $89, $8A, $8B, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81
+	db $81, $81, $8C, $8D, $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $81, $81, $81, $81, $81, $81
+	db $81, $81, $98, $99, $9A, $9B, $81, $81, $81, $81, $81, $9C, $9D, $9E, $9F, $A0, $A1, $A2, $A3, $A4
+	db $81, $81, $A5, $A6, $A7, $A8, $A9, $81, $81, $81, $81, $81, $81, $AA, $AB, $AC, $AD, $AE, $AF, $B0
+	db $81, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $81, $81, $81, $81, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF
+	db $81, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $81, $81, $81, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF
+	db $81, $D0, $D1, $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2
+	db $81, $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $81, $F2, $F3, $F4
+	db $81, $81, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF, $00, $01, $02, $81, $03, $04, $05
+	db $81, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F, $10, $11, $12, $13, $14, $15, $16, $17, $18
+	db $81, $19, $1A, $1B, $1C, $1D, $1E, $1F, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $2A, $2B
+	db $2C, $2D, $2E, $2F, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $3E, $3F
+	db $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $4A, $4B, $4C, $4D, $4E, $4F, $50, $51, $52, $53
+	db $54, $55, $56, $57, $58, $59, $5A, $5B, $5C, $5D, $5E, $5F, $60, $61, $62, $63, $64, $65, $66, $67
+	db $68, $69, $6A, $6B, $6C, $6D, $6E, $6F, $70, $71, $72, $73, $74, $75, $76, $77, $78, $79, $7A, $76
+	db $7B, $7C, $7D, $7E, $7F, $00, $01, $02, $76, $76, $76, $03, $04, $05, $76, $06, $07, $08, $76, $76
+	db $76, $76, $76, $76, $09, $0A, $0B, $76, $76, $76, $76, $0C, $0D, $0E, $76, $76, $0F, $10, $76, $76
 
+ScreenMode08_AttrMap:
+	db $00, $00, $00, $02, $02, $01, $02, $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $00, $00, $02, $02, $01, $02, $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $00, $02, $02, $02, $02, $02, $06, $06, $06, $06, $06, $06, $06, $00, $00, $00, $00, $00, $00
+	db $00, $00, $02, $02, $02, $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $00, $02, $02, $02, $04, $04, $00, $00, $00, $00, $00, $00, $00, $00, $01, $00, $00, $00, $00
+	db $00, $02, $02, $02, $04, $04, $04, $04, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $02, $02, $02, $04, $04, $04, $04, $00, $00, $00, $00, $01, $01, $02, $00, $00, $00, $00, $00
+	db $00, $02, $03, $03, $04, $04, $04, $04, $05, $00, $00, $00, $00, $01, $00, $00, $00, $00, $00, $00
+	db $00, $02, $03, $01, $05, $05, $05, $05, $05, $05, $00, $00, $00, $01, $01, $00, $00, $00, $00, $00
+	db $00, $00, $03, $03, $03, $03, $05, $05, $05, $05, $05, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $00, $03, $05, $05, $05, $05, $05, $05, $05, $05, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $03, $05, $05, $05, $05, $05, $05, $05, $05, $05, $00, $05, $00, $01, $00, $00, $00, $00, $00
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $00, $00, $00, $00, $00
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $07, $02, $00
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $00, $00, $00, $00, $00, $00, $01, $01
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $07, $00
+	db $00, $00, $00, $00, $01, $09, $09, $09, $00, $00, $00, $08, $08, $08, $00, $08, $08, $08, $00, $00
+	db $00, $00, $00, $00, $08, $08, $08, $00, $00, $00, $00, $08, $08, $08, $00, $00, $08, $08, $00, $00
 
-Func_2D_5552:
-	ld hl, $55C6
-	ld de, $C6D2
-	ld bc, $000E
-	call Func_05B7
-	ld hl, $55C6
-	ld bc, $0002
-	add hl, bc
-	ld a, [hli]
-	ld e, a
-	ld d, [hl]
-	inc hl
-	ld a, [hli]
-	ld c, a
-	ld b, [hl]
-	push bc
-	ld hl, sp + 4
-	ld a, [hli]
-	ld b, [hl]
-	ld c, a
-	ld hl, $9800
-	add hl, bc
-	pop bc
-	call Func_05C5
-	ld hl, $55C6
-	ld a, $0C
-	add a, l
-	ld l, a
-	ld a, $00
-	adc a, h
-	ld h, a
-	ld a, [hli]
-	ld e, a
-	ld hl, $55C6
-	ld a, $06
-	add a, l
-	ld l, a
-	ld a, $00
-	adc a, h
-	ld h, a
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	ld a, [ROM_BANK_MARKER]
-	ld d, a
-	ld e, $40
-	call Func_3A88
-	ld a, $00
-	ld [$C6D1], a
-	call Func_3A2F
-	ld e, $00
-Jump_2D_55A8:
-	xor a
-	ld [wVBlankPending], a
-Jump_2D_55AC:
-	halt
-	nop
-	nop
-	ld a, [wVBlankPending]
-	or a
-	jr z, Jump_2D_55AC
-	xor a
-	ld [wVBlankPending], a
-	call Func_3A52
-	call Audio_Update
-	inc e
-	ld a, e
-	cp $20
-	jr nz, Jump_2D_55A8
-	ret
+ScreenMode08_Palettes:
+	dw $0C64, $0018, $49ED, $2927 ; palette 0
+	dw $0C64, $49ED, $5EB1, $2927 ; palette 1
+	dw $0018, $0C64, $49ED, $5EB1 ; palette 2
+	dw $5EB1, $0018, $0C64, $2960 ; palette 3
+	dw $0018, $01BF, $0C64, $2960 ; palette 4
+	dw $0018, $0C64, $2960, $4220 ; palette 5
+	dw $0000, $7358, $0018, $49ED ; palette 6
+	dw $0000, $49ED, $5EB1, $01BF ; palette 7
 
-	INCBIN "assets/bank_2D/55C6.bin" ; $2A3A bytes
+; ScreenModeTable entries 0.
+Func_2D_54FA: ; address-based alias kept for other banks
+ScreenMode00_LoadTiles:
+	screen_load_tiles ScreenMode00_Descriptor
+
+Func_2D_5552: ; address-based alias kept for other banks
+ScreenMode00_Draw: ; fades in from black
+	screen_draw_fade ScreenMode00_Descriptor, 0
+
+ScreenMode00_Descriptor:
+	screen_descriptor ScreenMode00_Tiles, ScreenMode00_TileMap, ScreenMode00_AttrMap, ScreenMode00_Palettes, 140, 20, 17, 2, 0
+
+ScreenMode00_Tiles:
+	INCBIN "assets/screens/screenmode00_tiles.2bpp"
+
+ScreenMode00_TileMap:
+	db $81, $82, $83, $84, $85, $84, $86, $84, $85, $84, $84, $85, $84, $86, $84, $85, $84, $87, $82, $88
+	db $89, $8A, $8B, $8C, $8D, $8D, $8E, $8D, $8D, $8F, $90, $8D, $8D, $8E, $8D, $8D, $91, $92, $93, $89
+	db $94, $95, $96, $97, $98, $99, $98, $98, $99, $98, $98, $99, $98, $98, $99, $98, $9A, $9B, $9C, $9D
+	db $9E, $9F, $A0, $A1, $A2, $A2, $A2, $A2, $A2, $A2, $A2, $A2, $A2, $A2, $A2, $A2, $A3, $A4, $A5, $A6
+	db $A7, $A8, $94, $A9, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AB, $AC, $A7, $A8
+	db $9E, $A6, $89, $A9, $AA, $AA, $AA, $AD, $AE, $AF, $B0, $B1, $B2, $AA, $AA, $AA, $AB, $B3, $9E, $A6
+	db $B4, $A6, $89, $A9, $AA, $AA, $AA, $B5, $B6, $B7, $B8, $B9, $BA, $AA, $AA, $AA, $AB, $B3, $9E, $BB
+	db $9E, $A6, $BC, $A9, $BD, $BE, $BF, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $AB, $C9, $9E, $A6
+	db $A7, $A8, $89, $A9, $B5, $CA, $CB, $BA, $CC, $CD, $CE, $CF, $D0, $D1, $D2, $A2, $AB, $B3, $A7, $A8
+	db $9E, $A6, $D3, $A9, $AA, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $AA, $AB, $DE, $9E, $A6
+	db $B4, $A6, $89, $A9, $AA, $DF, $E0, $E1, $D2, $CE, $E2, $E3, $E4, $E5, $E6, $AA, $AB, $B3, $9E, $BB
+	db $9E, $A6, $89, $A9, $AA, $AA, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $AA, $AA, $AB, $B3, $9E, $A6
+	db $A7, $A8, $94, $A9, $AA, $AA, $E0, $CA, $E6, $EF, $F0, $F1, $F2, $F3, $AA, $AA, $AB, $AC, $A7, $A8
+	db $9E, $F4, $F5, $A9, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AB, $F6, $8C, $A6
+	db $94, $F7, $F8, $F9, $FA, $FB, $FA, $FA, $FB, $FA, $FA, $FB, $FA, $FA, $FB, $FA, $FC, $FD, $FE, $94
+	db $89, $FF, $00, $01, $84, $84, $86, $84, $84, $02, $03, $84, $84, $86, $84, $84, $9F, $04, $05, $89
+	db $06, $82, $07, $08, $09, $08, $0A, $08, $09, $08, $08, $09, $08, $0A, $08, $09, $08, $83, $82, $0B
+
+ScreenMode00_AttrMap:
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $00, $00
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+
+ScreenMode00_Palettes:
+	dw $0C63, $1120, $0204, $270A ; palette 0
+	dw $0000, $0C63, $4E91, $035F ; palette 1
+
+	screen_bank_end
+
+	ASSERT ScreenMode08_TileMap - ScreenMode08_Tiles == 273 * 16
+	ASSERT ScreenMode08_Palettes - ScreenMode08_AttrMap == 20 * 18
+	ASSERT ScreenMode00_TileMap - ScreenMode00_Tiles == 140 * 16
+	ASSERT ScreenMode00_Palettes - ScreenMode00_AttrMap == 20 * 17

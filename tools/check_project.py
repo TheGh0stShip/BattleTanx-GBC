@@ -900,6 +900,123 @@ def check_level_banks() -> None:
     )
 
 
+SCREEN_SYMBOLS = {
+    # name: (bank, address) for standalone routine entries in banks $2A-$2E
+    "FixedScreen2A_LoadTiles": (0x2A, 0x7719),
+    "FixedScreen2A_Draw": (0x2A, 0x7754),
+    "FixedScreen2A_Run": (0x2A, 0x7774),
+    "FixedScreen2A_DrawFrame": (0x2A, 0x7795),
+}
+
+
+def check_screen_banks(entries: list[tuple[pathlib.Path, int, int]]) -> None:
+    """Banks $2A-$2E: coverage, templates, tables, assets, source, symbols."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import screen_data as scr  # pylint: disable=import-outside-toplevel
+
+    rom = (ROOT / "baserom.gbc").read_bytes()
+    try:
+        packages, ranges = scr.parse(rom)
+        negatives = scr.negative_tests(rom)
+    except scr.ScreenDataError as exc:
+        fail(f"screens: {exc}")
+
+    def manifest_problem(manifest):
+        want = {
+            (scr.off(bank, start), end - start)
+            for bank, start, end, kind, _ in ranges
+            if kind == "graphics"
+        }
+        have = {
+            (start, size)
+            for _, start, size in manifest
+            if 0x2A * 0x4000 <= start < 0x2F * 0x4000
+        }
+        return (
+            None
+            if want == have
+            else f"assets.txt tile ranges differ: {sorted(want ^ have)[:4]}"
+        )
+
+    def source_problem(bank, source):
+        if f"assets/bank_{bank:02X}/" in source:
+            return f"src/bank_{bank:02X}.asm includes an opaque bank blob"
+        return None
+
+    symbols = dict(SCREEN_SYMBOLS)
+    for package in packages:
+        symbols[f"{package.name}_LoadTiles"] = (package.bank, package.load)
+        symbols[f"{package.name}_Draw"] = (package.bank, package.draw)
+        symbols[f"{package.name}_Descriptor"] = (package.bank, package.desc)
+        symbols[f"{package.name}_TileMap"] = (package.bank, package.tilemap)
+        symbols[f"{package.name}_Palettes"] = (package.bank, package.palettes)
+
+    def symbol_problem(table):
+        for name, where in symbols.items():
+            if table.get(name) != where:
+                return f"symbol {name} at {table.get(name)}, expected {where}"
+        return None
+
+    problems = [manifest_problem(entries)]
+    problems.extend(
+        source_problem(
+            bank, (ROOT / "src" / f"bank_{bank:02X}.asm").read_text()
+        )
+        for bank in scr.BANKS
+    )
+    for problem in problems:
+        if problem:
+            fail(f"screens: {problem}")
+
+    sym = ROOT / "battletanx.sym"
+    table = {}
+    if sym.exists():
+        for line in sym.read_text().splitlines():
+            match = re.fullmatch(
+                r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip()
+            )
+            if match:
+                table[match.group(3)] = (
+                    int(match.group(1), 16), int(match.group(2), 16)
+                )
+        problem = symbol_problem(table)
+        if problem:
+            fail(f"screens: {problem}")
+
+    # Controlled negative tests for manifest, source, and symbol checks.
+    graphics = [
+        entry
+        for entry in entries
+        if 0x2A * 0x4000 <= entry[1] < 0x2F * 0x4000
+    ]
+    shifted = list(entries)
+    shifted_entry = graphics[0]
+    shifted[shifted.index(shifted_entry)] = (
+        shifted_entry[0], shifted_entry[1] + 1, shifted_entry[2]
+    )
+    bad_table = dict(symbols)
+    bad_table["ScreenMode07_Draw"] = (0x2B, 0x4059)
+    checks = [
+        manifest_problem([entry for entry in entries if entry != graphics[0]]),
+        manifest_problem(shifted),
+        source_problem(0x2B, '\tINCBIN "assets/bank_2B/40CC.bin"\n'),
+        symbol_problem(bad_table),
+    ]
+    if not all(checks):
+        fail("screens: a manifest/source/symbol negative test was not rejected")
+    negatives += len(checks)
+
+    counts = {}
+    for _, start, end, kind, _ in ranges:
+        counts[kind] = counts.get(kind, 0) + end - start
+    print(
+        "screens: banks $2A-$2E fully classified ("
+        + ", ".join(f"{kind} {count}" for kind, count in sorted(counts.items()))
+        + f"), {len(packages)} screen packages, {negatives} negative tests rejected"
+        + ("" if sym.exists() else "; symbol check skipped (no battletanx.sym)")
+    )
+
+
 def main() -> None:
     check_toolchain()
     entries = read_manifest()
@@ -913,6 +1030,7 @@ def main() -> None:
     check_executable_ram_source()
     check_tracing()
     check_audio()
+    check_screen_banks(entries)
     check_level_banks()
     digest = hashlib.sha1((ROOT / "baserom.gbc").read_bytes()).hexdigest()
     print(f"project: OK ({len(entries)} assets, baserom sha1 {digest})")

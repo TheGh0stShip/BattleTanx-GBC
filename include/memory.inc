@@ -114,3 +114,9 @@ DEF wSoundQueue      EQU $C8FD ; 30-entry ring of sound ids, 0 = empty
 DEF SOUND_QUEUE_SIZE EQU 30
 DEF wSfxSeqLock      EQU $C91B ; non-zero: requests for ids $40-$7F are ignored
 DEF wSfxSeqLockId    EQU $C91C ; id that sets wSfxSeqLock when started
+
+; Full-screen picture state (banks $2A-$2E; see BANKS_2A_2E_RESEARCH.md).
+DEF wPaletteFadeFromWhite EQU $C6D1 ; 0: fade steps darken (fade from black); else brighten
+DEF wScreenDescriptor     EQU $C6D2 ; 14-byte copy of the current screen descriptor
+DEF wScreenWidth          EQU $C6DC ; descriptor +10, BG map width read by ROM0 $05C5
+DEF wScreenHeight         EQU $C6DD ; descriptor +11, BG map height read by ROM0 $05C5
