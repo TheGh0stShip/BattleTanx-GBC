@@ -13,7 +13,8 @@
   (indexed by `wLevelNumber`). It writes `jp <routine>` / `ret` into
   `wNearestTargetScanJump` (`$C8DB`, 4 bytes).
 - `$02:4D58` runs every frame and enters the stub. The targets:
-  - `TrackerScanStatus1Objects`: 64 object records, status 1 and `+$26` set;
+  - `TrackerScanStatus1Objects`: 64 object records, status 1 and
+    `OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET` set;
   - `TrackerScanType2Objects`: the same, plus object type `+$1E` = 2;
   - `TrackerScanAuxRecords`: 8 auxiliary records at `$CD6F`;
   - `TrackerSelectAuxRecord`: a fixed target, `$CD79` or `$CD6F`.

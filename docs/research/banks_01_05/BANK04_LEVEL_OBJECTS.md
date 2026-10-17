@@ -10,6 +10,10 @@
   sequence table.
 - **Byte 6**: stored, then always overwritten by the skill setting
   (`wActiveSkillLevel`).
+- **Runtime ownership flag**: ordinary level vehicles set
+  `OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET`; player-created vehicles leave it
+  clear. It gates enemy action sounds, pickup handling, tracking, and
+  auxiliary-region behavior.
 - **Inconsistency**: on the respawn path, types 0 and 1 swap their `+$39`
   values relative to the initial load. This is recorded, not changed.
 

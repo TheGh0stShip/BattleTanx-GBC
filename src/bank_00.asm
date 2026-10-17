@@ -2352,7 +2352,7 @@ Func_0D0F:
 	ld b, $00
 	ld a, l
 	and $C0
-	add a, $26
+	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
@@ -2362,12 +2362,12 @@ Func_0D0F:
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $27
+	add a, OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $28
+	add a, OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
@@ -2864,7 +2864,7 @@ Func_0F98: ; legacy alias
 .finishSuccess:
 	ld a, l
 	and $C0
-	add a, $28
+	add a, OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET
 	ld l, a
 	ld [hl], $02
 	xor a
@@ -2889,7 +2889,7 @@ Func_1023: ; legacy alias
 	push hl
 	ld a, l
 	and $C0
-	add a, $26
+	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	ld l, a
 	ld a, [hl]
 	and a
@@ -2946,7 +2946,7 @@ Func_104B: ; legacy alias
 	jr nz, .checkHealth
 	ld a, l
 	and $C0
-	add a, $27
+	add a, OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -2955,7 +2955,7 @@ Func_104B: ; legacy alias
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $28
+	add a, OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a

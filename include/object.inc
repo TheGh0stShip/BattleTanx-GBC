@@ -61,6 +61,13 @@ DEF OBJECT_LAST_ATTACKER_OFFSET             EQU $2B ; 16-bit object pointer
 DEF OBJECT_FRAME_TABLE_OFFSET      EQU $21 ; bank-$02 pointer
 DEF OBJECT_OAM_LAYOUT_OFFSET       EQU $23 ; bank-$02 pointer
 DEF OBJECT_TILE_COUNT_OFFSET       EQU $25
+; Core level vehicles set +$26; the player vehicle leaves it clear. It gates
+; enemy action sounds, pickup handling, tracking, and auxiliary-region logic.
+DEF OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET EQU $26
+; Vehicle-only timers. +$27 is also OBJECT_PROJECTILE_STEERING_DELAY_OFFSET
+; while the record has projectile status.
+DEF OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET     EQU $27
+DEF OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET EQU $28
 DEF OBJECT_PLAYER_POWERUP_TYPE_OFFSET    EQU $29 ; 0 none, 1..3 active kind
 DEF OBJECT_PLAYER_POWERUP_CHARGES_OFFSET EQU $2A
 ; Per-object waypoint-sequence state. The sequence slot's upper bits are flags;

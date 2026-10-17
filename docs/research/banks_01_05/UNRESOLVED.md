@@ -44,8 +44,7 @@
 
    `LoadAdjacentPathWaypointTarget` reads byte `+5` of a ring entry going
    backward, and nothing writes that byte.
-4. **Object fields** `+$26`, `+$27`, `+$28`, `+$32`, `+$33`, `+$38`, `+$39`,
-   `+$3C`: partial or no proven meaning.
+4. **Object fields** `+$38`, `+$39`, and `+$3C`: partial or no proven meaning.
 5. **Bank `$03` sequences** (`tools/object_sequence_fields.py`):
    - **Unread fields.** Nothing reads +1, +2, +7 or the count byte. +1/+2 is the
      pixel distance to the next waypoint (one exception: level 3 slot 2

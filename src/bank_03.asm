@@ -246,14 +246,14 @@ Jump_03_5D1A:
 	ld h, a
 	ld a, l
 	and $C0
-	add a, $27
+	add a, OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	and a
 	jr z, Jump_03_5D4F
 	ld a, l
 	and $C0
-	add a, $28
+	add a, OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	and a
@@ -1750,7 +1750,7 @@ Jump_03_64CA:
 Jump_03_64E1:
 	ld a, e
 	and $C0
-	add a, $26
+	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -1771,7 +1771,7 @@ Jump_03_64E1:
 Jump_03_64FE:
 	ld a, e
 	and $C0
-	add a, $26
+	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -1790,7 +1790,7 @@ Jump_03_64FE:
 Jump_03_6517:
 	ld a, e
 	and $C0
-	add a, $26
+	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -1823,7 +1823,7 @@ Jump_03_6517:
 Jump_03_6541:
 	ld a, e
 	and $C0
-	add a, $26
+	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a

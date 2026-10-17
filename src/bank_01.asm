@@ -828,19 +828,19 @@ PickupHandler02:
 	pop hl
 	ld a, l
 	and $C0
-	add a, $27
+	add a, OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
 	jp nz, FinishPickupKeepObject
 	ld a, l
 	and $C0
-	add a, $27
+	add a, OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET
 	ld l, a
 	ld [hl], $3C
 	ld a, l
 	and $C0
-	add a, $28
+	add a, OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET
 	ld l, a
 	ld [hl], $00
 	ld e, $53
@@ -969,7 +969,7 @@ PickupTriggerHudAlert:
 	pop hl
 	ld a, l
 	and $C0
-	add a, $26
+	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	ld l, a
 	ld a, [hl]
 	and a

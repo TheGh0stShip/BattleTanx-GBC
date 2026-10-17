@@ -20,7 +20,10 @@ Evidence: `src/bank_01.asm` and its callers in `src/bank_00.asm`, `src/bank_02.a
   - set powerup kinds 1-3;
   - start the HUD alert;
   - one does nothing;
-  - `PickupHandler02` sets `+$27`, whose meaning is unproven.
+  - `PickupHandler02` starts `OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET` at 60 and
+    clears `OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET`. The first timer is
+    decremented every 16 frames and prevents collecting this pickup again while
+    active; the pickup's higher-level gameplay identity remains unproven.
 
   The index is proven 0-9.
 - **`ScoreThresholdTable`** (`$418F`): twenty 32-bit thresholds (50,000 to

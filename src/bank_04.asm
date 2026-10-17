@@ -269,7 +269,7 @@ InitializeLevelObjects:
 .initializeCommonFields:
 	ld a, l
 	and $C0
-	add a, $26
+	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	ld l, a
 	ld a, $01
 	ld [hl], a
@@ -833,7 +833,7 @@ TrySpawnPendingLevelObject:
 .initializeCommonFields:
 	ld a, l
 	and $C0
-	add a, $26
+	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	ld l, a
 	ld a, $01
 	ld [hl], a
