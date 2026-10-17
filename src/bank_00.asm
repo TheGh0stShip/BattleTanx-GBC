@@ -7680,14 +7680,14 @@ Func_2977: ; legacy alias
 	ld a, [bc]
 	ld d, [hl]
 	cp d
-	jr nc, Jump_298E
+	jr nc, .measureXDistance
 	ld e, a
 	ld a, d
 	ld d, e
-Jump_298E:
+.measureXDistance:
 	sub d
 	cp $0C
-	jr nc, Jump_29B3
+	jr nc, .notClose
 	ld a, l
 	and $C0
 	add a, OBJECT_SCREEN_Y_OFFSET
@@ -7699,14 +7699,14 @@ Jump_298E:
 	ld a, [bc]
 	ld d, [hl]
 	cp d
-	jr nc, Jump_29A7
+	jr nc, .measureYDistance
 	ld e, a
 	ld a, d
 	ld d, e
-Jump_29A7:
+.measureYDistance:
 	sub d
 	cp $0C
-	jr nc, Jump_29B3
+	jr nc, .notClose
 	pop de
 	pop bc
 	pop hl
@@ -7714,7 +7714,7 @@ Jump_29A7:
 	or a
 	ret
 
-Jump_29B3:
+.notClose:
 	pop de
 	pop bc
 	pop hl
@@ -7745,7 +7745,7 @@ Func_29B8: ; legacy alias
 	sbc a, [hl]
 	ld b, a
 	and $80
-	jr z, Jump_29DA
+	jr z, .measureYDistance
 	ld a, c
 	cpl
 	add a, $01
@@ -7754,7 +7754,7 @@ Func_29B8: ; legacy alias
 	cpl
 	adc a, $00
 	ld b, a
-Jump_29DA:
+.measureYDistance:
 	push bc
 	ld a, l
 	and $C0
@@ -7775,7 +7775,7 @@ Jump_29DA:
 	sbc a, b
 	ld b, a
 	and $80
-	jr z, Jump_29FF
+	jr z, .sumAndHalve
 	ld a, c
 	cpl
 	add a, $01
@@ -7784,7 +7784,7 @@ Jump_29DA:
 	cpl
 	adc a, $00
 	ld b, a
-Jump_29FF:
+.sumAndHalve:
 	pop de
 	ld a, e
 	add a, c
@@ -7829,7 +7829,7 @@ Func_2A15: ; legacy alias
 	sbc a, b
 	ld b, a
 	and $80
-	jr z, Jump_2A43
+	jr z, .measureYDistance
 	ldh a, [$FF90]
 	or $01
 	ldh [$FF90], a
@@ -7841,7 +7841,7 @@ Func_2A15: ; legacy alias
 	cpl
 	adc a, $00
 	ld b, a
-Jump_2A43:
+.measureYDistance:
 	push bc
 	ld a, l
 	and $C0
@@ -7862,7 +7862,7 @@ Jump_2A43:
 	sbc a, b
 	ld b, a
 	and $80
-	jr z, Jump_2A6E
+	jr z, .selectOctant
 	ldh a, [$FF90]
 	or $02
 	ldh [$FF90], a
@@ -7874,7 +7874,7 @@ Jump_2A43:
 	cpl
 	adc a, $00
 	ld b, a
-Jump_2A6E:
+.selectOctant:
 	pop de
 	ld a, c
 	sub e
@@ -7883,9 +7883,9 @@ Jump_2A6E:
 	sbc a, d
 	ld b, a
 	ldh a, [$FF90]
-	jr nc, Jump_2A7B
+	jr nc, .lookupDirection
 	or $04
-Jump_2A7B:
+.lookupDirection:
 	add a, LOW(OctantDirectionValues)
 	ld l, a
 	ld a, HIGH(OctantDirectionValues)
@@ -7905,7 +7905,7 @@ Func_2A88: ; legacy alias
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_4D58
+	call UpdateNearestObjectTracker
 	pop af
 	ld [rROMB0], a
 	ret
@@ -7950,32 +7950,32 @@ AdvanceTextColumn:
 DrawEncodedText:
 	push hl
 	push af
-Jump_2AD0:
+.readCharacter:
 	ld a, [hli]
 	or a
-	jr z, Jump_2AF4
+	jr z, .return
 	cp $0D
-	jr nz, Jump_2ADD
+	jr nz, .checkClearCursor
 	call StartTextRow
-	jr Jump_2AD0
+	jr .readCharacter
 
-Jump_2ADD:
+.checkClearCursor:
 	cp $0C
-	jr nz, Jump_2AE6
+	jr nz, .checkAdvanceColumn
 	call ClearTextCursor
-	jr Jump_2AD0
+	jr .readCharacter
 
-Jump_2AE6:
+.checkAdvanceColumn:
 	cp $01
-	jr nz, Jump_2AEF
+	jr nz, .drawGlyph
 	call AdvanceTextColumn
-	jr Jump_2AD0
+	jr .readCharacter
 
-Jump_2AEF:
+.drawGlyph:
 	call DrawEncodedGlyph
-	jr Jump_2AD0
+	jr .readCharacter
 
-Jump_2AF4:
+.return:
 	pop af
 	pop hl
 	ret
@@ -8018,17 +8018,17 @@ DrawEncodedGlyph:
 	add hl, de
 	ld a, $01
 	ldh [rVBK], a
-Jump_2B37:
+.waitForAttributeVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_2B37
+	jr nz, .waitForAttributeVram
 	ld [hl], $0F
 	xor a
 	ldh [rVBK], a
-Jump_2B42:
+.waitForTileVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_2B42
+	jr nz, .waitForTileVram
 	ld a, c
 	add a, $80
 	ld [hl], a
@@ -8094,7 +8094,7 @@ Func_2B86: ; legacy alias
 	call GetVehicleMuzzlePositionFar
 	ld a, $02
 	call AllocateObjectRecord
-	jp z, Jump_2C1F
+	jp z, .failed
 	call SetObjectPosition
 	ld c, l
 	ld b, h
@@ -8194,7 +8194,7 @@ Func_2B86: ; legacy alias
 	pop de
 	ret
 
-Jump_2C1F:
+.failed:
 	xor a
 	pop bc
 	pop hl
@@ -8209,7 +8209,7 @@ Func_2C24: ; legacy alias
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_43EC
+	call GetObjectDirectionalOffsetPosition
 	pop af
 	ld [rROMB0], a
 	ret
@@ -8233,17 +8233,17 @@ Func_2C35: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	cp $01
-	jr nz, Jump_2C56
+	jr nz, .return
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_ACTIVE_SHOTS_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
-	jr z, Jump_2C56
+	jr z, .return
 	dec a
 	ld [hl], a
-Jump_2C56:
+.return:
 	pop hl
 	ret
 
@@ -8270,7 +8270,7 @@ Func_2C58: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	or a
-	jp z, Jump_2CBB
+	jp z, .return
 	ld a, l
 	and $C0
 	add a, $0D
@@ -8332,7 +8332,7 @@ Func_2C58: ; legacy alias
 	ld [hl], b
 	inc l
 	ld [hl], e
-Jump_2CBB:
+.return:
 	ld a, l
 	and $C0
 	ld l, a

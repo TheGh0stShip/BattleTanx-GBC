@@ -362,7 +362,7 @@ SetLevelViewCellPositionBank2:
 	db $F7, $FF, $F3, $FF, $F4, $FF, $F7, $FF, $F1, $FF
 
 GetObjectDirectionalOffsetPosition:
-Func_02_43EC: ; legacy alias, used by src/bank_00.asm
+Func_02_43EC: ; legacy alias
 	push af
 	push hl
 	ld a, l
@@ -939,7 +939,7 @@ Bank02ObjPalette7Colours:
 	dw $0000, $001F, $03DF
 
 UpdateNearestObjectTracker:
-Func_02_4D58: ; legacy alias, used by src/bank_00.asm
+Func_02_4D58: ; legacy alias
 	ld a, [wVisibleStatus1ObjectCount]
 	cp $02
 	jp nc, ResetNearestObjectTracker
