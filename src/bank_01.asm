@@ -3704,47 +3704,47 @@ ScrollingTileRowDestinations:
 ; The final six bytes of every record are reserved and zero.
 SceneBackgroundDescriptors:
 	db $33
-	dw $51A0, $5ED0, $5FC0, $60B0
+	dw FixedScene00Tiles, FixedScene00TileMap, FixedScene00Attributes, FixedScene00Palettes
 	db $04
 	ds 6, 0
 	db $31
-	dw $6BA0, $7800, $78F0, $79E0
+	dw FixedScene01Tiles, FixedScene01TileMap, FixedScene01Attributes, FixedScene01Palettes
 	db $05
 	ds 6, 0
 	db $32
-	dw $4000, $4EE0, $4FD0, $50C0
+	dw FixedScene02Tiles, FixedScene02TileMap, FixedScene02Attributes, FixedScene02Palettes
 	db $08
 	ds 6, 0
 	db $32
-	dw $5100, $5F80, $6070, $6160
+	dw FixedScene03Tiles, FixedScene03TileMap, FixedScene03Attributes, FixedScene03Palettes
 	db $08
 	ds 6, 0
 	db $32
-	dw $61A0, $7090, $7180, $7270
+	dw FixedScene04Tiles, FixedScene04TileMap, FixedScene04Attributes, FixedScene04Palettes
 	db $09
 	ds 6, 0
 	db $33
-	dw $4000, $4E60, $4F50, $5040
+	dw FixedScene05Tiles, FixedScene05TileMap, FixedScene05Attributes, FixedScene05Palettes
 	db $08
 	ds 6, 0
 	db $30
-	dw $5800, $6700, $67F0, $68E0
+	dw FixedScene06Tiles, FixedScene06TileMap, FixedScene06Attributes, FixedScene06Palettes
 	db $08
 	ds 6, 0
 	db $30
-	dw $6A00, $7740, $7830, $7920
+	dw FixedScene07Tiles, FixedScene07TileMap, FixedScene07Attributes, FixedScene07Palettes
 	db $08
 	ds 6, 0
 	db $31
-	dw $4000, $4E10, $4F00, $4FF0
+	dw FixedScene08Tiles, FixedScene08TileMap, FixedScene08Attributes, FixedScene08Palettes
 	db $06
 	ds 6, 0
 	db $31
-	dw $5020, $5DB0, $5EA0, $5F90
+	dw FixedScene09Tiles, FixedScene09TileMap, FixedScene09Attributes, FixedScene09Palettes
 	db $08
 	ds 6, 0
 	db $31
-	dw $5FD0, $6980, $6A70, $6B60
+	dw FixedScene10Tiles, FixedScene10TileMap, FixedScene10Attributes, FixedScene10Palettes
 	db $07
 	ds 6, 0
 
@@ -3882,21 +3882,21 @@ ScrollingSceneDescriptors:
 	db $05
 	dw $7AE0
 	db $30
-	dw $4000, $44A0
+	dw ScrollScene32Tiles, ScrollScene32Rows
 	db $05
-	dw $4590
+	dw ScrollScene32Palette
 	db $30
-	dw $4598, $49F8
+	dw ScrollScene33Tiles, ScrollScene33Rows
 	db $05
-	dw $4AE8
+	dw ScrollScene33Palette
 	db $30
-	dw $4AF0, $5020
+	dw ScrollScene34Tiles, ScrollScene34Rows
 	db $05
-	dw $5110
+	dw ScrollScene34Palette
 	db $30
-	dw $5118, $5648
+	dw ScrollScene35Tiles, ScrollScene35Rows
 	db $05
-	dw $5738
+	dw ScrollScene35Palette
 
 SceneScrollVariantIndexTable:
 	db $15, $16, $17, $00, $18, $19, $1A, $00, $1B, $1C

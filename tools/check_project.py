@@ -456,6 +456,120 @@ def check_structured_scrolling_scene_banks(
     )
 
 
+def check_fixed_scene_source(
+    rom: bytes, entries: list[tuple[pathlib.Path, int, int]]
+) -> None:
+    """Validate overlapping fixed/scrolling layouts in banks $30-$33."""
+    banks = range(0x30, 0x34)
+    ranges = {bank: [] for bank in banks}
+    labels = {}
+
+    def add(bank, start, end, kind, name):
+        if not 0x4000 <= start < end <= 0x8000:
+            fail(f"fixed source: {name} lies outside bank ${bank:02X}")
+        ranges[bank].append((start, end, kind, name))
+        labels[name] = (bank, start)
+
+    for index in range(11):
+        record = rom[0x59AB + index * 16:0x59BB + index * 16]
+        bank = record[0]
+        graphics, tilemap, attributes, palettes = (
+            int.from_bytes(record[offset:offset + 2], "little")
+            for offset in (1, 3, 5, 7)
+        )
+        palette_size = max(record[9] * 8, 0x40)
+        add(bank, graphics, graphics + 0xFF0, "graphics", f"FixedScene{index:02}Tiles")
+        add(bank, tilemap, tilemap + 240, "map", f"FixedScene{index:02}TileMap")
+        add(bank, attributes, attributes + 240, "attributes", f"FixedScene{index:02}Attributes")
+        add(bank, palettes, palettes + palette_size, "palette", f"FixedScene{index:02}Palettes")
+
+    for index in range(32, 36):
+        record = rom[0x5A60 + index * 8:0x5A68 + index * 8]
+        bank = record[0]
+        graphics = int.from_bytes(record[1:3], "little")
+        rows = int.from_bytes(record[3:5], "little")
+        palette = int.from_bytes(record[6:8], "little")
+        add(bank, graphics, rows, "graphics", f"ScrollScene{index:02}Tiles")
+        add(bank, rows, palette, "rows", f"ScrollScene{index:02}Rows")
+        add(bank, palette, palette + 8, "palette", f"ScrollScene{index:02}Palette")
+
+    expected_assets = {}
+    physical = {"graphics": 0, "structured": 0, "padding": 0}
+    overlap_bytes = 0
+    for bank in banks:
+        points = {0x4000, 0x7FFF, 0x8000}
+        for start, end, _, _ in ranges[bank]:
+            points.update((start, end))
+        points = sorted(points)
+        bank_base = bank * 0x4000 - 0x4000
+        if points[0] != 0x4000 or points[-1] != 0x8000:
+            fail(f"fixed source: bank ${bank:02X} event coverage is incomplete")
+        for start, end in zip(points, points[1:]):
+            active = [item for item in ranges[bank] if item[0] <= start and end <= item[1]]
+            if len(active) > 1:
+                overlap_bytes += end - start
+            structured = [item for item in active if item[2] != "graphics"]
+            data = rom[bank_base + start:bank_base + end]
+            if start == 0x7FFF:
+                if data != bytes((bank,)):
+                    fail(f"fixed source: bank ${bank:02X} marker changed")
+                physical["padding"] += 1
+            elif structured:
+                physical["structured"] += end - start
+            elif active:
+                path = pathlib.Path(
+                    f"assets/scenes/bank_{bank:02X}_tiles_{start:04X}_{end - 1:04X}.2bpp"
+                )
+                expected_assets[path] = (bank_base + start, end - start)
+                physical["graphics"] += end - start
+            else:
+                if data != bytes(len(data)):
+                    fail(f"fixed source: bank ${bank:02X} unclassified bytes are not zero")
+                physical["padding"] += end - start
+
+    manifest = {path: (offset, size) for path, offset, size in entries}
+    for path, where in expected_assets.items():
+        if manifest.get(path) != where:
+            fail(f"fixed source: asset {path} is {manifest.get(path)}, expected {where}")
+    if any(
+        offset // 0x4000 in banks and path not in expected_assets
+        for path, offset, _ in entries
+    ):
+        fail("fixed source: banks $30-$33 contain an unexpected asset")
+    for bank in banks:
+        source = (ROOT / "src" / f"bank_{bank:02X}.asm").read_text()
+        if f'assets/bank_{bank:02X}/4000.bin' in source:
+            fail(f"fixed source: bank ${bank:02X} returned to a whole-bank blob")
+
+    loader = (ROOT / "src" / "bank_01.asm").read_text()
+    if "ld bc, $0038\n\tadd hl, bc\n\tld bc, $DC40\n\tld e, $08" not in loader:
+        fail("fixed source: final-palette read no longer proves the 64-byte palette block")
+
+    sym = ROOT / "battletanx.sym"
+    if sym.exists():
+        symbols = {}
+        for line in sym.read_text().splitlines():
+            match = re.fullmatch(
+                r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip()
+            )
+            if match:
+                symbols[match.group(3)] = (
+                    int(match.group(1), 16), int(match.group(2), 16)
+                )
+        for name, where in labels.items():
+            if symbols.get(name) != where:
+                fail(f"fixed source: symbol {name} is at {symbols.get(name)}, expected {where}")
+
+    total = sum(physical.values())
+    if total != len(banks) * 0x4000:
+        fail(f"fixed source: accounted for {total} bytes, expected {len(banks) * 0x4000}")
+    print(
+        f"fixed source: 11 fixed and 4 scrolling scenes in banks $30-$33 "
+        f"({physical['graphics']} graphics, {physical['structured']} structured, "
+        f"{physical['padding']} padding; {overlap_bytes} dual-use bytes)"
+    )
+
+
 def check_menu_states(rom: bytes) -> None:
     """Validate the five headers and their fixed-size menu choice records."""
     states = (
@@ -1261,6 +1375,7 @@ def main() -> None:
     check_unused_banks(rom, entries)
     check_scene_descriptors(rom)
     check_structured_scrolling_scene_banks(rom, entries)
+    check_fixed_scene_source(rom, entries)
     check_menu_states(rom)
     check_menu_memory_symbols()
     check_text(rom)
