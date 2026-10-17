@@ -1054,6 +1054,8 @@ def check_level_banks() -> None:
             "CalculateVehicleNextPosition": (0x00, 0x0BA1),
             "LoadVehicleForwardVelocity": (0x00, 0x2241),
             "LoadVehicleReverseVelocity": (0x00, 0x2295),
+            "UpdateVehicleTimersAndRemoveDestroyed": (0x00, 0x104B),
+            "UpdateAllObjects": (0x00, 0x22ED),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),

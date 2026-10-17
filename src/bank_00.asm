@@ -366,7 +366,7 @@ Jump_0261:
 	call RenderScreenEffect
 	call UpdateScreenEffect
 Jump_02E9:
-	call Func_22ED
+	call UpdateAllObjects
 	call Func_3823
 	call ClearUnusedShadowOamEntries
 	call UpdatePlayerHealthRecovery
@@ -2877,7 +2877,8 @@ Jump_1046:
 	ret
 
 
-Func_104B:
+UpdateVehicleTimersAndRemoveDestroyed:
+Func_104B: ; legacy alias
 	push de
 	push bc
 	push hl
@@ -6330,7 +6331,8 @@ Jump_22E8:
 	ret
 
 
-Func_22ED:
+UpdateAllObjects:
+Func_22ED: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -6394,7 +6396,7 @@ Jump_2345:
 	ld [$CA08], a
 Jump_2353:
 	call CalculateVehicleNextPosition
-	call Func_104B
+	call UpdateVehicleTimersAndRemoveDestroyed
 	jr z, Jump_2335
 	ld a, $26
 	add a, e

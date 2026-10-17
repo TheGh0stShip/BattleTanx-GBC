@@ -233,6 +233,8 @@ NAMES = {
     0x0BA1: "CalculateVehicleNextPosition",
     0x2241: "LoadVehicleForwardVelocity",
     0x2295: "LoadVehicleReverseVelocity",
+    0x104B: "UpdateVehicleTimersAndRemoveDestroyed",
+    0x22ED: "UpdateAllObjects",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",
