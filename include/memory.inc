@@ -234,6 +234,13 @@ DEF BACKGROUND_PALETTE_FRAME_COUNT EQU 32
 DEF BACKGROUND_PALETTE_CACHE_SIZE EQU BACKGROUND_PALETTE_FRAME_SIZE * BACKGROUND_PALETTE_FRAME_COUNT
 DEF wBackgroundPaletteFadeTarget EQU wBackgroundPaletteFadeFrames + BACKGROUND_PALETTE_FRAME_SIZE * (BACKGROUND_PALETTE_FRAME_COUNT - 1)
 
+; Deferred BG-map writes. Records live in WRAM bank 4 and contain a 16-bit
+; destination followed by one attribute byte and one tile byte.
+DEF wBgMapWriteCount EQU $C940
+DEF wBgMapWritePtr   EQU $C941 ; 2-byte pointer
+DEF wBgMapWriteQueue EQU $D000 ; WRAM bank 4
+DEF BG_MAP_WRITE_RECORD_SIZE EQU 4
+
 ; Encoded text cursor used by the options menu text renderer.
 DEF wTextColumn EQU $C8DF
 DEF wTextRow    EQU $C8E0

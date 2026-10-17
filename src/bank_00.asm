@@ -227,7 +227,7 @@ Jump_01B4:
 	ld a, [wPlayerLives]
 	or a
 	jp z, Jump_00C7
-	call Func_3C19
+	call ResetBgMapWriteQueue
 	ld a, [wPlayerObject]
 	ld l, a
 	ld a, [wPlayerObject + 1]
@@ -349,7 +349,7 @@ Jump_0261:
 	ld [wPendingScrollX], a
 	ld a, [wLevelScrollY]
 	ld [wPendingScrollY], a
-	call Func_3C56
+	call FlushBgMapWriteQueue
 	call ResetSpriteAllocators
 	xor a
 	ld [$CD2A], a
@@ -2544,7 +2544,7 @@ Jump_0EA3:
 	ld e, a
 	ldh a, [$FF89]
 	ld d, a
-	call Func_3C28
+	call QueueBgMapWrite
 	ld a, [hli]
 	add a, $42
 	ld c, a
@@ -2573,7 +2573,7 @@ Jump_0EA3:
 	pop af
 	ld e, l
 	ld d, h
-	call Func_3C28
+	call QueueBgMapWrite
 	ldh a, [$FF88]
 	ld l, a
 	ldh a, [$FF89]
@@ -4852,7 +4852,7 @@ Jump_1AD6:
 
 
 RefreshLevelViewport:
-	call Func_3C19
+	call ResetBgMapWriteQueue
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -4862,7 +4862,7 @@ RefreshLevelViewport:
 	call DrawLevelRightColumn
 	call DrawLevelTopRow
 	call DrawLevelBottomRow
-	call Func_3C56
+	call FlushBgMapWriteQueue
 	pop af
 	ld [rROMB0], a
 	ret
@@ -5418,7 +5418,7 @@ WriteLevelCellToBGMap:
 	ld c, e
 	ld e, l
 	ld d, h
-	call Func_3C28
+	call QueueBgMapWrite
 	pop hl
 	pop de
 	pop bc
@@ -11159,26 +11159,31 @@ Func_3C08:
 	ret
 
 
-Func_3C19:
-	ld a, $00
-	ld [$C941], a
-	ld a, $D0
-	ld [$C942], a
+; Reset the WRAM-bank-4 deferred BG-map queue.
+ResetBgMapWriteQueue:
+Func_3C19: ; legacy alias
+	ld a, LOW(wBgMapWriteQueue)
+	ld [wBgMapWritePtr], a
+	ld a, HIGH(wBgMapWriteQueue)
+	ld [wBgMapWritePtr + 1], a
 	xor a
-	ld [$C940], a
+	ld [wBgMapWriteCount], a
 	ret
 
 
-Func_3C28:
+; Append DE destination, B attribute, and C tile as one four-byte record in
+; WRAM bank 4. The original code does not check count or pointer overflow.
+QueueBgMapWrite:
+Func_3C28: ; legacy alias
 	push af
 	push hl
 	ldh a, [rSVBK]
 	push af
 	ld a, $04
 	ldh [rSVBK], a
-	ld a, [$C941]
+	ld a, [wBgMapWritePtr]
 	ld l, a
-	ld a, [$C942]
+	ld a, [wBgMapWritePtr + 1]
 	ld h, a
 	ld a, e
 	ld [hli], a
@@ -11189,12 +11194,12 @@ Func_3C28:
 	ld a, c
 	ld [hli], a
 	ld a, l
-	ld [$C941], a
+	ld [wBgMapWritePtr], a
 	ld a, h
-	ld [$C942], a
-	ld a, [$C940]
+	ld [wBgMapWritePtr + 1], a
+	ld a, [wBgMapWriteCount]
 	inc a
-	ld [$C940], a
+	ld [wBgMapWriteCount], a
 	pop af
 	ldh [rSVBK], a
 	pop hl
@@ -11202,11 +11207,13 @@ Func_3C28:
 	ret
 
 
-Func_3C56:
+; Apply every queued record to both VRAM banks, then reset the queue.
+FlushBgMapWriteQueue:
+Func_3C56: ; legacy alias
 	push af
 	push bc
 	push hl
-	ld a, [$C940]
+	ld a, [wBgMapWriteCount]
 	or a
 	jr z, Jump_3C76
 	ld b, a
@@ -11214,14 +11221,14 @@ Func_3C56:
 	push af
 	ld a, $04
 	ldh [rSVBK], a
-	ld hl, $D000
+	ld hl, wBgMapWriteQueue
 Jump_3C6A:
-	call Func_3C7A
+	call ApplyBgMapWrite
 	dec b
 	jr nz, Jump_3C6A
 	pop af
 	ldh [rSVBK], a
-	call Func_3C19
+	call ResetBgMapWriteQueue
 Jump_3C76:
 	pop hl
 	pop bc
@@ -11229,6 +11236,8 @@ Jump_3C76:
 	ret
 
 
+; Apply one HL record: attribute to VRAM bank 1, then tile to bank 0.
+ApplyBgMapWrite:
 Func_3C7A:
 	ld a, [hli]
 	ld e, a

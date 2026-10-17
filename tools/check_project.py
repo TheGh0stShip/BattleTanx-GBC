@@ -1034,6 +1034,10 @@ def check_level_banks() -> None:
             "InstallGameplayInterruptHandlersFar": (0x00, 0x0AB3),
             "InstallBasicInterruptHandlersFar": (0x00, 0x0AC4),
             "RedrawLevelCells2x3AroundPixel": (0x00, 0x0B65),
+            "ResetBgMapWriteQueue": (0x00, 0x3C19),
+            "QueueBgMapWrite": (0x00, 0x3C28),
+            "FlushBgMapWriteQueue": (0x00, 0x3C56),
+            "ApplyBgMapWrite": (0x00, 0x3C7A),
             "PrepareDisplayForScreenTransition": (0x00, 0x035C),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
@@ -1301,6 +1305,15 @@ def check_level_banks() -> None:
     )
     if any(definition not in memory_source for definition in palette_cache_definitions):
         fail("background-palette fade cache definitions differ")
+
+    bg_queue_definitions = (
+        "DEF wBgMapWriteCount EQU $C940",
+        "DEF wBgMapWritePtr   EQU $C941",
+        "DEF wBgMapWriteQueue EQU $D000",
+        "DEF BG_MAP_WRITE_RECORD_SIZE EQU 4",
+    )
+    if any(definition not in memory_source for definition in bg_queue_definitions):
+        fail("deferred BG-map queue definitions differ")
 
     object_source = (ROOT / "include" / "object.inc").read_text()
     object_constants = {
