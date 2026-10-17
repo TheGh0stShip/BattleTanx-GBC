@@ -11378,7 +11378,10 @@ Jump_3C82:
 	ret
 
 
-Func_3C90:
+; Load cell 360 from the banked tile-map and attribute-map pointers at
+; $C94F/$C951, caching the pair at $C955/$C956 for screen-scroll fills.
+LoadScrollingScreenFillCell:
+Func_3C90: ; legacy alias
 	ld hl, $C943
 	ld a, [hli]
 	ld b, a

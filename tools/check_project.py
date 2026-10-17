@@ -1097,6 +1097,7 @@ def check_level_banks() -> None:
             "RunScreenMode8ActivityFar": (0x00, 0x3F1F),
             "InstallMenuRuntimeCodeFar": (0x00, 0x3AAE),
             "InstallSceneRuntimeCodeFar": (0x00, 0x3BB0),
+            "LoadScrollingScreenFillCell": (0x00, 0x3C90),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),

@@ -276,6 +276,7 @@ NAMES = {
     0x3F1F: "RunScreenMode8ActivityFar",
     0x3AAE: "InstallMenuRuntimeCodeFar",
     0x3BB0: "InstallSceneRuntimeCodeFar",
+    0x3C90: "LoadScrollingScreenFillCell",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",
