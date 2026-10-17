@@ -18,6 +18,13 @@ DEF OBJECT_NEXT_X_OFFSET      EQU $14 ; 16-bit little-endian pixel coordinate
 DEF OBJECT_NEXT_Y_SUBPIXEL_OFFSET EQU $16
 DEF OBJECT_NEXT_Y_OFFSET      EQU $17 ; 16-bit little-endian pixel coordinate
 DEF OBJECT_DIRECTION_OFFSET   EQU $19 ; low nibble, 16 directions
+; Vehicle-only drive controls. Flag bit 0 selects the direction+$08 velocity
+; vector; speed is bounded by the maximum selected from the vehicle type.
+DEF OBJECT_VEHICLE_SPEED_OFFSET         EQU $1A
+DEF OBJECT_VEHICLE_REVERSE_FLAG         EQU $01
+DEF OBJECT_VEHICLE_TURN_INTERVAL_OFFSET EQU $23
+DEF OBJECT_VEHICLE_TURN_TIMER_OFFSET    EQU $24
+DEF OBJECT_VEHICLE_MAX_SPEED_OFFSET     EQU $25
 DEF OBJECT_FRAME_DX_OFFSET    EQU $1B ; current X low minus previous X low
 DEF OBJECT_FRAME_DY_OFFSET    EQU $1C ; current Y low minus previous Y low
 DEF OBJECT_STATUS_OFFSET      EQU $1D ; 0 free, nonzero allocated

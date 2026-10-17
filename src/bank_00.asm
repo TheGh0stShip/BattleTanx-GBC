@@ -1945,10 +1945,10 @@ Func_0BA1:
 	push hl
 	ld a, l
 	and $C0
-	add a, $08
+	add a, OBJECT_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
-	and $01
+	and OBJECT_VEHICLE_REVERSE_FLAG
 	jr z, Jump_0BB8
 	ld a, l
 	and $C0
@@ -1964,7 +1964,7 @@ Jump_0BB8:
 Jump_0BBF:
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -2084,24 +2084,25 @@ Func_0C41:
 	ret
 
 
-Func_0C51:
+AccelerateVehicleReverse:
+Func_0C51: ; legacy alias
 	push af
 	push hl
 	ld a, l
 	and $C0
-	add a, $08
+	add a, OBJECT_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
-	or $01
+	or OBJECT_VEHICLE_REVERSE_FLAG
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $25
+	add a, OBJECT_VEHICLE_MAX_SPEED_OFFSET
 	ld l, a
 	ld b, [hl]
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp b
@@ -2115,24 +2116,25 @@ Jump_0C70:
 	ret
 
 
-Func_0C74:
+AccelerateVehicleForward:
+Func_0C74: ; legacy alias
 	push af
 	push hl
 	ld a, l
 	and $C0
-	add a, $08
+	add a, OBJECT_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
-	and $FE
+	and ~OBJECT_VEHICLE_REVERSE_FLAG
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $25
+	add a, OBJECT_VEHICLE_MAX_SPEED_OFFSET
 	ld l, a
 	ld b, [hl]
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp b
@@ -2146,12 +2148,13 @@ Jump_0C93:
 	ret
 
 
-Func_0C97:
+DecelerateVehicle:
+Func_0C97: ; legacy alias
 	push af
 	push hl
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -2164,12 +2167,13 @@ Jump_0CA5:
 	ret
 
 
-Func_0CA8:
+StopVehicle:
+Func_0CA8: ; legacy alias
 	push af
 	push hl
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	xor a
 	ld [hl], a
@@ -2178,29 +2182,30 @@ Func_0CA8:
 	ret
 
 
-Func_0CB5:
+TurnVehicleCounterclockwise:
+Func_0CB5: ; legacy alias
 	push af
 	push hl
 	ld a, l
 	and $C0
-	add a, $24
+	add a, OBJECT_VEHICLE_TURN_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
 	jr nz, Jump_0CDA
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_VEHICLE_TURN_INTERVAL_OFFSET
 	ld l, a
 	ld b, [hl]
 	ld a, l
 	and $C0
-	add a, $24
+	add a, OBJECT_VEHICLE_TURN_TIMER_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
 	dec a
@@ -2212,29 +2217,30 @@ Jump_0CDA:
 	ret
 
 
-Func_0CDD:
+TurnVehicleClockwise:
+Func_0CDD: ; legacy alias
 	push af
 	push hl
 	ld a, l
 	and $C0
-	add a, $24
+	add a, OBJECT_VEHICLE_TURN_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
 	jr nz, Jump_0D02
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_VEHICLE_TURN_INTERVAL_OFFSET
 	ld l, a
 	ld b, [hl]
 	ld a, l
 	and $C0
-	add a, $24
+	add a, OBJECT_VEHICLE_TURN_TIMER_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
 	inc a
@@ -2305,12 +2311,12 @@ Jump_0D43:
 Jump_0D4B:
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_VEHICLE_TURN_INTERVAL_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $25
+	add a, OBJECT_VEHICLE_MAX_SPEED_OFFSET
 	ld l, a
 	ld [hl], c
 	ld a, l
@@ -2326,7 +2332,7 @@ Jump_0D4B:
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
@@ -2361,7 +2367,7 @@ Jump_0D4B:
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $24
+	add a, OBJECT_VEHICLE_TURN_TIMER_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
@@ -2886,7 +2892,7 @@ Func_104B:
 Jump_105A:
 	ld a, l
 	and $C0
-	add a, $24
+	add a, OBJECT_VEHICLE_TURN_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -6192,7 +6198,7 @@ Func_2241:
 	ld d, h
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $00
@@ -6260,7 +6266,7 @@ Func_2295:
 	ld d, h
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $00
@@ -10138,28 +10144,28 @@ Func_364E: ; legacy alias
 	ld a, e
 	and $02
 	jr z, Jump_3657
-	call Func_0CB5
+	call TurnVehicleCounterclockwise
 Jump_3657:
 	ld a, e
 	and $01
 	jr z, Jump_365F
-	call Func_0CDD
+	call TurnVehicleClockwise
 Jump_365F:
 	ld a, e
 	and $04
 	jr z, Jump_3669
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_3676
 
 Jump_3669:
 	ld a, e
 	and $08
 	jr z, Jump_3673
-	call Func_0C51
+	call AccelerateVehicleReverse
 	jr Jump_3676
 
 Jump_3673:
-	call Func_0C97
+	call DecelerateVehicle
 Jump_3676:
 	ld a, e
 	and $10
@@ -10174,28 +10180,28 @@ Func_367F: ; legacy alias
 	ld a, e
 	and $02
 	jr z, Jump_3688
-	call Func_0CB5
+	call TurnVehicleCounterclockwise
 Jump_3688:
 	ld a, e
 	and $01
 	jr z, Jump_3690
-	call Func_0CDD
+	call TurnVehicleClockwise
 Jump_3690:
 	ld a, e
 	and $14
 	jr z, Jump_369A
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_36A7
 
 Jump_369A:
 	ld a, e
 	and $08
 	jr z, Jump_36A4
-	call Func_0C51
+	call AccelerateVehicleReverse
 	jr Jump_36A7
 
 Jump_36A4:
-	call Func_0C97
+	call DecelerateVehicle
 Jump_36A7:
 	ld a, e
 	and $20
@@ -10213,7 +10219,7 @@ Func_36AF: ; legacy alias
 	jr nz, Jump_36C1
 	ld a, $0C
 	call SetObjectDirection
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_3726
 
 Jump_36C1:
@@ -10221,7 +10227,7 @@ Jump_36C1:
 	jr nz, Jump_36CF
 	ld a, $04
 	call SetObjectDirection
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_3726
 
 Jump_36CF:
@@ -10229,7 +10235,7 @@ Jump_36CF:
 	jr nz, Jump_36DD
 	ld a, $00
 	call SetObjectDirection
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_3726
 
 Jump_36DD:
@@ -10237,7 +10243,7 @@ Jump_36DD:
 	jr nz, Jump_36EB
 	ld a, $08
 	call SetObjectDirection
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_3726
 
 Jump_36EB:
@@ -10245,7 +10251,7 @@ Jump_36EB:
 	jr nz, Jump_36F9
 	ld a, $0E
 	call SetObjectDirection
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_3726
 
 Jump_36F9:
@@ -10253,7 +10259,7 @@ Jump_36F9:
 	jr nz, Jump_3707
 	ld a, $0A
 	call SetObjectDirection
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_3726
 
 Jump_3707:
@@ -10261,7 +10267,7 @@ Jump_3707:
 	jr nz, Jump_3715
 	ld a, $02
 	call SetObjectDirection
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_3726
 
 Jump_3715:
@@ -10269,11 +10275,11 @@ Jump_3715:
 	jr nz, Jump_3723
 	ld a, $06
 	call SetObjectDirection
-	call Func_0C74
+	call AccelerateVehicleForward
 	jr Jump_3726
 
 Jump_3723:
-	call Func_0C97
+	call DecelerateVehicle
 Jump_3726:
 	ld a, e
 	and $10
@@ -11357,7 +11363,7 @@ StartScreenEffect:
 	ld [wScreenEffectBottomY], a
 	sub $10
 	ld [wScreenEffectTopY], a
-	call Func_0CA8
+	call StopVehicle
 	ld a, SCREEN_EFFECT_DURATION
 	ld [wScreenEffectCountdown], a
 	ld a, SCREEN_EFFECT_BLANK_COUNT
