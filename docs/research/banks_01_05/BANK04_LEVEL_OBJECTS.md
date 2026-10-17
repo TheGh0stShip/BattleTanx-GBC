@@ -15,7 +15,8 @@
   clear. It gates enemy action sounds, pickup handling, tracking, and
   auxiliary-region behavior.
 - **Inconsistency**: on the respawn path, types 0 and 1 swap their `+$39`
-  values relative to the initial load. This is recorded, not changed.
+  `OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET` values relative to the initial load.
+  This is recorded, not changed.
 
 ## Auxiliary records (15 x 8 x 8 bytes)
 

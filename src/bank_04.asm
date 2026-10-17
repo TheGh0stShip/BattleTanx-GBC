@@ -143,13 +143,13 @@ InitializeLevelObjects:
 	pop bc
 	ld a, l
 	and $C0
-	add a, $39
+	add a, OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET
 	ld l, a
 	ld a, c
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
 	ld a, $80
 	ld [hl], a
@@ -236,13 +236,13 @@ InitializeLevelObjects:
 	pop bc
 	ld a, l
 	and $C0
-	add a, $39
+	add a, OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET
 	ld l, a
 	ld a, c
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
 	ld a, $80
 	ld [hl], a
@@ -256,7 +256,7 @@ InitializeLevelObjects:
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
 	ld a, $80
 	ld [hl], a
@@ -300,7 +300,7 @@ InitializeLevelObjects:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $3C
+	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
 	ld e, a
 	xor a
 	ld [de], a
@@ -742,13 +742,13 @@ TrySpawnPendingLevelObject:
 	pop bc
 	ld a, l
 	and $C0
-	add a, $39
+	add a, OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET
 	ld l, a
 	ld a, c
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
 	ld a, $80
 	ld [hl], a
@@ -800,13 +800,13 @@ TrySpawnPendingLevelObject:
 	pop bc
 	ld a, l
 	and $C0
-	add a, $39
+	add a, OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET
 	ld l, a
 	ld a, c
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
 	ld a, $80
 	ld [hl], a
@@ -820,7 +820,7 @@ TrySpawnPendingLevelObject:
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
 	ld a, $80
 	ld [hl], a
@@ -839,7 +839,7 @@ TrySpawnPendingLevelObject:
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $3C
+	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
 	ld l, a
 	xor a
 	ld [hl], a

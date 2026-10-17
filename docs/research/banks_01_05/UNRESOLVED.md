@@ -44,8 +44,7 @@
 
    `LoadAdjacentPathWaypointTarget` reads byte `+5` of a ring entry going
    backward, and nothing writes that byte.
-4. **Object fields** `+$38`, `+$39`, and `+$3C`: partial or no proven meaning.
-5. **Bank `$03` sequences** (`tools/object_sequence_fields.py`):
+4. **Bank `$03` sequences** (`tools/object_sequence_fields.py`):
    - **Unread fields.** Nothing reads +1, +2, +7 or the count byte. +1/+2 is the
      pixel distance to the next waypoint (one exception: level 3 slot 2
      record 2 stores 9, computed 8), and +7 always equals +6.
@@ -61,15 +60,15 @@
    - **Unused sequences.** No spawn record uses (3, 11), (9, 1), (9, 2) or
      (10, 17). The complete spawn-to-sequence cross-check is enforced by
      `tools/object_sequence_fields.py`.
-6. **Bank `$04`**:
+5. **Bank `$04`**:
    - auxiliary mode 5 is unhandled;
    - `wPlayerSpawnHealthPenalty` (`$CD1A`) is written but never read;
    - the type-0/1 `+$39` swap on the respawn path is unexplained.
-7. **Unread bytes**:
+6. **Unread bytes**:
    - `Bank02UnknownWord481E` (2 bytes before two recovered indexed sprite grids);
    - `Bank02Unread5E80`;
    - `$D7CA`/`$D260` single-`ret` data images.
-8. **RAM**:
+7. **RAM**:
    - `wC8E6` is written, but its purpose is unknown.
    - `wCommittedMusicSetting` and `wCommittedControlSetting` are write-only.
    - `$CD26` only ever holds `$55`.
@@ -79,5 +78,5 @@
      `hLevelRegionX` (`$FF95`), which looks like reuse of HRAM.
    - The score BCD buffer at `$FFB0-$FFB4` overlaps
      `hSceneRowTileVramAddress`.
-9. **Gameplay identities**: these are not assigned for the burst effect, the
+8. **Gameplay identities**: these are not assigned for the burst effect, the
     screen effect, the tracker pointer, the scenes and the pictures.

@@ -177,8 +177,11 @@ def validate_source(root: pathlib.Path) -> int:
         "OBJECT_SEQUENCE_PROXIMITY_DELAY_OFFSET": 0x33,
         "OBJECT_SEQUENCE_TARGET_X_OFFSET": 0x34,
         "OBJECT_SEQUENCE_TARGET_Y_OFFSET": 0x36,
+        "OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET": 0x38,
+        "OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET": 0x39,
         "OBJECT_RESPAWNS_LEFT_OFFSET": 0x3A,
         "OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET": 0x3B,
+        "OBJECT_SEQUENCE_ACTION_TIMER_OFFSET": 0x3C,
     }
     check(definitions == expected, f"source: object sequence field constants changed: {definitions}")
     source = (root / "src/bank_03.asm").read_text() + (root / "src/bank_04.asm").read_text()

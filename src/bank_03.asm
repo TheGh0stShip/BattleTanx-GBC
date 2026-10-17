@@ -331,7 +331,7 @@ Jump_03_5D8E:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $3C
+	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
 	ld e, a
 	ld a, [de]
 	bit 7, a
@@ -341,7 +341,7 @@ Jump_03_5D8E:
 Jump_03_5DB9:
 	ld a, e
 	and $C0
-	add a, $3C
+	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
 	ld e, a
 	ld a, [de]
 	ld b, a
@@ -375,7 +375,7 @@ Jump_03_5DE2:
 	jp nz, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
-	add a, $3C
+	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
 	ld e, a
 	ld a, b
 	dec a
@@ -405,7 +405,7 @@ Jump_03_5DF5:
 	jp nz, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld e, a
 	ld a, [de]
 	and $F0
@@ -505,14 +505,14 @@ HandleSequenceWaypointArrival:
 Jump_03_5E91:
 	ld a, e
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld e, a
 	ld a, [de]
 	and $F0
 	jp z, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
-	add a, $39
+	add a, OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET
 	ld e, a
 	ld a, [de]
 	push af
@@ -694,7 +694,7 @@ ApplySequenceRecordEndAction:
 Jump_03_5F85:
 	ld a, e
 	and $C0
-	add a, $3C
+	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
 	ld e, a
 	ld a, [hl]
 	ld [de], a
@@ -703,7 +703,7 @@ Jump_03_5F85:
 Jump_03_5F8F:
 	ld a, e
 	and $C0
-	add a, $3C
+	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
 	ld e, a
 	ld a, $91
 	ld [de], a
@@ -1047,7 +1047,7 @@ Func_03_611C: ; legacy alias (automatic entry label)
 	jr nz, AimObjectAtPlayer_ComputeDirection
 	ld a, e
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld e, a
 	ld a, [de]
 	and $F0
@@ -1146,7 +1146,7 @@ AimObjectAtPlayer_StoreTurnSign:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $38
+	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld e, a
 	ld a, [de]
 	and $F0
@@ -2190,7 +2190,7 @@ PathSnap_CheckYAxis:
 PathSnap_NotArrived:
 	ld a, e
 	and $C0
-	add a, $39
+	add a, OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET
 	ld e, a
 	ld a, [de]
 	push af

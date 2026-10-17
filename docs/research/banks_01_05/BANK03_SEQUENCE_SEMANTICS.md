@@ -62,8 +62,9 @@ The `$60AF-$67F9` routines are named in FINAL_FUNCTIONS.md.
 
 ## Runtime object fields
 
-`include/object.inc` now defines the proven sequence fields at `+$2D-$37`:
+`include/object.inc` now defines the proven sequence fields at `+$2D-$3C`:
 slot/flags, record index, target heading, turn delay, reverse flag, signed turn
-step, proximity delay, and 16-bit target X/Y. It also defines respawns-left at
-`+$3A` and the spawn-index/aim-latch byte at `+$3B`. Bank `$03` and bank `$04`
-use these symbols instead of raw offsets; the validator pins all eleven values.
+step, proximity delay, 16-bit target X/Y, movement state, fallback speed, and
+action timer. It also defines respawns-left at `+$3A` and the
+spawn-index/aim-latch byte at `+$3B`. Bank `$03` and bank `$04` use these
+symbols instead of raw offsets; the validator pins all fourteen values.
