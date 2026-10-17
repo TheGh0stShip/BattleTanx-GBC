@@ -560,11 +560,13 @@ Semantic understanding:
   table boundaries, bank switching, callers and frame timing.
 - Named in source: 8 routines (`Audio_InitFar`, `Music_Update`,
   `Audio_Update`, `Audio_QueueSound`, `Audio_Init`, `Music_HandleEvent`,
-  `Audio_PlaySound`, `SfxSequence_Update`), 9 data tables and 17 WRAM symbols
-  in `include/memory.inc`, including three explicitly named vestigial/gating bytes.
+  `Audio_PlaySound`, `SfxSequence_Update`), all 46 internal audio branch
+  targets, 9 data tables and 17 WRAM symbols in `include/memory.inc`, including
+  three explicitly named vestigial/gating bytes.
 - Structurally bounded but unread: the named patch/table padding fields,
-  music-pointer byte 3, and the bytes after each sequence terminator. Raw sfx
-  op bits and track identities also remain unknown. The 90-entry frequency
+  music-pointer byte 3, and the bytes after each sequence terminator. Unused
+  raw sfx op bits remain preserved byte-for-byte; track identities remain
+  unknown. The 90-entry frequency
   table is proven as a C2-F9 equal-tempered scale for square channels; the
   wave channel sounds the same indexes one octave lower.
 - Not audio: bank `$05` (sprite layouts and level parameters).

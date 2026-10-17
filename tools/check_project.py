@@ -823,6 +823,13 @@ def check_audio() -> None:
         fail("audio: bank $06 data is back in the asset manifest")
     if "INCBIN" in (ROOT / "src" / "audio_data.asm").read_text():
         fail("audio: src/audio_data.asm must stay explicit source")
+    audio_driver_source = (ROOT / "src" / "bank_06.asm").read_text()
+    if re.search(r"^Jump_06_[0-9A-F]{4}:", audio_driver_source, re.MULTILINE):
+        fail("audio: an automatic internal driver label returned")
+    rom0_source = (ROOT / "src" / "bank_00.asm").read_text()
+    if re.search(r"^Jump_(?:2ED0|2EEC|2EF4|2F2F|2F48|2F6A|2F83):",
+                 rom0_source, re.MULTILINE):
+        fail("audio: an automatic ROM0 audio label returned")
     bank7_asset = pathlib.Path("assets/bank_07/audio_build_residue.bin")
     entries = {
         pathlib.Path(path): (offset, size)

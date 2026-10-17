@@ -8746,10 +8746,10 @@ Audio_InitFar:
 	call Audio_Init
 	ld a, [$C8E6]
 	cp $00
-	jr nz, Jump_2ED0
+	jr nz, .RestoreBank
 	ld a, $01
 	ld [$C8E6], a
-Jump_2ED0:
+.RestoreBank:
 	pop af
 	ld [rROMB0], a
 	ret
@@ -8764,19 +8764,19 @@ Music_Update:
 	ret z
 	ld a, [wMusicDelay]
 	cp $01
-	jr z, Jump_2EEC
+	jr z, .ReadEvent
 	dec a
 	ld [wMusicDelay], a
 	ret
 
-Jump_2EEC:
+.ReadEvent:
 	ld hl, wMusicPtr
 	ld a, [hli]
 	ld b, a
 	ld a, [hl]
 	ld h, b
 	ld l, a
-Jump_2EF4:
+.ProcessEventLoop:
 	ld a, [wMusicBank]
 	ld [rROMB0], a
 	ld a, [hli]
@@ -8799,7 +8799,7 @@ Jump_2EF4:
 	ld [wMusicPtr + 1], a
 	ld a, [wMusicDelay]
 	cp $00
-	jr z, Jump_2EF4
+	jr z, .ProcessEventLoop
 	ret
 
 
@@ -8810,10 +8810,10 @@ Audio_Update:
 	push hl
 	ld a, [wNoiseLockTimer]
 	and a
-	jr z, Jump_2F2F
+	jr z, .NoiseTimerDone
 	dec a
 	ld [wNoiseLockTimer], a
-Jump_2F2F:
+.NoiseTimerDone:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $06
@@ -8825,10 +8825,10 @@ Jump_2F2F:
 	ld d, $00
 	ld e, a
 	add hl, de
-Jump_2F48:
+.DrainQueue:
 	ld a, [hl]
 	and a
-	jr z, Jump_2F6A
+	jr z, .RestoreBank
 	push hl
 	call Audio_PlaySound
 	pop hl
@@ -8839,13 +8839,13 @@ Jump_2F48:
 	inc a
 	ld [wSoundQueueNext], a
 	cp SOUND_QUEUE_SIZE
-	jr nz, Jump_2F48
+	jr nz, .DrainQueue
 	ld hl, wSoundQueue
 	xor a
 	ld [wSoundQueueNext], a
-	jr Jump_2F48
+	jr .DrainQueue
 
-Jump_2F6A:
+.RestoreBank:
 	pop af
 	ld [rROMB0], a
 	pop hl
@@ -8866,9 +8866,9 @@ Audio_QueueSound:
 	ld a, [wSoundQueueLast]
 	inc a
 	cp SOUND_QUEUE_SIZE
-	jr nz, Jump_2F83
+	jr nz, .Store
 	xor a
-Jump_2F83:
+.Store:
 	ld [wSoundQueueLast], a
 	ld b, $00
 	ld c, a

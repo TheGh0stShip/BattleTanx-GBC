@@ -153,7 +153,8 @@ write 1 to `wUnusedChannel1PatchFlag`, which nothing reads.
 
 Delay 0 runs the next event in the same frame. Op values present: `$11`,
 `$21`, `$00`, `$06`, `$12`, `$22`, `$42`; their other bits are not read and
-are kept as raw macro arguments. Each sequence is followed by `FF 00 FF FF`
+have no run-time effect. They remain raw macro arguments to preserve the
+original bytes. Each sequence is followed by `FF 00 FF FF`
 (`$42E6`: `FF 00 FF FF 00 00`), which the driver never reaches.
 
 Ids `$40-$7F` are ignored while `wSfxSeqLock` is set. Starting the id in

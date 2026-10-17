@@ -23,63 +23,63 @@ Audio_Init:
 	ld c, $00
 	ld b, $04
 	ld hl, wChannelSettings
-Jump_06_7CE1:
+.InitChannelSettingsLoop:
 	ld a, c
 	ld [hli], a
 	ld a, $11
 	ld [hli], a
 	inc c
 	dec b
-	jr nz, Jump_06_7CE1
+	jr nz, .InitChannelSettingsLoop
 	ld hl, $FF30
 	ld bc, WaveformPattern
 	ld d, $10
-Jump_06_7CF2:
+.InitWaveRamLoop:
 	ld a, [bc]
 	ld [hli], a
 	inc bc
 	dec d
-	jr nz, Jump_06_7CF2
+	jr nz, .InitWaveRamLoop
 	ld d, $17
 	ld bc, $FF10
 	ld hl, AudioRegisterInit
-Jump_06_7D00:
+.InitSoundRegistersLoop:
 	ld a, [hli]
 	ld [bc], a
 	inc bc
 	dec d
-	jr nz, Jump_06_7D00
+	jr nz, .InitSoundRegistersLoop
 	ld hl, wSoundQueue
 	ld b, SOUND_QUEUE_SIZE
 	xor a
-Jump_06_7D0C:
+.ClearSoundQueueLoop:
 	ld [hli], a
 	dec b
-	jr nz, Jump_06_7D0C
+	jr nz, .ClearSoundQueueLoop
 	ret
 
 
 Music_HandleEvent:
 	ld a, b
 	cp $8F
-	jr c, Jump_06_7D46
+	jr c, .DecodeChannelCommand
 	cp $FE
-	jr z, Jump_06_7D24
+	jr z, .HandleControlCommand
 	xor a
 	ld [wMusicPtr], a
 	ld [wMusicPtr + 1], a
 	ldh [rNR51], a
 	ret
 
-Jump_06_7D24:
+.HandleControlCommand:
 	ld a, c
 	cp $F0
-	jr nc, Jump_06_7D2E
+	jr nc, .LoopSequence
 	ld e, a
 	call Audio_QueueSound
 	ret
 
-Jump_06_7D2E:
+.LoopSequence:
 	pop de
 	pop hl
 	ld hl, wMusicLoopPtr
@@ -96,7 +96,7 @@ Jump_06_7D2E:
 	ldh [rNR51], a
 	ret
 
-Jump_06_7D46:
+.DecodeChannelCommand:
 	and $F0
 	swap a
 	ld d, a
@@ -104,16 +104,16 @@ Jump_06_7D46:
 	and $0F
 	ld b, d
 	cp $01
-	jr z, Jump_06_7D63
+	jr z, .NoteOn
 	cp $02
-	jp z, Jump_06_7E03
+	jp z, .NoteOff
 	cp $03
-	jp z, Jump_06_7E28
+	jp z, .SetInstrument
 	cp $04
-	jp z, Jump_06_7E34
+	jp z, .SetPan
 	ret
 
-Jump_06_7D63:
+.NoteOn:
 	ld a, [wMusicNoteOnBlocked]
 	and a
 	ret nz
@@ -130,20 +130,20 @@ Jump_06_7D63:
 	ld [wNotePan], a
 	ld a, e
 	cp $03
-	jr nz, Jump_06_7DA7
+	jr nz, .LoadInstrument
 	ld a, [wNoiseLockTimer]
 	and a
-	jr z, Jump_06_7D8E
+	jr z, .ResolveNoiseNote
 	ldh a, [rNR52]
 	bit 3, a
 	ret nz
 	xor a
 	ld [wNoiseLockTimer], a
-Jump_06_7D8E:
+.ResolveNoiseNote:
 	ld a, c
 	sub $0C
 	cp $09
-	jr nc, Jump_06_7DA7
+	jr nc, .LoadInstrument
 	push hl
 	push de
 	add a, a
@@ -157,7 +157,7 @@ Jump_06_7D8E:
 	pop de
 	pop hl
 	ld d, a
-Jump_06_7DA7:
+.LoadInstrument:
 	ld a, d
 	add a, a
 	add a, a
@@ -177,10 +177,10 @@ Jump_06_7DA7:
 	ld d, a
 	ld a, b
 	cp $03
-	jr nz, Jump_06_7DC6
+	jr nz, .WriteInstrument
 	xor a
 	ldh [rNR34], a
-Jump_06_7DC6:
+.WriteInstrument:
 	pop hl
 	ld a, [hli]
 	ld [de], a
@@ -192,11 +192,11 @@ Jump_06_7DC6:
 	ld [de], a
 	push hl
 	bit 0, b
-	jr z, Jump_06_7DD5
+	jr z, .WriteFrequency
 	inc de
-Jump_06_7DD5:
+.WriteFrequency:
 	bit 2, b
-	jr nz, Jump_06_7DEB
+	jr nz, .SkipFrequency
 	push de
 	ld hl, NoteFrequencies
 	ld a, c
@@ -209,20 +209,20 @@ Jump_06_7DD5:
 	ld [de], a
 	inc hl
 	inc de
-	jr Jump_06_7DEC
+	jr .EnableChannel
 
-Jump_06_7DEB:
+.SkipFrequency:
 	inc de
-Jump_06_7DEC:
+.EnableChannel:
 	ld a, [wNotePan]
 	ld c, b
-Jump_06_7DF0:
+.ShiftPanLoop:
 	dec c
-	jr z, Jump_06_7DF6
+	jr z, .TriggerChannel
 	add a, a
-	jr Jump_06_7DF0
+	jr .ShiftPanLoop
 
-Jump_06_7DF6:
+.TriggerChannel:
 	ld c, a
 	ldh a, [rNR51]
 	or c
@@ -234,28 +234,28 @@ Jump_06_7DF6:
 	ld [de], a
 	ret
 
-Jump_06_7E03:
+.NoteOff:
 	ld a, d
 	cp $04
-	jr nz, Jump_06_7E0F
+	jr nz, .BuildChannelMask
 	ld a, [wNoiseLockTimer]
 	cp $00
-	jr nz, Jump_06_7E1E
-Jump_06_7E0F:
+	jr nz, .SetDelayAndReturn
+.BuildChannelMask:
 	ld a, $11
-Jump_06_7E11:
+.ShiftChannelMaskLoop:
 	dec d
-	jr z, Jump_06_7E17
+	jr z, .ApplyChannelMask
 	add a, a
-	jr Jump_06_7E11
+	jr .ShiftChannelMaskLoop
 
-Jump_06_7E17:
+.ApplyChannelMask:
 	cpl
 	ld d, a
 	ldh a, [rNR51]
 	and d
 	ldh [rNR51], a
-Jump_06_7E1E:
+.SetDelayAndReturn:
 	pop de
 	pop hl
 	dec hl
@@ -265,7 +265,7 @@ Jump_06_7E1E:
 	push de
 	ret
 
-Jump_06_7E28:
+.SetInstrument:
 	ld hl, wChannelSettings
 	ld d, $00
 	ld e, b
@@ -275,7 +275,7 @@ Jump_06_7E28:
 	ld [hl], c
 	ret
 
-Jump_06_7E34:
+.SetPan:
 	ld hl, wChannelSettings
 	ld d, $00
 	ld e, b
@@ -289,9 +289,9 @@ Jump_06_7E34:
 
 Audio_PlaySound:
 	bit 7, a
-	jr nz, Jump_06_7E9A
+	jr nz, .StartMusic
 	bit 6, a
-	jp nz, Jump_06_7ED0
+	jp nz, .StartSfxSequence
 	ld hl, SoundPatches
 	add a, a
 	add a, a
@@ -306,15 +306,15 @@ Audio_PlaySound:
 	ld c, a
 	push hl
 	cp $04
-	jr nz, Jump_06_7E66
+	jr nz, .PatchChannelReady
 	ld a, $37
 	ld [wNoiseLockTimer], a
 	ld a, $04
-Jump_06_7E66:
+.PatchChannelReady:
 	cp $01
-	jr nz, Jump_06_7E6D
+	jr nz, .FindPatchRegisters
 	ld [wUnusedChannel1PatchFlag], a
-Jump_06_7E6D:
+.FindPatchRegisters:
 	dec a
 	add a, a
 	ld e, a
@@ -338,11 +338,11 @@ Jump_06_7E6D:
 	ld [de], a
 	inc de
 	bit 0, c
-	jr z, Jump_06_7E8C
+	jr z, .TriggerPatch
 	ld a, [hli]
 	ld [de], a
 	inc de
-Jump_06_7E8C:
+.TriggerPatch:
 	ld b, a
 	ld a, [hl]
 	ld c, a
@@ -355,7 +355,7 @@ Jump_06_7E8C:
 	ld [de], a
 	ret
 
-Jump_06_7E9A:
+.StartMusic:
 	and $7F
 	add a, a
 	add a, a
@@ -374,33 +374,33 @@ Jump_06_7E9A:
 	ld hl, wChannelSettings
 	ld b, $00
 	ld c, $04
-Jump_06_7EBE:
+.ResetChannelSettingsLoop:
 	ld a, b
 	ld [hli], a
 	ld a, $11
 	ld [hli], a
 	inc b
 	dec c
-	jr nz, Jump_06_7EBE
+	jr nz, .ResetChannelSettingsLoop
 	xor a
 	ldh [rNR51], a
 	ld a, $01
 	ld [wMusicDelay], a
 	ret
 
-Jump_06_7ED0:
+.StartSfxSequence:
 	ld b, a
 	ld a, [wSfxSeqLock]
 	and a
 	ret nz
 	ld a, [wSfxSeqLockId]
 	cp b
-	jr nz, Jump_06_7EE4
+	jr nz, .LoadSfxSequence
 	xor a
 	ld [wSfxSeqLockId], a
 	inc a
 	ld [wSfxSeqLock], a
-Jump_06_7EE4:
+.LoadSfxSequence:
 	ld a, b
 	and $3F
 	ld hl, SfxSequencePointers
@@ -424,7 +424,7 @@ SfxSequence_Update:
 	ld a, [wSfxSeqDelay]
 	dec a
 	ld [wSfxSeqDelay], a
-Jump_06_7F09:
+.ProcessNextEvent:
 	and a
 	ret nz
 	ld hl, wSfxSeqPtr
@@ -434,28 +434,28 @@ Jump_06_7F09:
 	ld l, b
 	ld a, [hli]
 	cp $FF
-	jp z, Jump_06_7FC5
+	jp z, .EndSequence
 	bit 0, a
-	jr nz, Jump_06_7F35
+	jr nz, .DispatchSound
 	bit 6, a
-	jr nz, Jump_06_7F29
+	jr nz, .MuteNoise
 	ldh a, [rNR51]
 	and $EE
 	ldh [rNR51], a
-	jp Jump_06_7FB4
+	jp .SetDelay
 
-Jump_06_7F29:
+.MuteNoise:
 	ldh a, [rNR51]
 	and $77
 	ldh [rNR51], a
 	xor a
 	ld [wNoiseLockTimer], a
-	jr Jump_06_7FB4
+	jr .SetDelay
 
-Jump_06_7F35:
+.DispatchSound:
 	and $F0
 	cp $20
-	jr z, Jump_06_7F8F
+	jr z, .PlayTone
 	ld a, [hli]
 	push hl
 	ld hl, SoundPatches
@@ -472,15 +472,15 @@ Jump_06_7F35:
 	ld c, a
 	push hl
 	cp $04
-	jr nz, Jump_06_7F59
+	jr nz, .PatchChannelReady
 	ld a, $37
 	ld [wNoiseLockTimer], a
 	ld a, $04
-Jump_06_7F59:
+.PatchChannelReady:
 	cp $01
-	jr nz, Jump_06_7F60
+	jr nz, .FindPatchRegisters
 	ld [wUnusedChannel1PatchFlag], a
-Jump_06_7F60:
+.FindPatchRegisters:
 	dec a
 	add a, a
 	ld e, a
@@ -504,11 +504,11 @@ Jump_06_7F60:
 	ld [de], a
 	inc de
 	bit 0, c
-	jr z, Jump_06_7F7F
+	jr z, .TriggerPatch
 	ld a, [hli]
 	ld [de], a
 	inc de
-Jump_06_7F7F:
+.TriggerPatch:
 	ld b, a
 	ld a, [hl]
 	ld c, a
@@ -520,9 +520,9 @@ Jump_06_7F7F:
 	or $80
 	ld [de], a
 	pop hl
-	jr Jump_06_7FB4
+	jr .SetDelay
 
-Jump_06_7F8F:
+.PlayTone:
 	ld a, $86
 	ldh [rNR10], a
 	ld a, $40
@@ -545,7 +545,7 @@ Jump_06_7F8F:
 	or $80
 	ldh [rNR14], a
 	pop hl
-Jump_06_7FB4:
+.SetDelay:
 	ld a, [hli]
 	ld [wSfxSeqDelay], a
 	ld b, a
@@ -554,9 +554,9 @@ Jump_06_7FB4:
 	ld a, h
 	ld [wSfxSeqPtr + 1], a
 	ld a, b
-	jp Jump_06_7F09
+	jp .ProcessNextEvent
 
-Jump_06_7FC5:
+.EndSequence:
 	ld hl, wSfxSeqPtr
 	xor a
 	ld [hli], a
