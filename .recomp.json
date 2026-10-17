@@ -9,6 +9,9 @@
   },
   "project": "BattleTanx GBC",
   "status": "in-progress",
+  "targets": [
+    "GBC"
+  ],
   "toolchain": "RGBDS 1.0.4",
   "approach": "Byte-exact SM83 assembly disassembly with reviewed symbols and extracted data formats",
   "maintainers": [
