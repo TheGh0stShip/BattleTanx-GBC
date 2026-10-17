@@ -133,7 +133,7 @@ Jump_00DA:
 	call Func_04CD
 	ld a, $91
 	ldh [rLCDC], a
-	ld a, [$C000]
+	ld a, [wBootHardwareMode]
 	jp Init
 
 
@@ -217,8 +217,8 @@ Jump_01B4:
 	xor a
 	ldh [rSCX], a
 	ldh [rSCY], a
-	ld [$C6B0], a
-	ld [$C6B1], a
+	ld [wPendingScrollX], a
+	ld [wPendingScrollY], a
 	ld [$C8D9], a
 	ldh a, [rLCDC]
 	res 4, a
@@ -341,19 +341,19 @@ Jump_0261:
 	ldh [rHDMA4], a
 	ld a, $04
 	ldh [rHDMA5], a
-	ld a, [$C6B0]
+	ld a, [wPendingScrollX]
 	ldh [rSCX], a
-	ld a, [$C6B1]
+	ld a, [wPendingScrollY]
 	ldh [rSCY], a
 	ld a, [wLevelScrollX]
-	ld [$C6B0], a
+	ld [wPendingScrollX], a
 	ld a, [wLevelScrollY]
-	ld [$C6B1], a
+	ld [wPendingScrollY], a
 	call Func_3C56
 	call Func_2058
 	xor a
 	ld [$CD2A], a
-	ld hl, $C6B9
+	ld hl, wFrameCounter
 	ld a, [hl]
 	add a, $01
 	ld [hli], a
@@ -1075,7 +1075,7 @@ Jump_063D:
 
 
 RequireCgbHardware:
-	ld a, [$C000]
+	ld a, [wBootHardwareMode]
 	cp $11
 	ret z
 	ld a, $C1
@@ -1443,7 +1443,7 @@ Func_08C6:
 	call DisableLCDSafely
 	call ClearGameMemory
 	ld a, d
-	ld [$C000], a
+	ld [wBootHardwareMode], a
 	call RequireCgbHardware
 	call ResetDisplayState
 	call LoadOAMDMARoutine
@@ -1625,8 +1625,8 @@ Func_0A23:
 	ld [$C91D], a
 	ld [$C8D7], a
 	ld [$C8D6], a
-	ld [$C6B9], a
-	ld [$C6BA], a
+	ld [wFrameCounter], a
+	ld [wFrameCounter + 1], a
 	ld a, [$C91F]
 	and a
 	ret z
@@ -2839,7 +2839,7 @@ Jump_105A:
 	dec a
 	ld [hl], a
 Jump_1066:
-	ld a, [$C6B9]
+	ld a, [wFrameCounter]
 	and $0F
 	jr nz, Jump_1085
 	ld a, l

@@ -106,6 +106,11 @@ and the paired tile/attribute writer. Hardware initialization and OAM reset
 retain compatibility aliases at their original addresses so banked callers do
 not need coordinated edits.
 
+Boot register A is preserved as `wBootHardwareMode` before the memory clear;
+the compatibility guard accepts only the CGB value `$11`. The main loop stages
+SCX and SCY through `wPendingScrollX` and `wPendingScrollY`, then increments the
+16-bit `wFrameCounter`; its low nibble gates one observed 16-frame update.
+
 ## Level banks `$09-$26`
 
 The 30 banks are structured as 15 two-bank levels through the record table at

@@ -7,6 +7,16 @@ DEF ROM_BANK_MARKER EQU $7FFF
 ; Set to 1 by the installed VBlank handler and cleared by frame-wait loops.
 DEF wVBlankPending EQU $C6C0
 
+; Boot register A is preserved here before work memory is initialized.  CGB
+; hardware reports $11; RequireCgbHardware rejects every other value.
+DEF wBootHardwareMode EQU $C000
+
+; Scroll values staged for the next frame's SCX/SCY write, plus the 16-bit
+; gameplay frame counter incremented once per main-loop iteration.
+DEF wPendingScrollX EQU $C6B0
+DEF wPendingScrollY EQU $C6B1
+DEF wFrameCounter   EQU $C6B9 ; 2-byte little-endian counter
+
 ; Little-endian callback selected from RuntimeCallbackTable and dispatched by
 ; the indirect jump at ROM0:$364D.
 DEF wRuntimeCallback EQU $C6BE
