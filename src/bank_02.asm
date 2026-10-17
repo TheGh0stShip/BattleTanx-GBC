@@ -22,7 +22,7 @@ ResetNearestObjectTrackerState:
 	ld a, $FF
 	ld [wNearestTargetDistance], a
 	ld [wNearestTargetDistance + 1], a
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	ld hl, NearestTargetScanModesByLevel
 	ld c, a
 	ld b, $00
@@ -31,33 +31,33 @@ ResetNearestObjectTrackerState:
 	cp $00
 	jr nz, .checkAuxScanMode
 	ld de, TrackerScanStatus1Objects
-	ld hl, $CFDD
+	ld hl, wObjectPool + OBJECT_STATUS_OFFSET - OBJECT_RECORD_SIZE
 	jr .installScanner
 
 .checkAuxScanMode:
 	cp $01
 	jr nz, .checkAuxSelectMode
 	ld de, TrackerScanAuxRecords
-	ld hl, $CD65
+	ld hl, wLevelObjectAuxState - LEVEL_OBJECT_AUX_STATE_SIZE
 	jr .installScanner
 
 .checkAuxSelectMode:
 	cp $03
 	jr nz, .checkType2ScanMode
 	ld de, TrackerSelectAuxRecord
-	ld hl, $CD6F
+	ld hl, wLevelObjectAuxState
 	jr .installScanner
 
 .checkType2ScanMode:
 	cp $02
 	jr nz, .useStatus1Scanner
 	ld de, TrackerScanType2Objects
-	ld hl, $CFDD
+	ld hl, wObjectPool + OBJECT_STATUS_OFFSET - OBJECT_RECORD_SIZE
 	jr .installScanner
 
 .useStatus1Scanner:
 	ld de, TrackerScanStatus1Objects
-	ld hl, $CFDD
+	ld hl, wObjectPool + OBJECT_STATUS_OFFSET - OBJECT_RECORD_SIZE
 .installScanner:
 	ld a, l
 	ld [wNearestTargetScanPtr], a
@@ -85,7 +85,7 @@ PaletteStatHandler:
 	push bc
 	push de
 	push hl
-	ld hl, $C6F1
+	ld hl, wHudPowerupPalette
 	ld de, $FF69
 	ld a, $B0
 	ldh [rBCPS], a
@@ -161,12 +161,12 @@ PaletteVBlankHandler:
 	ldh a, [rLCDC]
 	res 4, a
 	ldh [rLCDC], a
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	and $01
 	jr z, RAM_C82F
 	call Func_0A59
 RAM_C82F:
-	ld hl, $C6B7
+	ld hl, wVBlankCounter
 	ld a, [hl]
 	inc a
 	ld [hli], a
@@ -235,23 +235,23 @@ VBlankHandlerWithSoftReset:
 	push bc
 	push de
 	push hl
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	and $01
 	jr z, RAM_C80B
 	call Func_0A59
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	and $F0
 	cp $F0
 	jr nz, RAM_C80B
 	jp Jump_00DA
 
 RAM_C80B:
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	inc a
-	ld [$C6B7], a
-	ld a, [$C6B8]
+	ld [wVBlankCounter], a
+	ld a, [wVBlankCounter + 1]
 	adc a, $00
-	ld [$C6B8], a
+	ld [wVBlankCounter + 1], a
 	ld a, $01
 	ld [wVBlankPending], a
 	pop hl
@@ -822,7 +822,7 @@ Func_02_474B: ; legacy alias
 	ld c, a
 	ld a, [hli]
 	ld b, a
-	ld a, [$C6D1]
+	ld a, [wPaletteFadeFromWhite]
 	push de
 	ld e, $01
 	or a
@@ -919,7 +919,7 @@ Func_02_47AF: ; legacy alias, used by src/bank_00.asm
 
 ClearAndTransferShadowOam:
 Func_02_4810: ; legacy alias
-	ld hl, $C600
+	ld hl, wShadowOam
 	xor a
 	ld e, $A0
 .clearByte:
@@ -1156,11 +1156,11 @@ TrackerSelectAuxRecord:
 	ld a, [wNearestTargetPtr + 1]
 	and a
 	jr nz, TrackerDrawSelectedAuxRecord
-	ld hl, $CD79
-	ld a, [$C91D]
+	ld hl, wLevelObjectAuxState + LEVEL_OBJECT_AUX_STATE_SIZE
+	ld a, [wHudAlertActive]
 	and a
 	jr z, .storeSelection
-	ld hl, $CD6F
+	ld hl, wLevelObjectAuxState
 .storeSelection:
 	ld a, l
 	ld [wNearestTargetPtr], a
@@ -2022,7 +2022,7 @@ Func_02_5D6D: ; legacy alias, used by src/bank_00.asm
 	ld b, $07
 	ld c, $01
 	call Func_057D
-	ld hl, $C600
+	ld hl, wShadowOam
 	ld de, $0000
 	ldh a, [rSCY]
 	ld b, a
@@ -2248,7 +2248,7 @@ InitBurstEffectScreen:
 	ldh [rSVBK], a
 	ld a, $02
 	ld [wC8E6], a
-	ld hl, $D000
+	ld hl, wBurstShadowOam
 	xor a
 	ld b, $28
 .clearShadowOam:
@@ -2283,7 +2283,7 @@ InitBurstEffectScreen:
 	xor a
 	ld b, $A0
 	ld de, $FE00
-	ld hl, $D000
+	ld hl, wBurstShadowOam
 .clearHardwareOam:
 	ld [de], a
 	ld [hli], a
@@ -2361,7 +2361,7 @@ Func_02_6306: ; legacy alias, used by src/bank_00.asm
 	jr nz, .nextFrame
 	inc a
 	ld [wBurstFrameCountdown], a
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	and a
 	jr z, .nextFrame
 	ld e, $80
@@ -2373,7 +2373,7 @@ Func_02_6306: ; legacy alias, used by src/bank_00.asm
 
 CopyBurstShadowOamToOam:
 	ld de, $FE00
-	ld hl, $D000
+	ld hl, wBurstShadowOam
 	ld b, $28
 .copyEntry:
 	ld a, [hli]
@@ -2432,7 +2432,7 @@ SpawnBurstSpriteBlock:
 	ld a, [hl]
 	ldh [$FF81], a
 	ld bc, BurstBlockTileGrids
-	ld hl, $D000
+	ld hl, wBurstShadowOam
 	ld de, wBurstObjects
 	ld a, $04
 	ldh [$FF84], a
@@ -2518,7 +2518,7 @@ AnimateBurstSpriteBlock:
 	ld d, $00
 	ld hl, BurstBlockTileGrids
 	add hl, de
-	ld de, $D002
+	ld de, wBurstShadowOam + 2
 	ld bc, wBurstObjects
 	ld a, $10
 	ldh [$FF80], a
@@ -2572,7 +2572,7 @@ AnimateBurstSpriteBlock:
 	ld a, [wBurstActiveObjectCount]
 	sub $10
 	ld [wBurstActiveObjectCount], a
-	ld hl, $D000
+	ld hl, wBurstShadowOam
 	ld de, wBurstObjects
 	ld b, $10
 	xor a
@@ -2614,7 +2614,7 @@ AnimateBurstSpriteBlock:
 
 UpdateBurstEffectObjects:
 	ld hl, wBurstObjects
-	ld de, $D000
+	ld de, wBurstShadowOam
 	ld a, $28
 	ldh [$FF87], a
 .nextObject:
@@ -2811,7 +2811,7 @@ ExpireBurstEffectObject:
 	ldh [$FF89], a
 	push de
 	ld hl, wBurstObjects
-	ld de, $D000
+	ld de, wBurstShadowOam
 	ld bc, BurstChildOffsets
 	call Bank02NextTableRandom
 	and $0F
@@ -2941,7 +2941,7 @@ SpawnBurstEffectObjectOnTimer:
 	ld a, [wBurstActiveObjectCount]
 	inc a
 	ld [wBurstActiveObjectCount], a
-	ld de, $D000
+	ld de, wBurstShadowOam
 	ld a, $28
 	sub b
 	add a, a

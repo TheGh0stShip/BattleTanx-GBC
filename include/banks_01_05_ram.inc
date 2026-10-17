@@ -56,6 +56,7 @@ DEF wLevelObjectRespawnsLeft         EQU $CD24 ; 1 byte(s)
 DEF wPendingSpawnOutsideView         EQU $CD25 ; 1 byte(s)
 DEF wObjectSequenceThrottleCounter   EQU $CD28 ; 1 byte(s)
 DEF wSequenceObjectsInState2Count    EQU $CD2A ; 1 byte(s)
+DEF wBurstShadowOam                  EQU $D000 ; 160 byte(s) ; WRAM bank 2 (SVBK=2)
 DEF wBurstObjects                    EQU $D0A0 ; 320 byte(s) ; WRAM bank 2 (SVBK=2); overlaps wObjectPool in bank 1
 DEF wScenePaletteFadeTable           EQU $D3F8 ; 32 byte(s)
 DEF wMenuCursorChoice                EQU $D550 ; 1 byte(s)

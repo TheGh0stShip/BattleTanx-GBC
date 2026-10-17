@@ -278,7 +278,7 @@ FixedScreen2A_Run:
 	call FixedScreen2A_DrawFrame
 	dec e
 	jr nz, .next_frame
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	or a
 	jr z, .restart
 .done:
