@@ -41,6 +41,8 @@ SerialInterrupt:
 	reti
 
 
+; Clear B bytes starting at HL.
+ClearBytes:
 Func_0059:
 	xor a
 Jump_005A:
@@ -912,6 +914,9 @@ Jump_0590:
 	ret
 
 
+; Fill exactly BC bytes at HL with A.  The pre-incremented counters make both
+; a zero low byte and a sub-$100 length work with the shared decrement loop.
+FillBytes:
 Func_05AB:
 	inc b
 	inc c
@@ -927,6 +932,8 @@ Jump_05B0:
 	ret
 
 
+; Copy exactly BC bytes from HL to DE.
+CopyBytesBC:
 Func_05B7:
 	inc b
 	inc c
@@ -1211,10 +1218,10 @@ Func_072C:
 	call Func_050B
 	ld hl, $FE00
 	ld b, $A0
-	call Func_0059
+	call ClearBytes
 	ld hl, $FF80
 	ld b, $7F
-	call Func_0059
+	call ClearBytes
 	ld a, $07
 Jump_074B:
 	ldh [rSVBK], a
@@ -1267,7 +1274,7 @@ Jump_078D:
 	jr nz, Jump_078D
 	ld hl, $C600
 	ld b, $A0
-	call Func_0059
+	call ClearBytes
 	ldh a, [rLCDC]
 	and $FB
 	ldh [rLCDC], a
