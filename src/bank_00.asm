@@ -207,7 +207,7 @@ Func_0192:
 	call Func_09AB
 	call LoadInterfaceTilesVRAM1
 	call LoadInterfaceTilesVRAM0
-	call Func_35D7
+	call SpawnPlayerObject
 	call Func_37CE
 	call Func_0402
 	ld hl, $D000
@@ -223,14 +223,14 @@ Jump_01B4:
 	ldh a, [rLCDC]
 	res 4, a
 	ldh [rLCDC], a
-	call Func_35D7
-	ld a, [$CD02]
+	call SpawnPlayerObject
+	ld a, [wPlayerLives]
 	or a
 	jp z, Jump_00C7
 	call Func_3C19
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	call Func_2F93
 	ld a, l
@@ -374,9 +374,9 @@ Jump_02E9:
 	call Func_3302
 	ldh a, [rLY]
 	call CheckNextScoreThreshold
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	call UpdateLevelCamera
 	call UpdateLevelEndCountdown
@@ -1462,7 +1462,7 @@ Func_08C6:
 	xor a
 	ldh [rIF], a
 	xor a
-	ld [$CD08], a
+	ld [wPlayerObjectType], a
 	ld a, $00
 	ld [$C6CF], a
 	call SeedRandomNumberGenerator
@@ -2879,10 +2879,10 @@ Jump_1085:
 	ld a, l
 	and $C0
 	ld l, a
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	cp l
 	jr nz, Jump_109F
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	cp h
 	jr z, Jump_10CA
 Jump_109F:
@@ -2892,11 +2892,11 @@ Jump_109F:
 	ld l, a
 	ld b, [hl]
 	inc l
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	cp b
 	jr nz, Jump_10BA
 	ld b, [hl]
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	cp b
 	jr nz, Jump_10BA
 	call GetObjectScoreValue
@@ -4521,9 +4521,9 @@ Func_1927:
 	ld e, a
 	ld a, [$CD0E]
 	ld d, a
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	call Func_2125
 	pop hl
@@ -8769,38 +8769,41 @@ Func_2FCE:
 	ld a, b
 	dec a
 	ld [$CD03], a
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld b, $01
 	call Func_2FA3
 	ret
 
 
+GainPlayerLife:
 Func_2FED:
-	ld a, [$CD02]
+	ld a, [wPlayerLives]
 	cp $09
 	jr z, Jump_2FF8
 	inc a
-	ld [$CD02], a
+	ld [wPlayerLives], a
 Jump_2FF8:
 	ret
 
 
+LosePlayerLife:
 Func_2FF9:
-	ld a, [$CD02]
+	ld a, [wPlayerLives]
 	or a
 	jr z, Jump_3003
 	dec a
-	ld [$CD02], a
+	ld [wPlayerLives], a
 Jump_3003:
 	ret
 
 
+ResetPlayerLives:
 Func_3004:
 	ld a, $03
-	ld [$CD02], a
+	ld [wPlayerLives], a
 	ret
 
 
@@ -8881,7 +8884,7 @@ Func_302D:
 	cp b
 	jr c, Jump_307A
 Jump_306E:
-	call Func_2FED
+	call GainPlayerLife
 	ld e, $52
 	call Audio_QueueSound
 	ld a, c
@@ -9381,7 +9384,7 @@ Func_3302:
 	call Func_356B
 	call Func_334A
 	call Func_3439
-	call Func_3533
+	call DrawPlayerLivesDigit
 	ret
 
 
@@ -9446,9 +9449,9 @@ Func_334A:
 	push bc
 	push de
 	push hl
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -9635,9 +9638,9 @@ Func_3439:
 	push de
 	push hl
 	ld b, $87
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -9785,11 +9788,12 @@ Func_34DF:
 	ret
 
 
+DrawPlayerLivesDigit:
 Func_3533:
 	push hl
 	push bc
 	ld b, $87
-	ld a, [$CD02]
+	ld a, [wPlayerLives]
 	add a, $30
 	ld c, a
 	ld hl, $C401
@@ -9909,17 +9913,18 @@ Func_35C6:
 	ret
 
 
+SpawnPlayerObject:
 Func_35D7:
 	push af
 	push bc
 	push de
 	push hl
-	ld a, [$CD08]
+	ld a, [wPlayerObjectType]
 	call Func_0AD5
 	ld a, l
-	ld [$CD00], a
+	ld [wPlayerObject], a
 	ld a, h
-	ld [$CD01], a
+	ld [wPlayerObject + 1], a
 	ld bc, $0028
 	ld de, $003C
 	call Func_2125
@@ -9942,9 +9947,9 @@ Func_35F7:
 
 
 Func_3608:
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	push hl
 	ld a, [wJoypadHeld]
@@ -11162,9 +11167,9 @@ Func_3CFB:
 	push bc
 	push de
 	push hl
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0

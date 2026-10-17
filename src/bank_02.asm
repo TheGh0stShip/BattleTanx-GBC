@@ -929,9 +929,9 @@ Func_02_4D6A:
 	ld bc, $FFDB
 	add hl, bc
 	push hl
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1071,9 +1071,9 @@ Func_02_4E0E:
 	ld d, a
 	push de
 	push bc
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1154,9 +1154,9 @@ Func_02_4E9F:
 	ld bc, $FFDB
 	add hl, bc
 	push hl
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1190,9 +1190,9 @@ Jump_02_4F00:
 	ld a, [wPlayerAlive]
 	and a
 	ret z
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1246,9 +1246,9 @@ Jump_02_4F43:
 	ld a, [$C8D7]
 	and a
 	jp z, Jump_02_4074
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1288,9 +1288,9 @@ Jump_02_4F7C:
 	ld a, [$C8D7]
 	and a
 	ret z
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0

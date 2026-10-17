@@ -180,7 +180,7 @@ Jump_04_6133:
 	cp $01
 	jp z, Jump_04_6243
 	ld a, [hl]
-	ld [$CD08], a
+	ld [wPlayerObjectType], a
 	ld a, [$CD19]
 	call Func_04_62A7
 	ld a, d

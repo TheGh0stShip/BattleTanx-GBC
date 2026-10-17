@@ -239,9 +239,9 @@ Jump_03_5D1A:
 	ld a, [de]
 	and a
 	jr nz, Jump_03_5D54
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -987,9 +987,9 @@ Jump_03_60D1:
 	ld e, a
 	ld d, [hl]
 	push hl
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1011,9 +1011,9 @@ Jump_03_60D1:
 	ld e, a
 	ld d, [hl]
 	push hl
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1079,9 +1079,9 @@ Jump_03_614E:
 	or $80
 	ld [de], a
 Jump_03_615D:
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1213,9 +1213,9 @@ Func_03_61FC:
 	ld [$CD29], a
 	push bc
 	push hl
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1323,9 +1323,9 @@ Jump_03_62A8:
 	add a, $07
 	ld l, a
 	ld c, [hl]
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -1511,9 +1511,9 @@ Func_03_6391:
 	xor a
 	ld [$CD11], a
 	ld [$CD12], a
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld e, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld d, a
 	call Func_03_6429
 	ld e, $01

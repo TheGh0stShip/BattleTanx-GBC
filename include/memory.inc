@@ -31,6 +31,12 @@ DEF wPlayerAlive       EQU $CD09
 DEF wScore               EQU $CD04 ; 32-bit little-endian accumulator
 DEF wScoreThresholdIndex EQU $C6D0
 
+; Player state. SpawnPlayerObject creates the selected object type and stores
+; its 64-byte object-record pointer here. Lives are clamped to 0..9.
+DEF wPlayerObject     EQU $CD00 ; 2-byte pointer
+DEF wPlayerLives      EQU $CD02
+DEF wPlayerObjectType EQU $CD08
+
 ; Little-endian callback selected from RuntimeCallbackTable and dispatched by
 ; the indirect jump at ROM0:$364D.
 DEF wRuntimeCallback EQU $C6BE

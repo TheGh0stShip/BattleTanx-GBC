@@ -112,7 +112,7 @@ Func_01_409E:
 	ld [wSfxSeqPtr], a
 	ld [wSfxSeqPtr + 1], a
 	ldh [rNR51], a
-	call Func_2FF9
+	call LosePlayerLife
 Jump_01_40AE:
 	ldh a, [rLY]
 	cp $14
@@ -640,9 +640,9 @@ Jump_01_445D:
 Func_01_446E:
 	push hl
 	push bc
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	ld l, a
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
@@ -831,10 +831,10 @@ Func_01_455E:
 
 Func_01_4582:
 	pop hl
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	cp l
 	jr nz, Func_01_450F
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	cp h
 	jp nz, Func_01_450F
 	call Func_3845
@@ -851,16 +851,16 @@ Func_01_4582:
 
 Func_01_45AB:
 	pop hl
-	ld a, [$CD00]
+	ld a, [wPlayerObject]
 	cp l
 	jp nz, Func_01_4516
-	ld a, [$CD01]
+	ld a, [wPlayerObject + 1]
 	cp h
 	jp nz, Func_01_4516
-	ld a, [$CD02]
+	ld a, [wPlayerLives]
 	cp $09
 	jp z, Func_01_4516
-	call Func_2FED
+	call GainPlayerLife
 	ld e, $49
 	call Audio_QueueSound
 	jp Func_01_450F
@@ -1825,7 +1825,7 @@ Func_01_4CAA:
 	xor a
 	ld [wMenuActive], a
 	ld a, [wMenuState05Selection]
-	ld [$CD08], a
+	ld [wPlayerObjectType], a
 	ld a, [wMenuGridRow]
 	ld b, a
 	add a, a
@@ -1835,7 +1835,7 @@ Func_01_4CAA:
 	add a, b
 	ld [$CA06], a
 	call ResetScore
-	call Func_3004
+	call ResetPlayerLives
 	pop hl
 	jr Jump_01_4D14
 
@@ -1850,7 +1850,7 @@ Jump_01_4CDD:
 	xor a
 	ld [$CA06], a
 	call ResetScore
-	call Func_3004
+	call ResetPlayerLives
 Jump_01_4CF7:
 	xor a
 	ld [wMenuActive], a
@@ -2504,7 +2504,7 @@ Jump_01_5164:
 	ld a, [$C939]
 	ld [$CA06], a
 	ld a, [$C938]
-	ld [$CD02], a
+	ld [wPlayerLives], a
 	ld a, [$C936]
 	ld c, a
 	ld a, [$C937]
@@ -6127,7 +6127,7 @@ Func_01_690F:
 	ld hl, $786F
 	ld a, [hli]
 	ld [$DF05], a
-	ld a, [$CD02]
+	ld a, [wPlayerLives]
 	ld b, a
 	ld hl, $FFB0
 	call Func_06C5
@@ -6613,7 +6613,7 @@ Func_01_6BBC:
 	ld [$C936], a
 	ld a, b
 	ld [$C937], a
-	ld a, [$CD02]
+	ld a, [wPlayerLives]
 	and $0F
 	ld [$C938], a
 	ldh a, [$FFC6]
@@ -6629,7 +6629,7 @@ Jump_01_6BE4:
 	rr c
 	dec e
 	jr nz, Jump_01_6BE4
-	ld a, [$CD02]
+	ld a, [wPlayerLives]
 	ld d, a
 	ld e, $04
 Jump_01_6BF7:

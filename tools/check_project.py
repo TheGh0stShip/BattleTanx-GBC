@@ -1008,6 +1008,11 @@ def check_level_banks() -> None:
             "AddToScore": (0x00, 0x3019),
             "ResetScore": (0x00, 0x300A),
             "CheckNextScoreThreshold": (0x00, 0x302D),
+            "GainPlayerLife": (0x00, 0x2FED),
+            "LosePlayerLife": (0x00, 0x2FF9),
+            "ResetPlayerLives": (0x00, 0x3004),
+            "DrawPlayerLivesDigit": (0x00, 0x3533),
+            "SpawnPlayerObject": (0x00, 0x35D7),
             "LoadLevelLookupPointers": (0x05, 0x4088),
             "ObjectScoreValues": (0x05, 0x4EA0),
             "ObjectTypeParameterTable": (0x05, 0x5100),
@@ -1058,15 +1063,22 @@ def check_level_banks() -> None:
     if memory_symbols != expected_memory:
         fail(f"levels: WRAM symbols differ: {memory_symbols.items() ^ expected_memory.items()}")
 
-    score_symbols = {
+    core_symbols = {
         name: int(address, 16)
         for name, address in re.findall(
-            r"DEF (wScore\w*)\s+EQU \$([0-9A-Fa-f]+)", memory_source
+            r"DEF ((?:wScore|wPlayer)\w*)\s+EQU \$([0-9A-Fa-f]+)", memory_source
         )
     }
-    expected_score = {"wScore": 0xCD04, "wScoreThresholdIndex": 0xC6D0}
-    if score_symbols != expected_score:
-        fail(f"score: WRAM symbols differ: {score_symbols.items() ^ expected_score.items()}")
+    expected_core = {
+        "wScore": 0xCD04,
+        "wScoreThresholdIndex": 0xC6D0,
+        "wPlayerObject": 0xCD00,
+        "wPlayerLives": 0xCD02,
+        "wPlayerObjectType": 0xCD08,
+        "wPlayerAlive": 0xCD09,
+    }
+    if core_symbols != expected_core:
+        fail(f"core WRAM symbols differ: {core_symbols.items() ^ expected_core.items()}")
 
     hram_symbols = {
         name: int(address, 16)

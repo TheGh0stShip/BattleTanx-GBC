@@ -127,6 +127,12 @@ are 4-7. `wVBlankCounter` drives the every-other-frame polling cadence.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 
+The selected `wPlayerObjectType` is instantiated by `SpawnPlayerObject`, which
+stores the resulting 64-byte record pointer in `wPlayerObject`. Player lives
+are held in `wPlayerLives`, initialized to three, clamped to nine by
+`GainPlayerLife`, decremented on the destruction flow, and rendered as one HUD
+digit by `DrawPlayerLivesDigit`.
+
 ## Level banks `$09-$26`
 
 The 30 banks are structured as 15 two-bank levels through the record table at
