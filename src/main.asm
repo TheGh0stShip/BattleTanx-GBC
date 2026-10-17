@@ -6,6 +6,7 @@ INCLUDE "include/audio.inc"
 INCLUDE "include/level_data.inc"
 INCLUDE "include/banks_01_05_ram.inc"
 INCLUDE "include/bank05_residue.inc"
+INCLUDE "include/level_objects.inc"
 
 INCLUDE "src/bank_00.asm"
 INCLUDE "src/bank_01.asm"

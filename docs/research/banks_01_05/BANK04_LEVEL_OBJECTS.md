@@ -23,8 +23,15 @@
 ## Auxiliary records (15 x 8 x 8 bytes)
 
 37 of 120 are enabled (byte 6 non-zero). An enabled record is copied into the
-10-byte runtime state; bytes 8-9 are cleared. Bank `$03` treats byte 6 as a
-mode 1-4. One record has mode 5, which no case handles.
+10-byte runtime state; bytes 8-9 are cleared. Byte 6 selects five modes named
+in `include/level_objects.inc`: timer, linked region, pending region,
+non-player-active, and activate-link.
+
+Mode 5 is not an unhandled value. Level 5 auxiliary record 1 is the only mode-5
+record; when the player enters it, the handler sets runtime byte +9 of linked
+record 0 (selected by source byte +7). Record 0 is the level's sole mode-2
+record, which then advances +9 from 1 to 2 when its non-player object reaches
+the linked region. The validator pins this relationship and all mode counts.
 
 ## Respawn queue (20 x 3 bytes: index, respawns left, delay)
 

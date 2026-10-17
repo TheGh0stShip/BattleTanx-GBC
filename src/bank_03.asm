@@ -1549,17 +1549,17 @@ UpdateAuxState_Loop:
 	ld a, [hli]
 	and a
 	jr z, UpdateAuxState_Next
-	cp $01
-	jr z, Jump_03_63FF
-	cp $02
-	jr z, Jump_03_63F2
-	cp $03
-	jr z, Jump_03_6413
-	cp $04
-	jr z, Jump_03_63E2
+	cp LEVEL_AUX_MODE_TIMER
+	jr z, UpdateAuxTimer
+	cp LEVEL_AUX_MODE_LINKED_REGION
+	jr z, UpdateAuxLinkedRegion
+	cp LEVEL_AUX_MODE_PENDING_REGION
+	jr z, UpdateAuxPendingRegion
+	cp LEVEL_AUX_MODE_NONPLAYER_ACTIVE
+	jr z, UpdateAuxNonplayerActive
 	jr UpdateAuxState_Next
 
-Jump_03_63E2:
+UpdateAuxNonplayerActive:
 	ld a, $01
 	ld [wLevelAuxType4Active], a
 	ld a, [wActiveFlag26ObjectCount]
@@ -1568,7 +1568,7 @@ Jump_03_63E2:
 	ld [wLevelAuxType4Active], a
 	jr UpdateAuxState_Next
 
-Jump_03_63F2:
+UpdateAuxLinkedRegion:
 	inc hl
 	inc hl
 	ld a, [hli]
@@ -1578,24 +1578,24 @@ Jump_03_63F2:
 	ld [wLevelAuxType2AllReached], a
 	jr UpdateAuxState_Next
 
-Jump_03_63FF:
+UpdateAuxTimer:
 	ld a, [hli]
 	inc a
 	ld d, a
 	ld a, [hl]
 	cp d
-	jr z, Jump_03_640A
+	jr z, UpdateAuxTimerExpired
 	add a, e
 	ld [hl], a
 	jr UpdateAuxState_Next
 
-Jump_03_640A:
+UpdateAuxTimerExpired:
 	ld a, [wLevelAuxTimerExpiredCount]
 	inc a
 	ld [wLevelAuxTimerExpiredCount], a
 	jr UpdateAuxState_Next
 
-Jump_03_6413:
+UpdateAuxPendingRegion:
 	inc hl
 	inc hl
 	ld a, [hli]
@@ -1737,17 +1737,17 @@ Jump_03_64CA:
 	pop de
 	ld a, [hli]
 	inc hl
-	cp $01
-	jp z, Jump_03_6541
-	cp $02
-	jr z, Jump_03_64E1
-	cp $03
-	jr z, Jump_03_64FE
-	cp $05
-	jr z, Jump_03_6517
+	cp LEVEL_AUX_MODE_TIMER
+	jp z, TriggerAuxTimer
+	cp LEVEL_AUX_MODE_LINKED_REGION
+	jr z, TriggerAuxLinkedRegion
+	cp LEVEL_AUX_MODE_PENDING_REGION
+	jr z, TriggerAuxPendingRegion
+	cp LEVEL_AUX_MODE_ACTIVATE_LINK
+	jr z, TriggerAuxActivateLink
 	jp CheckAuxRegion_Next
 
-Jump_03_64E1:
+TriggerAuxLinkedRegion:
 	ld a, e
 	and $C0
 	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
@@ -1768,7 +1768,7 @@ Jump_03_64E1:
 	ld h, d
 	jr CheckAuxRegion_Triggered
 
-Jump_03_64FE:
+TriggerAuxPendingRegion:
 	ld a, e
 	and $C0
 	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
@@ -1787,7 +1787,7 @@ Jump_03_64FE:
 	ld h, d
 	jr CheckAuxRegion_Triggered
 
-Jump_03_6517:
+TriggerAuxActivateLink:
 	ld a, e
 	and $C0
 	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
@@ -1820,7 +1820,7 @@ Jump_03_6517:
 	ld h, d
 	jr CheckAuxRegion_Triggered
 
-Jump_03_6541:
+TriggerAuxTimer:
 	ld a, e
 	and $C0
 	add a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET

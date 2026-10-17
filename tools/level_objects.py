@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import pathlib
 import re
+from collections import Counter
 
 
 BANK = 4
@@ -75,6 +76,15 @@ def parse(rom: bytes) -> list[dict]:
           "spawn tables do not meet auxiliary tables")
     check(DIRECTORY == AUX_START + LEVELS * AUX_COUNT * AUX_SIZE,
           "auxiliary tables do not meet directory")
+    modes = Counter(record[6] for level in levels for record in level["auxiliaries"] if record[6])
+    check(modes == Counter({1: 5, 2: 1, 3: 25, 4: 5, 5: 1}),
+          f"auxiliary mode counts changed: {dict(modes)}")
+    mode5 = [(level["level"], i, record) for level in levels
+             for i, record in enumerate(level["auxiliaries"]) if record[6] == 5]
+    check(len(mode5) == 1 and mode5[0][0:2] == (5, 1) and mode5[0][2][7] == 0,
+          "mode-5 auxiliary link record changed")
+    check(levels[5]["auxiliaries"][0][6] == 2,
+          "mode-5 auxiliary link no longer targets the level-5 mode-2 record")
     return levels
 
 
@@ -107,6 +117,17 @@ def validate_project(root: pathlib.Path) -> str:
           source.count("ld c, OBJECT_TYPE0_FALLBACK_SPEED") == 3 and
           source.count("ld c, OBJECT_TYPE2_FALLBACK_SPEED") == 4,
           "level objects: fallback-speed mapping count changed")
+    aux_inc = (root / "include/level_objects.inc").read_text()
+    expected_modes = {
+        "LEVEL_AUX_MODE_TIMER": 1,
+        "LEVEL_AUX_MODE_LINKED_REGION": 2,
+        "LEVEL_AUX_MODE_PENDING_REGION": 3,
+        "LEVEL_AUX_MODE_NONPLAYER_ACTIVE": 4,
+        "LEVEL_AUX_MODE_ACTIVATE_LINK": 5,
+    }
+    modes = {name: int(value, 16) for name, value in re.findall(
+        r"^DEF (LEVEL_AUX_MODE_\w+)\s+EQU \$([0-9A-F]+)", aux_inc, re.MULTILINE)}
+    check(modes == expected_modes, f"level objects: auxiliary mode constants changed: {modes}")
     memory = (root / "include/memory.inc").read_text()
     definitions = {
         name: int(address, 16)
@@ -156,6 +177,10 @@ def validate_project(root: pathlib.Path) -> str:
     changed = bytearray(rom)
     changed[offset(AUX_START) + 6] = 6
     cases.append((bytes(changed), "auxiliary enable/type"))
+    changed = bytearray(rom)
+    mode5_address = AUX_START + (5 * AUX_COUNT + 1) * AUX_SIZE
+    changed[offset(mode5_address) + 7] = 1
+    cases.append((bytes(changed), "mode-5 auxiliary link record"))
     for data, expected in cases:
         try:
             parse(data)
@@ -167,7 +192,7 @@ def validate_project(root: pathlib.Path) -> str:
     active = sum(not record[0] & 0x80 for level in levels for record in level["spawns"])
     enabled_aux = sum(record[6] != 0 for level in levels for record in level["auxiliaries"])
     return (f"level objects: {LEVELS} levels, {active}/{LEVELS * SPAWN_COUNT} active "
-            f"spawn records, {enabled_aux}/{LEVELS * AUX_COUNT} enabled auxiliary records, "
+            f"spawn records, {enabled_aux}/{LEVELS * AUX_COUNT} enabled auxiliary records in 5 modes, "
             f"{len(cases)} negative tests rejected")
 
 

@@ -61,7 +61,6 @@
      (10, 17). The complete spawn-to-sequence cross-check is enforced by
      `tools/object_sequence_fields.py`.
 5. **Bank `$04`**:
-   - auxiliary mode 5 is unhandled;
    - `wPlayerSpawnHealthPenalty` (`$CD1A`) is written but never read.
 6. **Unread bytes**:
    - `Bank02UnknownWord481E` (2 bytes before two recovered indexed sprite grids);
