@@ -564,7 +564,9 @@ Semantic understanding:
   in `include/memory.inc`, including three explicitly named vestigial/gating bytes.
 - Structurally bounded but unread: the named patch/table padding fields,
   music-pointer byte 3, and the bytes after each sequence terminator. Raw sfx
-  op bits and the musical meaning of notes and tracks also remain unknown.
+  op bits and track identities also remain unknown. The 90-entry frequency
+  table is proven as a C2-F9 equal-tempered scale for square channels; the
+  wave channel sounds the same indexes one octave lower.
 - Not audio: bank `$05` (sprite layouts and level parameters).
 - Bank `$07`: after one malformed sound-patch slot, `$4008-$4BFB` duplicates
   bank `$06`. All 57 sound-queue call sites and every computed bank selector

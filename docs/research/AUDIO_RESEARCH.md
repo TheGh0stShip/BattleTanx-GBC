@@ -47,7 +47,7 @@ adjacency and by parsing every sequence to its terminator.
 | `415C-4648` | `$4ED` | 24 distinct sfx sequences (ids `$40` and `$4B` share `$43EB`) | parsed to `$FF` |
 | `4649-465F` | 23 | AudioRegisterInit -> `$FF10-$FF26` | `7CFD`: `ld hl,$4649`, `d=$17` |
 | `4660-4661` | 2 | `AudioRegisterInitPadding` | exact 23-byte register-copy count and zero readers |
-| `4662-4715` | 90 x 2 | NoteFrequencies (11-bit, ascending) | `7DDA`, `7FA4`: `ld hl,$4662`, `note*2` |
+| `4662-4715` | 90 x 2 | NoteFrequencies (C2-F9 chromatic register values) | `7DDA`, `7FA4`: `ld hl,$4662`, `note*2`; exact formula checked |
 | `4716-4725` | 16 | WaveformPattern -> `$FF30-$FF3F` | `7CEC`: `ld bc,$4716`, `d=$10` |
 | `4726-4737` | 9 x 2 | NoiseNoteTable (channel-4 notes `$0C-$14`) | `7D96`: `ld hl,$4726` |
 | `4738-473F` | 4 x 2 | ChannelRegisterBases `$FF10,$FF16,$FF1A,$FF20` | `7DB5`, `7E70`, `7F63` |
@@ -204,8 +204,13 @@ loop. Each sequence is followed by `FE FF` (`$07`: `00 FF FF`), never read.
 4. Instruments 4, 6, 7 and music id `$89` (`Music_09`) have no static
    reference. Dynamic id sources (ROM0 `$1042` uses `b` in {4, 5, `$1B`};
    random `$81-$86`) were inspected; others may exist in untraced code.
-5. Musical meaning (pitch names for NoteFrequencies, track titles) is not
-   assigned.
+5. Track titles are not assigned. The frequency-table pitches are proven:
+   index 0 is C2 and each following index advances one equal-tempered
+   semitone through F9. Every value exactly equals
+   `floor(2048 - 131072 / frequency)` with A4 = 440 Hz. That names the
+   sounding pitches on square channels 1-2; the wave channel uses half their
+   clock and sounds the same indexes one octave lower. Channel 4 does not use
+   this table: note values `$0C-$14` select NoiseNoteTable entries.
 6. Hardware behavior was not checked on a physical Game Boy Color.
 
 ## 8. Bank `$07` follow-up

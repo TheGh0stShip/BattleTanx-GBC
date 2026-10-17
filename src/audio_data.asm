@@ -635,20 +635,23 @@ AudioRegisterInit:
 AudioRegisterInitPadding:
 	db $00, $00 ; lies between tables; never read
 
-; 90 little-endian 11-bit channel frequency values, indexed by note.
+; 90 little-endian 11-bit channel frequency values, indexed chromatically.
+; Index 0 is C2 and index 89 is F9 for square channels 1-2. Channel 3 uses
+; half the square-channel clock, so the same indexes sound one octave lower.
+; Values are floor(2048 - 131072 / frequency) using A4 = 440 Hz.
 NoteFrequencies:
-	dw $002C, $009C, $0106, $016A, $01C9, $0222, $0276, $02C6 ; notes 0-7
-	dw $0311, $0358, $039B, $03DA, $0416, $044E, $0483, $04B5 ; notes 8-15
-	dw $04E4, $0511, $053B, $0563, $0588, $05AC, $05CD, $05ED ; notes 16-23
-	dw $060B, $0627, $0641, $065A, $0672, $0688, $069D, $06B1 ; notes 24-31
-	dw $06C4, $06D6, $06E6, $06F6, $0705, $0713, $0720, $072D ; notes 32-39
-	dw $0739, $0744, $074E, $0758, $0762, $076B, $0773, $077B ; notes 40-47
-	dw $0782, $0789, $0790, $0796, $079C, $07A2, $07A7, $07AC ; notes 48-55
-	dw $07B1, $07B5, $07B9, $07BD, $07C1, $07C4, $07C8, $07CB ; notes 56-63
-	dw $07CE, $07D1, $07D3, $07D6, $07D8, $07DA, $07DC, $07DE ; notes 64-71
-	dw $07E0, $07E2, $07E4, $07E5, $07E7, $07E8, $07E9, $07EB ; notes 72-79
-	dw $07EC, $07ED, $07EE, $07EF, $07F0, $07F1, $07F2, $07F2 ; notes 80-87
-	dw $07F3, $07F4 ; notes 88-89
+	dw $002C, $009C, $0106, $016A, $01C9, $0222, $0276, $02C6 ; C2-G2
+	dw $0311, $0358, $039B, $03DA, $0416, $044E, $0483, $04B5 ; G#2-D#3
+	dw $04E4, $0511, $053B, $0563, $0588, $05AC, $05CD, $05ED ; E3-B3
+	dw $060B, $0627, $0641, $065A, $0672, $0688, $069D, $06B1 ; C4-G4
+	dw $06C4, $06D6, $06E6, $06F6, $0705, $0713, $0720, $072D ; G#4-D#5
+	dw $0739, $0744, $074E, $0758, $0762, $076B, $0773, $077B ; E5-B5
+	dw $0782, $0789, $0790, $0796, $079C, $07A2, $07A7, $07AC ; C6-G6
+	dw $07B1, $07B5, $07B9, $07BD, $07C1, $07C4, $07C8, $07CB ; G#6-D#7
+	dw $07CE, $07D1, $07D3, $07D6, $07D8, $07DA, $07DC, $07DE ; E7-B7
+	dw $07E0, $07E2, $07E4, $07E5, $07E7, $07E8, $07E9, $07EB ; C8-G8
+	dw $07EC, $07ED, $07EE, $07EF, $07F0, $07F1, $07F2, $07F2 ; G#8-D#9
+	dw $07F3, $07F4 ; E9-F9
 
 ; Copied to wave RAM ($FF30-$FF3F) by Audio_Init.
 WaveformPattern:

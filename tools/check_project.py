@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 import pathlib
 import re
 import subprocess
@@ -766,6 +767,15 @@ def check_audio() -> None:
     freqs = [au.word(rom, au.NOTE_FREQS + 2 * i) for i in range(au.NOTE_COUNT)]
     if any(f > 0x7FF for f in freqs) or freqs != sorted(freqs):
         fail("audio: note frequencies are not ascending 11-bit values")
+    # The table is an exact equal-tempered scale beginning at C2 for the
+    # square-channel clock.  Channel 3 interprets the same register values
+    # one octave lower; channel 4 uses NoiseNoteTable instead.
+    expected_freqs = [
+        math.floor(2048 - 131072 / (440 * 2 ** ((36 + note - 69) / 12)))
+        for note in range(au.NOTE_COUNT)
+    ]
+    if freqs != expected_freqs:
+        fail("audio: note frequencies no longer encode the C2-F9 chromatic scale")
     if au.NOTE_FREQS + 2 * au.NOTE_COUNT != au.WAVE:
         fail("audio: note table does not end at the waveform")
     noise = [b6(rom, au.NOISE_NOTES + 2 * i, 2) for i in range(au.NOISE_NOTE_COUNT)]
