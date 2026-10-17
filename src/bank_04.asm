@@ -130,7 +130,7 @@ Jump_04_60DE:
 Jump_04_6106:
 	ld a, b
 	push bc
-	call Func_0AD5
+	call CreateObjectAtOrigin
 	ld a, [$CD18]
 	ld b, a
 	ld a, l
@@ -223,7 +223,7 @@ Jump_04_6182:
 Jump_04_61A5:
 	ld a, b
 	push bc
-	call Func_0AD5
+	call CreateObjectAtOrigin
 	ld a, [$CD18]
 	ld b, a
 	ld a, l
@@ -730,7 +730,7 @@ Jump_04_646B:
 	ld a, b
 	push bc
 	push de
-	call Func_0AD5
+	call CreateObjectAtOrigin
 	pop de
 	ld a, l
 	and $C0
@@ -788,7 +788,7 @@ Jump_04_64C6:
 	ld a, b
 	push bc
 	push de
-	call Func_0AD5
+	call CreateObjectAtOrigin
 	pop de
 	ld a, l
 	and $C0

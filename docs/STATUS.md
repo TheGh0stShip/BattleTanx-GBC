@@ -157,6 +157,10 @@ The level-object loader identifies its player-start record and stores
 `wPlayerSpawnX`, `wPlayerSpawnY`, and `wPlayerSpawnDirection`.
 `PositionPlayerAtSpawn` applies those coordinates to `wPlayerObject`; the
 direction is installed in the same initialization path.
+`CreateObjectAtOrigin` combines allocation, zero position/direction, the
+four-entry type profile, and maximum-health setup. The original routine does
+not test allocation failure before initializing the returned record; this
+behavior remains unchanged and is not presented as safe.
 
 ## Level banks `$09-$26`
 

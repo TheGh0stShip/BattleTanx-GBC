@@ -1757,6 +1757,9 @@ Func_0AC4:
 	ret
 
 
+; Create a status-1 object of type A at position 0,0 with direction 0.  The
+; original code does not test AllocateObjectRecord's failure return.
+CreateObjectAtOrigin:
 Func_0AD5:
 	push bc
 	push de
@@ -1769,7 +1772,7 @@ Func_0AD5:
 	xor a
 	call SetObjectDirection
 	pop af
-	call Func_0D0F
+	call InitializeObjectType
 	ld a, l
 	and $C0
 	ld l, a
@@ -2203,17 +2206,19 @@ Jump_0D02:
 	ret
 
 
+GetObjectType:
 Func_0D05:
 	push hl
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld a, [hl]
 	pop hl
 	ret
 
 
+InitializeObjectType:
 Func_0D0F:
 	push hl
 	push de
@@ -2221,7 +2226,7 @@ Func_0D0F:
 	ld b, a
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, b
@@ -9941,7 +9946,7 @@ Func_35D7:
 	push de
 	push hl
 	ld a, [wPlayerObjectType]
-	call Func_0AD5
+	call CreateObjectAtOrigin
 	ld a, l
 	ld [wPlayerObject], a
 	ld a, h
