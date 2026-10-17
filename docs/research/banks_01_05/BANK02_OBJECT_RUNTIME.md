@@ -58,9 +58,16 @@ Reached only through ROM0 `Func_3F1F`.
   children spawned on expiry). It is a structural label, not a gameplay
   identity.
 
-## Unread
+## Indexed sprite grids and unread bytes
 
-- `Bank02Unread481E` (`$481E-$4D51`, 1,332 bytes): no reader.
+- `IndexedSpriteGridDescriptors` has two four-byte entries containing a tile
+  source and screen X/Y position. `LoadIndexedSpriteGrid` selects one with
+  `E`, transfers 40 tiles to VRAM bank 1, and builds a 10-by-4 OAM grid.
+- `IndexedSpriteGrid1Tiles` (`$4830-$4AAF`) and
+  `IndexedSpriteGrid0Tiles` (`$4AD0-$4D4F`) are the two 40-tile sources.
+- Only 52 bytes in the former `$481E-$4D51` block remain unread:
+  `Bank02Unread481E` (18), `Bank02Unread4AB0` (32), and
+  `Bank02Unread4D50` (2).
 - `Bank02ObjPalette7Colours` (`$4D52`): read by `LoadIndexedSpriteGrid`, whose only
   caller `Func_3CC2` is itself never called.
 - `Bank02Unread5E80` (9 bytes).

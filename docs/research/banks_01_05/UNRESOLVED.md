@@ -29,10 +29,11 @@
      `Bank1NoOpFar`);
    - `SubtractBCFromHL` (`$01:543E`);
    - `UnusedLoadScrollVariantForGridCell` (`$01:6243`);
-   - `Func_02_635F`, `Func_02_63F4`;
-   - `Func_03_5FBF`;
+   - `SpawnBurstSpriteBlock` (`$02:635F`) and
+     `AnimateBurstSpriteBlock` (`$02:63F4`);
+   - `LoadFollowingSequenceTargetPosition` (`$03:5FBF`);
    - `UnusedStartRecordedPathFollow` (`$03:61FC`);
-   - `Func_04_62F7`.
+   - `GetLevelObjectHealthPenaltyNoLoad` (`$04:62F7`).
 
    Also `$02:4000-$406E` and three superseded instruction-shaped `db` blocks at
    `$01:7934`, `$01:79EC` and `$01:7AF0` (see FINAL_FUNCTIONS.md).
@@ -65,7 +66,8 @@
    - `wPlayerSpawnHealthPenalty` (`$CD1A`) is written but never read;
    - the type-0/1 `+$39` swap on the respawn path is unexplained.
 7. **Unread bytes**:
-   - `Bank02Unread481E` (1,332);
+   - `Bank02Unread481E`, `Bank02Unread4AB0`, and `Bank02Unread4D50`
+     (52 bytes total around two recovered indexed sprite grids);
    - the bank `$05` copies of bank `$04` (1,029);
    - `Bank01Unread77D6/785E/786C`;
    - `Bank02Unread5E80`;

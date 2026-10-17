@@ -930,9 +930,27 @@ Func_02_4810: ; legacy alias
 	ret
 
 
-; no reader found
+; Unread prefix before the two sprite grids.
 Bank02Unread481E:
-	INCBIN "assets/bank_02/unread_481E.bin"
+	db $9F, $5F
+	ds $10, $00
+
+; Descriptor 1: 40 tiles transferred to VRAM bank 1 and drawn as a 10x4 grid.
+IndexedSpriteGrid1Tiles:
+	INCBIN "assets/bank_02/indexed_sprite_grid_1.2bpp"
+
+; Unread bytes between the two grids.
+Bank02Unread4AB0:
+	db $00, $00, $00, $00, $1F, $00, $DF, $03
+	db $50, $D5, $CD, $90, $4E, $3E, $00, $E0
+	ds $10, $00
+
+; Descriptor 0: 40 tiles transferred to VRAM bank 1 and drawn as a 10x4 grid.
+IndexedSpriteGrid0Tiles:
+	INCBIN "assets/bank_02/indexed_sprite_grid_0.2bpp"
+
+Bank02Unread4D50:
+	db $00, $00
 
 ; OBJ palette 7 colours 1-3 (LoadIndexedSpriteGrid via LoadObjectPaletteRange)
 Bank02ObjPalette7Colours:

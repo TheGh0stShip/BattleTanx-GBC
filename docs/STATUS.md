@@ -46,7 +46,7 @@ does not substitute for traced-byte coverage or semantic verification.
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Object sequences | Bank `$03:$4000-$5C10` is explicit source: two signed-vector tables, fifteen 64-slot per-level pointer tables, 203 counted sequences, and 626 eight-byte records; the vector-direction quantizer and all 15 level-state checks are named | Determine the remaining record-field meanings and name individual sequences |
 | Level objects | Bank `$04:$4000-$601B` is explicit source: 600 fixed-size object initialization records, 120 auxiliary records, and the per-level pointer directory; the 20-entry deferred-spawn queue, active-table pointers, slow-tick counter, and camera-window spawn path are named | Determine the remaining field meanings and the role of enabled auxiliary records |
-| Banks `$01-$05` | Every byte is classified; all 278 routine entries have behavior-based names (`make progress` 288/288 project-wide), 91 RAM symbols replace 540 raw operands, and nine former opaque blobs are explicit tables or typed assets | Prove the scene-interrupt banking invariant, settle the two sequence over-reads and the 2,423 bounded but unexplained bytes; see [`research/banks_01_05/`](research/banks_01_05/) |
+| Banks `$01-$05` | Every byte is classified; all 278 routine entries have behavior-based names (`make progress` 288/288 project-wide), 91 RAM symbols replace 540 raw operands, and former opaque blobs are explicit tables or typed assets | Prove the scene-interrupt banking invariant, settle the two sequence over-reads and the 1,143 bounded but unexplained bytes; see [`research/banks_01_05/`](research/banks_01_05/) |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see [`research/BANKS_2A_2E_RESEARCH.md`](research/BANKS_2A_2E_RESEARCH.md) | Trace the caller-less bank-`$2E` routines and picture meanings |
 | Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see [`research/TEXT_RESEARCH.md`](research/TEXT_RESEARCH.md) | Glyph map reconciled ([`research/BANK08_RESEARCH.md`](research/BANK08_RESEARCH.md)); rule out indirect or constructed strings |
@@ -74,8 +74,8 @@ interrupt routine. Fields whose behavior is not yet established remain raw.
 
 ## Immediate roadmap
 
-1. Resolve the remaining 27 address-named routines from callers and behavior.
-2. Investigate the 2,423 bounded but unexplained bytes in banks `$01-$05`.
+1. Prove or disprove the scene-interrupt bank-`$01` timing invariant.
+2. Investigate the 1,143 bounded but unexplained bytes in banks `$01-$05`.
 3. Identify neutral level, scene, screen, object, and audio names from behavior.
 4. Run relocation/shift tests before declaring source freely editable.
 5. Validate timing-sensitive and RAM-executed behavior on physical hardware.

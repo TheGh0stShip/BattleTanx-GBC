@@ -150,6 +150,29 @@ def check_picture_descriptors(rom, sym):
             check(0x4000 <= p < 0x8000, f"pictures: descriptor {i} pointer {k}")
 
 
+def check_indexed_sprite_grids(rom, sym):
+    b, a = sym["IndexedSpriteGridDescriptors"]
+    check((b, a) == (2, 0x41F7), "indexed grids: descriptor table moved")
+    expected = ((0x4AD0, 0x30, 0x20), (0x4830, 0x20, 0x40))
+    for i, (source, x, y) in enumerate(expected):
+        r = rd(rom, b, a + 4 * i, 4)
+        got = (r[0] | r[1] << 8, r[2], r[3])
+        check(got == (source, x, y),
+              f"indexed grids: descriptor {i} is {got}, expected {(source, x, y)}")
+        check(source + 40 * 16 in (0x4D50, 0x4AB0),
+              f"indexed grids: descriptor {i} does not bound 40 tiles")
+    check(sym["IndexedSpriteGrid0Tiles"] == (2, 0x4AD0), "indexed grids: grid 0 symbol")
+    check(sym["IndexedSpriteGrid1Tiles"] == (2, 0x4830), "indexed grids: grid 1 symbol")
+    # The loader writes $27 to HDMA5: (value + 1) * $10 = 40 tiles.
+    # Its nested counters stop after 10 columns and 4 rows.
+    _, loader = sym["LoadIndexedSpriteGrid"]
+    code = rd(rom, 2, loader, 0xC0)
+    check(bytes.fromhex("3e27e055") in code, "indexed grids: 40-tile HDMA length changed")
+    check(bytes.fromhex("7bc6085ffe50") in code and bytes.fromhex("7ac60857fe20") in code,
+          "indexed grids: 10-by-4 OAM dimensions changed")
+    return len(expected)
+
+
 def check_palettes(rom, sym):
     for label, n in (("MenuCursorObjectPalette", 3), ("PasswordBgPalettes", 16), ("PasswordObjPaletteColours", 6),
                      ("BurstObjPalettes", 32), ("Bank02ObjPalette7Colours", 3)):
@@ -274,12 +297,13 @@ def validate(root, rom, sym):
     check_fills(rom, sym)
     n = check_dispatch_tables(rom, sym)
     check_picture_descriptors(rom, sym)
+    grids = check_indexed_sprite_grids(rom, sym)
     check_palettes(rom, sym)
     check_source(root)
     check_assets(root, rom)
     check_ram_include(root)
     check_scene_interrupt_calls(root, rom, sym)
-    return parts, n
+    return parts, n, grids
 
 
 def negative_tests(root, rom, sym):
@@ -301,6 +325,7 @@ def negative_tests(root, rom, sym):
         ("bank $02 fill", {(2, 0x7000): 0x01}, "bank $02: non-zero"),
         ("bank marker", {(3, 0x7FFF): 0x00}, "bank $03: marker"),
         ("dispatch target", {(1, sym["EntityHandlerTable"][1] + 1): 0x00}, "EntityHandlerTable target"),
+        ("indexed grid descriptor", {(2, sym["IndexedSpriteGridDescriptors"][1]): 0xD1}, "descriptor 0"),
     ]
     n = 0
     for name, chg, expect in cases:
@@ -392,10 +417,10 @@ def main():
         REPORTS.mkdir(exist_ok=True)
         for name, value in build_reports(ROOT, rom, sym).items():
             (REPORTS / f"banks_01_05_{name}.json").write_text(json.dumps(value, indent=1, sort_keys=True) + "\n")
-    parts, n = validate(ROOT, rom, sym)
+    parts, n, grids = validate(ROOT, rom, sym)
     data = check_reports(ROOT, rom, sym, REPORTS)
     neg = negative_tests(ROOT, rom, sym)
-    print(f"banks 01-05: {parts} effect parts and templates, 16x16 velocity table, 3 bank-$04 copies, "
+    print(f"banks 01-05: {parts} effect parts and templates, 16x16 velocity table, {grids} indexed sprite grids, 3 bank-$04 copies, "
           f"{n} dispatch targets labelled, {len(data['pins'])} pins, {len(data['assets'])} assets; "
           f"{neg} negative tests rejected")
 

@@ -54,7 +54,11 @@ BLOBS = {
         (0x78B1, 0x78F1, "bin", "Bank01SpriteTiles78B1", "4 tiles; InitPasswordCursorOamSlots12To15 -> VRAM $8700 (tiles $70-$73)", "assets/bank_01/sprite_tiles_78B1.2bpp"),
     ],
     ("src/bank_02.asm", "assets/bank_02/481E.bin", 2, 0x481E, 0x4D58): [
-        (0x481E, 0x4D52, "bin", "Bank02Unread481E", "no reader found", "assets/bank_02/unread_481E.bin"),
+        (0x481E, 0x4830, "db", "Bank02Unread481E", "unread prefix", None),
+        (0x4830, 0x4AB0, "bin", "IndexedSpriteGrid1Tiles", "40 tiles; IndexedSpriteGridDescriptors entry 1", "assets/bank_02/indexed_sprite_grid_1.2bpp"),
+        (0x4AB0, 0x4AD0, "db", "Bank02Unread4AB0", "unread gap", None),
+        (0x4AD0, 0x4D50, "bin", "IndexedSpriteGrid0Tiles", "40 tiles; IndexedSpriteGridDescriptors entry 0", "assets/bank_02/indexed_sprite_grid_0.2bpp"),
+        (0x4D50, 0x4D52, "db", "Bank02Unread4D50", "unread suffix", None),
         (0x4D52, 0x4D58, "dw3", "Bank02ObjPalette7Colours", "OBJ palette 7 colours 1-3 (LoadIndexedSpriteGrid via LoadObjectPaletteRange)", None),
     ],
     ("src/bank_02.asm", "assets/bank_02/5040.bin", 2, 0x5040, 0x5C40): [

@@ -3,6 +3,8 @@
 import os, sys
 rom = open(sys.argv[1], 'rb').read()
 for line in open(sys.argv[2]):
+    if not line.strip() or line.lstrip().startswith("#"):
+        continue
     path, start, n = line.split()
     start, n = int(start, 0), int(n, 0)
     os.makedirs(os.path.dirname(path), exist_ok=True)

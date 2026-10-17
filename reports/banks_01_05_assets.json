@@ -24,15 +24,20 @@
   "bytes": 528,
   "sha1": "fba343be08aa598ce99e869121f1c92ab2a9f7cf"
  },
+ "assets/bank_02/indexed_sprite_grid_0.2bpp": {
+  "bank": "$02",
+  "bytes": 640,
+  "sha1": "d48c5682c7882d9be5f6891bd69982e63a25c382"
+ },
+ "assets/bank_02/indexed_sprite_grid_1.2bpp": {
+  "bank": "$02",
+  "bytes": 640,
+  "sha1": "5352a2e8419f9638a4fc9921150a92a7b0821e4a"
+ },
  "assets/bank_02/tracker_direction_lookup.bin": {
   "bank": "$02",
   "bytes": 2048,
   "sha1": "bc3392db623b91add8fedead651e6343497ca4ed"
- },
- "assets/bank_02/unread_481E.bin": {
-  "bank": "$02",
-  "bytes": 1332,
-  "sha1": "9380d7e9d86d7571f6d7e24a86b83b3530a29b7a"
  },
  "assets/bank_05/bank04_copy_40B1.bin": {
   "bank": "$05",
