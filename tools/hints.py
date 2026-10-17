@@ -236,6 +236,8 @@ NAMES = {
     0x104B: "UpdateVehicleTimersAndRemoveDestroyed",
     0x22ED: "UpdateAllObjects",
     0x0F98: "UsePlayerWeaponOrPowerup",
+    0x1023: "QueueVehicleActionSound",
+    0x2B86: "SpawnVehicleProjectile",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",

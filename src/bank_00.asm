@@ -2789,7 +2789,7 @@ Jump_0FCE:
 	and $C0
 	ld l, a
 	ld b, e
-	call Func_2B86
+	call SpawnVehicleProjectile
 	jr z, Jump_101F
 	call Func_307F
 	push bc
@@ -2807,7 +2807,7 @@ Jump_0FCE:
 	or c
 	ld [hl], a
 	pop bc
-	call Func_1023
+	call QueueVehicleActionSound
 Jump_0FFA:
 	ld a, e
 	cp $00
@@ -2844,7 +2844,9 @@ Jump_101F:
 	ret
 
 
-Func_1023:
+; Queue the projectile subtype's sound unless vehicle byte +$26 suppresses it.
+QueueVehicleActionSound:
+Func_1023: ; legacy alias
 	push af
 	push bc
 	push de
@@ -8026,7 +8028,11 @@ ClearTextColumn:
 	ret
 
 
-Func_2B86:
+; Create a status-2 projectile at the firing vehicle, link it back to that
+; vehicle, and initialize its subtype fields from ObjectTypeParameterTable.
+; Return nonzero in A on success and zero when no object record is available.
+SpawnVehicleProjectile:
+Func_2B86: ; legacy alias
 	push de
 	push hl
 	push bc

@@ -1057,6 +1057,8 @@ def check_level_banks() -> None:
             "UpdateVehicleTimersAndRemoveDestroyed": (0x00, 0x104B),
             "UpdateAllObjects": (0x00, 0x22ED),
             "UsePlayerWeaponOrPowerup": (0x00, 0x0F98),
+            "QueueVehicleActionSound": (0x00, 0x1023),
+            "SpawnVehicleProjectile": (0x00, 0x2B86),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),
