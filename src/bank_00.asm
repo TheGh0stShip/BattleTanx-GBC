@@ -1587,19 +1587,19 @@ LoadInterfacePalettes:
 	ld de, rBCPD
 	ld c, $08
 	ld b, $00
-Jump_0991:
+.readPaletteByte:
 	ld a, b
 	add a, $B0
 	ldh [rBCPS], a
-Jump_0996:
+.waitForVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_0996
+	jr nz, .waitForVram
 	ld a, [de]
 	ld [hli], a
 	inc b
 	dec c
-	jr nz, Jump_0991
+	jr nz, .readPaletteByte
 	pop af
 	ld [rROMB0], a
 	pop hl
@@ -1628,23 +1628,23 @@ Func_09AB: ; legacy alias
 	ld b, a
 	ld a, [wScore + 3]
 	or b
-	jr nz, Jump_09E6
+	jr nz, .scoreAtLeast50000
 	ld a, [wScore + 1]
 	cp $C3
-	jr c, Jump_09ED
-	jr nz, Jump_09E6
+	jr c, .scoreBelow50000
+	jr nz, .scoreAtLeast50000
 	ld a, [wScore]
 	cp $50
-	jr c, Jump_09ED
-Jump_09E6:
+	jr c, .scoreBelow50000
+.scoreAtLeast50000:
 	ld a, $01
 	ld [$CD0A], a
-	jr Jump_09F1
+	jr .resetTransientState
 
-Jump_09ED:
+.scoreBelow50000:
 	xor a
 	ld [$CD0A], a
-Jump_09F1:
+.resetTransientState:
 	xor a
 	ld [wScreenEffectActive], a
 	ld [wHudAlertActive], a
@@ -1747,17 +1747,17 @@ CopyBytes:
 	push bc
 	push de
 	push hl
-Jump_0A93:
+.copyByte:
 	ld a, [hli]
 	ld [bc], a
 	inc bc
 	dec de
 	ld a, e
 	or a
-	jr nz, Jump_0A93
+	jr nz, .copyByte
 	ld a, d
 	or a
-	jr nz, Jump_0A93
+	jr nz, .copyByte
 	pop hl
 	pop de
 	pop bc
@@ -1770,12 +1770,12 @@ CopyBytesShort:
 	push bc
 	push de
 	push hl
-Jump_0AA8:
+.copyByte:
 	ld a, [hli]
 	ld [bc], a
 	inc bc
 	dec e
-	jr nz, Jump_0AA8
+	jr nz, .copyByte
 	pop hl
 	pop de
 	pop bc
@@ -1883,27 +1883,27 @@ Func_0AF5: ; legacy alias
 	call FreeObjectRecord
 	ldh a, [$FF81]
 	or a
-	jr z, Jump_0B3B
+	jr z, .maybeSpawnStatus4
 	push de
 	ld e, $46
 	call Audio_QueueSound
 	pop de
 	ld a, $00
 	call SpawnTimedObjectEffect
-Jump_0B3B:
+.maybeSpawnStatus4:
 	ldh a, [$FF80]
 	or a
-	jr z, Jump_0B4C
+	jr z, .maybeRedrawFootprint
 	push bc
 	ld b, $00
 	ld c, $F0
 	call SpawnStatus4Object
 	pop bc
 	call SetObjectPosition
-Jump_0B4C:
+.maybeRedrawFootprint:
 	ldh a, [$FF82]
 	cp $03
-	jr nz, Jump_0B61
+	jr nz, .return
 	ldh a, [$FF83]
 	ld c, a
 	ldh a, [$FF84]
@@ -1913,7 +1913,7 @@ Jump_0B4C:
 	ldh a, [$FF86]
 	ld d, a
 	call RedrawLevelCells2x3AroundPixel
-Jump_0B61:
+.return:
 	pop hl
 	pop bc
 	pop de
@@ -1973,26 +1973,26 @@ Func_0BA1: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	and OBJECT_VEHICLE_REVERSE_FLAG
-	jr z, Jump_0BB8
+	jr z, .loadForwardVelocity
 	ld a, l
 	and $C0
 	ld l, a
 	call LoadVehicleReverseVelocity
-	jr Jump_0BBF
+	jr .applyVelocity
 
-Jump_0BB8:
+.loadForwardVelocity:
 	ld a, l
 	and $C0
 	ld l, a
 	call LoadVehicleForwardVelocity
-Jump_0BBF:
+.applyVelocity:
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
-	jp z, Jump_0C12
+	jp z, .return
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_VELOCITY_X_OFFSET
@@ -2054,7 +2054,7 @@ Jump_0BBF:
 	ld [hl], b
 	inc l
 	ld [hl], e
-Jump_0C12:
+.return:
 	ld a, l
 	and $C0
 	ld l, a
@@ -2130,10 +2130,10 @@ Func_0C51: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	cp b
-	jr nc, Jump_0C70
+	jr nc, .storeSpeed
 	inc a
 	ld b, a
-Jump_0C70:
+.storeSpeed:
 	ld [hl], b
 	pop hl
 	pop af
@@ -2162,10 +2162,10 @@ Func_0C74: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	cp b
-	jr nc, Jump_0C93
+	jr nc, .storeSpeed
 	inc a
 	ld b, a
-Jump_0C93:
+.storeSpeed:
 	ld [hl], b
 	pop hl
 	pop af
@@ -2182,10 +2182,10 @@ Func_0C97: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	or a
-	jr z, Jump_0CA5
+	jr z, .return
 	dec a
 	ld [hl], a
-Jump_0CA5:
+.return:
 	pop hl
 	pop af
 	ret
@@ -2216,7 +2216,7 @@ Func_0CB5: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	or a
-	jr nz, Jump_0CDA
+	jr nz, .return
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_TURN_INTERVAL_OFFSET
@@ -2235,7 +2235,7 @@ Func_0CB5: ; legacy alias
 	dec a
 	and $0F
 	ld [hl], a
-Jump_0CDA:
+.return:
 	pop hl
 	pop af
 	ret
@@ -2251,7 +2251,7 @@ Func_0CDD: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	or a
-	jr nz, Jump_0D02
+	jr nz, .return
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_TURN_INTERVAL_OFFSET
@@ -2270,7 +2270,7 @@ Func_0CDD: ; legacy alias
 	inc a
 	and $0F
 	ld [hl], a
-Jump_0D02:
+.return:
 	pop hl
 	pop af
 	ret
@@ -2301,38 +2301,38 @@ Func_0D0F:
 	ld [hl], b
 	ld a, b
 	cp $00
-	jr z, Jump_0D33
+	jr z, .type0
 	cp $01
-	jr z, Jump_0D3B
+	jr z, .type1
 	cp $02
-	jr z, Jump_0D2B
+	jr z, .type2
 	cp $03
-	jr z, Jump_0D43
-Jump_0D2B:
+	jr z, .type3
+.type2:
 	ld b, $05
 	ld c, $03
 	ld d, $1E
-	jr Jump_0D4B
+	jr .storeParameters
 
-Jump_0D33:
+.type0:
 	ld b, $03
 	ld c, $05
 	ld d, $19
-	jr Jump_0D4B
+	jr .storeParameters
 
-Jump_0D3B:
+.type1:
 	ld b, $04
 	ld c, $04
 	ld d, $14
-	jr Jump_0D4B
+	jr .storeParameters
 
-Jump_0D43:
+.type3:
 	ld b, $03
 	ld c, $00
 	ld d, $23
-	jr Jump_0D4B
+	jr .storeParameters
 
-Jump_0D4B:
+.storeParameters:
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_TURN_INTERVAL_OFFSET
@@ -2425,14 +2425,14 @@ Func_0DB6: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	or a
-	jr z, Jump_0DCB
+	jr z, .render
 	ld a, $28
 	add a, e
 	ld l, a
 	ld a, [hl]
 	or a
-	jp z, Jump_0E35
-Jump_0DCB:
+	jp z, .return
+.render:
 	ld a, OBJECT_TYPE_OFFSET
 	add a, e
 	ld l, a
@@ -2484,25 +2484,25 @@ Jump_0DCB:
 	ld [rROMB0], a
 	ldh a, [$FF80]
 	cp $03
-	jr z, Jump_0E39
+	jr z, .queueMetatile
 	ld a, $09
 	call AllocateDynamicSpriteTiles
 	cp $FF
-	jr z, Jump_0E31
+	jr z, .restoreBank
 	ldh [$FF84], a
 	call CopyObjectOrientationTiles
 	call SelectObjectOrientationPalette
 	call WriteObjectOrientationOam
-Jump_0E31:
+.restoreBank:
 	pop af
 	ld [rROMB0], a
-Jump_0E35:
+.return:
 	pop hl
 	pop bc
 	pop de
 	ret
 
-Jump_0E39:
+.queueMetatile:
 	ldh a, [$FF86]
 	ld c, a
 	ldh a, [$FF87]
@@ -2570,7 +2570,7 @@ Jump_0E39:
 	ld [rROMB0], a
 	ld a, $03
 	ldh [$FF8C], a
-Jump_0EA3:
+.queueMetatileRow:
 	ldh a, [$FF8A]
 	ld l, a
 	ldh a, [$FF8B]
@@ -2636,14 +2636,14 @@ Jump_0EA3:
 	ldh a, [$FF8C]
 	dec a
 	or a
-	jr z, Jump_0F05
+	jr z, .finishMetatile
 	ldh [$FF8C], a
-	jr Jump_0EA3
+	jr .queueMetatileRow
 
-Jump_0F05:
+.finishMetatile:
 	pop af
 	ld [rROMB0], a
-	jp Jump_0E35
+	jp .return
 
 
 ; Write the selected orientation's nine-entry layout to shadow OAM, adding
@@ -2661,7 +2661,7 @@ Func_0F0C: ; legacy alias
 	ld h, [hl]
 	ld l, a
 	ld c, $09
-Jump_0F1F:
+.writeEntry:
 	call AllocateShadowOamFront
 	ldh a, [$FF83]
 	ld b, a
@@ -2688,7 +2688,7 @@ Jump_0F1F:
 	add a, b
 	ld [de], a
 	dec c
-	jr nz, Jump_0F1F
+	jr nz, .writeEntry
 	ret
 
 
@@ -2710,7 +2710,7 @@ Func_0F43: ; legacy alias
 	add a, $27
 	ld [rROMB0], a
 	ld b, $09
-Jump_0F5D:
+.copyTile:
 	ld a, [hli]
 	ld [de], a
 	inc e
@@ -2760,7 +2760,7 @@ Jump_0F5D:
 	ld [de], a
 	inc de
 	dec b
-	jr nz, Jump_0F5D
+	jr nz, .copyTile
 	ret
 
 
