@@ -106,7 +106,7 @@ Jump_00A6:
 	or a
 	jr z, Jump_009F
 	call FadePalettesToBlackWithSound
-	call Func_0AC4
+	call InstallBasicInterruptHandlersFar
 	jp Jump_016C
 
 	db $C3, $C3, $00, $C9
@@ -251,7 +251,7 @@ Jump_01B4:
 	call LoadLevelPalettes
 	call LoadInterfacePalettes
 	call LoadObjectPalettes
-	call Func_0AB3
+	call InstallGameplayInterruptHandlersFar
 	ld d, $08
 Jump_0214:
 	xor a
@@ -439,7 +439,7 @@ Jump_0360:
 	ld [wVBlankPending], a
 	call DisableHudWindow
 	call ClearCgbPalettes
-	call Func_0AC4
+	call InstallBasicInterruptHandlersFar
 	call ResetOamState
 	call Func_3CD9
 	xor a
@@ -1464,7 +1464,7 @@ Func_08C6:
 	call RequireCgbHardware
 	call ResetDisplayState
 	call LoadOAMDMARoutine
-	call Func_0AC4
+	call InstallBasicInterruptHandlersFar
 	call EnableLCD
 	ld hl, Func_367F
 	ld a, l
@@ -1592,7 +1592,7 @@ Jump_0996:
 ; level and interface font; and select its animated-cell CGB attribute.
 InitializeLevelRuntime:
 Func_09AB: ; legacy alias
-	call Func_0AC4
+	call InstallBasicInterruptHandlersFar
 	call ClearCgbPalettes
 	ld hl, $D000
 	ld bc, $1000
@@ -1756,7 +1756,10 @@ Jump_0AA8:
 	ret
 
 
-Func_0AB3:
+; Install the WRAM LCD/VBlank handlers used during gameplay and enable both
+; interrupt sources through the bank-$02 implementation.
+InstallGameplayInterruptHandlersFar:
+Func_0AB3: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
@@ -1767,7 +1770,10 @@ Func_0AB3:
 	ret
 
 
-Func_0AC4:
+; Install a one-byte LCD reti and the minimal WRAM VBlank handler, then enable
+; only VBlank interrupts through the bank-$02 implementation.
+InstallBasicInterruptHandlersFar:
+Func_0AC4: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
@@ -11085,7 +11091,7 @@ Func_3BB0:
 	push af
 	ld a, $01
 	ld [rROMB0], a
-	call Func_0AC4
+	call InstallBasicInterruptHandlersFar
 	call Func_01_6618
 	pop af
 	ld [rROMB0], a

@@ -111,6 +111,12 @@ The ten-byte OAM DMA helper has separate `OAMDMARoutineSource` and
 addresses. Its loader derives the copy length from the ROM boundaries, and an
 assertion prevents the source image from drifting silently.
 
+The two ROM0 interrupt-installation wrappers are now distinguished. The
+gameplay installer copies the WRAM LCD and VBlank handlers and enables both
+sources. The basic installer places an LCD `reti`, copies the minimal VBlank
+handler, and enables VBlank alone. Original address aliases remain available
+to banked callers.
+
 Boot register A is preserved as `wBootHardwareMode` before the memory clear;
 the compatibility guard accepts only the CGB value `$11`. The main loop stages
 SCX and SCY through `wPendingScrollX` and `wPendingScrollY`, then increments the

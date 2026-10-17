@@ -210,6 +210,8 @@ NAMES = {
     0x06F8: "FadePalettesToBlackWithSound",
     0x071F: "FadeBackgroundPalettesToWhiteWithSound",
     0x09AB: "InitializeLevelRuntime",
+    0x0AB3: "InstallGameplayInterruptHandlersFar",
+    0x0AC4: "InstallBasicInterruptHandlersFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",
     0x325B: "RefreshHud",

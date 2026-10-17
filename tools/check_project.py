@@ -1031,6 +1031,8 @@ def check_level_banks() -> None:
             "OAMDMARoutineSource": (0x00, 0x0925),
             "OAMDMARoutineSourceEnd": (0x00, 0x092F),
             "OAMDMARoutine": (0x00, 0xFFF0),
+            "InstallGameplayInterruptHandlersFar": (0x00, 0x0AB3),
+            "InstallBasicInterruptHandlersFar": (0x00, 0x0AC4),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),
             "MoveHudWindow": (0x00, 0x3252),
