@@ -572,7 +572,7 @@ Jump_01_43DF:
 	ldh [rVBK], a
 	ld [hl], b
 	inc l
-	ld a, [$C6ED]
+	ld a, [wUnwrittenStatusDisplayValue0]
 	ld b, a
 	ld hl, $FF80
 	call Func_06C5
@@ -610,7 +610,7 @@ Jump_01_441E:
 	ldh [rVBK], a
 	ld [hl], b
 	inc l
-	ld a, [$C6EE]
+	ld a, [wUnwrittenStatusDisplayValue1]
 	ld b, a
 	ld hl, $FF80
 	call Func_06C5
@@ -1499,9 +1499,9 @@ MenuLoopTop:
 	pop bc
 	pop af
 	ld a, [wMusicSetting]
-	ld [wCommittedMusicSetting], a
+	ld [wUnusedCommittedMusicSetting], a
 	ld a, [wControlSetting]
-	ld [wCommittedControlSetting], a
+	ld [wUnusedCommittedControlSetting], a
 	ld a, [wSkillSetting]
 	ld [wActiveSkillLevel], a
 	ld a, $01

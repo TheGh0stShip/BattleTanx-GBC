@@ -27,8 +27,10 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$C8E6` | `wC8E6` | 1 | Neutral name kept. Audio_InitFar sets it to 1 if 0 (bank_00:8608) and Func_02_626D sets it to 2 (bank_02:1688). No reader found that shows what it means. |
 | `$C91E` | `wAlertObjectTypePtr` | 2 | w01 and w15 agree: bank_01:975 stores a pointer to object field +$1E after incrementing it; Func_0A23 decrements through it and clears it. Picked w15's name. Ne |
 | `$C924` | `wMenuScrollStep` | 1 | 8 refs, all in the bank_01 menu scroll code. Consistent. |
-| `$C92E` | `wCommittedMusicSetting` | 1 | Only ref is a write at bank_01:1473 (RAM_D62E); no reader found. The name comes from the source value only. Medium confidence. |
-| `$C92F` | `wCommittedControlSetting` | 1 | Only ref is a write at bank_01:1475; no reader found. Medium confidence. |
+| `$C6ED` | `wUnwrittenStatusDisplayValue0` | 1 | Read only by `DrawObjectStatusCountsToWindow`, which renders it as a two-digit value. No direct writer exists, so normal cleared WRAM leaves it zero. |
+| `$C6EE` | `wUnwrittenStatusDisplayValue1` | 1 | The adjacent second value follows the same read-only display path and likewise has no direct writer. |
+| `$C92E` | `wUnusedCommittedMusicSetting` | 1 | Written from `wMusicSetting` when leaving the menu; no reader exists. |
+| `$C92F` | `wUnusedCommittedControlSetting` | 1 | Written from `wControlSetting` when leaving the menu; no reader exists. |
 | `$C931` | `wPasswordBits` | 4 | w04 and w15 agree; all 4 bytes used only by the password routines 6B35-6DF0. |
 | `$C935` | `wPasswordBitIndex` | 1 | Same meaning in both proposals; only the bank_01 password bit routines use it. |
 | `$C936` | `wPasswordScoreThousands` | 2 | 16-bit field decoded from the password and applied at Jump_01_5164 (score). Picked w04's more specific name. |
@@ -93,7 +95,7 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$FFB5` | `hSceneTileSlot` | 1 | Only bank_01 scene code uses it. Flagged as HRAM: no reuse found. |
 | `$FFB6` | `hSceneRowHdmaPending` | 1 | Only bank_01 scene code and its VBlank RAM code use it. |
 
-## Final bank $01/$03 follow-up (16 symbols, 95 raw operands)
+## Final bank $01/$03 follow-up (18 symbols, 97 raw operands)
 
 | Symbol | Address | Evidence |
 | --- | --- | --- |
@@ -115,5 +117,4 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 - HRAM reused by other banks (`$FF80-$FF8E`, `$FF96-$FFA7`, `$FFB0-$FFB2`);
 - written but never read (`$FFAB`, `$CD2B-$CD32`, `$D561-$D565`);
 - a role that differs by routine (`$C94B`);
-- no writer found (`$C6ED`/`$C6EE`);
 - a time-shared or bank-dependent region (`$DBFB-$DC40`, `$D7FF`).

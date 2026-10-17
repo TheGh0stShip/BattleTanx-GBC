@@ -65,8 +65,6 @@
    - `$D7CA`/`$D260` single-`ret` data images.
 6. **RAM**:
    - `wC8E6` is written, but its purpose is unknown.
-   - `wCommittedMusicSetting` and `wCommittedControlSetting` are write-only.
-   - No writer was found for `$C6ED`/`$C6EE`.
    - Bank `$01` writes `hLevelRegionTop` (`$FF92`) to `rROMB0` and clears
      `hLevelRegionX` (`$FF95`), which looks like reuse of HRAM.
    - The score BCD buffer at `$FFB0-$FFB4` overlaps

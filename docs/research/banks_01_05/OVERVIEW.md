@@ -39,7 +39,7 @@ address print before every statement in a scratch assembly.
 - The last 27 automatic entries (17 in bank `$01`, 10 in bank `$03`) got companion
   names; `make progress` reports 288/288.
 - 49 branch labels were renamed.
-- 16 more RAM symbols replace 95 raw operands.
+- 18 more RAM symbols replace 97 raw operands.
 - New checks: the scene-interrupt bank-`$01` call set (`tools/banks_01_05.py`)
   and the sequence field invariants (`tools/object_sequence_fields.py`).
 

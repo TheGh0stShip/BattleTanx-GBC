@@ -6,6 +6,8 @@ DEF BANKS_01_05_RAM_INC EQU 1
 DEF wGamePaused                      EQU $C6C1 ; 1 byte(s)
 DEF wGameStartMode                   EQU $C6CD ; 1 byte(s)
 DEF wActiveSkillLevel                EQU $C6CF ; 1 byte(s)
+DEF wUnwrittenStatusDisplayValue0    EQU $C6ED ; displayed by DrawObjectStatusCountsToWindow; no direct writer
+DEF wUnwrittenStatusDisplayValue1    EQU $C6EE ; displayed by DrawObjectStatusCountsToWindow; no direct writer
 DEF wBonusPickupCount                EQU $C6EF ; 1 byte(s)
 DEF wPowerupType3PickupCount         EQU $C6F0 ; 1 byte(s)
 DEF wBgPalette6To7Shadow             EQU $C719 ; 16 byte(s)
@@ -17,8 +19,8 @@ DEF wNearestTargetScanJump           EQU $C8DB ; 4 byte(s)
 DEF wC8E6                            EQU $C8E6 ; 1 byte(s)
 DEF wAlertObjectTypePtr              EQU $C91E ; 2 byte(s)
 DEF wMenuScrollStep                  EQU $C924 ; 1 byte(s)
-DEF wCommittedMusicSetting           EQU $C92E ; 1 byte(s)
-DEF wCommittedControlSetting         EQU $C92F ; 1 byte(s)
+DEF wUnusedCommittedMusicSetting     EQU $C92E ; written when leaving the menu; never read
+DEF wUnusedCommittedControlSetting   EQU $C92F ; written when leaving the menu; never read
 DEF wPasswordBits                    EQU $C931 ; 4 byte(s)
 DEF wPasswordBitIndex                EQU $C935 ; 1 byte(s)
 DEF wPasswordScoreThousands          EQU $C936 ; 2 byte(s)
