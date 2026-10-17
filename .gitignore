@@ -2,6 +2,7 @@
 *.gbc
 *.gb
 build/
+report.json
 *.sym
 *.map
 __pycache__/

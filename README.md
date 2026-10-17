@@ -65,6 +65,9 @@ make check      # runs the complete structural and lossless round-trip suite
 - `tools/` - tracer/disassembler used to generate the initial source
 - `make progress` - reports evidence-based names attached to the original
   automatic function entries, per bank and in total
+- `make report` - writes an objdiff v2 byte-match report for the USA cartridge;
+  it measures exact reconstruction only, while semantic recovery remains in
+  `docs/STATUS.md`
 - `docs/STATUS.md` - concise recovery status and remaining work
 - `docs/research/` - indexed evidence reports for recovered subsystems and bank
   formats; start with [`docs/research/README.md`](docs/research/README.md)

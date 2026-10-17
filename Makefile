@@ -4,7 +4,7 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion progress disasm clean tidy
+.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion progress report disasm clean tidy
 
 all: compare
 
@@ -59,6 +59,10 @@ completion: compare
 # Semantic naming progress, kept separate from traced-byte coverage.
 progress: $(ROM)
 	$(PYTHON) tools/source_progress.py $(ROM:.gbc=.sym)
+
+# objdiff v2 reconstruction report consumed by byte-match trackers.
+report: $(ROM)
+	$(PYTHON) tools/bytematch_report.py --out report.json
 
 # Regenerate src/ from the base ROM (overwrites src/!)
 disasm: check-baserom
