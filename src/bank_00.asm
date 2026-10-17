@@ -11506,20 +11506,20 @@ ClearShadowOamAndTransferFar:
 Func_3CD9: ; legacy alias
 	xor a
 	ld [wVBlankPending], a
-Jump_3CDD:
+.waitForVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_3CDD
+	jr z, .waitForVBlank
 	xor a
 	ld [wVBlankPending], a
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_4810
+	call ClearAndTransferShadowOam
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11598,34 +11598,34 @@ PreserveScreenEffectObjects:
 ProcessNextScreenEffectObject:
 	ld a, [wScreenEffectObjectsRemaining]
 	or a
-	jr z, Jump_3DD7
+	jr z, .return
 	ld d, a
 	ld a, [wScreenEffectObjectPtr]
 	ld l, a
 	ld a, [wScreenEffectObjectPtr + 1]
 	ld h, a
-Jump_3D90:
+.scanNextObject:
 	ld e, l
 	ld a, $08
 	add a, e
 	ld l, a
 	ld a, [hl]
 	and $08
-	jr z, Jump_3DAC
+	jr z, .advanceToNextObject
 	ld a, $1D
 	add a, e
 	ld l, a
 	ld a, [hl]
 	ld l, e
 	cp $01
-	jr nz, Jump_3DAC
+	jr nz, .advanceToNextObject
 	ld a, $26
 	add a, e
 	ld l, a
 	ld a, [hl]
 	or a
-	jr nz, Jump_3DBC
-Jump_3DAC:
+	jr nz, .removeEligibleObject
+.advanceToNextObject:
 	ld a, e
 	add a, $40
 	ld l, a
@@ -11633,12 +11633,12 @@ Jump_3DAC:
 	adc a, h
 	ld h, a
 	dec d
-	jr nz, Jump_3D90
+	jr nz, .scanNextObject
 	xor a
 	ld [wScreenEffectObjectsRemaining], a
 	ret
 
-Jump_3DBC:
+.removeEligibleObject:
 	ld a, d
 	ld [wScreenEffectObjectsRemaining], a
 	ld a, e
@@ -11652,7 +11652,7 @@ Jump_3DBC:
 	ld a, $01
 	ld b, $01
 	call RemoveObject
-Jump_3DD7:
+.return:
 	ret
 
 
@@ -11696,24 +11696,24 @@ RenderScreenEffect:
 	ld [rROMB0], a
 	ld b, $00
 	ld c, SCREEN_EFFECT_PART_COUNT
-Jump_3E18:
+.eachPart:
 	call LoadScreenEffectPart
-	jr z, Jump_3E32
+	jr z, .advancePartSlot
 	push bc
 	ld a, [wScreenEffectPartTileCount]
 	call AllocateDynamicSpriteTiles
 	cp $FF
-	jr z, Jump_3E31
+	jr z, .restoreLoopState
 	ld [wScreenEffectPartFirstTile], a
 	call CopyScreenEffectPartTiles
 	call BuildScreenEffectPartOam
-Jump_3E31:
+.restoreLoopState:
 	pop bc
-Jump_3E32:
+.advancePartSlot:
 	inc b
 	inc b
 	dec c
-	jr nz, Jump_3E18
+	jr nz, .eachPart
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11728,7 +11728,7 @@ CopyScreenEffectPartTiles:
 	ld [rROMB0], a
 	ld a, [wScreenEffectPartTileCount]
 	ld b, a
-Jump_3E4D:
+.copyTile:
 	ld a, [hli]
 	ld [de], a
 	inc e
@@ -11778,7 +11778,7 @@ Jump_3E4D:
 	ld [de], a
 	inc de
 	dec b
-	jr nz, Jump_3E4D
+	jr nz, .copyTile
 	ret
 
 
@@ -11791,7 +11791,7 @@ BuildScreenEffectPartOam:
 	ld [rROMB0], a
 	ld a, [wScreenEffectPartTileCount]
 	ld c, a
-Jump_3E92:
+.buildEntry:
 	call AllocateShadowOamFront
 	ld a, [wScreenEffectY]
 	ld b, a
@@ -11818,7 +11818,7 @@ Jump_3E92:
 	add a, b
 	ld [de], a
 	dec c
-	jr nz, Jump_3E92
+	jr nz, .buildEntry
 	ret
 
 
@@ -11828,14 +11828,14 @@ RandomlyBlankDisplay:
 	ret z
 	call DisableLCDSafely
 	ld b, $64
-Jump_3EC4:
+.outerDelay:
 	ld c, $FF
-Jump_3EC6:
+.innerDelay:
 	nop
 	dec c
-	jr nz, Jump_3EC6
+	jr nz, .innerDelay
 	dec b
-	jr nz, Jump_3EC4
+	jr nz, .outerDelay
 	call EnableLCD
 	ret
 
@@ -11845,16 +11845,16 @@ UpdateScreenEffect:
 	dec a
 	ld [wScreenEffectCountdown], a
 	or a
-	jr z, Jump_3F00
+	jr z, .expire
 	and $03
-	jr nz, Jump_3EFF
+	jr nz, .return
 	ld a, [wScreenEffectBlankCount]
 	or a
-	jr z, Jump_3EEC
+	jr z, .advanceStep
 	dec a
 	ld [wScreenEffectBlankCount], a
 	call RandomlyBlankDisplay
-Jump_3EEC:
+.advanceStep:
 	ld a, [wScreenEffectStepTable]
 	add a, $06
 	ld [wScreenEffectStepTable], a
@@ -11862,10 +11862,10 @@ Jump_3EEC:
 	adc a, $00
 	ld [wScreenEffectStepTable + 1], a
 	call ProcessNextScreenEffectObject
-Jump_3EFF:
+.return:
 	ret
 
-Jump_3F00:
+.expire:
 	call ConvertVisibleLevelCellBit2Regions
 	ld a, [ROM_BANK_MARKER]
 	push af

@@ -918,7 +918,7 @@ Jump_02_4809:
 
 
 ClearAndTransferShadowOam:
-Func_02_4810: ; legacy alias, used by src/bank_00.asm
+Func_02_4810: ; legacy alias
 	ld hl, $C600
 	xor a
 	ld e, $A0
