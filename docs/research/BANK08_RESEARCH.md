@@ -116,8 +116,8 @@ caller's bank.
 
 ## 4. Source and assets
 
-`src/bank_08.asm` (generated once by `tools/gen_bank08_asm.py`, now
-hand-maintained):
+`src/bank_08.asm` is reviewed, hand-maintained authoritative source; the
+obsolete one-time generator has been removed. It contains:
 - explicit palettes, tables, unknown bytes and code;
 - typed tile INCBINs, with sprite blocks sliced from two concatenated assets;
 - legacy labels kept at their addresses (`Bank08AlphanumericFontTiles` = `$69B5`, primary now `Bank08InterfaceTiles69B5`);
@@ -317,16 +317,16 @@ All of them round-trip to the original bytes.
 | `6080-60EF` | 112 | graphics (unreachable table entries only) | SpriteTiles6080 |
 | `60F0-60F7` | 8 | palette record | PaletteRecord60F0 |
 | `60F8-6107` | 16 | graphics | Bank08InterfaceTiles60F8 |
-| `6108-6109` | 2 | unknown | Bank08Unknown6108 |
+| `6108-6109` | 2 | unreferenced data, purpose unknown | Bank08UnreferencedData6108 |
 | `610A-6111` | 8 | palette record | PaletteRecord610A |
 | `6112-6119` | 8 | palette record (unused) | Bank08UnusedPalette6112 |
 | `611A-6219` | 256 | graphics | Bank08InterfaceTiles611A |
 | `621A-6221` | 8 | palette record | PaletteRecord621A |
 | `6222-6241` | 32 | graphics | Bank08InterfaceTiles6222 |
 | `6242-6249` | 8 | palette record | PaletteRecord6242 |
-| `624A-624F` | 6 | unknown | Bank08Unknown624A |
+| `624A-624F` | 6 | unreferenced data, purpose unknown | Bank08UnreferencedData624A |
 | `6250-625F` | 16 | graphics (duplicate, not loaded) | Bank08DuplicateInterfaceTile6250 |
-| `6260-6262` | 3 | unknown | Bank08Unknown6260 |
+| `6260-6262` | 3 | unreferenced data, purpose unknown | Bank08UnreferencedData6260 |
 | `6263-626A` | 8 | palette record | PaletteRecord6263 |
 | `626B-674A` | 1248 | graphics | Bank08InterfaceTiles626B |
 | `674B-6752` | 8 | palette | Bank08HudIconPalette |

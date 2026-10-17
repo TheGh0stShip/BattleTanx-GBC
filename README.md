@@ -61,8 +61,9 @@ zero heuristic bytes. These measurements answer different questions and are
 deliberately not merged.
 
 The whole-ROM range map currently contains 2,411 non-overlapping ranges:
-892,257 bytes under reviewed names, 156,307 bytes of padding or bank markers,
-and 12 neutral bytes whose purpose remains unknown. See
+892,269 bytes under reviewed names and 156,307 bytes of padding or bank
+markers, with no neutral/address-placeholder ranges. Twelve explicitly
+preserved unreferenced bytes still have unknown original purpose. See
 [`docs/STATUS.md`](docs/STATUS.md) for the live recovery ledger and open work.
 
 ## Source strategy

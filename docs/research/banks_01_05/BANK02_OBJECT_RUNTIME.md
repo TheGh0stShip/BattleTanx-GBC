@@ -74,7 +74,7 @@ Reached only through ROM0 `RunScreenMode8ActivityFar`.
   supplies colour 0 itself and reads colours 1-3 from `Bank02ObjPalette7Colours`
   at `$4D52`. Its only
   caller `LoadIndexedSpriteGridFar` is itself never called.
-- `Bank02Unknown5E80` is one unread byte whose purpose is unknown.
+- `Bank02UnreferencedByte5E80` is one unread byte whose purpose is unknown.
 - `Bank02UnusedPaletteRecord5E81` is an unread eight-byte record containing
   four valid RGB555 words (`$0000`, `$0000`, `$0000`, `$7FFF`). Its format and
   boundary are established, but no runtime palette use was found.

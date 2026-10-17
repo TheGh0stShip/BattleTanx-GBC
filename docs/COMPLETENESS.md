@@ -20,8 +20,8 @@ Those are separate, independently measured claims.
 
 ## Not complete
 
-- Twelve bytes remain deliberately neutral because no reader or meaning has
-  been established.
+- No byte range retains a neutral/address-placeholder label. Twelve bytes have
+  reviewed unreferenced-data labels but their original purpose is unknown.
 - One 3,061-byte bank-$07 asset is understood as unread build residue copied
   from audio data, but its build-time origin is not known.
 - Some record fields, palette records, scene identities, object identities,
@@ -32,9 +32,9 @@ Those are separate, independently measured claims.
   self-modified reference without runtime evidence.
 - Some source layouts remain intentionally pinned; successful byte matching
   does not mean every block can be freely relocated.
-- Tooling limitations remain listed in
-  `docs/research/completion/UNRESOLVED.md`, including generator drift and a few
-  audits keyed to source presentation rather than stable site identifiers.
+- The static audits cannot prove every arithmetically constructed,
+  self-modified, timing-dependent, or hardware-dependent runtime behavior.
+  Those cases require targeted runtime or physical-hardware evidence.
 
 ## Progress terminology
 

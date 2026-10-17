@@ -72,7 +72,7 @@
      (10, 17). The complete spawn-to-sequence cross-check is enforced by
      `tools/object_sequence_fields.py`.
 5. **Unread bytes**:
-   - `Bank02Unknown5E80` (one byte); the following eight bytes form the
+   - `Bank02UnreferencedByte5E80` (one byte); the following eight bytes form the
      bounded `Bank02UnusedPaletteRecord5E81`, but that record's purpose is
      unknown and it has no reader.
    - The copied `$D7CA`/`$D260` bytes are now explicit callerless `ret` stubs,

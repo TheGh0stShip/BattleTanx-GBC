@@ -181,7 +181,7 @@ def check_picture_descriptors(rom, sym):
 
 def check_indexed_sprite_grids(rom, sym):
     b, a = sym["IndexedSpriteGridDescriptors"]
-    check((b, a) == (2, 0x41F7), "indexed grids: descriptor table moved")
+    check(b == 2, "indexed grids: descriptor table left bank $02")
     expected = ((0x4AD0, 0x30, 0x20), (0x4830, 0x20, 0x40))
     for i, (source, x, y) in enumerate(expected):
         r = rd(rom, b, a + 4 * i, 4)
@@ -224,7 +224,7 @@ def check_palettes(rom, sym):
         b, a = sym[label]
         for i in range(n):
             check(not word(rom, b, a + 2 * i) & 0x8000, f"palette: {label} word {i} bit 15 set")
-    check(sym["Bank02Unknown5E80"] == (2, 0x5E80), "palette residue: leading byte symbol moved")
+    check(sym["Bank02UnreferencedByte5E80"] == (2, 0x5E80), "palette residue: leading byte symbol moved")
     check(rd(rom, 2, 0x5E80, 1) == b"\x08", "palette residue: leading byte changed")
     check(sym["Bank02UnusedPaletteRecord5E81"] == (2, 0x5E81),
           "palette residue: record symbol moved")

@@ -431,7 +431,7 @@ PaletteRecord60F0: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread
 Bank08InterfaceTiles60F8:
 	INCBIN "assets/bank_08/interface_tiles_60F8.bin" ; 1 tiles
 
-Bank08Unknown6108: ; 2 bytes, no reader found; meaning unknown
+Bank08UnreferencedData6108: ; 2 bytes, no reader found; original purpose unknown
 	db $81, $00
 
 PaletteRecord610A: ; byte-identical to PaletteRecord621A; $033F is in no loaded palette (unread)
@@ -456,14 +456,14 @@ Bank08InterfaceTiles6222:
 PaletteRecord6242: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
-Bank08Unknown624A: ; 6 bytes, no reader found; meaning unknown
+Bank08UnreferencedData624A: ; 6 bytes, no reader found; original purpose unknown
 	db $01, $00, $01, $00, $01, $00
 
 ; Unread duplicate of tile 47 in Bank08InterfaceTiles626B.
 Bank08DuplicateInterfaceTile6250:
 	INCBIN "assets/bank_08/interface_tiles_626B.bin", 47 * 16, 16
 
-Bank08Unknown6260: ; 3 bytes, no reader found; meaning unknown
+Bank08UnreferencedData6260: ; 3 bytes, no reader found; original purpose unknown
 	db $80, $00, $01
 
 PaletteRecord6263: ; byte-identical to Bank08HudIconPalette (unread)

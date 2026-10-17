@@ -72,7 +72,7 @@ BLOBS = {
     ("src/bank_02.asm", "assets/bank_02/5DE0.bin", 2, 0x5DE0, 0x626D): [
         (0x5DE0, 0x5E20, "dw4", "BurstObjPalettes", "8 OBJ palettes (Bank02LoadObjPalettes)", None),
         (0x5E20, 0x5E80, "db4", "BurstBlockTileGrids", "six 4x4 tile grids; tile = byte - $62", None),
-        (0x5E80, 0x5E81, "unread", "Bank02Unknown5E80", "no reader; meaning unknown", None),
+        (0x5E80, 0x5E81, "unread", "Bank02UnreferencedByte5E80", "no reader; original purpose unknown", None),
         (0x5E81, 0x5E89, "dw4", "Bank02UnusedPaletteRecord5E81", "four valid RGB555 words; no reader", None),
         (0x5E89, 0x6099, "bin", "BurstTiles", "33 tiles; Bank02LoadObjTiles -> VRAM $8000", "assets/bank_02/burst_tiles.2bpp"),
         (0x6099, 0x614F, "db2", "BurstChildOffsets", "pairs read when a burst object expires", None),

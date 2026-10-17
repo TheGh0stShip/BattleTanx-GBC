@@ -340,6 +340,16 @@ def readers_of(refs, fall, aliases, members=INDEXED_MEMBERS):
     return out
 
 
+def traced_fallthrough_labels(fall, stmts, code_offsets):
+    """Keep syntactic fall-through entries only when tracing reaches them."""
+    traced = set()
+    for b, s, _e, _kind, label, _rel, _n, aliases in stmts:
+        if off(b, s) in code_offsets:
+            traced.add(label)
+            traced.update(aliases)
+    return fall & traced
+
+
 def build(root: pathlib.Path, rom: bytes):
     macros = macro_kinds(root)
     files = source_files(root)
@@ -423,6 +433,10 @@ def ranges_from(root, rom, stmts, code_offsets):
         for x in range(o, o + n):
             asset_at[x] = path
     refs, fall = references(root)
+    # A syntactic fall-through edge establishes a reader only when tracing also
+    # reaches the destination label. This prevents an internal loop in a dead
+    # routine from making its own data/code look externally reached.
+    fall = traced_fallthrough_labels(fall, stmts, code_offsets)
     recs = []
     for b, s, e, kind, label, rel, n, aliases in sorted(stmts):
         # split code by traced status and data by asset membership
@@ -851,6 +865,13 @@ def negative_tests(root, rom, out, asset_list):
     check(not readers_of(refs, set(), ("Loop",)), "range map negative test: self-loop counted as reader")
     check(not readers_of(refs, set(), ("Alias", "Entry")), "range map negative test: alias self-reference counted")
     check(readers_of(refs, {"Loop"}, ("Loop",)) == {"Loop"}, "range map negative test: fall-through loop not counted")
+    synthetic_stmts = [
+        (1, 0x4000, 0x4001, "code", "Live", "src/a.asm", 1, ("LiveAlias",)),
+        (1, 0x4010, 0x4011, "code", "Dead", "src/a.asm", 1, ("DeadAlias",)),
+    ]
+    check(traced_fallthrough_labels({"Live", "LiveAlias", "Dead", "DeadAlias"}, synthetic_stmts,
+                                    {off(1, 0x4000)}) == {"Live", "LiveAlias"},
+          "range map negative test: untraced fall-through entry retained")
     n += 1
     with tempfile.TemporaryDirectory() as tmp:
         t = pathlib.Path(tmp)

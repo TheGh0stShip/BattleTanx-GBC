@@ -151,7 +151,8 @@ Sources for each claim are kept in `sources.json`, not here.
   to VRAM0 tiles $4E-$51, $52-$55, $56-$59, $5A-$5D. The old "$CE-$DD"
   comments were wrong and are corrected.
 - `Bank08ArrowUpTiles`/`Bank08ArrowDownTiles` keep names based only on
-  appearance (weak). `tools/gen_bank08_asm.py` still emits the old names.
+  appearance (weak). The obsolete one-time bank-$08 generator was removed;
+  `src/bank_08.asm` is the reviewed authoritative source.
 
 **Proven: palette-shaped records**
 - 42 `PaletteRecordXXXX` labels. Two hosts are partly read (colours 1-3
@@ -173,8 +174,9 @@ Sources for each claim are kept in `sources.json`, not here.
   check the groups.
 
 **Proven: unknown bytes (strong for "no reader")**
-- `Bank08Unknown6108` `81 00`; `Bank08Unknown624A` `01 00 01 00 01 00`;
-  `Bank08Unknown6260` `80 00 01`.
+- `Bank08UnreferencedData6108` `81 00`;
+  `Bank08UnreferencedData624A` `01 00 01 00 01 00`;
+  `Bank08UnreferencedData6260` `80 00 01`.
 - The constant interface loads end at $6108, $621A and $6242; the $626B
   load starts after $6262. Every other immediate bank-$08 reader is bounded
   (metatile queue <= $44DF, `SelectObjectSpritePalette` <= $68F2, glyph
@@ -311,18 +313,17 @@ $0000-$0FFF when firing (structural only).
 **Unknown**: `AimObjectAtPlayerFromProximity` loads `D` from `E` and reads
 an unrelated address; possibly an original defect, not run.
 
-## 8. Range map, neutral bytes and assets
+## 8. Range map, unreferenced bytes and assets
 
 **Proven: range-map categories** (`tools/rom_range_map.py --write`, 2,411
 ranges, no gaps or overlaps, 28 negative tests)
 
 | Bucket | Bytes |
 |---|---|
-| asset referenced / unreferenced | 621,328 / 9,808 |
+| asset referenced / unreferenced | 622,608 / 8,528 |
 | code traced / untraced | 36,245 / 584 |
-| data referenced / unreferenced | 180,101 / 41,617 |
+| data referenced / unreferenced | 180,101 / 41,629 |
 | data layout (separators) | 4 |
-| data neutral | 12 |
 | RAM code referenced / unreferenced | 2,528 / 2 |
 | RAM data referenced | 40 |
 | fill / marker padding | 156,244 / 63 |
@@ -341,14 +342,19 @@ ranges, no gaps or overlaps, 28 negative tests)
   and reported as layout, not unused.
 - Indexed members check stride, origin, count and that the reader's code
   derives them.
-- Known limit: fall-through still credits a label without requiring its
-  predecessor to be reached.
+- Closed 2026-10-17: syntactic fall-through credits are now retained only when
+  the tracer reaches the destination label. An internal loop in an untraced
+  routine can no longer make that routine appear referenced by itself.
 
-**Proven: the 12 neutral bytes** (4 ranges)
+**Proven: the 12 explicitly preserved unreferenced bytes** (4 ranges)
+
+All four ranges now have reviewed preservation names rather than neutral
+address placeholders. Their lack of readers is proven; their original purpose
+is still unknown.
 
 | Range | Bytes | Status |
 |---|---|---|
-| $02:5E80 `Bank02Unknown5E80` | `08` | unknown; `BurstBlockTileGrids` ends exactly here |
+| $02:5E80 `Bank02UnreferencedByte5E80` | `08` | unknown; `BurstBlockTileGrids` ends exactly here |
 | $08:6108 / $624A / $6260 | 11 | unknown (section 4) |
 
 No address operand points at any of them. The record at $02:5E81 is a valid
@@ -381,10 +387,10 @@ black/black/black/white RGB555 record with no reader.
 - `audio_build_residue.bin` byte 0 ($07:4007) is emitted as the last `db`
   of `Bank07MalformedSoundPatch00`, not from the file; the file is still
   fully checked.
-- **IndexedSpriteGrid:** `IndexedSpriteGridDescriptors` stores raw bytes
-  `$D0,$4A` / `$30,$48`, not symbols, for `IndexedSpriteGrid0Tiles`/
-  `IndexedSpriteGrid1Tiles`. `banks_01_05.py` pins their addresses, so a
-  shift is detected but not tracked.
+- **IndexedSpriteGrid:** `IndexedSpriteGridDescriptors` stores symbolic words
+  for `IndexedSpriteGrid0Tiles` and `IndexedSpriteGrid1Tiles`, followed by the
+  checked X/Y bytes. Their original little-endian bytes are unchanged and a
+  source shift relocates the references.
 - `graphics.txt` is an inspection manifest; its ranges deliberately differ
   from the assets.
 - `assets/bank_02/tracker_direction_lookup.bin` (2,048 B,

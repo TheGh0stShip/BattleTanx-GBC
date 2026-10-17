@@ -112,7 +112,8 @@ interrupt routine. Fields whose behavior is not yet established remain raw.
 
 1. Confirm or refute the SVBK=2 STAT hazard on hardware, trace fixed scenes
    0-5, and check the ROM-bank invariants on hardware.
-2. Investigate the 12 neutral bytes listed in the whole-ROM unresolved audit.
+2. Investigate the original purpose of the 12 explicitly preserved,
+   unreferenced bytes listed in the whole-ROM audit.
 3. Identify neutral level, scene, screen, object, and audio names from behavior.
 4. Run relocation/shift tests before declaring source freely editable.
 5. Validate timing-sensitive and RAM-executed behavior on physical hardware.

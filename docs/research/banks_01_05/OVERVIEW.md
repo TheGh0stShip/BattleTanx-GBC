@@ -30,7 +30,7 @@ address print before every statement in a scratch assembly.
 | --- | ---: | --- |
 | Exact reconstruction | 81,920 | all five banks match |
 | Behaviour understood (code with evidence names, tables with traced readers, fill/marker) | most | all 278 routine entries carry behaviour names (FINAL_FUNCTIONS.md) |
-| Bounded, meaning unknown | 1 | `Bank02Unknown5E80` |
+| Bounded, meaning unknown | 1 | `Bank02UnreferencedByte5E80` |
 | Unused palette-shaped record, purpose unknown | 8 | `Bank02UnusedPaletteRecord5E81` |
 | Unresolved control flow | 0 indirect sites | see INDIRECT_CONTROL_FLOW.md; open interrupt-bank question in UNRESOLVED.md |
 | Speculative visual interpretation | none used for naming | |

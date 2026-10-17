@@ -269,7 +269,10 @@ From w55 (verified by v73) and w99 (verified by v119, which corrects three point
 
 ### Unknown
 - That an intact pad prevents Up+Down is a hardware assumption, not proven by code. Whether the opposing-direction cases were intended.
-- `w99/sound_sets.py` keys its dynamic sites by snap3 line numbers and fails on later snapshots until re-keyed by label (v119).
+- Closed: the temporary `sound_sets.py` research script is not part of the
+  project. `semantic_invariants.py` checks each dynamic sound call by source
+  file, enclosing routine, ordinal within that routine, and preceding
+  instruction, and rejects missing, duplicate, moved, or stale reviewed sites.
 
 ---
 

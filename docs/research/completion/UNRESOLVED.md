@@ -20,8 +20,9 @@ checked on an emulator or on hardware.
 - **Sound patch `$00`:** one `sound_patch_ch2` line; 33 `_UnreadTrailer` labels
   (24 sfx, 98 bytes; 8 `FE FF` music; the final `FF FF` under `Music_07`). (w125)
 - **Range map:** INCBIN slice check, ASSERTs no longer count as readers, RAM-image
-  vector crediting, separators, stricter indexed members (w116); neutral bytes
-  14 -> **12**.
+  vector crediting, separators, stricter indexed members (w116); the 12
+  remaining unexplained bytes now have reviewed unreferenced-data labels rather
+  than neutral address placeholders.
 - **Asset slices:** `asset_slices.txt` and `check_asset_slices` cover all 254
   placed INCBIN slices. (w127)
 - **Legacy aliases** `Jump_00DA`, `RAM_D56A`, `RAM_D62A` removed. (w131)
@@ -118,12 +119,13 @@ checked on an emulator or on hardware.
 
 ## Data
 
-11. **Bank `$02` `$5E80`** (`Bank02Unknown5E80`): one unread byte, meaning
+11. **Bank `$02` `$5E80`** (`Bank02UnreferencedByte5E80`): one unread byte, meaning
     unknown; `$5E81` is an unread RGB555 record. (w104)
 12. **Bank `$08`:**
     - `$6108-$6109`, `$624A-$624F`, `$6260-$6262`: no operand, header or overrun
       reaches them (w104, strong). With `$02:5E80` these are the **12 remaining
-      neutral bytes** (four ranges). Meaning unknown.
+      explicitly preserved unreferenced bytes** (four ranges). Their original
+      purpose is unknown.
     - 40 unread palette records (groups A-D plus `$6263`, `$68D5`, `$69F5`).
       Why C and D exist is unknown. (w12/v42)
     - Effect steps 19-71 and their 12 tile blocks: unreachable.
@@ -169,24 +171,28 @@ checked on an emulator or on hardware.
     - indirect `[hl]`/`[c]` HRAM writes were not excluded (w66);
     - still raw: the bank-`$02` burst routines on `$FF80-$FF8A`, and
       `RunLevelExitScreenFlow`'s `$FF81`/`$FF82` clears (w126);
-    - `operand_dispositions.json` is stale for `$FF80-$FF8D`, `$FF90`, `$FFA0`,
-      `$FFA1` after w126.
+    - Closed: `operand_dispositions.json` now records `$FF80-$FF8D`, `$FF90`,
+      `$FFA0`, and `$FFA1`; `operand_audit.py` checks the live user sets.
 19. **Opaque assets:** `assets/bank_07/audio_build_residue.bin` (3,061 bytes, a
     copy of bank `$06` data; byte 0 is emitted by `Bank07MalformedSoundPatch00`).
-20. **Tooling:**
+20. **Tooling closures (no remaining item in this group):**
     - Closed 2026-10-17: `make extract-assets` now uses
       `tools/prepare_assets.py`, accepts commented manifests, verifies both
       cartridge hashes before writing, and regenerates all 158 files including
       `object_animation_tiles.bin` and `effect_tiles.bin` from their
       non-contiguous slices.
-    - `IndexedSpriteGridDescriptors` stores raw `$D0,$4A`/`$30,$48` instead of
-      `IndexedSpriteGrid0Tiles`/`IndexedSpriteGrid1Tiles`; a shift is detected by
-      address pins, not tracked (w127).
-    - `tools/gen_bank08_asm.py` still emits the old bank-`$08` names (v115).
-    - `sound_sets.py` and `semantic_invariants.py` key dynamic sound sites by
-      line or routine, not by label/site (v119, v103).
-    - The range map's fall-through rule credits a label without requiring its
-      predecessor to be reached (w116).
+    - Closed 2026-10-17: `IndexedSpriteGridDescriptors` now stores symbolic
+      words for `IndexedSpriteGrid0Tiles` and `IndexedSpriteGrid1Tiles`; their
+      original bytes are unchanged and relocation follows the labels.
+    - Closed: the obsolete bank-$08 one-time generator was removed instead of
+      retaining output that disagreed with the authoritative source.
+    - Closed: the temporary `sound_sets.py` script is absent, and
+      `semantic_invariants.py` keys dynamic sound calls by file, enclosing
+      routine, routine-local ordinal, and preceding instruction, with negative
+      tests for moved and stale sites.
+    - Closed 2026-10-17: the range map intersects syntactic fall-through labels
+      with traced label-entry addresses, so dead internal loops no longer count
+      as readers.
 21. **Hardware:** nothing here has been checked on physical hardware.
 
 ## Original defects (documented, not fixed)

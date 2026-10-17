@@ -319,7 +319,11 @@ VBlankHandlerWithSoftReset_CountFrame:
 
 	ENDL
 IndexedSpriteGridDescriptors:
-	db $D0, $4A, $30, $20, $30, $48, $20, $40, $87
+	dw IndexedSpriteGrid0Tiles
+	db $30, $20
+	dw IndexedSpriteGrid1Tiles
+	db $20, $40
+	db $87
 EffectSpriteLayout1x1:
 	db $FC, $FC, $00, $00
 EffectSpriteLayout2x2:
@@ -2173,7 +2177,7 @@ BurstBlockTileGrids:
 	db $81, $65, $64, $82
 
 ; No reader; purpose unknown.
-Bank02Unknown5E80:
+Bank02UnreferencedByte5E80:
 	db $08
 
 ; Complete RGB555-shaped four-colour record; no reader was found.

@@ -35,9 +35,11 @@ the same kind are merged into 2,411 range records.
 | **total** | **1,048,576** |
 
 **Understanding:**
-- 892,257 bytes are covered by a reviewed (non-automatic) label.
-- 12 bytes are under neutral labels: `Bank02Unknown5E80` (1 byte) and
-  `Bank08Unknown6108`, `Bank08Unknown624A`, `Bank08Unknown6260` (11 bytes).
+- 892,269 bytes are covered by a reviewed (non-automatic) label.
+- No range remains under a neutral/address-placeholder label. Twelve bytes are
+  explicitly preserved as unreferenced data with unknown original purpose:
+  `Bank02UnreferencedByte5E80` (1 byte), `Bank08UnreferencedData6108`,
+  `Bank08UnreferencedData624A`, and `Bank08UnreferencedData6260` (11 bytes).
 - 156,307 bytes are padding or markers.
 
 A reviewed label is not the same as full understanding. The flags below record
@@ -47,7 +49,7 @@ what is still unknown or unused.
 
 | Flag | Bytes |
 | --- | ---: |
-| unused (no reader found, or an `Unused`/`Unread`/`Unreferenced` name) | 52,222 |
+| unused (no reader found, or an `Unused`/`Unread`/`Unreferenced` name) | 50,942 |
 | residue (build residue: banks `$07`, `$27`-`$29`, bank `$05` copies) | 61,619 |
 | duplicated | 1,976 |
 | unreachable code | 584 |
@@ -59,9 +61,8 @@ and the unreferenced bank-`$02` frame routine. They are explicit instructions
 in source. Heuristic decoding still adds 0 bytes.
 
 `reports/rom_unresolved_inventory.json` groups the non-understood ranges per
-bank and reason (neutral label, no reader, untraced code). It is derived from the
-range map, not maintained by hand. Totals by reason: no reader 52,222;
-untraced code 584; neutral label 12.
+bank and reason (no reader or untraced code). It is derived from the range map,
+not maintained by hand. Totals by reason: no reader 50,942; untraced code 584.
 
 Negative tests: the range map rejects 28 deliberate corruptions, the operand
 audit 5, the completion invariants 24 and the semantic invariants 28.
