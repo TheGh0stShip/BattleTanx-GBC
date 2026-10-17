@@ -5787,7 +5787,7 @@ Func_2044:
 	ld l, a
 	ld a, [hl]
 	cp $02
-	call z, Func_2C35
+	call z, ReleaseProjectileOwnerShotSlot
 	ld a, $00
 	ld [hl], a
 	pop hl
@@ -6434,8 +6434,8 @@ Jump_237C:
 	jr z, Jump_2383
 	call Func_2D4C
 Jump_2383:
-	call Func_2C58
-	call Func_2CC3
+	call CalculateProjectileNextPosition
+	call UpdateProjectileLifetimeAndHoming
 	jr z, Jump_2335
 	call HandleObjectLevelBit1And2Cells
 	ld a, $1D
@@ -7058,7 +7058,7 @@ HandleObjectLevelBit1And2Cells:
 	jp z, Jump_27AE
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_TYPE2_STATE_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $02
@@ -8093,7 +8093,7 @@ Func_2B86: ; legacy alias
 	ld [bc], a
 	ld a, c
 	and $C0
-	add a, $20
+	add a, OBJECT_PROJECTILE_SUBTYPE_OFFSET
 	ld c, a
 	pop de
 	ld a, d
@@ -8103,7 +8103,7 @@ Func_2B86: ; legacy alias
 	ld c, a
 	ld a, $02
 	cp d
-	call z, Func_2E67
+	call z, InitializeHomingProjectileTarget
 	ld a, d
 	sla a
 	sla a
@@ -8131,7 +8131,7 @@ Func_2B86: ; legacy alias
 	inc e
 	ld a, c
 	and $C0
-	add a, $21
+	add a, OBJECT_PROJECTILE_LIFETIME_OFFSET
 	ld c, a
 	ld a, [de]
 	ld [bc], a
@@ -8185,25 +8185,28 @@ Func_2C24: ; legacy alias
 	ret
 
 
-Func_2C35:
+; Releasing a status-2 object also releases one of its owner's three active
+; projectile slots, provided that owner is still an allocated status-1 object.
+ReleaseProjectileOwnerShotSlot:
+Func_2C35: ; legacy alias
 	push hl
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_PROJECTILE_OWNER_OFFSET
 	ld l, a
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	ld a, l
 	and $C0
-	add a, $1D
+	add a, OBJECT_STATUS_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $01
 	jr nz, Jump_2C56
 	ld a, l
 	and $C0
-	add a, $22
+	add a, OBJECT_VEHICLE_ACTIVE_SHOTS_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -8215,7 +8218,10 @@ Jump_2C56:
 	ret
 
 
-Func_2C58:
+; Calculate a projectile's next 16.8 position from its velocity, deriving the
+; forward velocity first when field $29 is zero.
+CalculateProjectileNextPosition:
+Func_2C58: ; legacy alias
 	push de
 	push bc
 	push hl
@@ -8306,11 +8312,14 @@ Jump_2CBB:
 	ret
 
 
-Func_2CC3:
+; Consume one frame of projectile lifetime. Free an expired projectile;
+; otherwise steer subtype 2 toward its selected target.
+UpdateProjectileLifetimeAndHoming:
+Func_2CC3: ; legacy alias
 	push hl
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_PROJECTILE_LIFETIME_OFFSET
 	ld l, a
 	ld a, [hl]
 	dec a
@@ -8333,25 +8342,28 @@ Jump_2CDA:
 	ld a, [hl]
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_PROJECTILE_SUBTYPE_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $02
-	call z, Func_2CF1
+	call z, SteerHomingProjectile
 	xor a
 	inc a
 	pop hl
 	ret
 
 
-Func_2CF1:
+; After its initial delay, turn a homing projectile one direction step per
+; frame toward its live target. A missing or freed target leaves it unchanged.
+SteerHomingProjectile:
+Func_2CF1: ; legacy alias
 	push af
 	push bc
 	push de
 	push hl
 	ld a, l
 	and $C0
-	add a, $25
+	add a, OBJECT_PROJECTILE_TARGET_OFFSET
 	ld l, a
 	ld e, [hl]
 	inc l
@@ -8361,14 +8373,14 @@ Func_2CF1:
 	jr z, Jump_2D47
 	ld a, e
 	and $C0
-	add a, $1D
+	add a, OBJECT_STATUS_OFFSET
 	ld e, a
 	ld a, [de]
 	cp $00
 	jr z, Jump_2D47
 	ld a, l
 	and $C0
-	add a, $27
+	add a, OBJECT_PROJECTILE_STEERING_DELAY_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -8624,14 +8636,17 @@ Jump_2E61:
 	ret
 
 
-Func_2E67:
+; Give a subtype-2 projectile a 20-frame steering delay and select the nearest
+; visible status-1 object whose facing is within three steps of its owner.
+InitializeHomingProjectileTarget:
+Func_2E67: ; legacy alias
 	push af
 	push bc
 	push de
 	push hl
 	ld a, c
 	and $C0
-	add a, $27
+	add a, OBJECT_PROJECTILE_STEERING_DELAY_OFFSET
 	ld c, a
 	ld a, $14
 	ld [bc], a
@@ -8650,7 +8665,7 @@ Func_2E67:
 	jr z, Jump_2E98
 	ld a, c
 	and $C0
-	add a, $25
+	add a, OBJECT_PROJECTILE_TARGET_OFFSET
 	ld c, a
 	ldh a, [$FF80]
 	ld [bc], a
@@ -8662,7 +8677,7 @@ Func_2E67:
 Jump_2E98:
 	ld a, c
 	and $C0
-	add a, $25
+	add a, OBJECT_PROJECTILE_TARGET_OFFSET
 	ld c, a
 	xor a
 	ld [bc], a
