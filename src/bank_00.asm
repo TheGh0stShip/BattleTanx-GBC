@@ -5924,7 +5924,7 @@ Func_214D:
 	push hl
 	ld a, l
 	and $C0
-	inc a
+	inc a ; OBJECT_X_OFFSET
 	ld l, a
 	ld a, [wLevelCameraX]
 	ld c, a
@@ -5962,14 +5962,14 @@ Jump_2184:
 	jr nc, Jump_21DF
 	ld a, l
 	and $C0
-	add a, $06
+	add a, OBJECT_SCREEN_X_OFFSET
 	ld l, a
 	ld a, c
 	add a, $08
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $04
+	add a, OBJECT_Y_OFFSET
 	ld l, a
 	ld a, [wLevelCameraY]
 	ld c, a
@@ -6007,17 +6007,17 @@ Jump_21C4:
 	jr nc, Jump_21DF
 	ld a, l
 	and $C0
-	add a, $07
+	add a, OBJECT_SCREEN_Y_OFFSET
 	ld l, a
 	ld a, c
 	add a, $10
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $08
+	add a, OBJECT_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
-	or $08
+	or OBJECT_VISIBLE_FLAG
 	ld [hl], a
 	pop hl
 	pop de
@@ -6028,14 +6028,14 @@ Jump_21C4:
 Jump_21DF:
 	ld a, l
 	and $C0
-	add a, $08
+	add a, OBJECT_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
-	and $F7
+	and ~OBJECT_VISIBLE_FLAG
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $06
+	add a, OBJECT_SCREEN_X_OFFSET
 	ld l, a
 	xor a
 	ld [hli], a
@@ -6053,28 +6053,28 @@ Func_21F7:
 	push bc
 	ld a, l
 	and $C0
-	inc a
+	inc a ; OBJECT_X_OFFSET
 	ld l, a
 	ld c, [hl]
 	inc l
 	ld b, [hl]
 	ld a, l
 	and $C0
-	add a, $09
+	add a, OBJECT_PREVIOUS_X_OFFSET
 	ld l, a
 	ld [hl], c
 	inc l
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $04
+	add a, OBJECT_Y_OFFSET
 	ld l, a
 	ld c, [hl]
 	inc l
 	ld b, [hl]
 	ld a, l
 	and $C0
-	add a, $0B
+	add a, OBJECT_PREVIOUS_Y_OFFSET
 	ld l, a
 	ld [hl], c
 	inc l
@@ -6091,7 +6091,7 @@ Func_221F:
 	ld e, l
 	ld d, h
 	ld a, l
-	and $C0
+	and OBJECT_RECORD_ALIGN_MASK
 	add a, OBJECT_NEXT_X_SUBPIXEL_OFFSET
 	ld l, a
 	ld a, e

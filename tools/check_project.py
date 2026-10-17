@@ -1117,6 +1117,7 @@ def check_level_banks() -> None:
         "OBJECT_SCREEN_X_OFFSET": 0x06,
         "OBJECT_SCREEN_Y_OFFSET": 0x07,
         "OBJECT_FLAGS_OFFSET": 0x08,
+        "OBJECT_VISIBLE_FLAG": 0x08,
         "OBJECT_PREVIOUS_X_OFFSET": 0x09,
         "OBJECT_PREVIOUS_Y_OFFSET": 0x0B,
         "OBJECT_NEXT_X_SUBPIXEL_OFFSET": 0x13,
