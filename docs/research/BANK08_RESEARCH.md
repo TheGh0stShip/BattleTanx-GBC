@@ -60,7 +60,7 @@ The two totals sum to 16,384.
 | `DrawEncodedGlyph` | `$6B05 + char` | 1 byte | BG tile `glyph + $80`, attribute `$0F` (palette 7, VRAM1) |
 | `Func_0DB6` type-3 path (`Jump_0E39`) | `$43E0 + 12 * (obj+$19)`; `obj+$19` stored `& $0F` | 12 bytes | 2x3 BG metatile: tile + `$42`, attribute OR `$0F` |
 | `Func_3190` (object animation) | bank-`$02` frame tables `$4565-$45BB` (9 tables) | `[obj+$25]` tiles | WRAM staging `$C100+`, HDMA to VRAM1 `$8000`; OAM attribute OR `$0B` |
-| `Func_3E05/3E3C` (effect) | bank-`$05` step table `$6358` (72 steps x 3 record words; 5-byte records: count, tile source, OAM template) | count x 16 | WRAM staging; OAM attribute OR 3 (OBJ palette 3, VRAM1) |
+| `RenderScreenEffect` / `CopyScreenEffectPartTiles` | bank-`$05` step table `$6358` (72 steps x 3 record words; 5-byte records: count, tile source, OAM template) | count x 16 | WRAM staging; OAM attribute OR 3 (OBJ palette 3, VRAM1) |
 | `LoadObjectPalettes` | `$46EA` (3 colours, OBJ 3), `$67FD` (4 x 3 colours, OBJ 4-7), `$44A2` (8 bytes, BG 7) | `Func_057D` / `Func_052F` | OCPD / BCPD |
 | ROM0 `$3CFB` effect start / ROM0 `$3F00` | `$5502` / `$46EA` (3 colours, OBJ 3) | `Func_057D` | OCPD |
 | `LoadInterfacePalettes` | `$44A0`, `$674B`, `$691D`, `$6965`, `$69AD` (8 bytes each) | `CopyBytesShort` | WRAM `$C721`, `$C6F9`, `$C701`, `$C709`, `$C711` (LOAD blocks kept) |
@@ -69,8 +69,8 @@ The two totals sum to 16,384.
 **Selectors.** All bank-`$08` selections are the immediate `$08`. No
 computed selector found in earlier audits can produce `$08`.
 
-**Effect step bound.** `$C959` starts at `$4B`. `Func_3ED1` decrements it and
-advances `$C95D` by 6 at each non-zero multiple of 4, so steps 0-18 are
+**Effect step bound.** `wScreenEffectCountdown` starts at 75. `UpdateScreenEffect`
+decrements it and advances `wScreenEffectStepTable` by 6 at each non-zero multiple of 4, so steps 0-18 are
 reachable. Steps 19-71 are well-formed but unreachable by traced code, and
 they are the only references to 992 bytes of tiles (section 9).
 

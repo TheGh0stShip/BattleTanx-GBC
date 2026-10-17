@@ -7425,7 +7425,7 @@ Jump_01_7D09:
 	jr nz, Jump_01_7D02
 	ret
 
-Func_01_7D3A:
+FreeObjectsOutsideStatuses1And4:
 	ld d, $40
 	ld hl, $D000
 Jump_01_7D3F:

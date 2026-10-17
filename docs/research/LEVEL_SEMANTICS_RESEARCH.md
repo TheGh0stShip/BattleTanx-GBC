@@ -102,4 +102,5 @@ intentional sharing is an inference; the code always reads per-level
 copies.
 
 Level 14's tile map bytes `$4518-$4BFB` are the source copied into banks
-`$27-$29` as unread residue (OBJECT_ORIENTATION_RUNTIME_RESEARCH.md).
+`$27-$29` as unread residue
+([`OBJECT_ORIENTATION_RUNTIME_RESEARCH.md`](OBJECT_ORIENTATION_RUNTIME_RESEARCH.md)).

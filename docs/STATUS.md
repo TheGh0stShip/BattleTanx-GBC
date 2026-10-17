@@ -41,8 +41,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Object sequences | Bank `$03:$4000-$5C10` is explicit source: two signed-vector tables, fifteen 64-slot per-level pointer tables, 203 counted sequences, and 626 eight-byte records; the vector-direction quantizer and all 15 level-state checks are named | Determine the remaining record-field meanings and name individual sequences |
 | Level objects | Bank `$04:$4000-$601B` is explicit source: 600 fixed-size object initialization records, 120 auxiliary records, and the per-level pointer directory; the 20-entry deferred-spawn queue, active-table pointers, slow-tick counter, and camera-window spawn path are named | Determine the remaining field meanings and the role of enabled auxiliary records |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
-| Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see `BANKS_2A_2E_RESEARCH.md` | Trace the caller-less bank-`$2E` routines and picture meanings |
-| Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see `TEXT_RESEARCH.md` | Glyph map reconciled (`BANK08_RESEARCH.md`); rule out indirect or constructed strings |
+| Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see [`research/BANKS_2A_2E_RESEARCH.md`](research/BANKS_2A_2E_RESEARCH.md) | Trace the caller-less bank-`$2E` routines and picture meanings |
+| Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see [`research/TEXT_RESEARCH.md`](research/TEXT_RESEARCH.md) | Glyph map reconciled ([`research/BANK08_RESEARCH.md`](research/BANK08_RESEARCH.md)); rule out indirect or constructed strings |
 
 ## Known control-flow gaps
 
@@ -210,7 +210,7 @@ pin every target that is still stored numerically, and thirteen shift tests
 prove six movable structures relocate correctly while seven hardware- or
 raw-reference-constrained structures stop the build. Cell-map bit semantics,
 all level-index writers, object-bank selectors, screen routes, and scene routes
-are documented in `BANKS_09_3A_SEMANTIC_RECOVERY.md`; five controlled audit
+are documented in [`research/BANKS_09_3A_SEMANTIC_RECOVERY.md`](research/BANKS_09_3A_SEMANTIC_RECOVERY.md); five controlled audit
 corruptions must fail for their intended reason.
 
 The source now uses typed assets for the four large ranges in each level,
@@ -286,7 +286,7 @@ are entered only after the run-time transformations described above.
 
 ## Confirmed graphics boundaries
 
-Bank `$08` is fully classified; see `BANK08_RESEARCH.md`. Every boundary is
+Bank `$08` is fully classified; see [`research/BANK08_RESEARCH.md`](research/BANK08_RESEARCH.md). Every boundary is
 derived from loader operands, palette loads, the bank-`$02` object animation
 frame tables, the bank-`$05` effect step table, the glyph table and the
 metatile table, and checked by `tools/bank08.py` (23 negative tests).
@@ -299,6 +299,15 @@ separated by 8-byte palette-shaped records. Byte totals: code 27, graphics
 10,832 (992 referenced only by unreachable effect steps, 16 never loaded),
 palettes 64, palette-shaped records 336, tables 330, fill/marker 4,624,
 unknown 171 (`$6108-$6109`, `$6112-$6119`, `$624A-$6262`, `$6A7D-$6B04`).
+
+The ROM0 screen-effect path is now named through its full 75-frame lifetime.
+It renders three parts per frame from the bank-`$05` step records, copying
+their bank-`$08` tiles into the dynamic sprite staging area and building OBJ
+palette-3 OAM entries. Every fourth non-final frame it advances six bytes in
+the step table and processes one eligible object. Up to 30 of those advances
+can briefly blank the display, gated by a random two-bit value. Expiry converts
+visible cell-bit-2 regions, restores OBJ palette 3, and clears the active flag.
+The trigger's gameplay identity is not yet proven, so its names remain neutral.
 
 Banks `$27`, `$28`, and `$29` each start with nine orientation frames of nine
 native 2bpp tiles. Bank `$05:$4020` contains the 16-entry orientation lookup:
@@ -369,7 +378,7 @@ startup when the boot value is not `$11`. Its actual DMG-format layout is 221
 physical 2bpp tiles, a 16-byte alignment gap, and a 20x17 tile map. The loader
 sets `BGP` directly and does not read attributes or CGB palettes. Zero fill and
 one trailing unread palette-shaped record occupy the rest of the prefix.
-Detailed loader and range evidence is recorded in `GBC_WARNING_RESEARCH.md`.
+Detailed loader and range evidence is recorded in [`research/GBC_WARNING_RESEARCH.md`](research/GBC_WARNING_RESEARCH.md).
 The four remaining scrolling scenes and all eleven fixed scenes share banks
 `$30-$33`. Their maps, attributes, rows, and palette blocks are explicit source;
 graphics-only intervals are narrowly typed assets. Some fixed-scene tile loads
@@ -383,7 +392,7 @@ read at palette pointer +`$38`, even for descriptors with fewer active palettes.
 
 ## Banks `$2A-$2E`
 
-Details: `BANKS_2A_2E_RESEARCH.md`.
+Details: [`research/BANKS_2A_2E_RESEARCH.md`](research/BANKS_2A_2E_RESEARCH.md).
 
 - Reconstruction: every byte is represented as code (2,803), structured data
   (13,694), typed 2bpp tiles (51,792), or padding (13,631); no opaque ranges
@@ -397,7 +406,7 @@ Details: `BANKS_2A_2E_RESEARCH.md`.
 
 ## Audio
 
-Details and evidence: `AUDIO_RESEARCH.md`.
+Details and evidence: [`research/AUDIO_RESEARCH.md`](research/AUDIO_RESEARCH.md).
 
 Reconstruction completeness (bytes represented as explicit, structured
 source rather than opaque INCBIN):

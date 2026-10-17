@@ -1,7 +1,7 @@
 # Screen runtime: banks $2A-$2E
 
 Baseline `ae8696ef6adf28ad6984acbb64a9954d4cca854c`. Byte layout and templates:
-BANKS_2A_2E_RESEARCH.md.
+[`BANKS_2A_2E_RESEARCH.md`](BANKS_2A_2E_RESEARCH.md).
 
 ## Mode -> caller -> proven role
 
@@ -46,7 +46,7 @@ and can be skipped.
   is an inference from the level decode.
 - **`$01:$596D` pictures**: the `RAM_D7CB` index is `wMenuState05Selection`,
   which wraps within 0-2. Aliases: `MenuState05Picture0-2_Tiles`.
-- **Descriptor fields**: unchanged from BANKS_2A_2E_RESEARCH.md. +8 (tile
+- **Descriptor fields**: unchanged from [`BANKS_2A_2E_RESEARCH.md`](BANKS_2A_2E_RESEARCH.md). +8 (tile
   count) is never read; +12/+13 are read only by the plain draw routine.
 
 ## Relocation

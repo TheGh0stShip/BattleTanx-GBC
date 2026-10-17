@@ -99,7 +99,7 @@ for s, e, cls, label in ranges:
             anim_off += n
         else:
             reach = "" if cls == "graphics" else " (referenced only by unreachable steps 19-71)"
-            out.append(f"\n; Func_3E3C effect tiles: {', '.join(sorted(effect_refs[s]))}{reach}\n"
+            out.append(f"\n; CopyScreenEffectPartTiles data: {', '.join(sorted(effect_refs[s]))}{reach}\n"
                        f"SpriteTiles{s:04X}:\n\tINCBIN \"assets/bank_08/effect_tiles.bin\", {effect_off}, {n}\n")
             effect_off += n
     elif cls == "graphics":

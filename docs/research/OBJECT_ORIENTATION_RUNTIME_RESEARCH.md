@@ -1,7 +1,7 @@
 # Object orientation runtime: banks $27-$29
 
 Baseline `ae8696ef6adf28ad6984acbb64a9954d4cca854c`. Byte layout:
-BANKS_27_29_RESEARCH.md (unchanged).
+[`BANKS_27_29_RESEARCH.md`](BANKS_27_29_RESEARCH.md) (unchanged).
 
 ## Selector `[$FF80] + $27` (ROM0 `Func_0F43`)
 

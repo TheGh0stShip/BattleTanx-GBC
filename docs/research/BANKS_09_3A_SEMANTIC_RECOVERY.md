@@ -79,8 +79,10 @@ Direct traced code: 38,772 bytes, unchanged. Heuristic: 0.
 
 ## 3. Recovered structures and consumers
 
-See LEVEL_SEMANTICS_RESEARCH.md, OBJECT_ORIENTATION_RUNTIME_RESEARCH.md,
-SCREEN_RUNTIME_RESEARCH.md and SCENE_RUNTIME_RESEARCH.md. Highlights:
+See [`LEVEL_SEMANTICS_RESEARCH.md`](LEVEL_SEMANTICS_RESEARCH.md),
+[`OBJECT_ORIENTATION_RUNTIME_RESEARCH.md`](OBJECT_ORIENTATION_RUNTIME_RESEARCH.md),
+[`SCREEN_RUNTIME_RESEARCH.md`](SCREEN_RUNTIME_RESEARCH.md), and
+[`SCENE_RUNTIME_RESEARCH.md`](SCENE_RUNTIME_RESEARCH.md). Highlights:
 - **Level record**: all 20 bytes traced to readers; +6, +7 and +8 have none.
 - **Cell bits**: passable / solid / destructible / touch-region / animated /
   lookup (bits 0-3, 6, 7); bits 4-5 are unused.
@@ -135,7 +137,8 @@ only appearance or inference supports them.
 
 ## 7. Raw ROM addresses
 
-RELOCATION_AUDIT.md and `reports/raw_references_09_3A.json`: 152 raw
+[`RELOCATION_AUDIT.md`](RELOCATION_AUDIT.md) and
+`../../reports/raw_references_09_3A.json`: 152 raw
 pointer references (131 targets) and 80 raw bank bytes. All of them live in
 out-of-scope banks `$00/$01/$05` and are pinned. No scoped file contains a
 raw pointer.
@@ -143,7 +146,7 @@ raw pointer.
 ## 8. Shift tests
 
 13 cases (6 relocate, 7 fail-safe), all passing, assembled without
-`baserom.gbc`. See RELOCATION_AUDIT.md.
+`baserom.gbc`. See [`RELOCATION_AUDIT.md`](RELOCATION_AUDIT.md).
 
 ## 9. Negative tests
 

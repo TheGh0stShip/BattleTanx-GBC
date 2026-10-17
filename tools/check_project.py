@@ -1012,6 +1012,16 @@ def check_level_banks() -> None:
             "BuildObjectOamEntries": (0x00, 0x315F),
             "LoadObjectAnimationTiles": (0x00, 0x3190),
             "AdvanceTimedObjectEffect": (0x00, 0x31E3),
+            "StartScreenEffect": (0x00, 0x3CFB),
+            "PreserveScreenEffectObjects": (0x00, 0x3D70),
+            "ProcessNextScreenEffectObject": (0x00, 0x3D81),
+            "LoadScreenEffectPart": (0x00, 0x3DD8),
+            "RenderScreenEffect": (0x00, 0x3E05),
+            "CopyScreenEffectPartTiles": (0x00, 0x3E3C),
+            "BuildScreenEffectPartOam": (0x00, 0x3E81),
+            "RandomlyBlankDisplay": (0x00, 0x3EB9),
+            "UpdateScreenEffect": (0x00, 0x3ED1),
+            "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),
             "MoveHudWindow": (0x00, 0x3252),
             "RefreshHud": (0x00, 0x325B),
@@ -1176,6 +1186,50 @@ def check_level_banks() -> None:
         fail(
             "sprite allocator constants differ: "
             f"{sprite_constants.items() ^ expected_sprite_constants.items()}"
+        )
+
+    effect_symbols = {
+        name: int(address, 16)
+        for name, address in re.findall(
+            r"DEF (wScreenEffect\w+)\s+EQU \$([0-9A-Fa-f]+)", memory_source
+        )
+    }
+    expected_effect_symbols = {
+        "wScreenEffectActive": 0xC0FF,
+        "wScreenEffectX": 0xC957,
+        "wScreenEffectY": 0xC958,
+        "wScreenEffectCountdown": 0xC959,
+        "wScreenEffectTopY": 0xC95A,
+        "wScreenEffectBottomY": 0xC95B,
+        "wScreenEffectBlankCount": 0xC95C,
+        "wScreenEffectStepTable": 0xC95D,
+        "wScreenEffectPartTileCount": 0xC95F,
+        "wScreenEffectPartTiles": 0xC960,
+        "wScreenEffectPartOam": 0xC962,
+        "wScreenEffectPartFirstTile": 0xC964,
+        "wScreenEffectObjectPtr": 0xC965,
+        "wScreenEffectObjectsRemaining": 0xC967,
+    }
+    if effect_symbols != expected_effect_symbols:
+        fail(
+            "screen-effect symbols differ: "
+            f"{effect_symbols.items() ^ expected_effect_symbols.items()}"
+        )
+    effect_constants = {
+        name: int(value)
+        for name, value in re.findall(
+            r"DEF (SCREEN_EFFECT_\w+)\s+EQU (\d+)", memory_source
+        )
+    }
+    expected_effect_constants = {
+        "SCREEN_EFFECT_DURATION": 75,
+        "SCREEN_EFFECT_BLANK_COUNT": 30,
+        "SCREEN_EFFECT_PART_COUNT": 3,
+    }
+    if effect_constants != expected_effect_constants:
+        fail(
+            "screen-effect constants differ: "
+            f"{effect_constants.items() ^ expected_effect_constants.items()}"
         )
 
     object_source = (ROOT / "include" / "object.inc").read_text()

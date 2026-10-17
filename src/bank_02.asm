@@ -895,7 +895,7 @@ Func_02_4D58:
 	ld a, [$CA08]
 	cp $02
 	jp nc, Func_02_406F
-	ld a, [$C0FF]
+	ld a, [wScreenEffectActive]
 	and a
 	jp nz, Func_02_406F
 	jp $C8DB

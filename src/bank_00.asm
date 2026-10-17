@@ -360,11 +360,11 @@ Jump_0261:
 	ld a, [hl]
 	adc a, $00
 	ld [hl], a
-	ld a, [$C0FF]
+	ld a, [wScreenEffectActive]
 	or a
 	jr z, Jump_02E9
-	call Func_3E05
-	call Func_3ED1
+	call RenderScreenEffect
+	call UpdateScreenEffect
 Jump_02E9:
 	call Func_22ED
 	call Func_3823
@@ -384,7 +384,7 @@ Jump_02E9:
 	ld a, [$C6C1]
 	or a
 	call nz, Func_033A
-	ld a, [$C0FF]
+	ld a, [wScreenEffectActive]
 	or a
 	jr nz, Jump_0320
 	call Func_3608
@@ -1607,7 +1607,7 @@ Jump_09ED:
 	ld [$CD0A], a
 Jump_09F1:
 	xor a
-	ld [$C0FF], a
+	ld [wScreenEffectActive], a
 	ld [wHudAlertActive], a
 	ld [$C91E], a
 	ld [$C91F], a
@@ -2726,7 +2726,7 @@ Func_0F98:
 	ld a, $03
 	cp e
 	jr nz, Jump_0FCE
-	call Func_3CFB
+	call StartScreenEffect
 	jr Jump_0FFA
 
 Jump_0FCE:
@@ -11281,7 +11281,7 @@ Jump_3CDD:
 	ret
 
 
-Func_3CFB:
+StartScreenEffect:
 	push af
 	push bc
 	push de
@@ -11295,28 +11295,28 @@ Func_3CFB:
 	add a, $06
 	ld l, a
 	ld a, [hli]
-	ld [$C957], a
+	ld [wScreenEffectX], a
 	ld a, [hli]
-	ld [$C958], a
-	ld [$C95B], a
+	ld [wScreenEffectY], a
+	ld [wScreenEffectBottomY], a
 	sub $10
-	ld [$C95A], a
+	ld [wScreenEffectTopY], a
 	call Func_0CA8
-	ld a, $4B
-	ld [$C959], a
-	ld a, $1E
-	ld [$C95C], a
+	ld a, SCREEN_EFFECT_DURATION
+	ld [wScreenEffectCountdown], a
+	ld a, SCREEN_EFFECT_BLANK_COUNT
+	ld [wScreenEffectBlankCount], a
 	ld a, $58
-	ld [$C95D], a
+	ld [wScreenEffectStepTable], a
 	ld a, $63
-	ld [$C95E], a
+	ld [wScreenEffectStepTable + 1], a
 	ld a, $00
-	ld [$C965], a
+	ld [wScreenEffectObjectPtr], a
 	ld a, $D0
-	ld [$C966], a
+	ld [wScreenEffectObjectPtr + 1], a
 	ld a, $40
-	ld [$C967], a
-	call Func_3D70
+	ld [wScreenEffectObjectsRemaining], a
+	call PreserveScreenEffectObjects
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
@@ -11328,7 +11328,7 @@ Func_3CFB:
 	pop af
 	ld [rROMB0], a
 	ld a, $01
-	ld [$C0FF], a
+	ld [wScreenEffectActive], a
 	ld a, $4F
 	ld [wSfxSeqLockId], a
 	ld e, a
@@ -11340,25 +11340,25 @@ Func_3CFB:
 	ret
 
 
-Func_3D70:
+PreserveScreenEffectObjects:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
 	ld [rROMB0], a
-	call Func_01_7D3A
+	call FreeObjectsOutsideStatuses1And4
 	pop af
 	ld [rROMB0], a
 	ret
 
 
-Func_3D81:
-	ld a, [$C967]
+ProcessNextScreenEffectObject:
+	ld a, [wScreenEffectObjectsRemaining]
 	or a
 	jr z, Jump_3DD7
 	ld d, a
-	ld a, [$C965]
+	ld a, [wScreenEffectObjectPtr]
 	ld l, a
-	ld a, [$C966]
+	ld a, [wScreenEffectObjectPtr + 1]
 	ld h, a
 Jump_3D90:
 	ld e, l
@@ -11391,16 +11391,16 @@ Jump_3DAC:
 	dec d
 	jr nz, Jump_3D90
 	xor a
-	ld [$C967], a
+	ld [wScreenEffectObjectsRemaining], a
 	ret
 
 Jump_3DBC:
 	ld a, d
-	ld [$C967], a
+	ld [wScreenEffectObjectsRemaining], a
 	ld a, e
-	ld [$C965], a
+	ld [wScreenEffectObjectPtr], a
 	ld a, h
-	ld [$C966], a
+	ld [wScreenEffectObjectPtr + 1], a
 	ld l, e
 	call GetObjectScoreValue
 	call AddToScore
@@ -11412,13 +11412,13 @@ Jump_3DD7:
 	ret
 
 
-Func_3DD8:
+LoadScreenEffectPart:
 	ld a, $05
 	ld [rROMB0], a
-	ld a, [$C95D]
+	ld a, [wScreenEffectStepTable]
 	add a, b
 	ld l, a
-	ld a, [$C95E]
+	ld a, [wScreenEffectStepTable + 1]
 	adc a, $00
 	ld h, a
 	ld a, [hli]
@@ -11428,22 +11428,22 @@ Func_3DD8:
 	or a
 	ret z
 	ld a, [hli]
-	ld [$C95F], a
+	ld [wScreenEffectPartTileCount], a
 	ld a, [hli]
-	ld [$C960], a
+	ld [wScreenEffectPartTiles], a
 	ld a, [hli]
-	ld [$C961], a
+	ld [wScreenEffectPartTiles + 1], a
 	ld a, [hli]
-	ld [$C962], a
+	ld [wScreenEffectPartOam], a
 	ld a, [hl]
-	ld [$C963], a
+	ld [wScreenEffectPartOam + 1], a
 	xor a
 	inc a
 	ret
 
 
-Func_3E05:
-	ld a, [$C959]
+RenderScreenEffect:
+	ld a, [wScreenEffectCountdown]
 	cp $03
 	ret c
 	ld a, [ROM_BANK_MARKER]
@@ -11451,18 +11451,18 @@ Func_3E05:
 	ld a, $08
 	ld [rROMB0], a
 	ld b, $00
-	ld c, $03
+	ld c, SCREEN_EFFECT_PART_COUNT
 Jump_3E18:
-	call Func_3DD8
+	call LoadScreenEffectPart
 	jr z, Jump_3E32
 	push bc
-	ld a, [$C95F]
+	ld a, [wScreenEffectPartTileCount]
 	call AllocateDynamicSpriteTiles
 	cp $FF
 	jr z, Jump_3E31
-	ld [$C964], a
-	call Func_3E3C
-	call Func_3E81
+	ld [wScreenEffectPartFirstTile], a
+	call CopyScreenEffectPartTiles
+	call BuildScreenEffectPartOam
 Jump_3E31:
 	pop bc
 Jump_3E32:
@@ -11475,14 +11475,14 @@ Jump_3E32:
 	ret
 
 
-Func_3E3C:
-	ld a, [$C960]
+CopyScreenEffectPartTiles:
+	ld a, [wScreenEffectPartTiles]
 	ld l, a
-	ld a, [$C961]
+	ld a, [wScreenEffectPartTiles + 1]
 	ld h, a
 	ld a, $08
 	ld [rROMB0], a
-	ld a, [$C95F]
+	ld a, [wScreenEffectPartTileCount]
 	ld b, a
 Jump_3E4D:
 	ld a, [hli]
@@ -11538,30 +11538,30 @@ Jump_3E4D:
 	ret
 
 
-Func_3E81:
-	ld a, [$C962]
+BuildScreenEffectPartOam:
+	ld a, [wScreenEffectPartOam]
 	ld l, a
-	ld a, [$C963]
+	ld a, [wScreenEffectPartOam + 1]
 	ld h, a
 	ld a, $05
 	ld [rROMB0], a
-	ld a, [$C95F]
+	ld a, [wScreenEffectPartTileCount]
 	ld c, a
 Jump_3E92:
 	call AllocateShadowOamFront
-	ld a, [$C958]
+	ld a, [wScreenEffectY]
 	ld b, a
 	ld a, [hli]
 	add a, b
 	ld [de], a
 	inc e
-	ld a, [$C957]
+	ld a, [wScreenEffectX]
 	ld b, a
 	ld a, [hli]
 	add a, b
 	ld [de], a
 	inc e
-	ld a, [$C964]
+	ld a, [wScreenEffectPartFirstTile]
 	ld b, a
 	ld a, [hli]
 	add a, b
@@ -11578,7 +11578,7 @@ Jump_3E92:
 	ret
 
 
-Func_3EB9:
+RandomlyBlankDisplay:
 	call RandomByte
 	and $03
 	ret z
@@ -11596,28 +11596,28 @@ Jump_3EC6:
 	ret
 
 
-Func_3ED1:
-	ld a, [$C959]
+UpdateScreenEffect:
+	ld a, [wScreenEffectCountdown]
 	dec a
-	ld [$C959], a
+	ld [wScreenEffectCountdown], a
 	or a
 	jr z, Jump_3F00
 	and $03
 	jr nz, Jump_3EFF
-	ld a, [$C95C]
+	ld a, [wScreenEffectBlankCount]
 	or a
 	jr z, Jump_3EEC
 	dec a
-	ld [$C95C], a
-	call Func_3EB9
+	ld [wScreenEffectBlankCount], a
+	call RandomlyBlankDisplay
 Jump_3EEC:
-	ld a, [$C95D]
+	ld a, [wScreenEffectStepTable]
 	add a, $06
-	ld [$C95D], a
-	ld a, [$C95E]
+	ld [wScreenEffectStepTable], a
+	ld a, [wScreenEffectStepTable + 1]
 	adc a, $00
-	ld [$C95E], a
-	call Func_3D81
+	ld [wScreenEffectStepTable + 1], a
+	call ProcessNextScreenEffectObject
 Jump_3EFF:
 	ret
 
@@ -11634,7 +11634,7 @@ Jump_3F00:
 	pop af
 	ld [rROMB0], a
 	xor a
-	ld [$C0FF], a
+	ld [wScreenEffectActive], a
 	ret
 
 

@@ -60,6 +60,27 @@ DEF SHADOW_OAM_ENTRY_COUNT     EQU 40
 DEF DYNAMIC_SPRITE_TRANSFER_TILE_COUNT EQU 40
 DEF DYNAMIC_SPRITE_TILE_REJECT_AT EQU 49
 
+; Seventy-five-frame screen effect.  Three bank-$05 part records select
+; bank-$08 tiles and OAM templates for each step.  The update also walks the
+; object pool and converts visible level-cell bit-2 regions when it expires.
+DEF wScreenEffectActive           EQU $C0FF
+DEF wScreenEffectX                EQU $C957
+DEF wScreenEffectY                EQU $C958
+DEF wScreenEffectCountdown        EQU $C959
+DEF wScreenEffectTopY             EQU $C95A
+DEF wScreenEffectBottomY          EQU $C95B
+DEF wScreenEffectBlankCount       EQU $C95C
+DEF wScreenEffectStepTable        EQU $C95D ; 2-byte pointer into bank $05
+DEF wScreenEffectPartTileCount    EQU $C95F
+DEF wScreenEffectPartTiles        EQU $C960 ; 2-byte bank-$08 pointer
+DEF wScreenEffectPartOam          EQU $C962 ; 2-byte bank-$05 pointer
+DEF wScreenEffectPartFirstTile    EQU $C964
+DEF wScreenEffectObjectPtr        EQU $C965 ; 2-byte object-pool pointer
+DEF wScreenEffectObjectsRemaining EQU $C967
+DEF SCREEN_EFFECT_DURATION         EQU 75
+DEF SCREEN_EFFECT_BLANK_COUNT      EQU 30
+DEF SCREEN_EFFECT_PART_COUNT       EQU 3
+
 ; Sixty-four 64-byte runtime object records.
 DEF wObjectPool EQU $D000
 
