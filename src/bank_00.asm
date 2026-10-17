@@ -11077,12 +11077,12 @@ Func_3A68:
 	adc a, h
 	ld h, a
 	ld e, $08
-Jump_3A7D:
+.copyByte:
 	ld a, [hli]
 	ld [bc], a
 	inc bc
 	dec e
-	jr nz, Jump_3A7D
+	jr nz, .copyByte
 	ld a, $01
 	ldh [rSVBK], a
 	ret
@@ -11132,9 +11132,9 @@ Func_3ABF: ; legacy alias
 	ld a, $01
 	ld [rROMB0], a
 	call ClearShadowOamAndTransferFar
-	ld a, [$C6CD]
+	ld a, [wGameStartMode]
 	cp $01
-	jr z, Jump_3B11
+	jr z, .return
 	call Func_01_5BF1
 	ld a, [wLevelNumber]
 	ld hl, $6609
@@ -11147,18 +11147,18 @@ Func_3ABF: ; legacy alias
 	ld a, [hl]
 	or a
 	ld a, [wLevelNumber]
-	jr z, Jump_3AEE
+	jr z, .queueSceneSounds
 	call Func_01_63B3
 	call Func_01_609A
 	call Func_01_6133
-Jump_3AEE:
+.queueSceneSounds:
 	ld e, $10
 	call Audio_QueueSound
-Jump_3AF3:
+.chooseRandomSceneSound:
 	call RandomByte
 	and $07
 	cp $06
-	jr nc, Jump_3AF3
+	jr nc, .chooseRandomSceneSound
 	add a, $81
 	ld e, a
 	call Audio_QueueSound
@@ -11167,35 +11167,35 @@ Jump_3AF3:
 	call Func_01_63D1
 	call Func_01_609A
 	call ClearBackgroundPalettes
-Jump_3B11:
+.return:
 	ret
 
 
-; Present the terminal level-exit flow selected by $C6CD: scene zero followed
+; Present the terminal level-exit flow selected by wGameStartMode: scene zero followed
 ; by screen mode $0C for values 0/2, or screen mode 8 and its activity for 1.
 RunLevelExitScreenFlow:
 Func_3B12: ; legacy alias
 	ld a, $01
 	ld [rROMB0], a
-	ld a, [$C6CD]
+	ld a, [wGameStartMode]
 	cp $00
-	jr z, Jump_3B28
+	jr z, .runSceneAndMode12
 	cp $02
-	jr z, Jump_3B28
+	jr z, .runSceneAndMode12
 	cp $01
-	jr z, Jump_3B38
-	jr Jump_3B59
+	jr z, .runMode8
+	jr .return
 
-Jump_3B28:
+.runSceneAndMode12:
 	call Func_01_5BF1
 	xor a
 	ldh [$FF82], a
 	ldh [$FF81], a
 	call Func_01_609A
 	call RunScreenMode12SetupFar
-	jr Jump_3B59
+	jr .return
 
-Jump_3B38:
+.runMode8:
 	ld a, $08
 	call ScreenTable_CallInit
 	ld a, $08
@@ -11203,56 +11203,56 @@ Jump_3B38:
 	call ScreenTable_CallUpdate
 	xor a
 	ld [wVBlankPending], a
-Jump_3B49:
+.waitForVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_3B49
+	jr z, .waitForVBlank
 	xor a
 	ld [wVBlankPending], a
 	call RunScreenMode8ActivityFar
-Jump_3B59:
+.return:
 	ret
 
 
 ; After level completion, run the bank-$01 post-level screen flow and wait for
-; input, except for $C6CD == 1 and the final level.
+; input, except for wGameStartMode == 1 and the final level.
 RunLevelCompletionScreenFlow:
 Func_3B5A: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
 	ld [rROMB0], a
-	ld a, [$C6CD]
+	ld a, [wGameStartMode]
 	cp $01
-	jr z, Jump_3B9A
+	jr z, .restoreBankAndReturn
 	call PrepareDisplayForScreenTransition
 	ld e, $82
 	call Audio_QueueSound
 	ld a, [wLevelNumber]
 	cp $0E
-	jp z, Jump_3B9A
+	jp z, .restoreBankAndReturn
 	call Func_01_6BBC
 	call RunScreenMode6SetupFar
-Jump_3B80:
+.waitForInputFrame:
 	xor a
 	ld [wVBlankPending], a
-Jump_3B84:
+.waitForVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_3B84
+	jr z, .waitForVBlank
 	xor a
 	ld [wVBlankPending], a
 	call Audio_Update
 	ld a, [wJoypadHeld]
 	or a
-	jr z, Jump_3B80
-Jump_3B9A:
+	jr z, .waitForInputFrame
+.restoreBankAndReturn:
 	pop af
 	ld [rROMB0], a
 	ret
