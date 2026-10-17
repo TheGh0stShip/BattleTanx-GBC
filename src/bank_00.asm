@@ -2382,7 +2382,7 @@ Jump_0D4B:
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $2B
+	add a, OBJECT_LAST_ATTACKER_OFFSET
 	ld l, a
 	ld [hl], b
 	inc l
@@ -6445,7 +6445,7 @@ Jump_2383:
 	cp $02
 	jr nz, Jump_232B
 	ld l, e
-	call Func_28C5
+	call ResolveProjectileHit
 	jr Jump_232B
 
 Jump_239D:
@@ -7497,21 +7497,26 @@ Jump_28C0:
 	ret
 
 
-Func_28C5:
+; Scan the object table for the first visible status-1 object whose screen
+; coordinate lies within the projectile's 12-by-12 hit window. On a hit, save
+; the projectile owner as the target's last attacker, apply damage (doubled
+; for a powered projectile), consume the projectile, and create its hit effect.
+ResolveProjectileHit:
+Func_28C5: ; legacy alias
 	push af
 	push bc
 	push de
 	push hl
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_PROJECTILE_OWNER_OFFSET
 	ld l, a
 	ld e, [hl]
 	inc l
 	ld d, [hl]
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_PROJECTILE_POWERED_OFFSET
 	ld l, a
 	ld a, [hl]
 	ldh [$FFA1], a
@@ -7524,17 +7529,17 @@ Func_28C5:
 Jump_28E6:
 	ld a, c
 	and $C0
-	add a, $1D
+	add a, OBJECT_STATUS_OFFSET
 	ld c, a
 	ld a, [bc]
 	cp $01
 	jr nz, Jump_2911
 	ld a, c
 	and $C0
-	add a, $08
+	add a, OBJECT_FLAGS_OFFSET
 	ld c, a
 	ld a, [bc]
-	and $08
+	and OBJECT_VISIBLE_FLAG
 	jr z, Jump_2911
 	ldh a, [$FFA1]
 	or a
@@ -7547,7 +7552,7 @@ Jump_28E6:
 	cp d
 	jr z, Jump_2911
 Jump_290B:
-	call Func_2977
+	call TestObjectScreenProximity12
 	or a
 	jr nz, Jump_2927
 Jump_2911:
@@ -7571,7 +7576,7 @@ Jump_2911:
 Jump_2927:
 	ld a, c
 	and $C0
-	add a, $2B
+	add a, OBJECT_LAST_ATTACKER_OFFSET
 	ld c, a
 	ld a, e
 	ld [bc], a
@@ -7580,7 +7585,7 @@ Jump_2927:
 	ld [bc], a
 	ld a, l
 	and $C0
-	add a, $22
+	add a, OBJECT_PROJECTILE_DAMAGE_OFFSET
 	ld l, a
 	ld d, [hl]
 	ld a, l
@@ -7629,17 +7634,20 @@ Jump_294C:
 	ret
 
 
-Func_2977:
+; Return 1 when the absolute difference between the two objects' 8-bit screen
+; coordinates is less than 12 on both axes, otherwise return 0.
+TestObjectScreenProximity12:
+Func_2977: ; legacy alias
 	push hl
 	push bc
 	push de
 	ld a, l
 	and $C0
-	add a, $06
+	add a, OBJECT_SCREEN_X_OFFSET
 	ld l, a
 	ld a, c
 	and $C0
-	add a, $06
+	add a, OBJECT_SCREEN_X_OFFSET
 	ld c, a
 	ld a, [bc]
 	ld d, [hl]
@@ -7654,11 +7662,11 @@ Jump_298E:
 	jr nc, Jump_29B3
 	ld a, l
 	and $C0
-	add a, $07
+	add a, OBJECT_SCREEN_Y_OFFSET
 	ld l, a
 	ld a, c
 	and $C0
-	add a, $07
+	add a, OBJECT_SCREEN_Y_OFFSET
 	ld c, a
 	ld a, [bc]
 	ld d, [hl]
@@ -8069,7 +8077,7 @@ Func_2B86: ; legacy alias
 	ld l, a
 	ld a, c
 	and $C0
-	add a, $1E
+	add a, OBJECT_PROJECTILE_OWNER_OFFSET
 	ld c, a
 	ld a, l
 	ld [bc], a
@@ -8102,7 +8110,7 @@ Func_2B86: ; legacy alias
 	ld [rROMB0], a
 	ld a, c
 	and $C0
-	add a, $22
+	add a, OBJECT_PROJECTILE_DAMAGE_OFFSET
 	ld c, a
 	ld a, [de]
 	ld [bc], a
@@ -8122,7 +8130,7 @@ Func_2B86: ; legacy alias
 	ld [bc], a
 	ld a, c
 	and $C0
-	add a, $23
+	add a, OBJECT_PROJECTILE_POWERED_OFFSET
 	ld c, a
 	xor a
 	ld [bc], a

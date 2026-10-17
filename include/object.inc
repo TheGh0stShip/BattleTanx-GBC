@@ -48,6 +48,12 @@ DEF OBJECT_EFFECT_LIFETIME_OFFSET          EQU $20
 DEF OBJECT_TYPE2_STATE_OFFSET              EQU $20
 DEF OBJECT_VEHICLE_ACTION_TIMER_OFFSET     EQU $21
 DEF OBJECT_VEHICLE_ACTIVE_SHOTS_OFFSET     EQU $22
+; Status-2 projectile fields. The owner pointer is also copied into a struck
+; vehicle's last-attacker field so a later destruction can award player score.
+DEF OBJECT_PROJECTILE_OWNER_OFFSET          EQU $1E ; 16-bit object pointer
+DEF OBJECT_PROJECTILE_DAMAGE_OFFSET         EQU $22
+DEF OBJECT_PROJECTILE_POWERED_OFFSET        EQU $23 ; nonzero doubles damage
+DEF OBJECT_LAST_ATTACKER_OFFSET             EQU $2B ; 16-bit object pointer
 DEF OBJECT_FRAME_TABLE_OFFSET      EQU $21 ; bank-$02 pointer
 DEF OBJECT_OAM_LAYOUT_OFFSET       EQU $23 ; bank-$02 pointer
 DEF OBJECT_TILE_COUNT_OFFSET       EQU $25
