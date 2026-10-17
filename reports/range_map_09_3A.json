@@ -800,8 +800,10 @@
    "start": "$4510",
    "end": "$4511",
    "bytes": 2,
-   "label": "Bank27Unknown4510",
-   "aliases": []
+   "label": "Bank27ObjectPaletteRecord",
+   "aliases": [
+    "Bank27UnusedObjectPaletteColor0"
+   ]
   },
   {
    "bank": "$27",
@@ -898,8 +900,10 @@
    "start": "$4510",
    "end": "$4511",
    "bytes": 2,
-   "label": "Bank28Unknown4510",
-   "aliases": []
+   "label": "Bank28ObjectPaletteRecord",
+   "aliases": [
+    "Bank28UnusedObjectPaletteColor0"
+   ]
   },
   {
    "bank": "$28",
@@ -996,8 +1000,10 @@
    "start": "$4510",
    "end": "$4511",
    "bytes": 2,
-   "label": "Bank29Unknown4510",
-   "aliases": []
+   "label": "Bank29ObjectPaletteRecord",
+   "aliases": [
+    "Bank29UnusedObjectPaletteColor0"
+   ]
   },
   {
    "bank": "$29",

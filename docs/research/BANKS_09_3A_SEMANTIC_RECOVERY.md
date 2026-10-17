@@ -190,7 +190,7 @@ make clean
 make check
 battletanx.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 bank 08: every byte classified (code 27, fill 4623, graphics 9824, graphics (not loaded) 16, graphics (unreachable table entries only) 992, marker 1, palette 64, palette record 336, table 330, unknown 171), 23 negative tests rejected
-object banks: $27-$29 fully accounted (fill 39945, graphics 3888, marker 3, palette 18, residue 5292, unknown word 6), 20 negative tests rejected
+object banks: $27-$29 fully accounted (fill 39945, graphics 3888, marker 3, palette 24, residue 5292), 20 negative tests rejected
 unused banks: $3C-$3F are 65536 checked $FF padding bytes
 code-bank tails: banks $03/$04 explicit through their bank markers
 scrolling source: 32 scenes in banks $2F/$34-$3B (88752 graphics, 348 structured, 27400 rows, 256 palettes, 30700 padding, 0 unknown)

@@ -21,12 +21,12 @@ BANK_SIZE = 0x4000
 FRAME_TILES, FRAMES, ORIENTATIONS = 9, 9, 16
 FRAME_SIZE = FRAME_TILES * 16
 FRAMES_END = 0x4000 + FRAMES * FRAME_SIZE            # $4510
-UNKNOWN_WORD = 0x4510
+PALETTE_RECORD = 0x4510
 PALETTE = 0x4512
 RESIDUE_START, RESIDUE_END = 0x4518, 0x4BFC
 LAYOUT_PTRS, TILE_PTRS = 0x4000, 0x4020               # bank $05
 LAYOUT_NORMAL, LAYOUT_FLIPPED = 0x4040, 0x4064        # bank $05, 9 x 4 bytes
-EXPECTED_UNKNOWN = {0x27: 0x318C, 0x28: 0x6739, 0x29: 0x6739}
+EXPECTED_UNUSED_COLOR0 = {0x27: 0x318C, 0x28: 0x6739, 0x29: 0x6739}
 ASSET_SHA1 = {
     # filled from the committed assets; see BANKS_27_29_RESEARCH.md
 }
@@ -35,7 +35,8 @@ for _b in BANKS:
     SYMBOLS[f"Bank{_b:02X}OrientationTiles"] = (_b, 0x4000)
     for _f in range(FRAMES):
         SYMBOLS[f"Bank{_b:02X}OrientationFrame{_f}"] = (_b, 0x4000 + _f * FRAME_SIZE)
-    SYMBOLS[f"Bank{_b:02X}Unknown4510"] = (_b, UNKNOWN_WORD)
+    SYMBOLS[f"Bank{_b:02X}ObjectPaletteRecord"] = (_b, PALETTE_RECORD)
+    SYMBOLS[f"Bank{_b:02X}UnusedObjectPaletteColor0"] = (_b, PALETTE_RECORD)
     SYMBOLS[f"Bank{_b:02X}ObjectPalette"] = (_b, PALETTE)
     SYMBOLS[f"Bank{_b:02X}Bank26Residue"] = (_b, RESIDUE_START)
 
@@ -102,8 +103,10 @@ def parse(rom: bytes) -> list[tuple[int, int, int, str]]:
     ranges = []
     for bank in BANKS:
         data = rom[bank * BANK_SIZE:(bank + 1) * BANK_SIZE]
-        check(word(rom, bank, UNKNOWN_WORD) == EXPECTED_UNKNOWN[bank], f"bank ${bank:02X}: $4510 word changed")
-        check(not word(rom, bank, UNKNOWN_WORD) & 0x8000, f"bank ${bank:02X}: $4510 bit 15 set")
+        check(word(rom, bank, PALETTE_RECORD) == EXPECTED_UNUSED_COLOR0[bank],
+              f"bank ${bank:02X}: unused palette colour 0 changed")
+        check(not word(rom, bank, PALETTE_RECORD) & 0x8000,
+              f"bank ${bank:02X}: unused palette colour 0 bit 15 set")
         for c in range(3):
             check(not word(rom, bank, PALETTE + 2 * c) & 0x8000, f"bank ${bank:02X}: palette colour {c} bit 15 set")
         prev = rom[off(bank - 1, RESIDUE_START):off(bank - 1, RESIDUE_END)]
@@ -114,8 +117,7 @@ def parse(rom: bytes) -> list[tuple[int, int, int, str]]:
         check(data[0x3FFF] == bank, f"bank ${bank:02X}: bank marker")
         ranges += [
             (bank, 0x4000, FRAMES_END, "graphics"),
-            (bank, UNKNOWN_WORD, PALETTE, "unknown word"),
-            (bank, PALETTE, RESIDUE_START, "palette"),
+            (bank, PALETTE_RECORD, RESIDUE_START, "palette"),
             (bank, RESIDUE_START, RESIDUE_END, "residue"),
             (bank, RESIDUE_END, 0x7FFF, "fill"),
             (bank, 0x7FFF, 0x8000, "marker"),
@@ -198,7 +200,7 @@ def negative_tests(rom: bytes, root: pathlib.Path) -> int:
         "layout record": ({(5, LAYOUT_FLIPPED + 4 * 4 + 3): 0x00}, "x-flipped layout record 4"),
         "layout pointer": ({(5, LAYOUT_PTRS + 2 * 9): 0x40}, "layout pointer 9"),
         "palette value range": ({(0x29, PALETTE + 1): 0x80}, "palette colour 0 bit 15"),
-        "unknown word": ({(0x27, UNKNOWN_WORD): 0x8D}, "$4510 word changed"),
+        "unused palette colour 0": ({(0x27, PALETTE_RECORD): 0x8D}, "unused palette colour 0 changed"),
         "residue": ({(0x28, 0x4800): 0x00}, "residue"),
         "fill byte": ({(0x27, 0x6000): 0x01}, "non-zero byte in fill"),
         "bank marker": ({(0x29, 0x7FFF): 0x28}, "bank marker"),
@@ -216,7 +218,7 @@ def negative_tests(rom: bytes, root: pathlib.Path) -> int:
     # coverage: drop and overlap a range
     good = parse(rom)
     for name, bad, expect in (
-        ("uncovered range", [r for r in good if r[3] != "unknown word"], "gap"),
+        ("uncovered range", [r for r in good if r[3] != "palette"], "gap"),
         ("overlapping range", good + [(0x28, 0x4500, 0x4520, "x")], "overlap"),
     ):
         try:

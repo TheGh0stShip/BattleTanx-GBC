@@ -11,9 +11,10 @@ SECTION "ROM Bank $27", ROMX[$4000], BANK[$27]
 Bank27OrientationTiles:
 	orientation_frames "assets/bank_27/orientation_tiles.bin", Bank27Orientation
 
-; One RGB555 word before the palette; nothing reads it (LoadObjectPalettes
-; points at Bank27ObjectPalette and Func_057D writes $0000 as colour 0).
-Bank27Unknown4510:
+; Complete four-colour RGB555 record. The loader deliberately begins at
+; colour 1 and Func_057D supplies transparent colour 0 as $0000 instead.
+Bank27ObjectPaletteRecord:
+Bank27UnusedObjectPaletteColor0:
 	dw $318C
 
 ; OBJ palette 0 colours 1-3, loaded by ROM0 LoadObjectPalettes.
@@ -26,7 +27,8 @@ Bank27Bank26Residue:
 
 	object_bank_end
 
-	ASSERT Bank27Unknown4510 == $4000 + ORIENTATION_FRAMES * ORIENTATION_FRAME_SIZE
+	ASSERT Bank27ObjectPaletteRecord == $4000 + ORIENTATION_FRAMES * ORIENTATION_FRAME_SIZE
+	ASSERT Bank27ObjectPalette == Bank27ObjectPaletteRecord + 2
 	ASSERT Bank27Bank26Residue == RESIDUE_START
 
 ; Relocation pins (RELOCATION_AUDIT.md): these addresses are stored as raw

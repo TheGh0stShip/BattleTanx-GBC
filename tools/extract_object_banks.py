@@ -71,13 +71,15 @@ def main() -> None:
             recs = rom[O.off(5, lptr[int(r[0])]):O.off(5, lptr[int(r[0])]) + 36]
             if bytes([int(r[2]) & 0xFF, int(r[3]) & 0xFF, int(r[4]), int(r[5])]) != recs[4 * int(r[1]):4 * int(r[1]) + 4]:
                 raise SystemExit("objects: layout.csv does not round trip")
+        unused_color0 = O.word(rom, bank, O.PALETTE_RECORD)
         pal = [O.word(rom, bank, O.PALETTE + 2 * c) for c in range(3)]
-        (out / "palette.txt").write_text("0: 0000 (written by Func_057D)\n" + "".join(
+        (out / "palette.txt").write_text(
+            f"source 0: {unused_color0:04X} (unused; Func_057D writes 0000)\n" + "".join(
             f"{c + 1}: {v:04X} #%02X%02X%02X\n" % tuple(((v >> s) & 31) * 255 // 31 for s in (0, 5, 10))
             for c, v in enumerate(pal)))
         (out / "info.json").write_text(json.dumps({
             "bank": f"${bank:02X}", "obj_palette_slot": bank - 0x27,
-            "unknown_4510": f"${O.word(rom, bank, O.UNKNOWN_WORD):04X}",
+            "unused_palette_color_0": f"${unused_color0:04X}",
             "orientation_frames": [(p - 0x4000) // O.FRAME_SIZE for p in tptr],
             "orientation_x_flip": [lp == O.LAYOUT_FLIPPED for lp in lptr]}, indent=2) + "\n")
     print("objects: 3 banks; frame, orientation, layout and palette outputs round-trip verified")

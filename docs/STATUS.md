@@ -434,18 +434,18 @@ the first nine entries select the nine consecutive `$90`-byte frames and the
 last seven select them in reverse, reusing the mirrored layouts at `$4064`.
 The loader copies exactly nine 16-byte tiles from the selected frame. These
 three `$510`-byte ranges now round-trip as confirmed graphics. Each is followed
-by an unidentified two-byte value at `$4510` and an explicit three-color object
-palette at `$4512`; the palette loader supplies the transparent color and loads
-these records into object palette slots 0, 1, and 2.
+by a four-colour object-palette record at `$4510`; the palette loader ignores
+its source colour 0, supplies transparent black, and loads colours 1-3 from
+`$4512` into object palette slots 0, 1, and 2.
 
-The orientation graphics end at `$450F`. The word at `$4510` resembles an
-RGB555 color but is unread and remains unnamed. Each palette occupies six bytes
-at `$4512-$4517`. Bytes `$4518-$4BFB` are an unread, byte-identical copy of the
+The orientation graphics end at `$450F`. Each four-colour RGB555 palette record
+starts at `$4510`; its source colour 0 is unused because the loader supplies
+black, then copies colours 1-3 from `$4512-$4517`. Bytes `$4518-$4BFB` are an unread, byte-identical copy of the
 same offsets in bank `$26` (part of level 14's tile map), not sprite data.
 Zero fill begins at `$4BFC` and continues to the bank marker at `$7FFF`.
-Every byte in banks `$27-$29` is now classified, with the unknown meaning of
-the `$4510` word and the run-time bound of one bank selector retained as open
-questions. `make objects` emits frame, assembled-orientation, layout, and
+Every byte in banks `$27-$29` is now classified with no unknown bytes; the
+run-time bound of one bank selector remains an open question. `make objects`
+emits frame, assembled-orientation, layout, and
 palette inspection files and verifies their round trips.
 
 ## Scene-background descriptors

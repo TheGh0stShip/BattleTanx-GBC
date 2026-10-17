@@ -115,7 +115,7 @@ def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> 
     if tuple(rom[offset : offset + 2] for offset in (0x9C510, 0xA0510, 0xA4510)) != (
         bytes.fromhex("8c31"), bytes.fromhex("3967"), bytes.fromhex("3967")
     ):
-        fail("unknown words preceding the object palettes changed")
+        fail("unused object-palette colour-0 words changed")
 
     palettes = {
         0x9C512: (0x0040, 0x0260, 0x03E5),
@@ -143,9 +143,12 @@ def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> 
             "Bank27OrientationTiles": (0x27, 0x4000),
             "Bank28OrientationTiles": (0x28, 0x4000),
             "Bank29OrientationTiles": (0x29, 0x4000),
-            "Bank27Unknown4510": (0x27, 0x4510),
-            "Bank28Unknown4510": (0x28, 0x4510),
-            "Bank29Unknown4510": (0x29, 0x4510),
+            "Bank27ObjectPaletteRecord": (0x27, 0x4510),
+            "Bank28ObjectPaletteRecord": (0x28, 0x4510),
+            "Bank29ObjectPaletteRecord": (0x29, 0x4510),
+            "Bank27UnusedObjectPaletteColor0": (0x27, 0x4510),
+            "Bank28UnusedObjectPaletteColor0": (0x28, 0x4510),
+            "Bank29UnusedObjectPaletteColor0": (0x29, 0x4510),
             "Bank27ObjectPalette": (0x27, 0x4512),
             "Bank28ObjectPalette": (0x28, 0x4512),
             "Bank29ObjectPalette": (0x29, 0x4512),
