@@ -4,7 +4,7 @@
 [![Functions](https://img.shields.io/badge/functions-288%2F288-brightgreen)](docs/VERIFICATION.md)
 [![Code](https://img.shields.io/badge/code-39359%2F39359-brightgreen)](docs/VERIFICATION.md)
 [![Data](https://img.shields.io/badge/data-1009217%2F1009217-brightgreen)](docs/VERIFICATION.md)
-[![Verify](https://github.com/TheGh0stShip/BattleTanx-GBC/actions/workflows/verify.yml/badge.svg)](https://github.com/TheGh0stShip/BattleTanx-GBC/actions/workflows/verify.yml)
+[![Verify](https://github.com/TheGh0stShip/BattleTanx-GBC/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/TheGh0stShip/BattleTanx-GBC/actions/workflows/verify.yml?query=branch%3Amain)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
 This repository contains a byte-exact RGBDS disassembly of **BattleTanx** for
