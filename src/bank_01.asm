@@ -3446,7 +3446,7 @@ RAM_D9CB:
 	ld e, $00
 	ld d, $25
 	ld a, $88
-	ld bc, $6B85
+	ld bc, EncodedFontTiles
 	call Func_0622
 	call ClearTextCursor
 	pop af

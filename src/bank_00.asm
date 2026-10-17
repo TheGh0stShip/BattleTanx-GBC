@@ -1284,7 +1284,7 @@ LoadObjectPalettes:
 	call Func_057D
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $44A2
+	ld hl, Bank08UiFontPalette + 2 ; colours 1-3 + 2 bytes of SpriteTiles44A8
 	ld b, $07
 	ld c, $01
 	call Func_052F
@@ -1339,7 +1339,7 @@ LoadInterfaceTilesVRAM1:
 	ld e, $3B
 	ld d, $08
 	ld a, $88
-	ld bc, Bank08AlphanumericFontTiles + $48
+	ld bc, Bank08InterfaceTiles69FD
 	call Func_0622
 	ret
 
@@ -1376,7 +1376,7 @@ LoadInterfaceTilesVRAM0:
 	ld e, $5A
 	ld d, $04
 	ld a, $80
-	ld bc, Bank08AlphanumericFontTiles
+	ld bc, Bank08InterfaceTiles69B5
 	call Func_0622
 	pop af
 	ld [rROMB0], a
@@ -7712,7 +7712,7 @@ LoadEncodedFontTiles:
 	ld e, $00
 	ld d, $25
 	ld a, $80
-	ld bc, $6B85
+	ld bc, EncodedFontTiles
 	call Func_0622
 	call ClearTextCursor
 	pop af
@@ -7783,7 +7783,7 @@ DrawEncodedGlyph:
 	ld a, $08
 	ld [rROMB0], a
 	ld b, $00
-	ld hl, $6B05
+	ld hl, EncodedGlyphTable
 	add hl, bc
 	ld c, [hl]
 	ld a, [wTextRow]
@@ -11133,7 +11133,7 @@ Func_3CFB:
 	push af
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $5502
+	ld hl, EffectPalette5502
 	ld b, $03
 	ld c, $01
 	call Func_057D
@@ -11439,7 +11439,7 @@ Jump_3F00:
 	push af
 	ld a, $08
 	ld [rROMB0], a
-	ld hl, $46EA
+	ld hl, Bank08ObjectPalette46EA
 	ld b, $03
 	ld c, $01
 	call Func_057D

@@ -42,7 +42,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Level objects | Bank `$04:$4000-$601B` is explicit source: 600 fixed-size object initialization records, 120 auxiliary records, and the per-level pointer directory; the 20-entry deferred-spawn queue, active-table pointers, slow-tick counter, and camera-window spawn path are named | Determine the remaining field meanings and the role of enabled auxiliary records |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see `BANKS_2A_2E_RESEARCH.md` | Trace the caller-less bank-`$2E` routines, `$C6B5`, and picture meanings |
-| Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see `TEXT_RESEARCH.md` | Reconcile the bank `$08` glyph map/artwork and rule out indirect or constructed strings |
+| Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see `TEXT_RESEARCH.md` | Glyph map reconciled (`BANK08_RESEARCH.md`); rule out indirect or constructed strings |
 
 ## Known control-flow gaps
 
@@ -164,31 +164,19 @@ are entered only after the run-time transformations described above.
 
 ## Confirmed graphics boundaries
 
-Bank `$08` contains eleven independently checked native 2bpp interface sheets:
-74 UI-font tiles at `$4000`; groups of 1, 16, 2, and 78 tiles at `$60F8`,
-`$611A`, `$6222`, and `$626B`; groups of 10, 12, and 4 tiles at `$6753`,
-`$6815`, and `$68DD`; two four-tile arrow sets at `$6925` and `$696D`; and 66
-alphanumeric-font tiles at `$69B5`. Every range is backed by a loader call
-whose tile count fixes its exact length. They
-now use narrowly named binary assets that are extracted from the verified ROM
-and round-trip through the graphics checker. Each sheet's four-color 15-bit
-palette is explicit source at `$44A0`, `$674B`, `$691D`, `$6965`, or `$69AD`;
-startup copies those five records into named WRAM buffers. Their boundaries,
-colors, copy destinations, and symbols are checked. The interval between the
-first two interface-tile groups is now split into a ten-byte palette-index
-table used by `SelectObjectSpritePalette` at bank `$08:$6DD5` and four
-consecutive six-byte object-palette records; their loader supplies the
-transparent first color. The routine maps an object's type field to sprite
-palette indices 4 through 7 before bank `$01:$4687` writes the OAM attribute.
-A further six-byte object palette is present at `$46EA`. Another complete
-four-color palette separates the second and third tile groups. The unresolved
-portions are now limited to `$44A8-$46E9`, `$46F0-$60F7`, `$6108-$6119`,
-`$621A-$6221`, and `$6242-$626A` (7,309 bytes total); they are not counted as
-understood graphics.
-
-ROM0 now names the object-palette loader, both interface-tile loaders by VRAM
-bank, and the interface-palette loader. Their explicit sources include the UI
-font, complete alphanumeric font, numeric subset, arrows, and HUD sheets.
+Bank `$08` is fully classified; see `BANK08_RESEARCH.md`. Every boundary is
+derived from loader operands, palette loads, the bank-`$02` object animation
+frame tables, the bank-`$05` effect step table, the glyph table and the
+metatile table, and checked by `tools/bank08.py` (23 negative tests).
+Corrections to the earlier description: the UI font is 62 tiles (`$4000`;
+tile 0 is never loaded) followed by a 16-record metatile table at `$43E0`;
+`$69B5` holds 4 tiles, not a 66-tile font; the encoded-text font is 37 tiles
+(blank, 0-9, A-Z) at `$6B85`, selected through the 128-entry ASCII glyph
+table at `$6B05`. `$44A8-$60EF` is object-animation and effect sprite tiles
+separated by 8-byte palette-shaped records. Byte totals: code 27, graphics
+10,832 (992 referenced only by unreachable effect steps, 16 never loaded),
+palettes 64, palette-shaped records 336, tables 330, fill/marker 4,624,
+unknown 171 (`$6108-$6109`, `$6112-$6119`, `$624A-$6262`, `$6A7D-$6B04`).
 
 Banks `$27`, `$28`, and `$29` each start with nine orientation frames of nine
 native 2bpp tiles. Bank `$05:$4020` contains the 16-entry orientation lookup:

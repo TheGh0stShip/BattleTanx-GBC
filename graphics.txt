@@ -1,5 +1,5 @@
 # output path                         ROM offset  byte size  width in tiles
-bank_08/ui_font_tiles.png             0x20000     0x4a0      37
+bank_08/ui_font_tiles.png             0x20000     0x3e0      31
 bank_08/interface_tiles_60F8.png       0x220f8     0x010      1
 bank_08/interface_tiles_611A.png       0x2211a     0x100      8
 bank_08/interface_tiles_6222.png       0x22222     0x020      2
@@ -9,7 +9,9 @@ bank_08/interface_tiles_6815.png       0x22815     0x0c0      6
 bank_08/interface_tiles_68DD.png       0x228dd     0x040      2
 bank_08/arrow_up_tiles.png            0x22925     0x40       2
 bank_08/arrow_down_tiles.png          0x2296d     0x40       2
-bank_08/alphanumeric_font_tiles.png   0x229b5     0x420      11
+bank_08/interface_tiles_69B5.png      0x229b5     0x40       2
+bank_08/interface_tiles_69FD.png      0x229fd     0x80       8
+bank_08/encoded_font_tiles.png        0x22b85     0x250      37
 # Three variants share the bank-$05 orientation table: nine frames of nine tiles.
 bank_27/orientation_tiles.png          0x9c000     0x510      9
 bank_28/orientation_tiles.png          0xa0000     0x510      9

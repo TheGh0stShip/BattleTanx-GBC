@@ -69,118 +69,15 @@ def check_assets(entries: list[tuple[pathlib.Path, int, int]]) -> None:
 
 
 def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -> None:
-    expected = {
-        pathlib.Path("assets/bank_08/ui_font_tiles.bin"): (0x20000, 0x4A0),
-        pathlib.Path("assets/bank_08/interface_tiles_60F8.bin"): (0x220F8, 0x10),
-        pathlib.Path("assets/bank_08/interface_tiles_611A.bin"): (0x2211A, 0x100),
-        pathlib.Path("assets/bank_08/interface_tiles_6222.bin"): (0x22222, 0x20),
-        pathlib.Path("assets/bank_08/interface_tiles_626B.bin"): (0x2226B, 0x4E0),
-        pathlib.Path("assets/bank_08/hud_icon_tiles.bin"): (0x22753, 0xA0),
-        pathlib.Path("assets/bank_08/interface_tiles_6815.bin"): (0x22815, 0xC0),
-        pathlib.Path("assets/bank_08/interface_tiles_68DD.bin"): (0x228DD, 0x40),
-        pathlib.Path("assets/bank_08/arrow_up_tiles.bin"): (0x22925, 0x40),
-        pathlib.Path("assets/bank_08/arrow_down_tiles.bin"): (0x2296D, 0x40),
-        pathlib.Path("assets/bank_08/alphanumeric_font_tiles.bin"): (0x229B5, 0x420),
-    }
-    manifest = {path: (start, size) for path, start, size in entries}
-    for path, where in expected.items():
-        if manifest.get(path) != where:
-            fail(f"bank 08 graphics asset {path} is {manifest.get(path)}, expected {where}")
-        if where[1] % 16:
-            fail(f"bank 08 graphics asset {path} is not tile aligned")
+    """Bank $08: full layout, assets, symbols and negative tests (BANK08_RESEARCH.md)."""
+    del entries  # bank $08 assets are derived and checked by tools/bank08.py
+    sys.path.insert(0, str(ROOT / "tools"))
+    import bank08  # pylint: disable=import-outside-toplevel
 
-    source = (ROOT / "src" / "bank_08.asm").read_text()
-    for path in expected:
-        if f'INCBIN "{path.as_posix()}"' not in source:
-            fail(f"bank 08 source does not include named graphics asset {path}")
-    for old_name in ("4000.bin", "69B5.bin"):
-        if old_name in source:
-            fail(f"bank 08 source returned to opaque asset name {old_name}")
-
-    rom = (ROOT / "baserom.gbc").read_bytes()
-    palettes = {
-        0x204A0: (0x0C84, 0x314A, 0x4E51, 0x6738),
-        0x2274B: (0x0000, 0x10A3, 0x3200, 0x42E0),
-        0x228D5: (0x0000, 0x001F, 0x465F, 0x7FFF),
-        0x2291D: (0x0000, 0x10A3, 0x1515, 0x1FFF),
-        0x22965: (0x0000, 0x001F, 0x10A3, 0x7FFF),
-        0x229AD: (0x0000, 0x0000, 0x0000, 0x03FE),
-    }
-    for offset, expected_colors in palettes.items():
-        colors = tuple(
-            int.from_bytes(rom[pos : pos + 2], "little")
-            for pos in range(offset, offset + 8, 2)
-        )
-        if colors != expected_colors or any(color & 0x8000 for color in colors):
-            fail(f"bank 08 palette at ROM offset {offset:#x} changed")
-
-    if rom[0x227F3:0x227FD] != bytes((0, 1, 0, 2, 3, 1, 2, 0, 3, 0)):
-        fail("bank 08 palette-index table changed")
-    object_palettes = {
-        0x206EA: (0x001C, 0x025C, 0x03FF),
-        0x227FD: (
-            0x0000, 0x7002, 0x03FE,
-            0x0C12, 0x001F, 0x7FFF,
-            0x1515, 0x15DE, 0x1FFF,
-            0x0000, 0x5818, 0x7E9F,
-        ),
-    }
-    for offset, expected_colors in object_palettes.items():
-        colors = tuple(
-            int.from_bytes(rom[pos : pos + 2], "little")
-            for pos in range(offset, offset + len(expected_colors) * 2, 2)
-        )
-        if colors != expected_colors or any(color & 0x8000 for color in colors):
-            fail(f"bank 08 object palette at ROM offset {offset:#x} changed")
-
-    sym = ROOT / "battletanx.sym"
-    if sym.exists():
-        expected_symbols = {
-            "SelectObjectSpritePaletteFar": (0x00, 0x37AC),
-            "LoadObjectPalettes": (0x00, 0x07A7),
-            "LoadInterfaceTilesVRAM1": (0x00, 0x0807),
-            "LoadInterfaceTilesVRAM0": (0x00, 0x0879),
-            "LoadInterfacePalettes": (0x00, 0x092F),
-            "Bank08UiFontTiles": (0x08, 0x4000),
-            "Bank08UiFontPalette": (0x08, 0x44A0),
-            "Bank08ObjectPalette46EA": (0x08, 0x46EA),
-            "Bank08InterfaceTiles60F8": (0x08, 0x60F8),
-            "Bank08InterfaceTiles611A": (0x08, 0x611A),
-            "Bank08InterfaceTiles6222": (0x08, 0x6222),
-            "Bank08InterfaceTiles626B": (0x08, 0x626B),
-            "Bank08HudIconPalette": (0x08, 0x674B),
-            "Bank08HudIconTiles": (0x08, 0x6753),
-            "Bank08ArrowUpPalette": (0x08, 0x691D),
-            "Bank08ArrowUpTiles": (0x08, 0x6925),
-            "Bank08ArrowDownPalette": (0x08, 0x6965),
-            "Bank08ArrowDownTiles": (0x08, 0x696D),
-            "Bank08AlphanumericFontPalette": (0x08, 0x69AD),
-            "Bank08AlphanumericFontTiles": (0x08, 0x69B5),
-            "ObjectSpritePaletteIndexTable": (0x08, 0x67F3),
-            "Bank08ObjectPalettes67FD": (0x08, 0x67FD),
-            "Bank08InterfaceTiles6815": (0x08, 0x6815),
-            "Bank08InterfacePalette68D5": (0x08, 0x68D5),
-            "Bank08InterfaceTiles68DD": (0x08, 0x68DD),
-            "SelectObjectSpritePalette": (0x08, 0x6DD5),
-            "wHudIconPalette": (0x00, 0xC6F9),
-            "wArrowUpPalette": (0x00, 0xC701),
-            "wArrowDownPalette": (0x00, 0xC709),
-            "wAlphanumericFontPalette": (0x00, 0xC711),
-            "wUiFontPalette": (0x00, 0xC721),
-        }
-        symbols = {}
-        for line in sym.read_text().splitlines():
-            match = re.fullmatch(
-                r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip()
-            )
-            if match:
-                symbols[match.group(3)] = (
-                    int(match.group(1), 16),
-                    int(match.group(2), 16),
-                )
-        for name, where in expected_symbols.items():
-            if symbols.get(name) != where:
-                fail(f"bank 08 symbol {name} is at {symbols.get(name)}, expected {where}")
+    try:
+        print(bank08.validate_all(ROOT))
+    except bank08.Bank08Error as exc:
+        fail(f"bank 08: {exc}")
 
 
 def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> None:

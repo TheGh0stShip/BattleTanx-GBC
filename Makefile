@@ -4,11 +4,11 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects disasm clean tidy
+.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 disasm clean tidy
 
 all: compare
 
-check: compare check-project graphics maps levels screens objects
+check: compare check-project graphics maps levels screens objects bank08
 
 check-project:
 	$(PYTHON) tools/check_project.py
@@ -34,6 +34,9 @@ screens: check-baserom
 
 objects: check-baserom
 	$(PYTHON) tools/extract_object_banks.py $(BASEROM) build/objects
+
+bank08: check-baserom
+	$(PYTHON) tools/extract_bank08.py $(BASEROM) build/bank08
 
 # Regenerate src/ from the base ROM (overwrites src/!)
 disasm: check-baserom
