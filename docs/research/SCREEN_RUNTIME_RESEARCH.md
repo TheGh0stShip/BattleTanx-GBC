@@ -20,7 +20,7 @@ choice's state pointer: MenuState00/03/04/05/06).
 | 5 | `$2C:4B3A` | `Func_02_5C40` | 3rd boot-sequence screen | `BootSequenceScreen3_*` |
 | 6 | `$2C:5F9F` | `$01:Func_01_6CF0` after a level ends | post-level screen (purpose inferred, not proven) | — |
 | 7 | `$2B:4000` | `Func_02_5C40` | 4th (last) boot-sequence screen | `BootSequenceScreen4_*` |
-| 8 | `$2D:4000` | `Func_3B12` when `$C6CD` == 1, reached from the level-`$0E` branch | after the last level (purpose inferred) | — |
+| 8 | `$2D:4000` | `RunLevelExitScreenFlow` when `$C6CD` == 1 | terminal level-exit screen (specific purpose unresolved) | — |
 | 9 | `$2B:5BDA` | **none** | unreachable alias of mode `$0A` | — |
 | `$0A` | `$2B:5BDA` | `Func_02_5C40` | 1st boot-sequence screen | `BootSequenceScreen1_*` |
 | `$0B` | `$2C:55C4` | MenuState06 (`HandleMenuState06Input`) | code-entry grid (inferred from the exit path) | — |

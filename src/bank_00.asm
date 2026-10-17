@@ -74,7 +74,7 @@ Jump_0074:
 	jr Jump_0074
 
 Jump_0076:
-	call Func_3B5A
+	call RunLevelCompletionScreenFlow
 	ld a, [$C6CD]
 	cp $01
 	jp z, Jump_0090
@@ -89,7 +89,7 @@ Jump_0090:
 	call PrepareDisplayForScreenTransition
 	ld e, $88
 	call Audio_QueueSound
-	call Func_3B12
+	call RunLevelExitScreenFlow
 	xor a
 	ld [wJoypadHeld], a
 Jump_009F:
@@ -207,7 +207,7 @@ Jump_0175:
 ; frames until level completion or the player exhausts all lives.
 RunLevel:
 Func_0192: ; legacy alias
-	call Func_3ABF
+	call RunLevelIntroSceneFlow
 	xor a
 	ld [wPauseActive], a
 	call ClearCgbPalettes
@@ -11125,7 +11125,10 @@ Func_3AAE: ; legacy alias
 	ret
 
 
-Func_3ABF:
+; Before level initialization, clear sprites and present the scene sequence
+; selected for the current world and level. One menu-selected mode skips it.
+RunLevelIntroSceneFlow:
+Func_3ABF: ; legacy alias
 	ld a, $01
 	ld [rROMB0], a
 	call ClearShadowOamAndTransferFar
@@ -11168,7 +11171,10 @@ Jump_3B11:
 	ret
 
 
-Func_3B12:
+; Present the terminal level-exit flow selected by $C6CD: scene zero followed
+; by screen mode $0C for values 0/2, or screen mode 8 and its activity for 1.
+RunLevelExitScreenFlow:
+Func_3B12: ; legacy alias
 	ld a, $01
 	ld [rROMB0], a
 	ld a, [$C6CD]
@@ -11211,7 +11217,10 @@ Jump_3B59:
 	ret
 
 
-Func_3B5A:
+; After level completion, run the bank-$01 post-level screen flow and wait for
+; input, except for $C6CD == 1 and the final level.
+RunLevelCompletionScreenFlow:
+Func_3B5A: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01

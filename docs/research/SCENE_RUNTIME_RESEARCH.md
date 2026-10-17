@@ -16,7 +16,7 @@ The only callers are `Func_01_609A`, `Func_01_6247`, `Func_01_6309` and
 
 | Fixed | Writer | Scroll | Writer |
 | --- | --- | --- | --- |
-| 0 | `Func_3B12` | 0 | `Func_3B12` |
+| 0 | `RunLevelExitScreenFlow` | 0 | `RunLevelExitScreenFlow` |
 | 1-5 | `Func_01_63B3` (levels 0/3/6/9/12 via `$01:$6609`, world w = `$65EB[2L]`) | 1-5 | same |
 | 6-10 | `Func_01_63D1` (`SceneDescriptorIndexTable[w]`, *verified*) and menu row (`6309`) | 6-`$14` | `63D1` (`SceneScrollDescriptorIndexTable[4w+c]`, *verified*) and menu confirm (`6247`) |
 | | | `$15-$23` | menu preview `6367` (`SceneScrollVariantIndexTable`, *verified*) |
