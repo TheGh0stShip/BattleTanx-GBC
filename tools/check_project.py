@@ -744,11 +744,14 @@ def check_audio() -> None:
     if au.word(rom, au.SFX_SEQ_PTRS + 2 * au.SFX_SEQ_COUNT) != 0:
         fail("audio: word after the 25 sequence pointers is not $0000")
     cursor = au.SFX_SEQ_DATA
+    sfx_ops = {"patch": set(), "tone": set(), "mute1": set(), "mute4": set()}
     for start in sorted(set(ptrs)):
         if start != cursor:
             fail(f"audio: sfx sequence gap/overlap at {cursor:#x}->{start:#x}")
         events, end = au.parse_sfx_seq(rom, start)
         for event in events:
+            if event[0] in sfx_ops:
+                sfx_ops[event[0]].add(event[1])
             if event[0] == "patch" and event[2] >= au.PATCH_COUNT:
                 fail(f"audio: sequence {start:#x} uses patch {event[2]:#x}")
             if event[0] == "tone" and event[2] >= au.NOTE_COUNT:
@@ -760,6 +763,14 @@ def check_audio() -> None:
         cursor = end + extra
     if cursor != au.SFX_SEQ_END or ptrs[0x00] != ptrs[0x0B]:
         fail("audio: sound-effect sequence data boundaries changed")
+    expected_sfx_ops = {
+        "patch": {0x11},
+        "tone": {0x21},
+        "mute1": {0x00, 0x06, 0x12, 0x22},
+        "mute4": {0x42},
+    }
+    if sfx_ops != expected_sfx_ops:
+        fail(f"audio: sound-effect opcode forms changed: {sfx_ops}")
 
     # Fixed tables.
     if b6(rom, au.REG_INIT + au.REG_INIT_SIZE, 2) != bytes(2):
@@ -839,6 +850,14 @@ def check_audio() -> None:
     if "INCBIN" in (ROOT / "src" / "audio_data.asm").read_text():
         fail("audio: src/audio_data.asm must stay explicit source")
     audio_data_source = (ROOT / "src" / "audio_data.asm").read_text()
+    redundant_sfx_forms = (
+        r"^\s*sfx_patch\s+\$11,\s*[^,\n]+,",
+        r"^\s*sfx_tone\s+\$21,\s*[^,\n]+,",
+        r"^\s*sfx_mute_ch4\s+\$42,\s*[^,\n]+,",
+    )
+    if any(re.search(pattern, audio_data_source, re.MULTILINE)
+           for pattern in redundant_sfx_forms):
+        fail("audio: a fixed opcode returned to a sequence macro call")
     patch_source = audio_data_source.split("SoundPatches:", 1)[1].split(
         "; Indexed by (sound id & $3F)", 1
     )[0]

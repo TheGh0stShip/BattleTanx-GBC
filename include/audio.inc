@@ -45,21 +45,21 @@ MACRO instrument_unreferenced ; four preserved bytes, channel interpretation unk
 ENDM
 
 ; Sound-effect sequence events -------------------------------------------
-; op has bit 0 set and (op & $F0) != $20: start sound patch, then wait.
-MACRO sfx_patch ; op, patch id, delay frames
-	db \1, \2, \3
+; $11 has bit 0 set and a non-$20 high nibble: start sound patch, then wait.
+MACRO sfx_patch ; patch id, delay frames
+	db $11, \1, \2
 ENDM
-; op has bit 0 set and (op & $F0) == $20: channel 1 tone at NoteFrequencies[note].
-MACRO sfx_tone ; op, note, delay frames
-	db \1, \2, \3
+; $21 selects a channel 1 tone at NoteFrequencies[note].
+MACRO sfx_tone ; note, delay frames
+	db $21, \1, \2
 ENDM
 ; op has bit 0 clear, bit 6 clear: NR51 &= $EE (channel 1 off).
 MACRO sfx_mute_ch1 ; op, delay frames
 	db \1, \2
 ENDM
-; op has bit 0 clear, bit 6 set: NR51 &= $77 (channel 4 off), noise lock cleared.
-MACRO sfx_mute_ch4 ; op, delay frames
-	db \1, \2
+; $42 has bit 0 clear and bit 6 set: channel 4 off, noise lock cleared.
+MACRO sfx_mute_ch4 ; delay frames
+	db $42, \1
 ENDM
 MACRO sfx_end
 	db $FF

@@ -77,553 +77,553 @@ SfxSequencePointerTablePadding:
 	dw $0000 ; would be id $59; no caller and not part of the 25-entry table
 
 SfxSequence_18:
-	sfx_patch $11, $1A, 6
+	sfx_patch $1A, 6
 	sfx_mute_ch1 $22, 1
-	sfx_mute_ch4 $42, 3
-	sfx_patch $11, $1A, 4
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 3
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 4
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 3
-	sfx_mute_ch4 $42, 7
-	sfx_patch $11, $1A, 7
-	sfx_mute_ch4 $42, 4
-	sfx_patch $11, $1A, 7
-	sfx_mute_ch4 $42, 3
-	sfx_patch $11, $1A, 4
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 3
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 4
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 3
-	sfx_mute_ch4 $42, 7
-	sfx_patch $11, $1A, 7
-	sfx_mute_ch4 $42, 4
-	sfx_patch $11, $1A, 7
-	sfx_mute_ch4 $42, 0
+	sfx_mute_ch4 3
+	sfx_patch $1A, 4
+	sfx_mute_ch4 0
+	sfx_patch $1A, 3
+	sfx_mute_ch4 0
+	sfx_patch $1A, 4
+	sfx_mute_ch4 0
+	sfx_patch $1A, 3
+	sfx_mute_ch4 7
+	sfx_patch $1A, 7
+	sfx_mute_ch4 4
+	sfx_patch $1A, 7
+	sfx_mute_ch4 3
+	sfx_patch $1A, 4
+	sfx_mute_ch4 0
+	sfx_patch $1A, 3
+	sfx_mute_ch4 0
+	sfx_patch $1A, 4
+	sfx_mute_ch4 0
+	sfx_patch $1A, 3
+	sfx_mute_ch4 7
+	sfx_patch $1A, 7
+	sfx_mute_ch4 4
+	sfx_patch $1A, 7
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_17:
-	sfx_patch $11, $17, 54
-	sfx_patch $11, $23, 0
+	sfx_patch $17, 54
+	sfx_patch $23, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_10:
-	sfx_tone $21, 41, 4
+	sfx_tone 41, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 44, 4
+	sfx_tone 44, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 4
+	sfx_tone 47, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 4
+	sfx_tone 43, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 4
+	sfx_tone 47, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 4
+	sfx_tone 48, 4
 	sfx_mute_ch1 $22, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_11:
-	sfx_tone $21, 48, 4
+	sfx_tone 48, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 4
+	sfx_tone 47, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 4
+	sfx_tone 43, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 4
+	sfx_tone 48, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 4
+	sfx_tone 47, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 4
+	sfx_tone 43, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 4
+	sfx_tone 48, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 4
+	sfx_tone 47, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 4
+	sfx_tone 43, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 4
+	sfx_tone 47, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 8
+	sfx_tone 48, 8
 	sfx_mute_ch1 $22, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_12:
-	sfx_tone $21, 41, 8
+	sfx_tone 41, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 44, 8
+	sfx_tone 44, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 49, 8
+	sfx_tone 49, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 8
+	sfx_tone 48, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 8
+	sfx_tone 43, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 8
+	sfx_tone 47, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 8
+	sfx_tone 43, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 8
+	sfx_tone 47, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 8
+	sfx_tone 48, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 41, 8
+	sfx_tone 41, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 44, 8
+	sfx_tone 44, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 49, 8
+	sfx_tone 49, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 8
+	sfx_tone 48, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 8
+	sfx_tone 43, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 8
+	sfx_tone 47, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 8
+	sfx_tone 43, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 8
+	sfx_tone 47, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 8
+	sfx_tone 48, 8
 	sfx_mute_ch1 $22, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_13:
-	sfx_tone $21, 36, 4
+	sfx_tone 36, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 39, 4
+	sfx_tone 39, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 4
+	sfx_tone 43, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 38, 4
+	sfx_tone 38, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 42, 4
+	sfx_tone 42, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 45, 4
+	sfx_tone 45, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 39, 4
+	sfx_tone 39, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 36, 4
+	sfx_tone 36, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 38, 4
+	sfx_tone 38, 4
 	sfx_mute_ch1 $22, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_14:
-	sfx_tone $21, 36, 3
+	sfx_tone 36, 3
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 40, 4
+	sfx_tone 40, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 4
+	sfx_tone 43, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 50, 3
+	sfx_tone 50, 3
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 4
+	sfx_tone 47, 4
 	sfx_mute_ch1 $22, 4
-	sfx_tone $21, 48, 4
+	sfx_tone 48, 4
 	sfx_mute_ch1 $22, 3
-	sfx_tone $21, 47, 4
+	sfx_tone 47, 4
 	sfx_mute_ch1 $22, 4
-	sfx_tone $21, 43, 4
+	sfx_tone 43, 4
 	sfx_mute_ch1 $22, 3
-	sfx_tone $21, 40, 4
+	sfx_tone 40, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 41, 4
+	sfx_tone 41, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 4
+	sfx_tone 43, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 45, 3
+	sfx_tone 45, 3
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 4
+	sfx_tone 47, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 4
+	sfx_tone 48, 4
 	sfx_mute_ch1 $22, 0
 	sfx_end
 	db $FF, $00, $FF, $FF, $00, $00 ; not reached by SfxSequence_Update
 
 SfxSequence_0E:
-	sfx_patch $11, $1A, 0
-	sfx_tone $21, 36, 13
+	sfx_patch $1A, 0
+	sfx_tone 36, 13
 	sfx_mute_ch1 $22, 2
-	sfx_mute_ch4 $42, 7
-	sfx_patch $11, $1A, 0
-	sfx_tone $21, 40, 8
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 3
+	sfx_mute_ch4 7
+	sfx_patch $1A, 0
+	sfx_tone 40, 8
+	sfx_mute_ch4 0
+	sfx_patch $1A, 3
 	sfx_mute_ch1 $22, 4
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 8
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 0
-	sfx_tone $21, 43, 7
-	sfx_mute_ch4 $42, 1
+	sfx_mute_ch4 0
+	sfx_patch $1A, 8
+	sfx_mute_ch4 0
+	sfx_patch $1A, 0
+	sfx_tone 43, 7
+	sfx_mute_ch4 1
 	sfx_mute_ch1 $22, 14
-	sfx_patch $11, $1A, 0
-	sfx_tone $21, 46, 8
+	sfx_patch $1A, 0
+	sfx_tone 46, 8
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 46, 7
-	sfx_mute_ch4 $42, 0
+	sfx_tone 46, 7
+	sfx_mute_ch4 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 46, 8
-	sfx_patch $11, $1A, 0
+	sfx_tone 46, 8
+	sfx_patch $1A, 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 15
-	sfx_mute_ch4 $42, 7
-	sfx_patch $11, $1A, 8
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 3
+	sfx_tone 48, 15
+	sfx_mute_ch4 7
+	sfx_patch $1A, 8
+	sfx_mute_ch4 0
+	sfx_patch $1A, 3
 	sfx_mute_ch1 $22, 4
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 8
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 7
-	sfx_mute_ch4 $42, 15
-	sfx_patch $11, $1A, 15
-	sfx_mute_ch4 $42, 8
-	sfx_patch $11, $1A, 15
-	sfx_mute_ch4 $42, 0
+	sfx_mute_ch4 0
+	sfx_patch $1A, 8
+	sfx_mute_ch4 0
+	sfx_patch $1A, 7
+	sfx_mute_ch4 15
+	sfx_patch $1A, 15
+	sfx_mute_ch4 8
+	sfx_patch $1A, 15
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_0D:
-	sfx_patch $11, $09, 0
-	sfx_patch $11, $1A, 5
+	sfx_patch $09, 0
+	sfx_patch $1A, 5
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 6
+	sfx_patch $09, 6
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 4
-	sfx_mute_ch4 $42, 1
+	sfx_patch $09, 4
+	sfx_mute_ch4 1
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 6
-	sfx_patch $11, $09, 0
-	sfx_patch $11, $1A, 6
+	sfx_patch $09, 6
+	sfx_patch $09, 0
+	sfx_patch $1A, 6
 	sfx_mute_ch1 $12, 2
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 3
+	sfx_mute_ch4 0
+	sfx_patch $1A, 3
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 4
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 2
+	sfx_patch $09, 4
+	sfx_mute_ch4 0
+	sfx_patch $1A, 2
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 6
+	sfx_patch $09, 6
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 0
-	sfx_patch $11, $09, 5
+	sfx_mute_ch4 0
+	sfx_patch $1A, 0
+	sfx_patch $09, 5
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 2
-	sfx_mute_ch4 $42, 4
+	sfx_patch $09, 2
+	sfx_mute_ch4 4
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 5
+	sfx_patch $09, 5
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 6
-	sfx_patch $11, $09, 0
-	sfx_patch $11, $1A, 6
+	sfx_patch $09, 6
+	sfx_patch $09, 0
+	sfx_patch $1A, 6
 	sfx_mute_ch1 $12, 5
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 4
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 2
+	sfx_patch $09, 4
+	sfx_mute_ch4 0
+	sfx_patch $1A, 2
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $09, 6
+	sfx_patch $09, 6
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $1A, 15
-	sfx_mute_ch4 $42, 0
+	sfx_mute_ch4 0
+	sfx_patch $1A, 15
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_0C:
-	sfx_patch $11, $01, 7
+	sfx_patch $01, 7
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $01, 7
+	sfx_patch $01, 7
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $01, 8
+	sfx_patch $01, 8
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $01, 7
+	sfx_patch $01, 7
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $01, 8
+	sfx_patch $01, 8
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $01, 7
+	sfx_patch $01, 7
 	sfx_mute_ch1 $12, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_00:
-	sfx_patch $11, $19, 0
-	sfx_tone $21, 29, 5
-	sfx_mute_ch4 $42, 0
+	sfx_patch $19, 0
+	sfx_tone 29, 5
+	sfx_mute_ch4 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 33, 6
-	sfx_patch $11, $19, 0
+	sfx_tone 33, 6
+	sfx_patch $19, 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 36, 5
-	sfx_mute_ch4 $42, 0
+	sfx_tone 36, 5
+	sfx_mute_ch4 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 39, 6
-	sfx_patch $11, $19, 0
+	sfx_tone 39, 6
+	sfx_patch $19, 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 41, 6
-	sfx_mute_ch4 $42, 0
+	sfx_tone 41, 6
+	sfx_mute_ch4 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 5
-	sfx_patch $11, $19, 0
+	sfx_tone 43, 5
+	sfx_patch $19, 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 47, 6
-	sfx_mute_ch4 $42, 0
+	sfx_tone 47, 6
+	sfx_mute_ch4 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 50, 6
-	sfx_patch $11, $19, 0
+	sfx_tone 50, 6
+	sfx_patch $19, 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 53, 5
-	sfx_mute_ch4 $42, 0
+	sfx_tone 53, 5
+	sfx_mute_ch4 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 55, 6
-	sfx_patch $11, $19, 0
+	sfx_tone 55, 6
+	sfx_patch $19, 0
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 57, 5
+	sfx_tone 57, 5
 	sfx_mute_ch1 $22, 6
-	sfx_mute_ch4 $42, 0
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_0A:
-	sfx_tone $21, 36, 5
+	sfx_tone 36, 5
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 40, 6
+	sfx_tone 40, 6
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 43, 5
+	sfx_tone 43, 5
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 46, 6
+	sfx_tone 46, 6
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 6
+	sfx_tone 48, 6
 	sfx_mute_ch1 $22, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_09:
-	sfx_tone $21, 48, 3
+	sfx_tone 48, 3
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 53, 3
+	sfx_tone 53, 3
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 52, 4
+	sfx_tone 52, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 55, 3
+	sfx_tone 55, 3
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 4
+	sfx_tone 48, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 53, 3
+	sfx_tone 53, 3
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 52, 4
+	sfx_tone 52, 4
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 48, 3
+	sfx_tone 48, 3
 	sfx_mute_ch1 $22, 0
-	sfx_tone $21, 60, 4
+	sfx_tone 60, 4
 	sfx_mute_ch1 $22, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_08:
-	sfx_patch $11, $18, 0
-	sfx_patch $11, $07, 3
+	sfx_patch $18, 0
+	sfx_patch $07, 3
 	sfx_mute_ch1 $12, 3
-	sfx_patch $11, $07, 3
+	sfx_patch $07, 3
 	sfx_mute_ch1 $12, 3
-	sfx_patch $11, $07, 4
+	sfx_patch $07, 4
 	sfx_mute_ch1 $12, 3
-	sfx_patch $11, $07, 3
+	sfx_patch $07, 3
 	sfx_mute_ch1 $12, 3
-	sfx_patch $11, $07, 3
+	sfx_patch $07, 3
 	sfx_mute_ch1 $12, 4
-	sfx_patch $11, $07, 3
+	sfx_patch $07, 3
 	sfx_mute_ch1 $12, 3
-	sfx_patch $11, $07, 3
+	sfx_patch $07, 3
 	sfx_mute_ch1 $12, 3
-	sfx_patch $11, $07, 4
+	sfx_patch $07, 4
 	sfx_mute_ch1 $12, 3
-	sfx_mute_ch4 $42, 0
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_0F:
 	sfx_mute_ch1 $00, 17
 	sfx_mute_ch1 $06, 0
-	sfx_patch $11, $15, 14
+	sfx_patch $15, 14
 	sfx_mute_ch1 $12, 15
-	sfx_patch $11, $07, 8
+	sfx_patch $07, 8
 	sfx_mute_ch1 $12, 7
-	sfx_patch $11, $07, 4
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $13, 11
+	sfx_patch $07, 4
+	sfx_mute_ch4 0
+	sfx_patch $13, 11
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $11, 8
-	sfx_patch $11, $07, 15
+	sfx_mute_ch4 0
+	sfx_patch $11, 8
+	sfx_patch $07, 15
 	sfx_mute_ch1 $12, 7
-	sfx_patch $11, $07, 8
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $17, 7
+	sfx_patch $07, 8
+	sfx_mute_ch4 0
+	sfx_patch $17, 7
 	sfx_mute_ch1 $12, 8
-	sfx_patch $11, $07, 15
-	sfx_mute_ch4 $42, 0
+	sfx_patch $07, 15
+	sfx_mute_ch4 0
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $10, 11
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $13, 11
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $18, 60
-	sfx_mute_ch4 $42, 0
+	sfx_patch $10, 11
+	sfx_mute_ch4 0
+	sfx_patch $13, 11
+	sfx_mute_ch4 0
+	sfx_patch $18, 60
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_07:
-	sfx_patch $11, $14, 0
-	sfx_patch $11, $08, 3
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $11, 3
+	sfx_patch $14, 0
+	sfx_patch $08, 3
+	sfx_mute_ch4 0
+	sfx_patch $11, 3
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $07, 6
+	sfx_patch $07, 6
 	sfx_mute_ch1 $12, 36
-	sfx_mute_ch4 $42, 0
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_06:
-	sfx_patch $11, $13, 0
-	sfx_patch $11, $08, 6
+	sfx_patch $13, 0
+	sfx_patch $08, 6
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $12, 0
-	sfx_patch $11, $07, 6
+	sfx_mute_ch4 0
+	sfx_patch $12, 0
+	sfx_patch $07, 6
 	sfx_mute_ch1 $12, 7
-	sfx_patch $11, $09, 13
+	sfx_patch $09, 13
 	sfx_mute_ch1 $12, 19
-	sfx_mute_ch4 $42, 0
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_05:
-	sfx_patch $11, $13, 0
-	sfx_patch $11, $0C, 6
+	sfx_patch $13, 0
+	sfx_patch $0C, 6
 	sfx_mute_ch1 $12, 6
-	sfx_patch $11, $0C, 6
+	sfx_patch $0C, 6
 	sfx_mute_ch1 $12, 6
-	sfx_patch $11, $0C, 6
+	sfx_patch $0C, 6
 	sfx_mute_ch1 $12, 6
-	sfx_patch $11, $0C, 6
+	sfx_patch $0C, 6
 	sfx_mute_ch1 $12, 6
-	sfx_patch $11, $0C, 6
+	sfx_patch $0C, 6
 	sfx_mute_ch1 $12, 6
-	sfx_patch $11, $0C, 6
+	sfx_patch $0C, 6
 	sfx_mute_ch1 $12, 6
-	sfx_patch $11, $0C, 6
+	sfx_patch $0C, 6
 	sfx_mute_ch1 $12, 12
-	sfx_mute_ch4 $42, 0
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_04:
-	sfx_patch $11, $14, 20
+	sfx_patch $14, 20
 	sfx_mute_ch1 $12, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_02:
-	sfx_patch $11, $09, 3
+	sfx_patch $09, 3
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $04, 3
+	sfx_patch $04, 3
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $18, 3
-	sfx_mute_ch4 $42, 0
+	sfx_patch $18, 3
+	sfx_mute_ch4 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_03:
-	sfx_patch $11, $07, 0
-	sfx_patch $11, $18, 6
-	sfx_mute_ch4 $42, 0
+	sfx_patch $07, 0
+	sfx_patch $18, 6
+	sfx_mute_ch4 0
 	sfx_mute_ch1 $12, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_01:
-	sfx_patch $11, $16, 0
-	sfx_patch $11, $06, 6
+	sfx_patch $16, 0
+	sfx_patch $06, 6
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $12, 0
-	sfx_patch $11, $07, 6
+	sfx_mute_ch4 0
+	sfx_patch $12, 0
+	sfx_patch $07, 6
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 7
-	sfx_patch $11, $12, 0
-	sfx_patch $11, $07, 6
+	sfx_mute_ch4 7
+	sfx_patch $12, 0
+	sfx_patch $07, 6
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 7
-	sfx_patch $11, $13, 0
-	sfx_patch $11, $08, 6
+	sfx_mute_ch4 7
+	sfx_patch $13, 0
+	sfx_patch $08, 6
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 6
-	sfx_patch $11, $06, 0
-	sfx_patch $11, $14, 7
-	sfx_mute_ch4 $42, 0
+	sfx_mute_ch4 6
+	sfx_patch $06, 0
+	sfx_patch $14, 7
+	sfx_mute_ch4 0
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $10, 0
-	sfx_patch $11, $06, 6
+	sfx_patch $10, 0
+	sfx_patch $06, 6
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 0
-	sfx_patch $11, $12, 0
-	sfx_patch $11, $07, 7
+	sfx_mute_ch4 0
+	sfx_patch $12, 0
+	sfx_patch $07, 7
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 6
-	sfx_patch $11, $14, 0
-	sfx_patch $11, $0D, 7
+	sfx_mute_ch4 6
+	sfx_patch $14, 0
+	sfx_patch $0D, 7
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 3
-	sfx_patch $11, $15, 0
-	sfx_patch $11, $08, 6
+	sfx_mute_ch4 3
+	sfx_patch $15, 0
+	sfx_patch $08, 6
 	sfx_mute_ch1 $12, 0
-	sfx_mute_ch4 $42, 7
-	sfx_patch $11, $09, 0
-	sfx_patch $11, $12, 6
-	sfx_mute_ch4 $42, 13
+	sfx_mute_ch4 7
+	sfx_patch $09, 0
+	sfx_patch $12, 6
+	sfx_mute_ch4 13
 	sfx_mute_ch1 $12, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_15:
-	sfx_patch $11, $1D, 7
+	sfx_patch $1D, 7
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $1D, 7
+	sfx_patch $1D, 7
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $1D, 8
+	sfx_patch $1D, 8
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $1D, 7
+	sfx_patch $1D, 7
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $1D, 8
+	sfx_patch $1D, 8
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $1D, 25
+	sfx_patch $1D, 25
 	sfx_mute_ch1 $12, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
 
 SfxSequence_16:
-	sfx_patch $11, $05, 7
+	sfx_patch $05, 7
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $06, 7
+	sfx_patch $06, 7
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $05, 8
+	sfx_patch $05, 8
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $06, 7
+	sfx_patch $06, 7
 	sfx_mute_ch1 $12, 0
-	sfx_patch $11, $05, 25
+	sfx_patch $05, 25
 	sfx_mute_ch1 $12, 0
 	sfx_end
 	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update

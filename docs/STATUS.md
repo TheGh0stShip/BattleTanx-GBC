@@ -577,6 +577,9 @@ Semantic understanding:
   a neutral preservation macro marks the three records with no reference.
 - All 36 ordinary sound-patch records use channel-specific register macros;
   patch 0 stays split only to preserve a label on its two unread tail bytes.
+- Sequence macros own the invariant `$11` patch, `$21` tone and `$42`
+  channel-4-mute opcodes. Only channel-1 mute exposes a raw opcode because
+  its ignored bits vary in the original data.
 - Not audio: bank `$05` (sprite layouts and level parameters).
 - Bank `$07`: after one malformed sound-patch slot, `$4008-$4BFB` duplicates
   bank `$06`. All 57 sound-queue call sites and every computed bank selector
