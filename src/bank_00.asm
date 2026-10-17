@@ -2481,9 +2481,9 @@ Jump_0DCB:
 	cp $FF
 	jr z, Jump_0E31
 	ldh [$FF84], a
-	call Func_0F43
-	call Func_0F91
-	call Func_0F0C
+	call CopyObjectOrientationTiles
+	call SelectObjectOrientationPalette
+	call WriteObjectOrientationOam
 Jump_0E31:
 	pop af
 	ld [rROMB0], a
@@ -2637,7 +2637,10 @@ Jump_0F05:
 	jp Jump_0E35
 
 
-Func_0F0C:
+; Write the selected orientation's nine-entry layout to shadow OAM, adding
+; screen position, dynamic tile base, VRAM-bank-1, and OBJ-palette attributes.
+WriteObjectOrientationOam:
+Func_0F0C: ; legacy alias
 	ld a, $05
 	ld [rROMB0], a
 	ld hl, ObjectOrientationLayoutPointers
@@ -2680,7 +2683,10 @@ Jump_0F1F:
 	ret
 
 
-Func_0F43:
+; Copy the selected orientation's nine 2bpp tiles from bank $27, $28, or $29
+; into the dynamic sprite-tile allocation at DE.
+CopyObjectOrientationTiles:
+Func_0F43: ; legacy alias
 	ld a, $05
 	ld [rROMB0], a
 	ld hl, ObjectOrientationTilePointers
@@ -2749,7 +2755,9 @@ Jump_0F5D:
 	ret
 
 
-Func_0F91:
+; Use the bank selector 0-2 as the OBJ-palette offset for this orientation.
+SelectObjectOrientationPalette:
+Func_0F91: ; legacy alias
 	ldh a, [$FF80]
 	add a, $00
 	ldh [$FF85], a
