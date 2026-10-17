@@ -6443,9 +6443,9 @@ Jump_239D:
 	xor a
 	or b
 	jr z, Jump_23A4
-	call Func_3793
+	call RenderStatus4Object
 Jump_23A4:
-	call Func_3775
+	call UpdateStatus4ObjectLifetime
 	jr Jump_232B
 
 Jump_23A9:
@@ -10358,11 +10358,14 @@ DispatchEntityHandlerFar:
 	ret
 
 
-Func_3775:
+; Decrement a finite status-4 lifetime and free the record at zero. $FF is
+; persistent. Return nonzero while the record remains allocated.
+UpdateStatus4ObjectLifetime:
+Func_3775: ; legacy alias
 	push hl
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_STATUS4_LIFETIME_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $FF
@@ -10385,10 +10388,13 @@ Jump_378F:
 	ret
 
 
-Func_3793:
+; Draw persistent status-4 objects every frame and finite ones while VBlank
+; counter bit 4 is set, producing their blink cadence.
+RenderStatus4Object:
+Func_3793: ; legacy alias
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_STATUS4_LIFETIME_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $FF
@@ -10398,7 +10404,7 @@ Func_3793:
 	jr z, Jump_37AB
 Jump_37A5:
 	call SelectObjectSpritePaletteFar
-	call Func_37BD
+	call RenderStatus4ObjectSpriteFar
 Jump_37AB:
 	ret
 
@@ -10414,7 +10420,9 @@ SelectObjectSpritePaletteFar:
 	ret
 
 
-Func_37BD:
+; Append the status-4 object's single tile-$53+type sprite at its position.
+RenderStatus4ObjectSpriteFar:
+Func_37BD: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01

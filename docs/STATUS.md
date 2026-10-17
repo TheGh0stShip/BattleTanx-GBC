@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 154 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 227 remain. `make progress` recomputes the per-bank
+At this revision, 157 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 224 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -198,6 +198,10 @@ The ROM0 interfaces `InitializeLevelObjectsFar` and
 `DispatchLevelStateCheckFar` now identify the bank-`$04` level-object setup and
 the bank-`$03` per-level state-check table without renaming unresolved adjacent
 banked routines.
+Status-4 objects now have a complete named lifetime/render path. Byte `$1F` is
+an optional lifetime (`$FF` persists); finite records blink on VBlank-counter
+bit 4, render as one back-allocated OAM entry using tile `$53 + type`, and are
+freed when their lifetime reaches zero.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 
