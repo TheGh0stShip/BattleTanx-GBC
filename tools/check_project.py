@@ -1137,6 +1137,7 @@ def check_level_banks() -> None:
         "wLevelObjectSequenceTable": 0xCD1C,
         "wLevelObjectSpawnTable": 0xCD1E,
         "wLevelObjectAuxTable": 0xCD20,
+        "wLevelObjectAuxState": 0xCD6F,
     }
     if memory_symbols != expected_memory:
         fail(f"levels: WRAM symbols differ: {memory_symbols.items() ^ expected_memory.items()}")

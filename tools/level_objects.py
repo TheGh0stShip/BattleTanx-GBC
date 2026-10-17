@@ -97,7 +97,8 @@ def validate_project(root: pathlib.Path) -> str:
     check("assets/bank_04/4000.bin" not in (root / "assets.txt").read_text(),
           "whole prefix asset returned to manifest")
     check("ld b, $28" in source, "40-record initialization loop changed")
-    check("ld a, $08" in source, "8-record auxiliary copy loop changed")
+    check("ld a, LEVEL_OBJECT_AUX_COUNT" in source,
+          "8-record auxiliary copy loop changed")
     memory = (root / "include/memory.inc").read_text()
     definitions = {
         name: int(address, 16)
@@ -110,6 +111,7 @@ def validate_project(root: pathlib.Path) -> str:
         "wLevelObjectAuxTable": 0xCD20,
         "wObjectSlowTickCounter": 0xCD27,
         "wPendingLevelObjectQueue": 0xCD33,
+        "wLevelObjectAuxState": 0xCD6F,
     }
     for name, address in expected_memory.items():
         check(definitions.get(name) == address,

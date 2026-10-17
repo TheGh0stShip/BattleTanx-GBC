@@ -33,6 +33,12 @@ record and creates it once its coordinates enter the checked camera window.
 for both axes; it returns the magnitude in `DE` and the original sign in `A`.
 The active table pointers, the 20-by-3-byte queue, and its shared 75-call
 slow-tick counter now have checked symbols in `include/memory.inc`.
+The eight auxiliary slots map to eight 10-byte runtime records at
+`wLevelObjectAuxState`. Each runtime record is cleared first; enabled slots
+then copy ROM bytes 0-7 while bytes 8-9 remain cleared for mutable state. The
+separate 512-byte range at `$CDEF`
+remains unnamed because its consumers index it in eight-byte units and its
+precise role has not yet been established.
 
 ## Representation and validation
 

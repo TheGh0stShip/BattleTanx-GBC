@@ -92,9 +92,12 @@ DEF wLevelObjectSpawnTable      EQU $CD1E ; 2-byte pointer, 40 x 12-byte records
 DEF wLevelObjectAuxTable        EQU $CD20 ; 2-byte pointer, 8 x 8-byte records
 DEF wObjectSlowTickCounter      EQU $CD27 ; wraps every 75 update calls
 DEF wPendingLevelObjectQueue    EQU $CD33 ; 20 x 3-byte entries, $FF = unused
+DEF wLevelObjectAuxState        EQU $CD6F ; 8 x 10-byte runtime records
 DEF PENDING_LEVEL_OBJECT_COUNT  EQU 20
 DEF PENDING_LEVEL_OBJECT_SIZE   EQU 3
 DEF OBJECT_SLOW_TICK_PERIOD     EQU 75
+DEF LEVEL_OBJECT_AUX_COUNT      EQU 8
+DEF LEVEL_OBJECT_AUX_STATE_SIZE EQU 10
 
 ; Shared HRAM scratch while processing a rectangular cell-map region.
 DEF hLevelRegionLeft           EQU $FF90

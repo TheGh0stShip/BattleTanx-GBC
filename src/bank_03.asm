@@ -1529,14 +1529,14 @@ Jump_03_63B6:
 	jr z, Jump_03_63BF
 	dec e
 Jump_03_63BF:
-	ld hl, $CD6F
+	ld hl, wLevelObjectAuxState
 	inc hl
 	inc hl
 	inc hl
 	inc hl
 	inc hl
 	inc hl
-	ld a, $08
+	ld a, LEVEL_OBJECT_AUX_COUNT
 Jump_03_63CA:
 	push af
 	push hl
@@ -1599,7 +1599,7 @@ Jump_03_6413:
 	ld [$CD12], a
 Jump_03_641F:
 	pop hl
-	ld bc, $000A
+	ld bc, LEVEL_OBJECT_AUX_STATE_SIZE
 	add hl, bc
 	pop af
 	dec a
@@ -1609,9 +1609,9 @@ Jump_03_641F:
 
 Func_03_6429:
 	push de
-	ld hl, $CD6F
-	ld bc, $000A
-	ld a, $08
+	ld hl, wLevelObjectAuxState
+	ld bc, LEVEL_OBJECT_AUX_STATE_SIZE
+	ld a, LEVEL_OBJECT_AUX_COUNT
 Jump_03_6432:
 	push af
 	push bc
@@ -1805,7 +1805,7 @@ Jump_03_6517:
 	add hl, bc
 	ld bc, $0009
 	add hl, bc
-	ld bc, $CD6F
+	ld bc, wLevelObjectAuxState
 	add hl, bc
 	ld a, $01
 	ld [hl], a
@@ -2628,8 +2628,8 @@ Func_03_6923:
 	ld [$CD23], a
 	ld a, d
 	ld [$CD24], a
-	ld hl, $CD6F
-	ld a, $08
+	ld hl, wLevelObjectAuxState
+	ld a, LEVEL_OBJECT_AUX_COUNT
 Jump_03_6930:
 	push af
 	push hl
@@ -2692,7 +2692,7 @@ Jump_03_697C:
 	pop hl
 Jump_03_697D:
 	pop hl
-	ld bc, $000A
+	ld bc, LEVEL_OBJECT_AUX_STATE_SIZE
 	add hl, bc
 	pop af
 	dec a

@@ -346,15 +346,15 @@ Jump_04_6243:
 	ld l, a
 	ld a, [wLevelObjectAuxTable + 1]
 	ld h, a
-	ld de, $CD6F
-	ld a, $08
+	ld de, wLevelObjectAuxState
+	ld a, LEVEL_OBJECT_AUX_COUNT
 Jump_04_6262:
 	push af
 	push hl
 	push de
 	push hl
 	push de
-	ld b, $0A
+	ld b, LEVEL_OBJECT_AUX_STATE_SIZE
 Jump_04_6269:
 	xor a
 	ld [de], a
@@ -399,7 +399,7 @@ Jump_04_6269:
 	ld [de], a
 Jump_04_6296:
 	pop hl
-	ld bc, $000A
+	ld bc, LEVEL_OBJECT_AUX_STATE_SIZE
 	add hl, bc
 	ld d, h
 	ld e, l
