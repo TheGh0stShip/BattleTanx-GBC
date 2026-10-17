@@ -1,5 +1,6 @@
 INCLUDE "include/hardware.inc"
 INCLUDE "include/memory.inc"
+INCLUDE "include/object.inc"
 INCLUDE "include/screen_data.inc"
 INCLUDE "include/audio.inc"
 INCLUDE "include/level_data.inc"

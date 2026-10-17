@@ -2005,8 +2005,8 @@ GetObjectScoreValue:
 	ld a, $05
 	ld [rROMB0], a
 	ld a, l
-	and $C0
-	add a, $1E
+	and OBJECT_RECORD_ALIGN_MASK
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld a, [hl]
 	sla a
@@ -2029,8 +2029,8 @@ GetObjectMaxHealth:
 Func_0C41:
 	push hl
 	ld a, l
-	and $C0
-	add a, $1E
+	and OBJECT_RECORD_ALIGN_MASK
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld a, [hl]
 	ld hl, ObjectMaxHealthByType
@@ -8711,8 +8711,8 @@ Func_2F93:
 	call GetObjectMaxHealth
 	ld b, a
 	ld a, l
-	and $C0
-	add a, $1F
+	and OBJECT_RECORD_ALIGN_MASK
+	add a, OBJECT_HEALTH_OFFSET
 	ld l, a
 	ld [hl], b
 	pop hl
@@ -8727,11 +8727,11 @@ Func_2FA3:
 	call GetObjectMaxHealth
 	ld c, a
 	ld a, l
-	and $C0
-	add a, $1F
+	and OBJECT_RECORD_ALIGN_MASK
+	add a, OBJECT_HEALTH_OFFSET
 	ld l, a
 	ld a, b
-	and $3F
+	and OBJECT_HEALTH_DELTA_MASK
 	add a, [hl]
 	cp c
 	jr c, Jump_2FB7
@@ -8747,11 +8747,11 @@ SubtractObjectHealth:
 Func_2FBB:
 	push hl
 	ld a, b
-	and $3F
+	and OBJECT_HEALTH_DELTA_MASK
 	ld b, a
 	ld a, l
-	and $C0
-	add a, $1F
+	and OBJECT_RECORD_ALIGN_MASK
+	add a, OBJECT_HEALTH_OFFSET
 	ld l, a
 	ld a, [hl]
 	sub b

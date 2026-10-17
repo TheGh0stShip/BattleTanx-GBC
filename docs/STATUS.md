@@ -137,6 +137,9 @@ Object-record byte `+$1F` is health. `ObjectMaxHealthByType` supplies maxima
 35, 50, 65, and 40 for the four object types; the set/add/subtract helpers all
 clamp against those bounds. `wPlayerHealthRecoveryTicks` restores one health
 point every other VBlank while nonzero. Its direct producer remains unknown.
+The verified 64-byte record size, alignment mask, type offset, health offset,
+and six-bit health-delta mask are centralized in `include/object.inc` so later
+field recovery does not duplicate numeric layout assumptions.
 
 ## Level banks `$09-$26`
 

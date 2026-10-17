@@ -1087,6 +1087,28 @@ def check_level_banks() -> None:
     if core_symbols != expected_core:
         fail(f"core WRAM symbols differ: {core_symbols.items() ^ expected_core.items()}")
 
+    object_source = (ROOT / "include" / "object.inc").read_text()
+    object_constants = {
+        name: int(value, 16)
+        for name, value in re.findall(
+            r"DEF (OBJECT_\w+)\s+EQU \$([0-9A-Fa-f]+)", object_source
+        )
+    }
+    expected_object_constants = {
+        "OBJECT_RECORD_SIZE": 0x40,
+        "OBJECT_RECORD_ALIGN_MASK": 0xC0,
+        "OBJECT_TYPE_OFFSET": 0x1E,
+        "OBJECT_HEALTH_OFFSET": 0x1F,
+        "OBJECT_HEALTH_DELTA_MASK": 0x3F,
+    }
+    if object_constants != expected_object_constants:
+        fail(
+            "object constants differ: "
+            f"{object_constants.items() ^ expected_object_constants.items()}"
+        )
+    if 'INCLUDE "include/object.inc"' not in (ROOT / "src" / "main.asm").read_text():
+        fail("src/main.asm does not include the object-record constants")
+
     hram_symbols = {
         name: int(address, 16)
         for name, address in re.findall(
