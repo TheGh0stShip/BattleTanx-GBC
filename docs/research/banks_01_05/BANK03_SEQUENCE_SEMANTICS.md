@@ -36,6 +36,10 @@ The table is cached at `$CD1C`, and each object stores its sequence slot in
     - the unreachable records.
   - Record 2 of level 6 slots 11, 12, 14 and level 8 slot 2 is unreachable,
     because the reversal happens at record 1.
+  - Spawn records select 199 distinct sequences. Every selected slot exists;
+    the four unselected sequences are level/slot (3,11), (9,1), (9,2), and
+    (10,17). The two terminal exceptions are selected by level 3 spawn 14 and
+    level 6 spawn 12. These relationships are enforced by the field validator.
 
 ## Level completion
 

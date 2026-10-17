@@ -29,6 +29,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import object_sequences as S  # noqa: E402
+import level_objects as O  # noqa: E402
 
 SEQUENCES, RECORDS = 203, 626
 TERMINAL_EXCEPTIONS = {(3, 6): 5, (6, 15): 0}
@@ -36,6 +37,8 @@ UNREACHABLE = {(6, 11, 2), (6, 12, 2), (6, 14, 2), (8, 2, 2)}
 DISTANCE_EXCEPTIONS = {(3, 2, 2): (9, 8)}
 HEADING_EXCEPTIONS = {(3, 2, 2): 0x0B, (3, 11, 0): 0x05}
 AXIS = {0: (0, -1), 4: (1, 0), 8: (0, 1), 12: (-1, 0)}
+UNUSED_SEQUENCES = {(3, 11), (9, 1), (9, 2), (10, 17)}
+TERMINAL_EXCEPTION_SPAWNS = {(3, 6): (14,), (6, 15): (12,)}
 
 
 class FieldError(ValueError):
@@ -91,6 +94,28 @@ def validate(rom: bytes) -> tuple[int, int]:
             else:
                 check(on_axis, f"SEQ10: {where} record {i} heading ${a[0]:02X} does not point at the next waypoint")
     check(unreachable == UNREACHABLE, f"SEQ07: unreachable records {sorted(unreachable ^ UNREACHABLE)} differ from the list")
+    try:
+        objects = O.parse(rom)
+    except O.LevelObjectError as exc:
+        raise FieldError(f"SEQ12: level objects: {exc}") from exc
+    sequence_keys = {(lv, slot) for lv, slot, _ in seqs}
+    references = {}
+    for level in objects:
+        for index, record in enumerate(level["spawns"]):
+            # Padding, type-6 effects, and records with byte-5 bit 7 set do not
+            # take InitializeLevelObjects' ordinary sequence path.
+            if record[0] & 0x80 or record[0] == 6 or record[5] & 0x80:
+                continue
+            key = (level["level"], record[5] & 0x3F)
+            references.setdefault(key, []).append(index)
+            check(key in sequence_keys,
+                  f"SEQ12: level {key[0]} spawn {index} selects missing sequence slot {key[1]}")
+    unused = sequence_keys - set(references)
+    check(unused == UNUSED_SEQUENCES,
+          f"SEQ12: unused sequences {sorted(unused ^ UNUSED_SEQUENCES)} differ from the list")
+    exception_spawns = {key: tuple(references.get(key, ())) for key in TERMINAL_EXCEPTIONS}
+    check(exception_spawns == TERMINAL_EXCEPTION_SPAWNS,
+          f"SEQ12: terminal-exception spawn references changed: {exception_spawns}")
     return len(seqs), sum(len(p) for *_, p in seqs)
 
 
@@ -115,6 +140,12 @@ def negative_tests(rom: bytes) -> int:
         ("heading axis", {rec(0, base["slot"], 0, 0): (rom[rec(0, base["slot"], 0, 0)] + 4) & 0x0F}, "SEQ10"),
         ("tile range", {rec(0, base["slot"], n0 - 1, 3): 0xFF}, "SEQ11"),
     ]
+    objects = O.parse(rom)
+    first_spawn = next((level, i, record) for level in objects for i, record in enumerate(level["spawns"])
+                       if not record[0] & 0x80 and record[0] != 6 and not record[5] & 0x80)
+    level, index, _ = first_spawn
+    spawn_slot_offset = O.offset(level["spawn_address"] + index * O.SPAWN_SIZE + 5)
+    cases.append(("spawn sequence reference", {spawn_slot_offset: 0x3F}, "SEQ12: level 0"))
     n = 0
     for name, changes, expect in cases:
         data = bytearray(rom)
@@ -135,7 +166,8 @@ def main():
     rom = (root / "baserom.gbc").read_bytes()
     seqs, recs = validate(rom)
     neg = negative_tests(rom)
-    print(f"object sequence fields: {seqs} sequences, {recs} records, "
+    print(f"object sequence fields: {seqs} sequences, {recs} records, 199 spawn-selected, "
+          f"{len(UNUSED_SEQUENCES)} unused, "
           f"{len(TERMINAL_EXCEPTIONS) + len(UNREACHABLE) + len(DISTANCE_EXCEPTIONS) + len(HEADING_EXCEPTIONS)} pinned exceptions; "
           f"{neg} negative tests rejected")
 

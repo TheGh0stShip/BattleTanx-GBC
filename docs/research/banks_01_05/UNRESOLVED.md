@@ -57,10 +57,11 @@
      masked to `$0F`, so an object that gets there would turn forever. The stored
      distance `$38` suggests a lost third waypoint.
 
-     Both slots are used by spawn records. Whether the objects survive to their
-     last waypoint is not known.
+     Both slots are used by spawn records: level 3 spawn 14 and level 6 spawn
+     12. Whether the objects survive to their last waypoint is not known.
    - **Unused sequences.** No spawn record uses (3, 11), (9, 1), (9, 2) or
-     (10, 17). Spawn-record cross-checks are not yet in a validator.
+     (10, 17). The complete spawn-to-sequence cross-check is enforced by
+     `tools/object_sequence_fields.py`.
 6. **Bank `$04`**:
    - auxiliary mode 5 is unhandled;
    - `wPlayerSpawnHealthPenalty` (`$CD1A`) is written but never read;
