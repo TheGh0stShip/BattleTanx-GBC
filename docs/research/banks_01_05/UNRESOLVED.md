@@ -62,8 +62,7 @@
      `tools/object_sequence_fields.py`.
 5. **Bank `$04`**:
    - auxiliary mode 5 is unhandled;
-   - `wPlayerSpawnHealthPenalty` (`$CD1A`) is written but never read;
-   - the type-0/1 `+$39` swap on the respawn path is unexplained.
+   - `wPlayerSpawnHealthPenalty` (`$CD1A`) is written but never read.
 6. **Unread bytes**:
    - `Bank02UnknownWord481E` (2 bytes before two recovered indexed sprite grids);
    - `Bank02Unread5E80`;

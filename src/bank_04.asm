@@ -118,15 +118,15 @@ InitializeLevelObjects:
 	pop de
 	ld a, [wLevelObjectRecordType]
 	ld b, $01
-	ld c, $04
+	ld c, OBJECT_TYPE1_FALLBACK_SPEED
 	and a
 	jr z, .createObject
 	ld b, $00
-	ld c, $05
+	ld c, OBJECT_TYPE0_FALLBACK_SPEED
 	cp $01
 	jr z, .createObject
 	ld b, $02
-	ld c, $03
+	ld c, OBJECT_TYPE2_FALLBACK_SPEED
 .createObject:
 	ld a, b
 	push bc
@@ -219,7 +219,7 @@ InitializeLevelObjects:
 	cp $01
 	jr z, .createSpecialObject
 	ld b, $02
-	ld c, $03
+	ld c, OBJECT_TYPE2_FALLBACK_SPEED
 .createSpecialObject:
 	ld a, b
 	push bc
@@ -717,15 +717,15 @@ TrySpawnPendingLevelObject:
 	push hl
 	ld a, [wLevelObjectRecordType]
 	ld b, $01
-	ld c, $05
+	ld c, OBJECT_TYPE0_FALLBACK_SPEED ; deferred path swaps the type-0/type-1 speeds
 	and a
 	jr z, .createObject
 	ld b, $00
-	ld c, $04
+	ld c, OBJECT_TYPE1_FALLBACK_SPEED
 	cp $01
 	jr z, .createObject
 	ld b, $02
-	ld c, $03
+	ld c, OBJECT_TYPE2_FALLBACK_SPEED
 .createObject:
 	ld a, b
 	push bc
@@ -775,15 +775,15 @@ TrySpawnPendingLevelObject:
 	call GetLevelObjectHealthPenalty
 	ld a, [wLevelObjectRecordType]
 	ld b, $01
-	ld c, $04
+	ld c, OBJECT_TYPE1_FALLBACK_SPEED
 	and a
 	jr z, .createSpecialObject
 	ld b, $00
-	ld c, $05
+	ld c, OBJECT_TYPE0_FALLBACK_SPEED
 	cp $01
 	jr z, .createSpecialObject
 	ld b, $02
-	ld c, $03
+	ld c, OBJECT_TYPE2_FALLBACK_SPEED
 .createSpecialObject:
 	ld a, b
 	push bc

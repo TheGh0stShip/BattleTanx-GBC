@@ -14,9 +14,11 @@
   `OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET`; player-created vehicles leave it
   clear. It gates enemy action sounds, pickup handling, tracking, and
   auxiliary-region behavior.
-- **Inconsistency**: on the respawn path, types 0 and 1 swap their `+$39`
-  `OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET` values relative to the initial load.
-  This is recorded, not changed.
+- **Deferred-spawn inconsistency**: ordinary and special initial creation pair
+  runtime type 0 with fallback speed 5 and runtime type 1 with speed 4. The
+  deferred respawn path keeps the runtime types but swaps only those two speed
+  values. The source names and validator pin this original behavior rather
+  than correcting it.
 
 ## Auxiliary records (15 x 8 x 8 bytes)
 

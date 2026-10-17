@@ -99,6 +99,14 @@ def validate_project(root: pathlib.Path) -> str:
     check("ld b, $28" in source, "40-record initialization loop changed")
     check("ld a, LEVEL_OBJECT_AUX_COUNT" in source,
           "8-record auxiliary copy loop changed")
+    normal_mapping = "ld b, $01\n\tld c, OBJECT_TYPE1_FALLBACK_SPEED\n\tand a"
+    deferred_mapping = "ld b, $01\n\tld c, OBJECT_TYPE0_FALLBACK_SPEED ; deferred path swaps the type-0/type-1 speeds\n\tand a"
+    for snippet in (normal_mapping, deferred_mapping):
+        check(snippet in source, "level objects: fallback-speed mapping changed")
+    check(source.count("ld c, OBJECT_TYPE1_FALLBACK_SPEED") == 3 and
+          source.count("ld c, OBJECT_TYPE0_FALLBACK_SPEED") == 3 and
+          source.count("ld c, OBJECT_TYPE2_FALLBACK_SPEED") == 4,
+          "level objects: fallback-speed mapping count changed")
     memory = (root / "include/memory.inc").read_text()
     definitions = {
         name: int(address, 16)
