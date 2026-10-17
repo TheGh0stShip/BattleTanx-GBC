@@ -8355,7 +8355,7 @@ Func_2CC3: ; legacy alias
 	dec a
 	ld [hl], a
 	or a
-	jr nz, Jump_2CDA
+	jr nz, .stillAlive
 	ld a, l
 	and $C0
 	ld l, a
@@ -8364,7 +8364,7 @@ Func_2CC3: ; legacy alias
 	pop hl
 	ret
 
-Jump_2CDA:
+.stillAlive:
 	ld a, l
 	and $C0
 	add a, $1A
@@ -8400,27 +8400,27 @@ Func_2CF1: ; legacy alias
 	ld d, [hl]
 	ld a, e
 	or d
-	jr z, Jump_2D47
+	jr z, .return
 	ld a, e
 	and $C0
 	add a, OBJECT_STATUS_OFFSET
 	ld e, a
 	ld a, [de]
 	cp $00
-	jr z, Jump_2D47
+	jr z, .return
 	ld a, l
 	and $C0
 	add a, OBJECT_PROJECTILE_STEERING_DELAY_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
-	jr z, Jump_2D22
+	jr z, .steer
 	dec a
 	ld [hl], a
-	jr Jump_2D47
+	jr .return
 
 	db $FA, $B9, $C6, $E6, $03, $20, $25
-Jump_2D22:
+.steer:
 	ld a, l
 	and $C0
 	ld l, a
@@ -8438,18 +8438,18 @@ Jump_2D22:
 	call GetDirectionDifferenceFar
 	ld a, c
 	and $80
-	jr z, Jump_2D42
+	jr z, .decrementDirection
 	ld a, e
 	inc a
-	jr Jump_2D44
+	jr .storeDirection
 
-Jump_2D42:
+.decrementDirection:
 	ld a, e
 	dec a
-Jump_2D44:
+.storeDirection:
 	and $0F
 	ld [hl], a
-Jump_2D47:
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -8471,9 +8471,9 @@ Func_2D4C: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	cp $01
-	jr z, Jump_2D7C
+	jr z, .renderBlinking
 	cp $02
-	jr z, Jump_2DA6
+	jr z, .renderDirectional
 	call AllocateShadowOamFront
 	ld a, l
 	and $C0
@@ -8497,7 +8497,7 @@ Func_2D4C: ; legacy alias
 	pop de
 	ret
 
-Jump_2D7C:
+.renderBlinking:
 	call AllocateShadowOamFront
 	ld a, l
 	and $C0
@@ -8514,9 +8514,9 @@ Jump_2D7C:
 	ld b, $00
 	ld a, [wVBlankCounter]
 	bit 4, a
-	jr z, Jump_2D9A
+	jr z, .selectBlinkTile
 	ld b, $01
-Jump_2D9A:
+.selectBlinkTile:
 	ld a, b
 	add a, $41
 	ld [de], a
@@ -8528,7 +8528,7 @@ Jump_2D9A:
 	pop de
 	ret
 
-Jump_2DA6:
+.renderDirectional:
 	call AllocateShadowOamFront
 	ld a, l
 	and $C0
@@ -8584,35 +8584,35 @@ Func_2DCB: ; legacy alias
 	ld a, $40
 	ldh [$FF85], a
 	ld hl, $D000
-Jump_2DED:
+.scanNextObject:
 	ld a, e
 	cp l
-	jr nz, Jump_2DF5
+	jr nz, .checkCandidate
 	ld a, d
 	cp h
-	jr z, Jump_2E46
-Jump_2DF5:
+	jr z, .advanceCandidate
+.checkCandidate:
 	ld a, l
 	and $C0
 	add a, OBJECT_STATUS_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $01
-	jr nz, Jump_2E46
+	jr nz, .advanceCandidate
 	ld a, l
 	and $C0
 	add a, OBJECT_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
 	and OBJECT_VISIBLE_FLAG
-	jr z, Jump_2E46
+	jr z, .advanceCandidate
 	call GetHalfObjectManhattanDistance
 	ldh a, [$FF83]
 	cp b
-	jr c, Jump_2E46
+	jr c, .advanceCandidate
 	ldh a, [$FF82]
 	cp c
-	jr c, Jump_2E46
+	jr c, .advanceCandidate
 	ld a, c
 	ldh [$FF87], a
 	ld a, b
@@ -8624,7 +8624,7 @@ Jump_2DF5:
 	call GetDirectionDifferenceFar
 	ld a, $03
 	cp b
-	jr c, Jump_2E46
+	jr c, .advanceCandidate
 	ld a, b
 	ldh [$FF84], a
 	ld a, l
@@ -8640,7 +8640,7 @@ Jump_2DF5:
 	ldh [$FF83], a
 	ld a, $01
 	ldh [$FF86], a
-Jump_2E46:
+.advanceCandidate:
 	ld a, l
 	and $C0
 	add a, $40
@@ -8651,17 +8651,17 @@ Jump_2E46:
 	ldh a, [$FF85]
 	dec a
 	ldh [$FF85], a
-	jr nz, Jump_2DED
+	jr nz, .scanNextObject
 	ldh a, [$FF86]
 	or a
-	jr nz, Jump_2E61
+	jr nz, .found
 	xor a
 	pop hl
 	pop bc
 	pop de
 	ret
 
-Jump_2E61:
+.found:
 	xor a
 	inc a
 	pop hl
@@ -8696,7 +8696,7 @@ Func_2E67: ; legacy alias
 	ld a, b
 	ldh [$FF8D], a
 	call FindNearestVisibleObjectFacingSource
-	jr z, Jump_2E98
+	jr z, .clearTarget
 	ld a, c
 	and $C0
 	add a, OBJECT_PROJECTILE_TARGET_OFFSET
@@ -8706,9 +8706,9 @@ Func_2E67: ; legacy alias
 	inc c
 	ldh a, [$FF81]
 	ld [bc], a
-	jr Jump_2EA2
+	jr .return
 
-Jump_2E98:
+.clearTarget:
 	ld a, c
 	and $C0
 	add a, OBJECT_PROJECTILE_TARGET_OFFSET
@@ -8717,7 +8717,7 @@ Jump_2E98:
 	ld [bc], a
 	inc c
 	ld [bc], a
-Jump_2EA2:
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -8733,7 +8733,7 @@ Func_2EA7: ; legacy alias
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_4548
+	call GetSignedDirectionDifference
 	pop af
 	ld [rROMB0], a
 	ret
@@ -8913,9 +8913,9 @@ Func_2FA3:
 	and OBJECT_HEALTH_DELTA_MASK
 	add a, [hl]
 	cp c
-	jr c, Jump_2FB7
+	jr c, .store
 	ld a, c
-Jump_2FB7:
+.store:
 	ld [hl], a
 	pop hl
 	pop bc
@@ -8934,9 +8934,9 @@ Func_2FBB:
 	ld l, a
 	ld a, [hl]
 	sub b
-	jr nc, Jump_2FCB
+	jr nc, .store
 	xor a
-Jump_2FCB:
+.store:
 	ld [hl], a
 	pop hl
 	ret
@@ -8967,10 +8967,10 @@ GainPlayerLife:
 Func_2FED:
 	ld a, [wPlayerLives]
 	cp $09
-	jr z, Jump_2FF8
+	jr z, .return
 	inc a
 	ld [wPlayerLives], a
-Jump_2FF8:
+.return:
 	ret
 
 
@@ -8978,10 +8978,10 @@ LosePlayerLife:
 Func_2FF9:
 	ld a, [wPlayerLives]
 	or a
-	jr z, Jump_3003
+	jr z, .return
 	dec a
 	ld [wPlayerLives], a
-Jump_3003:
+.return:
 	ret
 
 
@@ -9049,32 +9049,32 @@ Func_302D:
 	ld b, a
 	ld a, [wScore + 3]
 	cp b
-	jr c, Jump_307A
-	jr nz, Jump_306E
+	jr c, .restoreBank
+	jr nz, .awardLife
 	ld a, [hld]
 	ld b, a
 	ld a, [wScore + 2]
 	cp b
-	jr c, Jump_307A
-	jr nz, Jump_306E
+	jr c, .restoreBank
+	jr nz, .awardLife
 	ld a, [hld]
 	ld b, a
 	ld a, [wScore + 1]
 	cp b
-	jr c, Jump_307A
-	jr nz, Jump_306E
+	jr c, .restoreBank
+	jr nz, .awardLife
 	ld a, [hld]
 	ld b, a
 	ld a, [wScore]
 	cp b
-	jr c, Jump_307A
-Jump_306E:
+	jr c, .restoreBank
+.awardLife:
 	call GainPlayerLife
 	ld e, $52
 	call Audio_QueueSound
 	ld a, c
 	ld [wScoreThresholdIndex], a
-Jump_307A:
+.restoreBank:
 	pop af
 	ld [rROMB0], a
 	ret
@@ -9087,7 +9087,7 @@ Func_307F: ; legacy alias
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_45C1
+	call SpawnDirectionalOffsetEffect
 	pop af
 	ld [rROMB0], a
 	ret
@@ -9119,24 +9119,24 @@ Func_3090: ; legacy alias
 	ld [hl], $00
 	ld a, d
 	cp $00
-	jr z, Jump_30CA
+	jr z, .initSubtype0
 	cp $02
-	jr z, Jump_30C5
+	jr z, .initSubtype2
 	cp $01
-	jr z, Jump_30C0
-	jr Jump_30CD
+	jr z, .initSubtype1
+	jr .return
 
-Jump_30C0:
+.initSubtype1:
 	call InitializeTimedEffectSubtype1Far
-	jr Jump_30CD
+	jr .return
 
-Jump_30C5:
+.initSubtype2:
 	call InitializeTimedEffectSubtype2Far
-	jr Jump_30CD
+	jr .return
 
-Jump_30CA:
+.initSubtype0:
 	call InitializeTimedEffectSubtype0Far
-Jump_30CD:
+.return:
 	pop de
 	pop bc
 	pop hl
@@ -9149,7 +9149,7 @@ Func_30D1: ; legacy alias
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_4611
+	call InitEffectSubtype1Animation
 	pop af
 	ld [rROMB0], a
 	ret
@@ -9161,7 +9161,7 @@ Func_30E2: ; legacy alias
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_463D
+	call InitEffectSubtype0Animation
 	pop af
 	ld [rROMB0], a
 	ret
@@ -9173,7 +9173,7 @@ Func_30F3: ; legacy alias
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_4688
+	call InitEffectSubtype2Animation
 	pop af
 	ld [rROMB0], a
 	ret

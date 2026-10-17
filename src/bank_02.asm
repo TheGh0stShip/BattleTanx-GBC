@@ -460,7 +460,7 @@ Bank02Data_4448:
 	db $01, $02, $03, $04, $05, $06, $07, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF, $00
 
 GetSignedDirectionDifference:
-Func_02_4548: ; legacy alias, used by src/bank_00.asm
+Func_02_4548: ; legacy alias
 	push af
 	push hl
 	ld hl, Bank02Data_4448
@@ -506,7 +506,7 @@ ObjectAnimationFrames45BB:
 	db $58, $54, $68, $54, $78, $54
 
 SpawnDirectionalOffsetEffect:
-Func_02_45C1: ; legacy alias, used by src/bank_00.asm
+Func_02_45C1: ; legacy alias
 	push af
 	push bc
 	push de
@@ -561,7 +561,7 @@ Func_02_45C1: ; legacy alias, used by src/bank_00.asm
 
 
 InitEffectSubtype1Animation:
-Func_02_4611: ; legacy alias, used by src/bank_00.asm
+Func_02_4611: ; legacy alias
 	push af
 	ld de, ObjectAnimationFrames45B5
 	ld a, l
@@ -595,7 +595,7 @@ Func_02_4611: ; legacy alias, used by src/bank_00.asm
 
 
 InitEffectSubtype0Animation:
-Func_02_463D: ; legacy alias, used by src/bank_00.asm
+Func_02_463D: ; legacy alias
 	push af
 	call Func_0421
 	and $03
@@ -650,7 +650,7 @@ Jump_02_4660:
 
 
 InitEffectSubtype2Animation:
-Func_02_4688: ; legacy alias, used by src/bank_00.asm
+Func_02_4688: ; legacy alias
 	push af
 	call Func_0421
 	and $03
