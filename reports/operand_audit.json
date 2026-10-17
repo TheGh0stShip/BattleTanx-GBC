@@ -30,35 +30,35 @@
     "owner": "LCDInterrupt"
    },
    {
-    "at": "src/bank_00.asm:10271",
+    "at": "src/bank_00.asm:10273",
     "documented": true,
     "in_ram_image": false,
     "kind": "jp hl",
     "owner": "DispatchRuntimeCallbackUnlessPaused"
    },
    {
-    "at": "src/bank_00.asm:10942",
+    "at": "src/bank_00.asm:10944",
     "documented": true,
     "in_ram_image": false,
     "kind": "pushed constant (synthetic return candidate)",
     "owner": "ScreenTable_CallInit"
    },
    {
-    "at": "src/bank_00.asm:10943",
+    "at": "src/bank_00.asm:10945",
     "documented": true,
     "in_ram_image": false,
     "kind": "jp hl",
     "owner": "ScreenTable_CallInit"
    },
    {
-    "at": "src/bank_00.asm:10980",
+    "at": "src/bank_00.asm:10982",
     "documented": true,
     "in_ram_image": false,
     "kind": "pushed constant (synthetic return candidate)",
     "owner": "ScreenTable_CallUpdate"
    },
    {
-    "at": "src/bank_00.asm:10981",
+    "at": "src/bank_00.asm:10983",
     "documented": true,
     "in_ram_image": false,
     "kind": "jp hl",
@@ -256,48 +256,6 @@
    "$DC40": {
     "bank-dependent (SVBK)": 2
    },
-   "$FF80": {
-    "shared scratch": 13
-   },
-   "$FF81": {
-    "shared scratch": 9
-   },
-   "$FF82": {
-    "shared scratch": 4
-   },
-   "$FF83": {
-    "shared scratch": 5
-   },
-   "$FF84": {
-    "shared scratch": 5
-   },
-   "$FF85": {
-    "shared scratch": 2
-   },
-   "$FF86": {
-    "shared scratch": 2
-   },
-   "$FF87": {
-    "shared scratch": 3
-   },
-   "$FF88": {
-    "shared scratch": 3
-   },
-   "$FF89": {
-    "shared scratch": 2
-   },
-   "$FF8A": {
-    "shared scratch": 3
-   },
-   "$FFB0": {
-    "shared scratch": 2
-   },
-   "$FFB1": {
-    "shared scratch": 3
-   },
-   "$FFB2": {
-    "shared scratch": 3
-   },
    "$FFDB": {
     "layout": 2
    },
@@ -312,15 +270,14 @@
    "RAM code address": 33,
    "bank-dependent (SVBK)": 35,
    "layout": 7,
-   "shared scratch": 59,
    "write-only": 10
   }
  },
  "raw_bank_bytes": {
   "by_class": {
    "data bank selected for a pointer computed at run time": 15,
-   "redundant (no banked reader found; strong, not proven)": 1,
    "redundant (overwritten by another bank write before any banked read)": 1,
+   "redundant (proven by bounded call closure)": 1,
    "redundant (same bank re-mapped before any banked read)": 1,
    "restores the caller's bank $01": 8
   },
@@ -374,67 +331,67 @@
     "owner": "GetLevelCellTileAndAttr"
    },
    {
-    "at": "src/bank_00.asm:6385",
+    "at": "src/bank_00.asm:6387",
     "bank": "$01",
-    "class": "redundant (no banked reader found; strong, not proven)",
+    "class": "redundant (proven by bounded call closure)",
     "owner": "UpdateAllObjects"
    },
    {
-    "at": "src/bank_00.asm:8159",
+    "at": "src/bank_00.asm:8161",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "SpawnVehicleProjectile"
    },
    {
-    "at": "src/bank_00.asm:9207",
+    "at": "src/bank_00.asm:9209",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "Func_3104"
    },
    {
-    "at": "src/bank_00.asm:9267",
+    "at": "src/bank_00.asm:9269",
     "bank": "$02",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "Func_315F"
    },
    {
-    "at": "src/bank_00.asm:9310",
+    "at": "src/bank_00.asm:9312",
     "bank": "$02",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "Func_3190"
    },
    {
-    "at": "src/bank_00.asm:9326",
+    "at": "src/bank_00.asm:9328",
     "bank": "$08",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "Func_3190"
    },
    {
-    "at": "src/bank_00.asm:11011",
+    "at": "src/bank_00.asm:11013",
     "bank": "$01",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "ScreenTable_LoadEntry"
    },
    {
-    "at": "src/bank_00.asm:11677",
+    "at": "src/bank_00.asm:11679",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "LoadScreenEffectPart"
    },
    {
-    "at": "src/bank_00.asm:11712",
+    "at": "src/bank_00.asm:11714",
     "bank": "$08",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "RenderScreenEffect"
    },
    {
-    "at": "src/bank_00.asm:11744",
+    "at": "src/bank_00.asm:11746",
     "bank": "$08",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "CopyScreenEffectPartTiles"
    },
    {
-    "at": "src/bank_00.asm:11807",
+    "at": "src/bank_00.asm:11809",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "BuildScreenEffectPartOam"

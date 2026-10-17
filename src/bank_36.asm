@@ -2,6 +2,7 @@
 
 SECTION "ROM Bank $36", ROMX[$4000], BANK[$36]
 
+DeathValleySceneTiles:
 ScrollScene12Tiles:
 	INCBIN "assets/scenes/scroll_scene_12_tiles.2bpp"
 ASSERT @ == $4D30
@@ -39,6 +40,7 @@ ASSERT @ == $5168
 ScrollScene12Palette:
 	dw $0000, $0000, $083F, $7D6C
 
+PitBossSceneTiles:
 ScrollScene13Tiles:
 	INCBIN "assets/scenes/scroll_scene_13_tiles.2bpp"
 ASSERT @ == $5BB0
@@ -76,6 +78,7 @@ ASSERT @ == $5FE8
 ScrollScene13Palette:
 	dw $0000, $0000, $7D6C, $083F
 
+FoolsGoldSceneTiles:
 ScrollScene14Tiles:
 	INCBIN "assets/scenes/scroll_scene_14_tiles.2bpp"
 ASSERT @ == $6D30

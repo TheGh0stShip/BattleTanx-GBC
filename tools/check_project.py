@@ -351,6 +351,12 @@ def check_structured_scrolling_scene_banks(
 
     expected_assets = {}
     expected_symbols = {}
+    mission_aliases = (
+        "TrialByFire", "RushHour", "RightOfPassage", "GatesOfDoom",
+        "UnderCover", "Queenlord", "DeathValley", "PitBoss", "FoolsGold",
+        "Apocalypse", "PanicInThePark", "EscapeNewYork", "Warpath",
+        "StarsAndStripes", "LoveConquersAll",
+    )
     counts = {
         "graphics": 0, "structured": 0, "rows": 0, "palettes": 0,
         "padding": 0, "unknown": 0
@@ -398,6 +404,8 @@ def check_structured_scrolling_scene_banks(
                 f"ScrollScene{index:02}Rows": (bank, rows),
                 f"ScrollScene{index:02}Palette": (bank, palette),
             })
+            if 6 <= index <= 20:
+                expected_symbols[f"{mission_aliases[index - 6]}SceneTiles"] = (bank, graphics)
             counts["graphics"] += rows - graphics
             counts["rows"] += row_count * 40
             counts["palettes"] += 8

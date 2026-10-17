@@ -76,6 +76,32 @@ The second byte of each menu-state record is its screen mode. bank_01.asm:1550-1
 | none (not in the table) | bank $2A, `NoLivesScreen_Run` (`FixedScreen2A_Run`, `Func_2A_7774`) | Only from `RunNoLivesFlow` (`00:00C7`), through `RunNoLivesScreenFar` (`00:3F28`). That flow is reached only when `wPlayerLives == 0` at bank_00.asm:236-238. | bank_00.asm:118-124, :11912-11920 |
 
 Details:
+- Lossless inspection renders establish the literal picture contents without
+  relying on a gameplay guess:
+
+  | Mode/data | Rendered identity |
+  |---|---|
+  | 0 | main menu: STORY / BATTLE MODE / PASSWORD / OPTIONS |
+  | 1 | Options frame; MUSIC / CONTROL / SKILL are drawn separately |
+  | 2 | 3DO logo |
+  | 3 | ENTER PASSWORD; its alternate maps read ACCESS DENIED |
+  | 4 | SELECT TANK / Use left and right |
+  | 5 | Lucky Chicken Games logo |
+  | 6 | SCORE / LIVES / PASSWORD results frame |
+  | 7 | BattleTanx title logo |
+  | 8 | an armed character standing beside a tank |
+  | 9 / `$0A` | copyright, trademark and licensing text |
+  | `$0B` | SELECT LEVEL / Use directions |
+  | `$0C` | YOU WIN / LIVES results frame |
+  | fixed bank `$2A` | destroyed tank with GAME OVER |
+  | MenuState05 picture 0 | MOTO TANK |
+  | MenuState05 picture 1 | M1A1 TANK |
+  | MenuState05 picture 2 | GOLIATH |
+
+  These identities come from `make screens` output, whose maps, attributes,
+  palettes and tile graphics round-trip to the ROM. The render is direct
+  cartridge evidence even though the wording is stored as picture tiles rather
+  than passed through `DrawEncodedText`.
 - After mode 8, `ReturnToMenuAfterLevel` waits for a button a second time (bank_00.asm:89-114). The two waits are original and are documented only.
 - The routine `ShowScreenMode12WithScoreAndLives` (aliases `ShowScreenMode12WithPasswordScoreLives`, `Func_01_6E44`) loads the code-screen tiles and palettes. Unlike mode 6 (`:6974-6985`), it does not call `UnpackPasswordChars` or `DrawPasswordEntryChars`, so no code characters are drawn. Its inner wait labels are now `ShowScreenMode12WithScoreAndLives_WaitVBlank1`/`_WaitVBlank2` (w130; formerly `ShowScreenMode12_WaitVBlank1/2`). The proposed name `ShowFinalLevelCompleteScoreLives` is not applied in snap8.
 - **Bank $2E** (correction to w15):
@@ -89,11 +115,14 @@ Details:
 - The no-lives name comes from control flow, not from what the screen shows.
 - That aux record +8 has no other reader is rated strong. It was not exhaustively re-traced.
 
-### Unknown
-- **The bank-$2A no-lives screen on the code-accept path is unverified.** w15 cited baseline bank_01.asm:2575-2577 for a path where an accepted code carries 0 lives. Those lines (snap8 :2599-2601) are inside `AdvanceScoreThresholdIndex`, not a lives test.
-- None of these screens calls `DrawEncodedText`, so the wording on the pictures cannot be proven from code.
-- What the mode-8 burst sprites depict.
-- What MenuState05 pictures 0-2 mean in gameplay.
+### Remaining evidence boundary
+- The bank-$2A picture itself is identified as GAME OVER. A claimed route from
+  accepted code input with zero lives remains rejected because the cited code
+  is `AdvanceScoreThresholdIndex`, not a lives test; the proven route is
+  `RunNoLivesFlow`.
+- Mode 8's static picture is an armed character beside a tank. The following
+  burst sprites are abstract particle blocks; the cartridge provides no text
+  or object identity for them, so a more specific noun would be invention.
 
 ---
 
@@ -304,5 +333,10 @@ In state 06, Left/Right change the row variable and Up/Down change the column. T
 
 Original no-ops are kept and commented only: `$4E9B`, `$5361`, `$4E80` (dead `cp $02`; the `RuntimeCallbackTable` search has no bound), `$510C`, `$5322` (unreachable `db $C9`), `ld a,a`, and an unreachable clamp in `UpdateMenuCursorPosition`. In snap8 the corresponding "Original:" comments are at bank_01.asm:2182, 2201, 2501, 2835 and 2881; the individual addresses were not re-matched in this pass.
 
-### Unknown
-- Whether `AdvanceScoreThresholdIndex` always terminates. This depends on the end of `ScoreThresholdTable`, which was not checked.
+### Score threshold termination
+
+`ScoreThresholdTable` contains twenty increasing 32-bit thresholds followed by
+the `$FFFFFFFF` sentinel. The game score is maintained as a nonnegative
+32-bit value below that sentinel, so `AdvanceScoreThresholdIndex` terminates at
+or before the sentinel. The boundary and sentinel are explicit in
+`src/bank_01.asm`.

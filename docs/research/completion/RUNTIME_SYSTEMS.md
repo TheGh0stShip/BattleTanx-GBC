@@ -5,8 +5,9 @@ original defects found in them. Addresses are `bank:address`. Every quoted
 byte was re-read from the base ROM. Line numbers refer to the current source
 tree. Labels are the current primary names. A matching ROM does not mean
 these systems are understood. Each section separates **Proven** (code paths,
-call sites, bytes), **Inferred** and **Unknown**. Nothing here has been run on
-hardware or in an emulator.
+call sites, bytes), **Inferred** and **Unknown**. The rebuilt ROM has a
+deterministic PyBoy boot-and-colour smoke test; the detailed paths in this
+document have not all been exercised dynamically or on physical hardware.
 
 ## 1. Object records: identities
 
@@ -189,7 +190,13 @@ the ring.
 **Inferred:** the count byte and the +1/+2 distance word of sequence records
 have no runtime reader.
 
-**Unknown:** the meaning of type-6 subtypes 0-8, and why mode-1 timers exist.
+Status-4 spawn kind 6 uses byte 7 as the pickup subtype. Subtypes 0-9 and their
+handlers are fully enumerated in `GAMEPLAY_IDENTITIES.md`; retail static data
+contains subtypes 0-8, including 21 subtype-7 records. The only dynamic item
+creation path hardcodes subtype 0. Mode-1 auxiliary records are dead countdowns:
+their sole output is incremented but never consumed, so they have no observable
+gameplay effect in the shipped program. Why they were authored cannot be
+recovered from the cartridge.
 
 ## 5. Joypad and menu flow
 
@@ -223,8 +230,10 @@ have no runtime reader.
 **Inferred:** the row/column pairing in state 6 looks reversed. The names
 follow the variables the code updates.
 
-**Unknown:** whether every level 0..$0E can be chosen on the grid. The row
-bound in `SetMenuGridRowWrapped` was not checked.
+**Proven:** every level 0..$0E can be represented on the grid.
+`SetMenuGridRowWrapped` wraps the row through 0-4 and
+`SetMenuGridColumnClamped` clamps the column to 0-2, so `row*3+column` covers
+exactly 0-14 (`LAST_LEVEL`).
 
 ## 6. Game start modes
 
@@ -250,7 +259,9 @@ bound in `SetMenuGridRowWrapped` was not checked.
 **Inferred:** the constant names come from the menu flow. No on-screen text
 confirms them.
 
-**Unknown:** what modes 0 and 1 are called in the game's own wording.
+The names `GAME_START_NEW` and `GAME_START_LEVEL_SELECT` describe their proven
+menu routes; the game does not display a separate name for these internal mode
+values.
 
 ## 7. Screens
 
@@ -276,9 +287,11 @@ confirms them.
 **Inferred:** mode 9 is never selected. This depends on the list of
 `menu_state` records being complete.
 
-**Unknown:** what any picture shows. No screen uses encoded text, and the
-names come from control flow. The no-lives path from an accepted password with
-0 lives was not found.
+Lossless renders identify every picture: main menu, options, 3DO and Lucky
+Chicken Games logos, password entry/rejection, tank and level selection,
+earned-password, legal, logo, completion, GAME OVER, and the three tank
+pictures. `GAMEPLAY_IDENTITIES.md` records the exact visible evidence. The
+no-lives path from an accepted password with 0 lives was not found.
 
 ## 8. Bank writes in the top-level loop
 
@@ -294,11 +307,15 @@ names come from control flow. The no-lives path from an accepted password with
 - The write in `LoadObjectPalettes` ($00:07A7) is **redundant**. The next pair
   writes `BANK(Bank27ObjectPalette)`.
 
-**Inferred:** the write in `UpdateAllObjects` ($00:22F1) is redundant. Every
-banked access in its call closure selects its own bank, but the `jp hl`
-pickup handlers and the register data flow were not traced.
+**Proven redundant:** the write in `UpdateAllObjects` ($00:22F1). The routine
+has no direct banked read, every banked callee selects and restores its own
+bank, and the only relevant computed transfer is the bounded 10-entry
+`Status4PickupHandlerTable`. It is reached through a far wrapper that selects
+bank $01, and all ten targets are in that bank.
 
-**Unknown:** none of this has been checked by running the code.
+The top-level classification is static. The general rebuilt-ROM boot path is
+covered by the colour smoke test, but these individual writes were not watched
+dynamically.
 
 ## 9. Stack leak
 
@@ -344,8 +361,10 @@ what open bus returns at $BFFF.
   touches these bytes except `hScreenMapRowSkip` ($FFC0).
   `hFacingBestDirectionDiff`, `hHomingInitArgs` and `hSpriteType` are written
   and never read.
-- Still raw: the `ClearGameMemory` start address, the bank-$02 burst routines
-  on $FF80-$FF8A, and two stores in `RunLevelExitScreenFlow` (scene domain).
+- The bank-$02 burst routines now use time-shared `hBurst*` symbols for every
+  `$FF80-$FF8A` access. `RunLevelExitScreenFlow` uses the established scene
+  index aliases. The literal start address in `ClearGameMemory` is a checked
+  memory-layout boundary rather than unnamed state.
 - Dead routines (no route in, checked per address, not per label):
   `CopyTilemapRows20`, `ClearHardwareOAM`, `ConvertU16ToPackedBcdFar` and
   `AddWordToBcd24`, `GetObjectType`, `ClassifyShadowOamCapacity`,
@@ -439,7 +458,7 @@ present in the source.
 | D44 | $03:69B1, $03:69D4 | `2E 00` | `ld l,$00` after `ret nz` has no effect | comment |
 | D45 | $01:55F6 | `0E 14` | one repeat timer shared by all buttons; only Right reloads it on a fresh press; intent unknown | behaviour |
 | D46 | $00:2E0E | `F0 83 B8 38 33 F0 82 B9 38 2E` | `FindNearestVisibleObjectFacingSource` compares the 16-bit distance byte by byte; best $0100 rejects candidate $00FF | candidate |
-| D47 | $00:1988, $00:19E2 | `FA 09 CA D6 15 5F 3E 00 DE 00 16 00` / `FA 0A CA D6 13 ...` | `CenterLevelViewOnObject` discards the borrow (`ld d,$00`); a level narrower than 21 or shorter than 19 cells gets a large maximum origin; whether any level is that small is unchecked | candidate |
+| D47 | $00:1988, $00:19E2 | `FA 09 CA D6 15 5F 3E 00 DE 00 16 00` / `FA 0A CA D6 13 ...` | `CenterLevelViewOnObject` discards the borrow (`ld d,$00`); a level narrower than 21 or shorter than 19 cells would get a large maximum origin. All shipped levels are at least 64 x 48, so this is latent and unreachable with retail data | confirmed latent |
 
 D46-D47 are candidates: no source comment yet.
 

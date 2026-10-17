@@ -5,7 +5,7 @@ IF !DEF(BANKS_01_05_RAM_INC)
 DEF BANKS_01_05_RAM_INC EQU 1
 DEF hSceneWriteOnlyFlag              EQU $FFAB ; 1; write-only: set 0/1 by scene code, never read
 DEF wBgCopyReloadCount               EQU $C94B ; 1; reload for wBgCopyColumnsLeft (CopyBankedTilemapRectToBG) or wBgCopyRowsLeft (CopyBankedTilemapRowsToBG)
-DEF wMenuState05UnreadPtr            EQU $D564 ; 2, little-endian; write-only: always $DC03, never read
+DEF wUnusedMenuState05Pointer        EQU $D564 ; 2, little-endian; write-only: always $DC03, never read
 DEF wGamePaused                      EQU $C6C1 ; 1 byte(s)
 DEF wGameStartMode                   EQU $C6CD ; 1 byte(s); GAME_START_* value
 DEF GAME_START_NEW                   EQU 0 ; main-menu kind-$0F start
@@ -133,6 +133,26 @@ DEF hStatusCountBcd                  EQU $FF80 ; 2, ByteToBcd16 output; +1 holds
 DEF hStatusCountNonZero              EQU $FF83 ; 1, objects whose byte +$1D is nonzero (time-shared)
 DEF hStatusCountStatus2              EQU $FF84 ; 1, objects whose byte +$1D is 2 (time-shared)
 DEF hStatusCountStatus1              EQU $FF85 ; 1, objects whose byte +$1D is 1 (time-shared)
+
+; Mode-8 burst-screen scratch. Roles overlap because the routines run serially.
+DEF hBurstPositionX                  EQU $FF80 ; current object X / block origin X (time-shared)
+DEF hBurstBlockEntriesLeft           EQU $FF80 ; 16-entry block animation loop (time-shared)
+DEF hBurstPositionY                  EQU $FF81 ; current object Y / block origin Y (time-shared)
+DEF hBurstObjectKind                 EQU $FF82 ; current eight-byte object byte 0 (time-shared)
+DEF hBurstBlockColumnsLeft           EQU $FF83 ; inner 4-column block loop (time-shared)
+DEF hBurstChildX                     EQU $FF83 ; child X after adding its signed offset (time-shared)
+DEF hBurstBlockRowsLeft              EQU $FF84 ; outer 4-row block loop (time-shared)
+DEF hBurstChildY                     EQU $FF84 ; child Y after adding its signed offset (time-shared)
+DEF hBurstParentOamX                 EQU $FF85 ; parent shadow-OAM X copied to each child (time-shared)
+DEF hBurstParentOamY                 EQU $FF86 ; parent shadow-OAM Y copied to each child (time-shared)
+DEF hBurstObjectsLeft                EQU $FF87 ; 40-slot update loop counter (time-shared)
+DEF hBurstSpawnTimer                 EQU $FF88 ; decremented before a random spawn (time-shared)
+DEF hBurstChildOffsetStride          EQU $FF89 ; doubled child-offset record index (time-shared)
+DEF hBurstChildrenLeft               EQU $FF8A ; child allocation loop counter (time-shared)
+
+DEF hPackedBcdDigits                 EQU $FFB0 ; five-byte packed-BCD output buffer (time-shared)
+DEF hIndexedGridX                    EQU $FFB1 ; indexed sprite-grid screen X (time-shared)
+DEF hIndexedGridY                    EQU $FFB2 ; indexed sprite-grid screen Y (time-shared)
 
 ; Scene init/load write-only bytes (time-shared).
 DEF hSceneInitWriteOnly              EQU $FF83 ; 1, set to 1 by InitSceneDisplay, never read by scene code (time-shared)

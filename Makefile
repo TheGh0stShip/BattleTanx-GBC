@@ -4,7 +4,7 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check verify-source check-repository compare check-project check-baserom check-assets extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion passwords progress report diag disasm clean tidy
+.PHONY: all check verify-source check-repository compare check-project check-baserom check-assets extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion passwords progress report emulator-smoke diag disasm clean tidy
 
 all: compare
 
@@ -82,6 +82,10 @@ progress: $(ROM)
 # objdiff v2 reconstruction report consumed by byte-match trackers.
 report: $(ROM)
 	$(PYTHON) tools/bytematch_report.py --out report.json
+
+# Optional runtime colour check; requires PyBoy 2.8.1 and is not a hardware test.
+emulator-smoke: $(ROM)
+	$(PYTHON) tools/emulator_smoke.py $(ROM)
 
 # Regenerate src/ from the base ROM (overwrites src/!)
 disasm: check-baserom

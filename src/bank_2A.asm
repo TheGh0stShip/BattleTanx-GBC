@@ -6,10 +6,12 @@ SECTION "ROM Bank $2A", ROMX[$4000], BANK[$2A]
 ; Bank $2A fixed screen, drawn and animated by FixedScreen2A_Run.
 ; 464 tiles; FixedScreen2A_LoadTiles copies 512 from here, so the last
 ; 48 copied tiles come from the maps below.
+GameOverScreen_Tiles:
 NoLivesScreen_Tiles:
 FixedScreen2A_Tiles:
 	INCBIN "assets/screens/fixedscreen2a_tiles.2bpp"
 
+GameOverScreen_TileMap:
 NoLivesScreen_TileMap:
 FixedScreen2A_TileMap:
 	db $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91, $92, $93, $94
@@ -81,6 +83,7 @@ FixedScreen2A_FrameAttrMap:
 	db $04, $04, $04, $04, $01, $0C, $0C, $0C, $0C, $09, $0C, $0C, $0C, $0C, $09, $0C, $0C, $0C, $0C, $09
 	db $03, $02, $04, $01, $01, $03, $02, $0C, $09, $09, $03, $02, $0C, $09, $09, $03, $02, $0C, $09, $09
 
+GameOverScreen_Palettes:
 NoLivesScreen_Palettes:
 FixedScreen2A_Palettes:
 	dw $0C63, $2926, $45EC, $5E90 ; palette 0
@@ -275,6 +278,7 @@ Func_2A_7774: ; address-based alias kept for ROM0 $3F28
 ; Draws the fixed screen, then shows frames 0-3 for 10 frames each.
 ; WaitForButtonOrTimeout exits on a button; after a full cycle this also exits
 ; when wJoypadHeld is non-zero.
+GameOverScreen_Run:
 NoLivesScreen_Run:
 FixedScreen2A_Run:
 	call FixedScreen2A_LoadTiles

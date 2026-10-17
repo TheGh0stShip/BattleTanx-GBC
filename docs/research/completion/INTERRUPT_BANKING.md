@@ -7,9 +7,11 @@ through `EnableDoubleSpeed` (KEY1 + `stop`), so the game runs in double speed.
 (`RestartGame`) therefore toggles again. Whether a soft reset can leave the
 CPU in normal speed is original behaviour still to be checked (section 6).
 
-Every figure comes from hand counts or a host-side SM83 interpreter run over
-the shipped ROM bytes. **Nothing has been run on an emulator or on hardware.**
-Label names follow the current source.
+Every timing figure comes from hand counts or a host-side SM83 interpreter run
+over the shipped ROM bytes. A deterministic PyBoy smoke test now confirms that
+the rebuilt ROM boots and reaches chromatic CGB output, but it does not exercise
+the narrowly timed interrupt scenarios below. Nothing has been checked on
+physical hardware. Label names follow the current source.
 
 Classes used below:
 - **proven safe**: excluded by code paths and cycle counts with a margin far

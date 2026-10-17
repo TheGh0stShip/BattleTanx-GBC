@@ -89,8 +89,9 @@ gameplay meaning.
     (`RunMenuAndLevelLoop`);
   - 1 is redundant because another bank write overwrites it before any banked
     read (`LoadObjectPalettes`);
-  - 1 is redundant because no banked reader was found (`UpdateAllObjects`;
-    strong, not proven).
+  - 1 is proven redundant (`UpdateAllObjects`): it has no direct banked read,
+    all banked callees self-select, and its bounded status-4 dispatch is reached
+    through a bank-$01 far wrapper.
 - **`dw` literals equal to a ROM label address:** 20, reported per bank. They are
   palette, note or tile-index values (w20), not pointers.
 
@@ -101,7 +102,7 @@ Each raw `$C000-$DFFF`/`$FF80-$FFFE` literal left in code has a disposition in
 
 | Disposition | Uses |
 | --- | ---: |
-| shared scratch (HRAM time-shared between banks; users listed) | 59 |
+| shared scratch left as raw literals | 0 |
 | bank-dependent (SVBK, WRAMX `$D000-$DFFF`) | 35 |
 | RAM code address (`LOAD` destinations) | 33 |
 | write-only | 10 |

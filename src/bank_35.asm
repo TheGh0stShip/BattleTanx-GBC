@@ -2,6 +2,7 @@
 
 SECTION "ROM Bank $35", ROMX[$4000], BANK[$35]
 
+GatesOfDoomSceneTiles:
 ScrollScene09Tiles:
 	INCBIN "assets/scenes/scroll_scene_09_tiles.2bpp"
 ASSERT @ == $4A60
@@ -39,6 +40,7 @@ ASSERT @ == $4E98
 ScrollScene09Palette:
 	dw $0000, $0000, $043F, $7D6B
 
+UnderCoverSceneTiles:
 ScrollScene10Tiles:
 	INCBIN "assets/scenes/scroll_scene_10_tiles.2bpp"
 ASSERT @ == $5AD0
@@ -75,6 +77,7 @@ ASSERT @ == $5EE0
 ScrollScene10Palette:
 	dw $0000, $0000, $7D6B, $043F
 
+QueenlordSceneTiles:
 ScrollScene11Tiles:
 	INCBIN "assets/scenes/scroll_scene_11_tiles.2bpp"
 ASSERT @ == $6D88

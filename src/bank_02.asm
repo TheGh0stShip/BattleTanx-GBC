@@ -2076,9 +2076,9 @@ Func_02_5D6D: ; legacy alias, used by src/bank_00.asm
 	ld a, [hli]
 	ld b, a
 	ld a, [hli]
-	ldh [$FFB1], a
+	ldh [hIndexedGridX], a
 	ld a, [hli]
-	ldh [$FFB2], a
+	ldh [hIndexedGridY], a
 	ld h, b
 	ld l, c
 .WaitForVBlankBeforeTileDma:
@@ -2109,10 +2109,10 @@ Func_02_5D6D: ; legacy alias, used by src/bank_00.asm
 .BuildRows:
 	ld e, $00
 .BuildColumns:
-	ldh a, [$FFB2]
+	ldh a, [hIndexedGridY]
 	add a, d
 	ld [hli], a
-	ldh a, [$FFB1]
+	ldh a, [hIndexedGridX]
 	add a, e
 	ld [hli], a
 	ld a, c
@@ -2381,7 +2381,7 @@ InitBurstEffectScreen:
 	call Bank02LoadObjTiles
 	call Bank02LoadObjPalettes
 	ld a, $01
-	ldh [$FF88], a
+	ldh [hBurstSpawnTimer], a
 	ret
 
 
@@ -2510,17 +2510,17 @@ SpawnBurstSpriteBlock:
 	ld hl, BurstStartPositions
 	add hl, de
 	ld a, [hli]
-	ldh [$FF80], a
+	ldh [hBurstPositionX], a
 	ld a, [hl]
-	ldh [$FF81], a
+	ldh [hBurstPositionY], a
 	ld bc, BurstBlockTileGrids
 	ld hl, wBurstShadowOam
 	ld de, wBurstObjects
 	ld a, $04
-	ldh [$FF84], a
+	ldh [hBurstBlockRowsLeft], a
 .nextRow:
 	ld a, $04
-	ldh [$FF83], a
+	ldh [hBurstBlockColumnsLeft], a
 .findFreeSlot:
 	ld a, [de]
 	and a
@@ -2542,12 +2542,12 @@ SpawnBurstSpriteBlock:
 .initializeSlot:
 	ld a, $FF
 	ld [de], a
-	ldh a, [$FF81]
+	ldh a, [hBurstPositionY]
 	ld [hli], a
-	ldh a, [$FF80]
+	ldh a, [hBurstPositionX]
 	ld [hli], a
 	add a, $08
-	ldh [$FF80], a
+	ldh [hBurstPositionX], a
 	ld a, $08
 	add a, e
 	ld e, a
@@ -2561,19 +2561,19 @@ SpawnBurstSpriteBlock:
 	ld [hli], a
 	xor a
 	ld [hli], a
-	ldh a, [$FF83]
+	ldh a, [hBurstBlockColumnsLeft]
 	dec a
-	ldh [$FF83], a
+	ldh [hBurstBlockColumnsLeft], a
 	jr nz, .findFreeSlot
-	ldh a, [$FF80]
+	ldh a, [hBurstPositionX]
 	sub $20
-	ldh [$FF80], a
-	ldh a, [$FF81]
+	ldh [hBurstPositionX], a
+	ldh a, [hBurstPositionY]
 	add a, $08
-	ldh [$FF81], a
-	ldh a, [$FF84]
+	ldh [hBurstPositionY], a
+	ldh a, [hBurstBlockRowsLeft]
 	dec a
-	ldh [$FF84], a
+	ldh [hBurstBlockRowsLeft], a
 	jr nz, .nextRow
 	ret
 
@@ -2603,7 +2603,7 @@ AnimateBurstSpriteBlock:
 	ld de, wBurstShadowOam + 2
 	ld bc, wBurstObjects
 	ld a, $10
-	ldh [$FF80], a
+	ldh [hBurstBlockEntriesLeft], a
 .findBlockEntry:
 	ld a, [bc]
 	cp $FF
@@ -2637,9 +2637,9 @@ AnimateBurstSpriteBlock:
 	ld a, $00
 	adc a, b
 	ld b, a
-	ldh a, [$FF80]
+	ldh a, [hBurstBlockEntriesLeft]
 	dec a
-	ldh [$FF80], a
+	ldh [hBurstBlockEntriesLeft], a
 	jr nz, .findBlockEntry
 	ret
 
@@ -2699,10 +2699,10 @@ UpdateBurstEffectObjects:
 	ld hl, wBurstObjects
 	ld de, wBurstShadowOam
 	ld a, $28
-	ldh [$FF87], a
+	ldh [hBurstObjectsLeft], a
 .nextObject:
 	ld a, [hli]
-	ldh [$FF82], a
+	ldh [hBurstObjectKind], a
 	and a
 	jr z, .skipObject
 	cp $FF
@@ -2718,18 +2718,18 @@ UpdateBurstEffectObjects:
 	add a, $02
 .storeVerticalPosition:
 	ld [hli], a
-	ldh [$FF81], a
+	ldh [hBurstPositionY], a
 	ld a, [hli]
-	ldh [$FF80], a
+	ldh [hBurstPositionX], a
 	dec [hl]
 	call z, ExpireBurstEffectObject
 	inc hl
-	ldh a, [$FF81]
+	ldh a, [hBurstPositionY]
 	call AddSignedVelocityToPosition
 	sub $10
 	cp $91
 	jr nc, .removeOffscreen
-	ldh a, [$FF80]
+	ldh a, [hBurstPositionX]
 	call AddSignedVelocityToPosition
 	sub $08
 	cp $A1
@@ -2744,9 +2744,9 @@ UpdateBurstEffectObjects:
 	inc de
 	inc hl
 .advanceObject:
-	ldh a, [$FF87]
+	ldh a, [hBurstObjectsLeft]
 	dec a
-	ldh [$FF87], a
+	ldh [hBurstObjectsLeft], a
 	jr nz, .nextObject
 	ret
 
@@ -2842,19 +2842,19 @@ ExpireBurstEffectObject:
 	ld [hld], a
 	ld [hld], a
 	ld a, [de]
-	ldh [$FF86], a
+	ldh [hBurstParentOamY], a
 	xor a
 	ld [de], a
 	inc de
 	ld a, [de]
-	ldh [$FF85], a
+	ldh [hBurstParentOamX], a
 	xor a
 	ld [de], a
 	ld hl, wBurstActiveObjectCount
 	dec [hl]
 	pop de
 	pop hl
-	ldh a, [$FF82]
+	ldh a, [hBurstObjectKind]
 	cp $01
 	ret z
 	push hl
@@ -2884,14 +2884,14 @@ ExpireBurstEffectObject:
 
 .spawnChildren:
 	ld b, a
-	ldh [$FF8A], a
+	ldh [hBurstChildrenLeft], a
 	ld a, [wBurstActiveObjectCount]
 	add a, b
 	ld [wBurstActiveObjectCount], a
 	inc hl
 	ld a, [hl]
 	add a, a
-	ldh [$FF89], a
+	ldh [hBurstChildOffsetStride], a
 	push de
 	ld hl, wBurstObjects
 	ld de, wBurstShadowOam
@@ -2906,7 +2906,7 @@ ExpireBurstEffectObject:
 	ld b, a
 .spawnChild:
 	call ComputeBurstChildPosition
-	ldh a, [$FF89]
+	ldh a, [hBurstChildOffsetStride]
 	add a, c
 	ld c, a
 	ld a, $00
@@ -2915,13 +2915,13 @@ ExpireBurstEffectObject:
 	push bc
 	call AllocBurstEffectObject
 	pop bc
-	ldh a, [$FF8A]
+	ldh a, [hBurstChildrenLeft]
 	dec a
-	ldh [$FF8A], a
+	ldh [hBurstChildrenLeft], a
 	jr nz, .spawnChild
 	xor a
-	ldh [$FF80], a
-	ldh [$FF81], a
+	ldh [hBurstPositionX], a
+	ldh [hBurstPositionY], a
 	pop de
 	pop hl
 	ret
@@ -2929,18 +2929,18 @@ ExpireBurstEffectObject:
 
 ComputeBurstChildPosition:
 	push de
-	ldh a, [$FF80]
+	ldh a, [hBurstPositionX]
 	ld d, a
-	ldh a, [$FF81]
+	ldh a, [hBurstPositionY]
 	ld e, a
 	ld a, [bc]
 	inc bc
 	add a, d
-	ldh [$FF83], a
+	ldh [hBurstChildX], a
 	ld a, [bc]
 	inc bc
 	add a, e
-	ldh [$FF84], a
+	ldh [hBurstChildY], a
 	pop de
 	ret
 
@@ -2966,11 +2966,11 @@ AllocBurstEffectObject:
 .initializeSlot:
 	ld a, $01
 	ld [hli], a
-	ldh a, [$FF84]
+	ldh a, [hBurstChildY]
 	ld [hli], a
-	ldh a, [$FF83]
+	ldh a, [hBurstChildX]
 	ld [hli], a
-	ldh a, [$FF82]
+	ldh a, [hBurstObjectKind]
 	swap a
 	ld [hli], a
 	xor a
@@ -2980,10 +2980,10 @@ AllocBurstEffectObject:
 	ld [hli], a
 	xor a
 	ld [hli], a
-	ldh a, [$FF86]
+	ldh a, [hBurstParentOamY]
 	ld [de], a
 	inc de
-	ldh a, [$FF85]
+	ldh a, [hBurstParentOamX]
 	ld [de], a
 	inc de
 	ld a, $02
@@ -2997,14 +2997,14 @@ AllocBurstEffectObject:
 
 
 SpawnBurstEffectObjectOnTimer:
-	ld hl, $FF88
+	ld hl, hBurstSpawnTimer
 	dec [hl]
 	ret nz
 	call Bank02NextTableRandom
 	srl a
 	srl a
 	or $08
-	ldh [$FF88], a
+	ldh [hBurstSpawnTimer], a
 	ld a, [wBurstActiveObjectCount]
 	cp $1E
 	ret nc

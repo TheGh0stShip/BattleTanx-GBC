@@ -1,5 +1,57 @@
 # Scene runtime: banks $2F-$3A
 
+## Rendered scene identities
+
+`make maps` losslessly reconstructs the tile, row and palette data. The scene
+wording is picture data rather than encoded strings, but it is still direct
+cartridge evidence. Every scrolling scene is now identified:
+
+| Index | Visible heading or grid caption |
+|---:|---|
+| 0 | Victory at Last |
+| 1 | Los Angeles — He is Griffin |
+| 2 | San Francisco |
+| 3 | Las Vegas |
+| 4 | New York |
+| 5 | Washington D.C. |
+| 6 | Trial By Fire — Destroy 4 Enemy Scouts |
+| 7 | Rush Hour — Collect the Coins |
+| 8 | Right of Passage — Defeat All Enemy Tanks |
+| 9 | Gates of Doom — Cross the Bridge |
+| 10 | Under Cover — Locate the Enemy Mole |
+| 11 | Queenlord — Return the Queenlord to the Trolley Station |
+| 12 | Death Valley — Locate the Lost Highway |
+| 13 | Pit Boss — Defeat the Goliath |
+| 14 | Fools Gold — Collect All The Coins |
+| 15 | Apocalypse — Recover all of the Nukes |
+| 16 | Panic in the Park — Defeat all Enemy Units |
+| 17 | Escape New York — Reach the Harbor Exit |
+| 18 | Warpath — Destroy All Enemy Units |
+| 19 | Stars and Stripes — Destroy 4 Goliath Tanks |
+| 20 | Love Conquers All — Defeat All Enemy Units |
+| 21-23 | Los Angeles grid: Trial By Fire / Rush Hour / Right of Passage |
+| 24-26 | San Francisco grid: Gates of Doom / Under Cover / Queenlord |
+| 27-29 | Las Vegas grid: Death Valley / Pit Boss / Fools Gold |
+| 30-32 | New York grid: Apocalypse / Panic in the Park / Escape New York |
+| 33-35 | Washington D.C. grid: Warpath / Stars and Stripes / Love Conquers All |
+
+The eleven fixed pictures depict, in index order: two people embracing; a
+woman and man; a masked figure beside weapons imagery; four hooded figures; a
+group of uniformed figures; two armed figures; the Hollywood sign; the Golden
+Gate Bridge; a Las Vegas street; the Statue of Liberty with the New York
+skyline; and the United States Capitol. These descriptions deliberately avoid
+assigning character or faction names that are not printed in the picture.
+
+`LevelSceneGridCells` maps retail levels 0-14 to world/column pairs `(0,0)`
+through `(4,2)`. `SelectLevelScene` indexes
+`SceneScrollDescriptorIndexTable`, whose populated cells are scenes 6-20 in
+that same order. Therefore the gameplay map-to-mission association is proven:
+level 0 is Trial By Fire, 1 Rush Hour, 2 Right of Passage, 3 Gates of Doom, 4
+Under Cover, 5 Queenlord, 6 Death Valley, 7 Pit Boss, 8 Fools Gold, 9
+Apocalypse, 10 Panic in the Park, 11 Escape New York, 12 Warpath, 13 Stars and
+Stripes, and 14 Love Conquers All. The source provides descriptive aliases at
+the corresponding scene tile packages.
+
 Baseline `ae8696ef6adf28ad6984acbb64a9954d4cca854c`. Bank `$3B` is excluded.
 Layout and checks: `tools/check_project.py` fixed/scrolling scene checks and
 `tools/gen_*_scene_asm.py`.
@@ -25,8 +77,10 @@ The only callers are `RunScrollingScene`, `RunMenuGridSceneScroll`, `LoadFixedSc
 - Table slots 3/7/11/15 (zeros) would need column c = 3. The column is
   clamped to 0-2 (`SetMenuGridColumnClamped`) and every `$65EB` column is at most 2, so
   those slots are never selected.
-- Scenes are grouped per world (5 worlds x 3 levels). No scene is named,
-  because no encoded text identifies one.
+- Scenes are grouped per world (5 worlds x 3 levels). The lossless scene
+  renders contain their own headings and objectives; the complete 0-35
+  identification table above records that visible text without inferring
+  names from control flow.
 
 ## Scrolling behaviour
 

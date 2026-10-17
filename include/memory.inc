@@ -257,6 +257,7 @@ DEF hOrientMetatilePointer     EQU $FF8A ; 2-byte little-endian InterfaceMetatil
 DEF hOrientMetatileRowsLeft    EQU $FF8C ; metatile rows left, from 3 (time-shared)
 
 ; CenterLevelViewOnObject clamped view origin in cells (time-shared).
+DEF hScratchStart              EQU $FF80 ; first byte cleared by ClearGameMemory (time-shared layout boundary)
 DEF hCenterViewX               EQU $FF80 ; 2-byte little-endian, X/8 - $0B clamped to 0..wLevelWidth - $15 (time-shared)
 DEF hCenterViewY               EQU $FF82 ; 2-byte little-endian, Y/8 - $0A clamped to 0..wLevelHeight - $13 (time-shared)
 

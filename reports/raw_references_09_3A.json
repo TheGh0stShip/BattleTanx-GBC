@@ -4,6 +4,7 @@
    "target": "$2E:689A",
    "labels": [
     "MenuState05Picture0_Tiles",
+    "MotoTankSelectionPicture_Tiles",
     "Picture596D0_Tiles"
    ],
    "source": "$01:$596D[0].tiles",
@@ -44,6 +45,7 @@
   {
    "target": "$2E:5522",
    "labels": [
+    "M1A1TankSelectionPicture_Tiles",
     "MenuState05Picture1_Tiles",
     "Picture596D1_Tiles"
    ],
@@ -85,6 +87,7 @@
   {
    "target": "$2E:40DA",
    "labels": [
+    "GoliathTankSelectionPicture_Tiles",
     "MenuState05Picture2_Tiles",
     "Screen2E_Tiles"
    ],

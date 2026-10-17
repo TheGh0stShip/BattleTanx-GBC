@@ -111,6 +111,8 @@ def validate_level(rom: bytes, lv: Level) -> None:
     tag = f"level {n}"
     check(lv.record_addr == 0x4400 + RECORD_SIZE * n, f"{tag}: record at {lv.record_addr:#x}")
     check(lv.width and lv.height, f"{tag}: empty map")
+    check(lv.width >= 21 and lv.height >= 19,
+          f"{tag}: dimensions {lv.width}x{lv.height} trigger the camera clamp underflow")
     check(rec[2] == rec[3] == rec[4] == FIRST_BANK + 2 * n, f"{tag}: odd-bank bytes {rec[2:5].hex()}")
     check(rec[5] == rec[6] == rec[2] + 1, f"{tag}: even-bank bytes {rec[5:7].hex()}")
     check(1 <= lv.palette_count <= 8, f"{tag}: palette count {lv.palette_count}")
@@ -223,6 +225,7 @@ def negative_tests(rom: bytes) -> int:
         "attribute palette": ({(0x0A, lv0.attrmap_addr): 0x07}, "palette out of range"),
         "tile beyond count": ({(0x0A, 0x4000): 0xB7, (0x0A, lv0.attrmap_addr): 0x08}, "highest tile"),
         "cell high bits": ({(0x09, 0x4000): 0x10}, "bit 4-7"),
+        "camera clamp dimensions": ({(0x05, 0x4400): 20}, "camera clamp underflow"),
         "gap byte": ({(0x09, lv0.attr_table_addr - 1): 0x01}, "byte before"),
         "animation pointer": ({(0x05, 0x5120): 0x7B}, "animation pointer table"),
     }

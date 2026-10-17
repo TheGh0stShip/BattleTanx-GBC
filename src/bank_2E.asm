@@ -18,7 +18,8 @@ UncalledScreen2E_Descriptor:
 Screen2E_Descriptor:
 	screen_descriptor Screen2E_Tiles, Screen2E_TileMap, Screen2E_AttrMap, Screen2E_Palettes, 273, 20, 19, 8, 0
 
-MenuState05Picture2_Tiles: ; wMenuState05Selection = 2 ($01:$596D entry 2)
+GoliathTankSelectionPicture_Tiles:
+MenuState05Picture2_Tiles: ; wMenuState05Selection = 2 ($01:$596D entry 2); picture text: GOLIATH
 Screen2E_Tiles:
 	INCBIN "assets/screens/screen2e_tiles.2bpp"
 
@@ -76,7 +77,8 @@ Screen2E_Palettes:
 
 ; Bank $2E picture 1 of the $01:$596D table (no descriptor; drawn by bank
 ; $01 routines through $C943-$C952). 20x19 maps, 8 palettes.
-MenuState05Picture1_Tiles: ; wMenuState05Selection = 1 (LoadMenuState05Graphics, $01:$596D entry 1)
+M1A1TankSelectionPicture_Tiles:
+MenuState05Picture1_Tiles: ; wMenuState05Selection = 1 (LoadMenuState05Graphics, $01:$596D entry 1); picture text: M1A1 TANK
 Picture596D1_Tiles:
 	INCBIN "assets/screens/picture596d1_tiles.2bpp"
 
@@ -134,7 +136,8 @@ Picture596D1_Palettes:
 
 ; Bank $2E picture 0 of the $01:$596D table (no descriptor; drawn by bank
 ; $01 routines through $C943-$C952). 20x19 maps, 8 palettes.
-MenuState05Picture0_Tiles: ; wMenuState05Selection = 0 (LoadMenuState05Graphics, $01:$596D entry 0)
+MotoTankSelectionPicture_Tiles:
+MenuState05Picture0_Tiles: ; wMenuState05Selection = 0 (LoadMenuState05Graphics, $01:$596D entry 0); picture text: MOTO TANK
 Picture596D0_Tiles:
 	INCBIN "assets/screens/picture596d0_tiles.2bpp"
 

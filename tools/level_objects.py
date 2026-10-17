@@ -85,6 +85,12 @@ def parse(rom: bytes) -> list[dict]:
           "mode-5 auxiliary link record changed")
     check(levels[5]["auxiliaries"][0][6] == 2,
           "mode-5 auxiliary link no longer targets the level-5 mode-2 record")
+    status4 = [(level["level"], i, record[7]) for level in levels
+               for i, record in enumerate(level["spawns"]) if record[0] == 6]
+    check(all(subtype <= 8 for _level, _index, subtype in status4),
+          "status-4 static subtype exceeds the ten-entry handler/palette tables")
+    check(sum(subtype == 7 for _level, _index, subtype in status4) == 21,
+          "status-4 subtype 7 static-source count changed")
     return levels
 
 
@@ -185,6 +191,12 @@ def validate_project(root: pathlib.Path) -> str:
     changed = bytearray(rom)
     changed[offset(AUX_START) + 6] = 6
     cases.append((bytes(changed), "auxiliary enable/type"))
+    changed = bytearray(rom)
+    type7_level, type7_index = next((level["level"], i) for level in levels
+                                    for i, record in enumerate(level["spawns"])
+                                    if record[0] == 6 and record[7] == 7)
+    changed[offset(SPAWN_START + (type7_level * SPAWN_COUNT + type7_index) * SPAWN_SIZE) + 7] = 9
+    cases.append((bytes(changed), "status-4 static subtype"))
     changed = bytearray(rom)
     mode5_address = AUX_START + (5 * AUX_COUNT + 1) * AUX_SIZE
     changed[offset(mode5_address) + 7] = 1

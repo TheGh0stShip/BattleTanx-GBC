@@ -2,6 +2,7 @@
 
 SECTION "ROM Bank $38", ROMX[$4000], BANK[$38]
 
+WarpathSceneTiles:
 ScrollScene18Tiles:
 	INCBIN "assets/scenes/scroll_scene_18_tiles.2bpp"
 ASSERT @ == $4B00
@@ -38,6 +39,7 @@ ASSERT @ == $4F10
 ScrollScene18Palette:
 	dw $0000, $0000, $7D6B, $043F
 
+StarsAndStripesSceneTiles:
 ScrollScene19Tiles:
 	INCBIN "assets/scenes/scroll_scene_19_tiles.2bpp"
 ASSERT @ == $5D88
@@ -74,6 +76,7 @@ ASSERT @ == $6198
 ScrollScene19Palette:
 	dw $0000, $0000, $7D6C, $083F
 
+LoveConquersAllSceneTiles:
 ScrollScene20Tiles:
 	INCBIN "assets/scenes/scroll_scene_20_tiles.2bpp"
 ASSERT @ == $6CA0

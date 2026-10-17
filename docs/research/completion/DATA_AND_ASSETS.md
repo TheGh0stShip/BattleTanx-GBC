@@ -129,8 +129,11 @@ Sources for each claim are kept in `sources.json`, not here.
 
 **Inferred**: +$3D-$3F have no direct or stepped access (strong).
 
-**Unknown**: why 103 records carry 0 charges; what +6 meant; whether the
-(3,6) and (6,15) objects reach their final point.
+**Unknown authoring intent**: why 103 records carry 0 charges and what +6 was
+intended to mean. The (3,6) and (6,15) terminal defects are statically
+reachable: their spawn records begin at waypoint 0 and their routes pass the
+map-collision checks. Whether ordinary play keeps either object alive long
+enough to exhibit the defect has not been observed dynamically.
 
 ## 4. Bank $08: HUD palettes, unknown bytes, palette records, effect steps
 
@@ -150,8 +153,10 @@ Sources for each claim are kept in `sources.json`, not here.
 - `CopyTilesToVRAM` computes (A<<8)+E*16 with A=$80, so the four blocks go
   to VRAM0 tiles $4E-$51, $52-$55, $56-$59, $5A-$5D. The old "$CE-$DD"
   comments were wrong and are corrected.
-- `Bank08ArrowUpTiles`/`Bank08ArrowDownTiles` keep names based only on
-  appearance (weak). The obsolete one-time bank-$08 generator was removed;
+- `Bank08ArrowUpTiles`/`Bank08ArrowDownTiles` visibly render as arrows, while
+  the code uses them as power-up icons. The arrow names remain legacy aliases;
+  the gameplay-supported primary meaning is the power-up role. The obsolete
+  one-time bank-$08 generator was removed;
   `src/bank_08.asm` is the reviewed authoritative source.
 
 **Proven: palette-shaped records**

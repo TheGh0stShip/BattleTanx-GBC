@@ -1028,6 +1028,7 @@
    "bytes": 7424,
    "label": "FixedScreen2A_Tiles",
    "aliases": [
+    "GameOverScreen_Tiles",
     "NoLivesScreen_Tiles"
    ]
   },
@@ -1038,6 +1039,7 @@
    "bytes": 360,
    "label": "FixedScreen2A_TileMap",
    "aliases": [
+    "GameOverScreen_TileMap",
     "NoLivesScreen_TileMap"
    ]
   },
@@ -1078,6 +1080,7 @@
    "bytes": 64,
    "label": "FixedScreen2A_Palettes",
    "aliases": [
+    "GameOverScreen_Palettes",
     "NoLivesScreen_Palettes"
    ]
   },
@@ -1247,6 +1250,7 @@
    "label": "FixedScreen2A_Run",
    "aliases": [
     "Func_2A_7774",
+    "GameOverScreen_Run",
     "NoLivesScreen_Run"
    ]
   },
@@ -1949,8 +1953,9 @@
    "start": "$40DA",
    "end": "$51E9",
    "bytes": 4368,
-   "label": "MenuState05Picture2_Tiles",
+   "label": "GoliathTankSelectionPicture_Tiles",
    "aliases": [
+    "MenuState05Picture2_Tiles",
     "Screen2E_Tiles"
    ]
   },
@@ -1983,8 +1988,9 @@
    "start": "$5522",
    "end": "$6561",
    "bytes": 4160,
-   "label": "MenuState05Picture1_Tiles",
+   "label": "M1A1TankSelectionPicture_Tiles",
    "aliases": [
+    "MenuState05Picture1_Tiles",
     "Picture596D1_Tiles"
    ]
   },
@@ -2019,6 +2025,7 @@
    "bytes": 4352,
    "label": "MenuState05Picture0_Tiles",
    "aliases": [
+    "MotoTankSelectionPicture_Tiles",
     "Picture596D0_Tiles"
    ]
   },
@@ -2764,7 +2771,9 @@
    "end": "$4E3F",
    "bytes": 3648,
    "label": "ScrollScene06Tiles",
-   "aliases": []
+   "aliases": [
+    "TrialByFireSceneTiles"
+   ]
   },
   {
    "bank": "$34",
@@ -2787,8 +2796,10 @@
    "start": "$5258",
    "end": "$60D7",
    "bytes": 3712,
-   "label": "ScrollScene07Tiles",
-   "aliases": []
+   "label": "RushHourSceneTiles",
+   "aliases": [
+    "ScrollScene07Tiles"
+   ]
   },
   {
    "bank": "$34",
@@ -2811,8 +2822,10 @@
    "start": "$6518",
    "end": "$71F7",
    "bytes": 3296,
-   "label": "ScrollScene08Tiles",
-   "aliases": []
+   "label": "RightOfPassageSceneTiles",
+   "aliases": [
+    "ScrollScene08Tiles"
+   ]
   },
   {
    "bank": "$34",
@@ -2835,8 +2848,10 @@
    "start": "$4000",
    "end": "$4A5F",
    "bytes": 2656,
-   "label": "ScrollScene09Tiles",
-   "aliases": []
+   "label": "GatesOfDoomSceneTiles",
+   "aliases": [
+    "ScrollScene09Tiles"
+   ]
   },
   {
    "bank": "$35",
@@ -2860,7 +2875,9 @@
    "end": "$5ACF",
    "bytes": 3120,
    "label": "ScrollScene10Tiles",
-   "aliases": []
+   "aliases": [
+    "UnderCoverSceneTiles"
+   ]
   },
   {
    "bank": "$35",
@@ -2883,8 +2900,10 @@
    "start": "$5EE8",
    "end": "$6D87",
    "bytes": 3744,
-   "label": "ScrollScene11Tiles",
-   "aliases": []
+   "label": "QueenlordSceneTiles",
+   "aliases": [
+    "ScrollScene11Tiles"
+   ]
   },
   {
    "bank": "$35",
@@ -2907,8 +2926,10 @@
    "start": "$4000",
    "end": "$4D2F",
    "bytes": 3376,
-   "label": "ScrollScene12Tiles",
-   "aliases": []
+   "label": "DeathValleySceneTiles",
+   "aliases": [
+    "ScrollScene12Tiles"
+   ]
   },
   {
    "bank": "$36",
@@ -2931,8 +2952,10 @@
    "start": "$5170",
    "end": "$5BAF",
    "bytes": 2624,
-   "label": "ScrollScene13Tiles",
-   "aliases": []
+   "label": "PitBossSceneTiles",
+   "aliases": [
+    "ScrollScene13Tiles"
+   ]
   },
   {
    "bank": "$36",
@@ -2955,8 +2978,10 @@
    "start": "$5FF0",
    "end": "$6D2F",
    "bytes": 3392,
-   "label": "ScrollScene14Tiles",
-   "aliases": []
+   "label": "FoolsGoldSceneTiles",
+   "aliases": [
+    "ScrollScene14Tiles"
+   ]
   },
   {
    "bank": "$36",
@@ -2979,8 +3004,10 @@
    "start": "$4000",
    "end": "$4B7F",
    "bytes": 2944,
-   "label": "ScrollScene15Tiles",
-   "aliases": []
+   "label": "ApocalypseSceneTiles",
+   "aliases": [
+    "ScrollScene15Tiles"
+   ]
   },
   {
    "bank": "$37",
@@ -3003,8 +3030,10 @@
    "start": "$4FC0",
    "end": "$5B2F",
    "bytes": 2928,
-   "label": "ScrollScene16Tiles",
-   "aliases": []
+   "label": "PanicInTheParkSceneTiles",
+   "aliases": [
+    "ScrollScene16Tiles"
+   ]
   },
   {
    "bank": "$37",
@@ -3027,8 +3056,10 @@
    "start": "$5F70",
    "end": "$6ABF",
    "bytes": 2896,
-   "label": "ScrollScene17Tiles",
-   "aliases": []
+   "label": "EscapeNewYorkSceneTiles",
+   "aliases": [
+    "ScrollScene17Tiles"
+   ]
   },
   {
    "bank": "$37",
@@ -3052,7 +3083,9 @@
    "end": "$4AFF",
    "bytes": 2816,
    "label": "ScrollScene18Tiles",
-   "aliases": []
+   "aliases": [
+    "WarpathSceneTiles"
+   ]
   },
   {
    "bank": "$38",
@@ -3076,7 +3109,9 @@
    "end": "$5D87",
    "bytes": 3696,
    "label": "ScrollScene19Tiles",
-   "aliases": []
+   "aliases": [
+    "StarsAndStripesSceneTiles"
+   ]
   },
   {
    "bank": "$38",
@@ -3099,8 +3134,10 @@
    "start": "$61A0",
    "end": "$6C9F",
    "bytes": 2816,
-   "label": "ScrollScene20Tiles",
-   "aliases": []
+   "label": "LoveConquersAllSceneTiles",
+   "aliases": [
+    "ScrollScene20Tiles"
+   ]
   },
   {
    "bank": "$38",

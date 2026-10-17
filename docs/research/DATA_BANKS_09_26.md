@@ -257,7 +257,7 @@ Result (clean tree, no stale assets):
 battletanx.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 trace: 35303 root/table bytes, 3265 reviewed standalone bytes, 206 callerless bytes, 0 heuristic bytes, 33 RAM code images, 5 RAM data images
 audio: 37 patches, 25 sfx sequences, 10 music sequences, 32 queued ids and 57 call sites checked
-levels: 15 levels in banks $09-$26, every byte in one range, 11 negative tests rejected
+levels: 15 levels in banks $09-$26, every byte in one range, 12 negative tests rejected
 project: OK (129 assets, baserom sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 graphics: 61 sheets extracted and round-trip verified
 scene maps: 11 fixed scenes (2640 cells), 36 scrolling scenes (709 rows, 14180 cells) rendered and verified

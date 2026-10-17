@@ -1270,7 +1270,7 @@ Func_072C:
 	ld hl, $FE00
 	ld b, $A0
 	call ClearBytes
-	ld hl, $FF80
+	ld hl, hScratchStart
 	ld b, $7F
 	call ClearBytes
 	ld a, $07
@@ -6382,6 +6382,8 @@ UpdateAllObjects:
 Func_22ED: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
+	; Redundant in the shipped call graph: every banked callee below selects and
+	; restores its own bank, including the bounded status-4 handler dispatch.
 	ld a, $01
 	ld [rROMB0], a
 	xor a
@@ -11206,8 +11208,8 @@ Func_3B12: ; legacy alias
 .runSceneAndMode12:
 	call InitSceneDisplay
 	xor a
-	ldh [$FF82], a
-	ldh [$FF81], a
+	ldh [hSceneScrollIndex], a
+	ldh [hSceneFixedIndex], a
 	call RunScrollingScene
 	call RunScreenMode12SetupFar
 	jr .return

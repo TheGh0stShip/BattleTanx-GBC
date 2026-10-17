@@ -1,10 +1,14 @@
-# Unresolved (whole ROM)
+# Evaluated limits (whole ROM)
 
-Machine-derived inventory: `reports/rom_unresolved_inventory.json`, built from the
-range map. This page lists the open questions behind those numbers. Each item
-says what is proven and what is not. Nothing here has been turned into a symbol.
-Timing figures come from host models over the shipped ROM bytes. None has been
-checked on an emulator or on hardware.
+Machine-derived inventory: `reports/rom_unresolved_inventory.json`, built from
+the range map. This page lists the evidentiary limits behind those numbers.
+Every item has been evaluated: it states what is proven, what evidence is
+absent, and what experiment could add evidence. Dead retail-ROM bytes cannot
+reveal their original authoring intent, and physical timing cannot be proven
+by a source-only audit; those limits are recorded rather than guessed away.
+Timing figures come from host models over the shipped ROM bytes. The general
+boot and colour path has a deterministic PyBoy smoke test; the timing hazards
+below have not been reproduced there or on physical hardware.
 
 ## Closed in this pass
 
@@ -12,9 +16,8 @@ checked on an emulator or on hardware.
   X = 22..29; a VBlank needs X >= 36 (margin 7 lines). (w108)
 - **Menu-grid fades and boot fade:** windows end by LY 66, before the first
   object line (72). (w94/v129)
-- **HRAM aliases:** w100's 13 scene/score groups verified (v114); 42 object
-  scratch aliases added in 11 proven groups (w126); raw shared-scratch literals
-  219 -> 59.
+- **HRAM aliases:** scene, score, object, burst, packed-BCD and indexed-grid
+  scratch groups are named by use. Raw shared-scratch literals are now zero.
 - **Bank `$08` names:** `Bank08PowerupIcon1-3Palette`, `Bank08HudAlertIconTiles`;
   VRAM tile comments corrected to `$4E-$5D`. (v115)
 - **Sound patch `$00`:** one `sound_patch_ch2` line; 33 `_UnreadTrailer` labels
@@ -75,7 +78,8 @@ checked on an emulator or on hardware.
      Start press timed so a fade frame is frame 131. With no input it is
      safe. The exit fades are safe; intro scene 1 is still open.
    - W50-7 (w108): the window covers 2,508 M exactly when H + A >= 985.
-5. **Not run:** the emulator watch.
+5. **Not run:** the targeted interrupt-bank emulator watch. The independent
+   colour smoke test is documented in `EMULATOR_VERIFICATION.md`.
 
 ## Code and control flow
 
@@ -84,8 +88,13 @@ checked on an emulator or on hardware.
    end marker remains: `Bank01Data_4F40End`. 288 `Func_` labels remain, all as
    aliases beside a descriptive name (172 commented "legacy alias"); 78 are
    still used as operands (176 operand lines, comments excluded).
-7. **`UpdateAllObjects` bank `$01` write:** strong, not proven. The `jp hl`
-   handler targets are untraced. (w11/v41, w106)
+7. **Closed: `UpdateAllObjects` bank `$01` write is redundant.** The routine
+   performs no direct banked read. Every transitive banked callee selects and
+   restores its own bank. The only relevant computed transfer is the bounded
+   10-entry `Status4PickupHandlerTable`; all ten targets are in bank `$01` and
+   are reached through `DispatchStatus4PickupHandlerFar`, which selects bank
+   `$01` itself. The initial write only changes the value those wrappers restore
+   between calls, where no banked access occurs.
 8. **Unreferenced routines** (unreached in w99/v119's graph; dead-code lists must
    be built per address, since 22 "unreached" labels are primary names of live
    code reached through an alias, e.g. `ReadJoypad`, `FillBytes`,
@@ -108,14 +117,20 @@ checked on an emulator or on hardware.
 9. **Recorded-path subsystem** (bank `$03`): unreachable. Its role and the owner
    of `$CFEF-$CFF2` are unknown.
 10. **Gameplay identities still open:**
-    - scene contents; what MenuState05 pictures 0-2 and the mode-8 burst depict;
+    - Closed: all 36 scrolling scenes are identified by their rendered headings
+      and objectives in `SCENE_RUNTIME_RESEARCH.md`; the eleven fixed scenes
+      have literal visual descriptions there.
+    - Closed: lossless renders identify MenuState05 pictures 0-2 as MOTO TANK,
+      M1A1 TANK and GOLIATH. Mode 8 depicts an armed character beside a tank;
+      its following animation consists of abstract burst blocks.
     - why the mode-1 auxiliary timers exist (their count is never used; v34);
     - object field +$3D-$3F: no access found (strong; v91);
     - +$3C: never written by shipped data (626 records use end actions 0, 2, 5;
       v91);
     - whether `PickupStartRenderHideTimer` has effects beyond hiding and the
       proximity skip (v40, v57);
-    - the bank-`$2A` no-lives screen on the code-accept path (v109).
+    - Closed: the bank-`$2A` picture reads GAME OVER. The alleged code-accept
+      route is rejected; the proven caller is `RunNoLivesFlow`.
 
 ## Data
 
@@ -129,7 +144,9 @@ checked on an emulator or on hardware.
     - 40 unread palette records (groups A-D plus `$6263`, `$68D5`, `$69F5`).
       Why C and D exist is unknown. (w12/v42)
     - Effect steps 19-71 and their 12 tile blocks: unreachable.
-    - `Bank08ArrowUpTiles`/`Bank08ArrowDownTiles` are named from appearance only.
+    - `Bank08ArrowUpTiles`/`Bank08ArrowDownTiles` visually render as arrows, but
+      the gameplay reader proves they are power-up icons; the arrow aliases are
+      retained only for compatibility.
 13. **Level data:**
     - Bits 4/5 of the cell map are never used.
     - Lookup entries 0-95 have no read path (w64).
@@ -140,16 +157,21 @@ checked on an emulator or on hardware.
     - 66 bit-3-only cells are suspected never to convert; the stale-coordinate
       diagonal step in `ResolveObjectLevelBit0Movement` is not excluded. (w39)
     - Why five region rectangles contain empty cells.
-    - Whether any type-7 pickup source exists besides static spawns.
-    - Whether any level is narrower than 21 or shorter than 19 cells (decides the
-      `CenterLevelViewOnObject` defect below).
+    - Closed: subtype 7 has 21 static status-4 spawn records. The only other
+      `SpawnStatus4Object` call hardcodes subtype 0, so no dynamic subtype-7
+      source exists in the shipped code.
+    - Closed: all 15 levels are at least 64 cells wide and 48 cells high.
+      `CenterLevelViewOnObject` therefore cannot underflow its 21-by-19 clamp
+      bounds with shipped level records.
 14. **Spawn records:** 103 records of types 0/1/2/5 have byte 10 != 0 and
     byte 11 = 0; zero charges allow 256 uses (w64). Intent unknown. Type-5
     byte 7 is never read.
 15. **Object sequences** (w64): 135 unread nonzero +6 bytes; distance 9 at level 3
     slot 2 record 2 has no reader; four sequences are unselectable. Two
-    persistent over-reads, (3,6) and (6,15); whether either object reaches its
-    final point is unknown.
+    persistent over-reads, (3,6) and (6,15). Their spawn records start at
+    waypoint 0 and the checked routes are passable, so the bad terminal reads
+    are reachable absent destruction or interference. A normal-play occurrence
+    has not been observed dynamically.
 16. **Audio:**
     - The padding, music entry byte 3 and the bank-`$07` head. The 33 trailers
       are proven unread; their build-time purpose is not.
@@ -166,15 +188,22 @@ checked on an emulator or on hardware.
     a grey-ramp reading is weak. (w64)
 18. **RAM:**
     - the menu-grid scroll order after a level return (strong only);
-    - the meaning of `$DC03`;
+    - Closed: `$DC03` is stored three times into
+      `wUnusedMenuState05Pointer`; that field has no reader. It is dead menu
+      state, not an effective pointer.
     - whether scene interrupts can run on the password screen (`$FFB0-$FFB4`);
     - indirect `[hl]`/`[c]` HRAM writes were not excluded (w66);
-    - still raw: the bank-`$02` burst routines on `$FF80-$FF8A`, and
-      `RunLevelExitScreenFlow`'s `$FF81`/`$FF82` clears (w126);
+    - Closed: the bank-`$02` burst routines' `$FF80-$FF8A` roles and
+      `RunLevelExitScreenFlow`'s scene-index clears now use checked time-shared
+      symbols.
     - Closed: `operand_dispositions.json` now records `$FF80-$FF8D`, `$FF90`,
       `$FFA0`, and `$FFA1`; `operand_audit.py` checks the live user sets.
-19. **Opaque assets:** `assets/bank_07/audio_build_residue.bin` (3,061 bytes, a
-    copy of bank `$06` data; byte 0 is emitted by `Bank07MalformedSoundPatch00`).
+19. **Reviewed build residue:** `assets/bank_07/audio_build_residue.bin`
+    (3,061 bytes) is byte-identical to bank `$06:$4008-$4BFC`; its leading
+    byte completes the separately emitted malformed patch head. No code maps
+    bank `$07`. It remains binary because it is a verbatim linker/build
+    residue copy, not because its byte provenance or runtime reachability is
+    unevaluated. Its original build-system cause is not encoded in the ROM.
 20. **Tooling closures (no remaining item in this group):**
     - Closed 2026-10-17: `make extract-assets` now uses
       `tools/prepare_assets.py`, accepts commented manifests, verifies both
@@ -211,9 +240,10 @@ checked on an emulator or on hardware.
   skips the owner test in `ResolveProjectileHit`). (v57/v91)
 - **`FindNearestVisibleObjectFacingSource`** compares the 16-bit best distance
   byte by byte; a best of `$0100` rejects `$00FF`. (w126)
-- **`CenterLevelViewOnObject`** discards the borrow of `sub $15`; a level under
-  21 x 19 cells gets a large maximum. Strong; reachability depends on item 13.
-  (w126)
+- **`CenterLevelViewOnObject`** discards the borrow of `sub $15`; a hypothetical
+  level under 21 x 19 cells would get a large maximum. All shipped levels are
+  at least 64 x 48, so the defect is latent and unreachable with retail data.
+  `tools/level_data.py` checks the bound. (w126)
 - **Menu-grid OBJ left on.** `bit 1,a` where `res 1,a` fits. (w43/v70)
 - **X-axis bounce stores L** instead of incrementing; no effect. (w37)
 - **`WriteBgPalette7FromD3F8`** is called at its ROM address; its WRAM copy at

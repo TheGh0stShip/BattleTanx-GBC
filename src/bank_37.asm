@@ -2,6 +2,7 @@
 
 SECTION "ROM Bank $37", ROMX[$4000], BANK[$37]
 
+ApocalypseSceneTiles:
 ScrollScene15Tiles:
 	INCBIN "assets/scenes/scroll_scene_15_tiles.2bpp"
 ASSERT @ == $4B80
@@ -39,6 +40,7 @@ ASSERT @ == $4FB8
 ScrollScene15Palette:
 	dw $0000, $0000, $043F, $7D6B
 
+PanicInTheParkSceneTiles:
 ScrollScene16Tiles:
 	INCBIN "assets/scenes/scroll_scene_16_tiles.2bpp"
 ASSERT @ == $5B30
@@ -76,6 +78,7 @@ ASSERT @ == $5F68
 ScrollScene16Palette:
 	dw $0000, $0000, $7D6C, $083F
 
+EscapeNewYorkSceneTiles:
 ScrollScene17Tiles:
 	INCBIN "assets/scenes/scroll_scene_17_tiles.2bpp"
 ASSERT @ == $6AC0

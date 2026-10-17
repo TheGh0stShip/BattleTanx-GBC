@@ -2696,9 +2696,9 @@ MenuState05SelectPrevious_StoreSelection:
 	call FillSceneBgRowsWithTrailingTile
 	ld hl, $DC03
 	ld a, l
-	ld [wMenuState05UnreadPtr], a
+	ld [wUnusedMenuState05Pointer], a
 	ld a, h
-	ld [wMenuState05UnreadPtr + 1], a
+	ld [wUnusedMenuState05Pointer + 1], a
 	ld a, $01
 	ld [wMenuScrollDirection], a
 	call ScrollSceneInFromRight
@@ -2726,9 +2726,9 @@ MenuState05SelectNext_StoreSelection:
 	call FillSceneBgRowsWithTrailingTile
 	ld hl, $DC03
 	ld a, l
-	ld [wMenuState05UnreadPtr], a
+	ld [wUnusedMenuState05Pointer], a
 	ld a, h
-	ld [wMenuState05UnreadPtr + 1], a
+	ld [wUnusedMenuState05Pointer + 1], a
 	ld a, $01
 	ld [wMenuScrollDirection], a
 	call ScrollSceneInFromLeft
@@ -3076,9 +3076,9 @@ InitMenuStateScreen_State05:
 	call FillSceneBgRowsWithTrailingTile
 	ld hl, $DC03
 	ld a, l
-	ld [wMenuState05UnreadPtr], a
+	ld [wUnusedMenuState05Pointer], a
 	ld a, h
-	ld [wMenuState05UnreadPtr + 1], a
+	ld [wUnusedMenuState05Pointer + 1], a
 	ld a, $01
 	ld [wMenuScrollDirection], a
 	call ScrollSceneInFromRight
@@ -6206,12 +6206,12 @@ DrawScoreDigitsAtRow:
 	ld e, a
 	ld a, [wScore + 3]
 	ld d, a
-	ld hl, $FFB0
+	ld hl, hPackedBcdDigits
 	call ConvertU32ToPackedBcdFar
 	ld hl, ScoreDigitColumns
 	xor a
 	ldh [hScoreDigitsStarted], a
-	ld bc, $FFB2
+	ld bc, hPackedBcdDigits + 2
 	ld e, $05
 DrawScoreDigitsAtRow_DigitLoop:
 	ld a, e
@@ -6268,9 +6268,9 @@ DrawLivesDigitsAtRow:
 	ld [wGlyphColumn], a
 	ld a, [wPlayerLives]
 	ld b, a
-	ld hl, $FFB0
+	ld hl, hPackedBcdDigits
 	call ConvertU8ToPackedBcdFar
-	ldh a, [$FFB1]
+	ldh a, [hPackedBcdDigits + 1]
 	ld d, a
 	swap a
 	and $0F

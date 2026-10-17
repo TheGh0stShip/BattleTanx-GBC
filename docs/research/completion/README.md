@@ -2,9 +2,13 @@
 
 Rebuild SHA-1 `5078584e86c0b6f4687c424cc00bbd762ba6573a`.
 
-A matching ROM is reconstruction completeness, not semantic completeness.
-This pass is not complete. Open items are listed in each document and
-collected in UNRESOLVED.md.
+A matching ROM establishes reconstruction completeness, not omniscience about
+the original authors' intent. The repository-wide source, byte, operand,
+control-flow, asset and documentation audit is complete. `UNRESOLVED.md`
+records the smaller set of evaluated limits: dead bytes whose intended purpose
+is absent from the retail ROM, behavior that requires a physical-hardware
+measurement, and original defects whose outcome depends on live timing or
+player interference. These are not unaudited gaps.
 
 - [README.md](README.md): this index
 - [WHOLE_ROM_AUDIT.md](WHOLE_ROM_AUDIT.md): range map, operand, RAM and indirect audits (tool-derived numbers)
@@ -13,7 +17,8 @@ collected in UNRESOLVED.md.
 - [DATA_AND_ASSETS.md](DATA_AND_ASSETS.md): level records and tables, bank `$08` (including palette groups), audio data, scene palettes, opaque assets
 - [GAMEPLAY_IDENTITIES.md](GAMEPLAY_IDENTITIES.md): object, screen and game-start identities, with the readers that establish them
 - [HARDWARE_VERIFICATION.md](HARDWARE_VERIFICATION.md): planned physical-hardware checks; none has been run
-- [UNRESOLVED.md](UNRESOLVED.md): open questions across the ROM
+- [EMULATOR_VERIFICATION.md](EMULATOR_VERIFICATION.md): reproducible CGB colour-rendering smoke test
+- [UNRESOLVED.md](UNRESOLVED.md): evaluated evidentiary limits across the ROM
 
 ## Interrupt banking summary
 

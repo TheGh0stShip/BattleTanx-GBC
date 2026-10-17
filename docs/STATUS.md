@@ -67,7 +67,9 @@ Static analysis only (code paths and hand-counted cycles); see
   scenes 6, 7, 9 and 10 (12 of 15 levels) and a STOP freeze plus palette
   corruption for scene 8. Scenes 0-5 are not modelled. The result still
   depends on the unmeasured cycle, audio-state and frame-count model.
-- Nothing has been run on hardware. Hardware checks are planned in
+- CGB colour rendering is confirmed with the reproducible PyBoy 2.8.1 smoke
+  test in `research/completion/EMULATOR_VERIFICATION.md`. Nothing has been run
+  on physical hardware. Hardware checks are planned in
   `research/completion/HARDWARE_VERIFICATION.md`.
 
 | Area | Current state | Next gate |
@@ -77,13 +79,13 @@ Static analysis only (code paths and hand-counted cycles); see
 | Symbols | `make progress` reports reviewed companion names for automatic function entries per bank, separately from traced-byte coverage; interrupts, startup, copy helpers, screen dispatch, OAM DMA, rendering state, and scene descriptors are among the recovered groups | Continue naming routines and RAM state from evidence |
 | RAM images | All 33 executable images are explicit instructions, while 5 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Verify any newly discovered execution reference to the two callerless no-op stubs |
 | Graphics | 65 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly; bank `$08` additionally has a lossless 85-range inspection export for its interleaved interface/object graphics | Identify gameplay roles for the remaining neutral graphics labels |
-| Maps | All eleven descriptor-driven fixed backgrounds, the referenced Game Boy Color warning in bank `$3B`, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions and indices | Name individual scenes and levels |
-| Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
+| Maps | All eleven descriptor-driven fixed backgrounds, the referenced Game Boy Color warning in bank `$3B`, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions and indices. All 36 scrolling scenes are identified, and `LevelSceneGridCells` proves the level 0-14 association with the fifteen mission titles | Fixed illustrations retain literal visual descriptions where the cartridge prints no character names |
+| Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers. All shipped maps are at least 64 x 48, excluding the small-map camera-clamp underflow | Determine the build-time purpose of unused record fields |
 | Object sequences | Bank `$03:$4000-$5C10` is explicit source: two signed-vector tables, fifteen 64-slot per-level pointer tables, 203 counted sequences, and 626 eight-byte records; the vector-direction quantizer and all 15 level-state checks are named; two reachable malformed terminal transitions are preserved and checked | Determine the remaining record-field meanings and name individual sequences |
 | Level objects | Bank `$04:$4000-$601B` is explicit source: 600 fixed-size object initialization records, 120 auxiliary records, and the per-level pointer directory; the 20-entry deferred-spawn queue, active-table pointers, slow-tick counter, and camera-window spawn path are named | Determine the remaining field meanings and the role of enabled auxiliary records |
 | Banks `$01-$05` | Every byte is classified; all 278 routine entries have behavior-based names (`make progress` 288/288 project-wide), 95 RAM symbols replace 552 raw operands, and former opaque blobs are explicit tables or typed assets | Confirm the scene-interrupt classification on hardware (see [`research/completion/INTERRUPT_BANKING.md`](research/completion/INTERRUPT_BANKING.md)) and settle the 9 bounded but unexplained bytes; see [`research/banks_01_05/`](research/banks_01_05/) |
 | Whole ROM | `tools/rom_range_map.py` maps all 1,048,576 bytes to source with no gaps; every raw address operand, bank byte, RAM literal and indirect transfer has a checked disposition (`tools/operand_audit.py`); dead `db` regions in banks `$01`/`$02` are explicit unreferenced routines; interrupt banking is classified per window; ROM-bank windows are safe or safe under stated invariants; boot stale-image timing is unproven (content proven safe); the SVBK=2 STAT hazard is unsafe under the static model after a nonzero-guard password start and, on guard-0 entries, only with music `$86` plus a timed Start press; exit fades are safe; nothing has been run on hardware | See [`research/completion/`](research/completion/) |
-| Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
+| Audio | Driver code and all runtime audio data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; bank `$07` is checked, unreachable build residue | Original intent of unread trailer bytes; physical-hardware check |
 | Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see [`research/BANKS_2A_2E_RESEARCH.md`](research/BANKS_2A_2E_RESEARCH.md) | Trace the caller-less bank-`$2E` routines and picture meanings |
 | Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see [`research/TEXT_RESEARCH.md`](research/TEXT_RESEARCH.md) | Glyph map reconciled ([`research/BANK08_RESEARCH.md`](research/BANK08_RESEARCH.md)); rule out indirect or constructed strings |
 
@@ -263,8 +265,9 @@ Object-record byte `+$1F` is type-dependent. Core vehicle types use it as
 health: `ObjectMaxHealthByType` supplies maxima 35, 50, 65, and 40, and the
 set/add/subtract helpers clamp against those bounds. Timed type-3 effects reuse
 the byte as animation age and release their record when it reaches byte `+$20`.
-`wPlayerHealthRecoveryTicks` restores one vehicle-health point every other
-VBlank while nonzero; its direct producer remains unknown. These interpretations
+`wPlayerHealthRecoveryTicks` would restore one vehicle-health point every other
+VBlank while nonzero, but no writer exists in the shipped program, so the path
+is dormant. These interpretations
 and the six-bit health-delta mask are centralized in `include/object.inc`.
 The same include now records current and previous 16-bit pixel-coordinate
 offsets and the two per-frame displacement bytes. `CenterLevelViewOnObject`
@@ -280,7 +283,7 @@ back, and exhausted writers receive a separate discard entry. The unused
 middle is cleared before DMA so stale sprites cannot survive. Native 16-byte
 sprite tiles are staged separately at `wDynamicSpriteTiles`; its allocator
 rejects totals of 49 or more, although the observed VBlank HDMA transfers only
-the first 40 tiles. That capacity mismatch is preserved as an unresolved
+the first 40 tiles. That capacity mismatch is preserved and documented as
 original behavior rather than normalized.
 Object positions use 16.8 fixed point: an 8-bit fractional byte followed by a
 16-bit pixel coordinate for each axis. Candidate bytes `+$13-$18` are committed
@@ -383,8 +386,9 @@ view-row offset into the cell map, and the wrapped BG-map row offset.
 Horizontal and vertical boundary classifiers now document their signed input
 registers and directional return codes against those pixel dimensions. The
 cell-map accessors for bits 0 through 3 and the eight-point bit-0 footprint
-test are named; their callers establish use by movement logic, but the gameplay
-meaning of each flag remains unknown. Four directional scanners find the
+test are named; their callers establish use by movement logic. The bits mean
+passability, the state-dependent solid response, destructible regions, and
+contact-converted regions. Four directional scanners find the
 bounding rectangle of a contiguous run whose bits 2-3 are nonzero. ROM cell
 maps never set bits 4 through 7. Run-time writers are now proven: bit-2 cells
 enter bit-6 or bit-7 rendering states depending on bit 3, while two completion
@@ -413,10 +417,12 @@ behavioral names. Four eight-byte object-type parameter records at `$5100`
 have three consumed bytes and five reserved zeros apiece. Both tables are
 explicit source with checked values and addresses.
 
-The gameplay meanings of cell-map bits 0 through 3, record fields +6 and
-+7/+8, and the role of one unread byte preceding each lookup table remain
-unknown. No ROM cell sets bits 4 through 7, so the bit-6/7 lookup-table paths
-are entered only after the run-time transformations described above.
+Cell-map bits 0 through 3 and runtime bits 6/7 are named in
+`include/level_data.inc`. Record +6 duplicates the map bank; +7/+8 hold the
+last tile index; both are copied but never read. The zero byte preceding each
+lookup table is also unread. No ROM cell sets bits 4 through 7, so the bit-6/7
+lookup-table paths are entered only after the run-time transformations
+described above.
 
 `InitializeLevelRuntime` now names the ROM0 per-level reset/load path. Its
 trailing 15-byte `LevelAnimatedCellAttributes` table supplies one CGB attribute
@@ -494,7 +500,9 @@ of banks `$30`-`$33`, a `$0FF0`-byte source used to load 255 tiles, separate
 records. The loader copies the recorded number of palettes into its fade
 target buffer. Six trailing bytes in every descriptor are reserved zeros. The
 five-entry table at `$5A5B` maps a later group of scenes to descriptor indices
-6 through 10. Individual scene identities remain unknown.
+6 through 10. All 36 scrolling scenes are identified from their lossless
+rendered headings/objectives, and all eleven fixed scenes have literal visual
+descriptions in `docs/research/SCENE_RUNTIME_RESEARCH.md`.
 
 Bank `$01:$5A60` contains 36 eight-byte scrolling-scene descriptors. Their
 callers establish the data bank, pointer to 16-byte native tile graphics,
@@ -557,9 +565,11 @@ Details: [`research/BANKS_2A_2E_RESEARCH.md`](research/BANKS_2A_2E_RESEARCH.md).
 - Understood: screen descriptor format, picture layouts, the 13-entry
   screen-mode dispatch and its index bounds, the three routine templates, the
   palette-fade direction flag, and the fixed animated screen in bank `$2A`.
-- Not understood: why the bank-`$2E` package routines have no caller, the
-  unread descriptor fields, the bank `$01:$596D` index bound, and what each
-  picture is used for.
+- Evaluated limits: the bank-`$2E` package routines have no caller and their
+  descriptor-only fields are unread. The `$01:$596D` selector is bounded to
+  pictures 0-2, whose lossless renders read MOTO TANK, M1A1 TANK and GOLIATH.
+  All other pictures are identified in
+  `research/completion/GAMEPLAY_IDENTITIES.md`.
 
 ## Audio
 

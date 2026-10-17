@@ -176,8 +176,8 @@
    ]
   },
   "UpdateAllObjects|$01": {
-   "class": "redundant (no banked reader found; strong, not proven)",
-   "evidence": "pushes and pops the caller's bank; in the transitive callee closure, bank-$01 code is reached only through RenderStatus4ObjectSpriteFar/DispatchStatus4PickupHandlerFar, which select $01 themselves; every other banked read sits under its callee's own switch; Status4PickupHandlerTable jp hl targets not traced",
+   "class": "redundant (proven by bounded call closure)",
+   "evidence": "pushes and pops the caller's bank but performs no direct banked read; every transitive banked callee selects and restores its own bank; the computed Status4PickupHandlerTable dispatch is bounded to ten entries, all in bank $01, and is reached through DispatchStatus4PickupHandlerFar, which selects bank $01",
    "sites": [
     "src/bank_00.asm:6386"
    ]
@@ -515,7 +515,7 @@
   },
   "DC03": {
    "class": "bank-dependent (SVBK)",
-   "evidence": "pointer value stored into wMenuState05UnreadPtr ($D564/$D565, write-only) by MenuState05SelectPrevious_StoreSelection, MenuState05SelectNext_StoreSelection, InitMenuStateScreen; lies inside the $DC00 fill buffer",
+   "evidence": "pointer value stored into wUnusedMenuState05Pointer ($D564/$D565, write-only) by MenuState05SelectPrevious_StoreSelection, MenuState05SelectNext_StoreSelection, InitMenuStateScreen; lies inside the $DC00 fill buffer",
    "users": [
     "bank_01:InitMenuStateScreen",
     "bank_01:MenuState05SelectNext",
