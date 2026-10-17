@@ -10673,7 +10673,11 @@ Func_3889:
 	ret
 
 
-Func_389A:
+; Step the requested number of hardware background-palette colours toward the
+; RGB555 target words at HL by signed channel delta E. The caller supplies the
+; colour count through the original stack convention read at sp+12.
+StepBackgroundPaletteColors:
+Func_389A: ; legacy alias
 	push af
 	push bc
 	push de
@@ -10693,7 +10697,7 @@ Jump_38A0:
 	ldh a, [rBCPD]
 	ld b, a
 	dec d
-	call Func_38E2
+	call StepRgb555TowardTarget
 Jump_38B7:
 	ldh a, [rSTAT]
 	and $02
@@ -10728,7 +10732,10 @@ Jump_38BD:
 	ret
 
 
-Func_38E2:
+; For each RGB555 channel in BC that differs from target [HL], add signed E to
+; that channel. Return the updated packed colour in BC.
+StepRgb555TowardTarget:
+Func_38E2: ; legacy alias
 	push de
 	push hl
 	push bc
@@ -10901,11 +10908,13 @@ ScreenTable_CallInit:
 	push af
 	ld a, e
 	ld [rROMB0], a
-	ld de, Func_39C4
+	ld de, ScreenTableInitReturn
 	push de
 	jp hl
 
-Func_39C4:
+; Synthetic return target used after a banked screen initialization routine.
+ScreenTableInitReturn:
+Func_39C4: ; legacy alias
 	pop af
 	ld [rROMB0], a
 	pop hl
@@ -10937,11 +10946,13 @@ ScreenTable_CallUpdate:
 	ld a, e
 	ld [rROMB0], a
 	push bc
-	ld de, Func_39F1
+	ld de, ScreenTableUpdateReturn
 	push de
 	jp hl
 
-Func_39F1:
+; Synthetic return target used after a banked screen update routine.
+ScreenTableUpdateReturn:
+Func_39F1: ; legacy alias
 	pop bc
 	pop af
 	ld [rROMB0], a
