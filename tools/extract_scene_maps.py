@@ -140,6 +140,43 @@ def main() -> None:
         )
         fixed_cells += len(source_indices)
 
+    # Bank $3B contains one more package with the same physical fixed-scene
+    # layout but no descriptor reference. Preserve its orphan status while
+    # still making its map and graphics inspectable.
+    bank_base = 0x3B * 0x4000 - 0x4000
+    graphics, tilemap, attribute_map, palettes = 0x4000, 0x4E70, 0x4F60, 0x5050
+    tile_data = rom[bank_base + graphics:bank_base + tilemap]
+    tilemap_data = rom[bank_base + tilemap:bank_base + tilemap + 240]
+    attributes = rom[bank_base + attribute_map:bank_base + attribute_map + 240]
+    source_indices = [
+        (value & 0x7F) + (0 if (value & 0x80) or (attr & 0x08) else 128)
+        for value, attr in zip(tilemap_data, attributes)
+    ]
+    if any(tile >= len(tile_data) // 16 for tile in source_indices):
+        fail("bank $3B warning package references a nonexistent tile")
+    expanded = b"".join(
+        transform_tile(tile_data[tile * 16:tile * 16 + 16], attr)
+        for tile, attr in zip(source_indices, attributes)
+    )
+    stem = output_root / "bank_3B_gbc_warning"
+    write_render(stem, expanded)
+    stem.with_suffix(".tilemap.csv").write_text(
+        "\n".join(
+            ",".join(f"{tile:04X}" for tile in source_indices[offset:offset + ROW_WIDTH])
+            for offset in range(0, len(source_indices), ROW_WIDTH)
+        ) + "\n"
+    )
+    stem.with_suffix(".attributes.csv").write_text(
+        "\n".join(
+            ",".join(f"{attr:02X}" for attr in attributes[offset:offset + ROW_WIDTH])
+            for offset in range(0, len(attributes), ROW_WIDTH)
+        ) + "\n"
+    )
+    write_palette_records(
+        stem.with_suffix(".palettes.txt"),
+        rom[bank_base + palettes:bank_base + palettes + 0x40],
+    )
+
     total_rows = 0
     total_cells = 0
     for index in range(SCROLL_DESCRIPTOR_COUNT):
@@ -188,7 +225,8 @@ def main() -> None:
         total_cells += len(indices)
 
     print(
-        f"scene maps: {FIXED_DESCRIPTOR_COUNT} fixed scenes ({fixed_cells} cells), "
+        f"scene maps: {FIXED_DESCRIPTOR_COUNT} fixed scenes ({fixed_cells} cells) "
+        f"plus the bank-$3B compatibility warning, "
         f"{SCROLL_DESCRIPTOR_COUNT} scrolling scenes ({total_rows} rows, "
         f"{total_cells} cells) rendered and verified"
     )

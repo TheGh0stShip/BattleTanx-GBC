@@ -383,15 +383,41 @@ def check_structured_scrolling_scene_banks(
     expected_assets = {}
     expected_symbols = {}
     counts = {
-        "graphics": 0, "rows": 0, "palettes": 0, "padding": 0, "unknown": 0
+        "graphics": 0, "structured": 0, "rows": 0, "palettes": 0,
+        "padding": 0, "unknown": 0
     }
     for bank, records in scenes.items():
         position = prefix_ends.get(bank, 0x4000)
         bank_base = bank * 0x4000 - 0x4000
         if position != 0x4000:
-            path = pathlib.Path(f"assets/scenes/bank_{bank:02X}_unknown_4000.bin")
-            expected_assets[path] = (bank_base + 0x4000, position - 0x4000)
-            counts["unknown"] += position - 0x4000
+            # Bank $3B starts with an unreferenced package matching the fixed
+            # 20x12 background format: tiles, map, attributes, 8 palettes.
+            path = pathlib.Path("assets/scenes/bank_3B_gbc_warning_tiles.2bpp")
+            expected_assets[path] = (bank_base + 0x4000, 0x0E70)
+            tilemap = rom[bank_base + 0x4E70:bank_base + 0x4F60]
+            attributes = rom[bank_base + 0x4F60:bank_base + 0x5050]
+            palettes = rom[bank_base + 0x5050:bank_base + 0x5090]
+            if len(tilemap) != 240 or len(attributes) != 240 or any(attributes):
+                fail("scrolling source: bank $3B orphan fixed maps changed")
+            if any(
+                int.from_bytes(palettes[i:i + 2], "little") & 0x8000
+                for i in range(0, len(palettes), 2)
+            ):
+                fail("scrolling source: bank $3B orphan palette has bit 15 set")
+            source_indices = [
+                (value & 0x7F) + (0 if value & 0x80 else 128)
+                for value in tilemap
+            ]
+            if max(source_indices) >= 231:
+                fail("scrolling source: bank $3B warning map exceeds its graphics span")
+            expected_symbols.update({
+                "Bank3BGbcWarningTiles": (0x3B, 0x4000),
+                "Bank3BGbcWarningTileMap": (0x3B, 0x4E70),
+                "Bank3BGbcWarningAttributes": (0x3B, 0x4F60),
+                "Bank3BGbcWarningPalettes": (0x3B, 0x5050),
+            })
+            counts["graphics"] += 0x0E70
+            counts["structured"] += 0x220
         for index, graphics, rows, row_count, palette in sorted(
             records, key=lambda item: item[1]
         ):
@@ -454,7 +480,8 @@ def check_structured_scrolling_scene_banks(
         fail(f"scrolling source: accounted for {total} bytes, expected {len(banks) * 0x4000}")
     print(
         f"scrolling source: 32 scenes in banks $2F/$34-$3B "
-        f"({counts['graphics']} graphics, {counts['rows']} rows, "
+        f"({counts['graphics']} graphics, {counts['structured']} structured, "
+        f"{counts['rows']} rows, "
         f"{counts['palettes']} palettes, {counts['padding']} padding, "
         f"{counts['unknown']} unknown)"
     )

@@ -15,6 +15,7 @@ bank_27/orientation_tiles.png          0x9c000     0x510      9
 bank_28/orientation_tiles.png          0xa0000     0x510      9
 bank_29/orientation_tiles.png          0xa4000     0x510      9
 # Fixed backgrounds: each loader transfers exactly 255 tiles ($0FF0 bytes).
+bank_3B/gbc_warning_tiles.png         0xec000     0x0e70      11
 bank_33/fixed_scene_00_tiles.png       0xcd1a0     0xff0       16
 bank_31/fixed_scene_01_tiles.png       0xc6ba0     0xff0       16
 bank_32/fixed_scene_02_tiles.png       0xc8000     0xff0       16

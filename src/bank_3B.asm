@@ -2,9 +2,34 @@
 
 SECTION "ROM Bank $3B", ROMX[$4000], BANK[$3B]
 
-Bank3BUnknown4000:
-	; No reader or internal boundary has been established.
-	INCBIN "assets/scenes/bank_3B_unknown_4000.bin"
+; Unreferenced Game Boy Color compatibility warning. Its 20x12 map, attribute
+; map and 64-byte palette block match the descriptor-driven fixed-scene format,
+; but no descriptor or loader reference to this package has been found.
+Bank3BGbcWarningTiles:
+	INCBIN "assets/scenes/bank_3B_gbc_warning_tiles.2bpp"
+ASSERT @ == $4E70
+
+Bank3BGbcWarningTileMap:
+	db $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3, $F4, $F5, $F6, $F7, $F8, $F9, $81, $81, $FA, $FB, $FC
+	db $FD, $FC, $FE, $FF, $00, $01, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $81, $81, $81, $81
+	db $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $0B, $0C, $81, $0D, $0E, $0F
+	db $10, $11, $12, $13, $14, $15, $16, $17, $13, $18, $19, $1A, $1B, $1C, $1D, $81, $81, $1E, $1F, $20
+	db $21, $22, $23, $24, $25, $26, $27, $28, $24, $29, $2A, $2B, $2C, $2D, $2E, $81, $81, $2F, $30, $31
+	db $32, $16, $1C, $33, $34, $35, $36, $37, $38, $39, $19, $3A, $3B, $3C, $30, $81, $81, $3D, $3E, $3F
+	db $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $4A, $4B, $4C, $4D, $3E, $81, $81, $81, $81, $81
+	db $81, $4E, $36, $4F, $38, $50, $51, $52, $36, $53, $54, $81, $81, $81, $81, $81, $81, $81, $81, $81
+	db $81, $55, $46, $56, $57, $58, $59, $5A, $46, $5B, $5C, $81, $81, $81, $81, $81, $81, $81, $81, $81
+	db $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $00, $00, $00, $00
+	ds 40, 0
+ASSERT @ == $4F60
+
+Bank3BGbcWarningAttributes:
+	ds 240, 0
+ASSERT @ == $5050
+
+Bank3BGbcWarningPalettes:
+	ds 56, 0
+	dw $0000, $318C, $5AD6, $7FFF
 ASSERT @ == $5090
 
 ScrollScene05Tiles:

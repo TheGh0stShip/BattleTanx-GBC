@@ -32,8 +32,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
-| Graphics | 61 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three fully classified orientation sets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Resolve the remaining mixed ranges in bank `$08` and identify individual layouts |
-| Maps | All eleven fixed backgrounds, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions, indices, attributes, flips, and palettes | Resolve the bank `$3B` prefix and name individual scenes and levels |
+| Graphics | 62 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three fully classified orientation sets, twelve fixed-background packages, and 36 scrolling-scene sheets | Resolve the remaining mixed ranges in bank `$08` and identify individual layouts |
+| Maps | All eleven referenced fixed backgrounds, the unreferenced Game Boy Color warning in bank `$3B`, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions, indices, attributes, flips, and palettes | Name individual scenes and levels and find whether the warning package ever had a caller |
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see `BANKS_2A_2E_RESEARCH.md` | Trace the caller-less bank-`$2E` routines, `$C6B5`, and picture meanings |
@@ -248,9 +248,13 @@ counts use readable 16-tile-wide previews without changing the round trip.
 Banks `$2F` and `$34-$3B` contain thirty-two of the scrolling scenes. Their 16-bit row
 indices and four-color palettes are now explicit assembly, their graphics are
 narrowly typed tracked 2bpp assets, and their zero-filled tails and one-byte
-bank markers are explicit source. Bank `$3B:$4000-$508F` remains a narrowly
-bounded unresolved range because no reader or reliable internal boundary has
-been found; its final bytes resemble a palette, but that is not yet proven.
+bank markers are explicit source. Bank `$3B:$4000-$508F` is an additional,
+unreferenced Game Boy Color compatibility warning in the fixed-background
+format: 231 physical 2bpp tiles, a 20x12 tile map, a zeroed 20x12 attribute map,
+and eight palette records. Its map resolves entirely within those 231 tiles,
+and its
+render is coherent, but no descriptor or code reference has been found. The
+source therefore records the format without assigning it a gameplay role.
 The four remaining scrolling scenes and all eleven fixed scenes share banks
 `$30-$33`. Their maps, attributes, rows, and palette blocks are explicit source;
 graphics-only intervals are narrowly typed assets. Some fixed-scene tile loads
