@@ -211,7 +211,7 @@ Func_0192:
 	call Func_37CE
 	call Func_0402
 	ld hl, $D000
-	call Func_2044
+	call FreeObjectRecord
 Jump_01B4:
 	call ClearCgbPalettes
 	xor a
@@ -1579,7 +1579,7 @@ Func_09AB:
 	ld hl, $D000
 	ld bc, $1000
 	call ClearMemory
-	call Func_2028
+	call ClearObjectPool
 	call Func_2058
 	call EnableBackground
 	call ResetOamState
@@ -1762,7 +1762,7 @@ Func_0AD5:
 	push de
 	push af
 	ld a, $01
-	call Func_1FF5
+	call AllocateObjectRecord
 	ld bc, $0000
 	ld de, $0000
 	call Func_2125
@@ -1817,7 +1817,7 @@ Func_0AF5:
 	ld a, [hl]
 	ld d, a
 	ldh [$FF86], a
-	call Func_2044
+	call FreeObjectRecord
 	ldh a, [$FF81]
 	or a
 	jr z, Jump_0B3B
@@ -5641,23 +5641,26 @@ Jump_1FC4:
 	ret
 
 
+; Allocate the first free object record, set its status to A, and return HL at
+; the record base with A = 1. Return A = 0 if all 64 records are occupied.
+AllocateObjectRecord:
 Func_1FF5:
 	push bc
 	push de
-	ld d, $40
+	ld d, OBJECT_COUNT
 	ld c, a
-	ld hl, $D000
+	ld hl, wObjectPool
 Jump_1FFD:
 	ld a, l
 	and $C0
-	add a, $1D
+	add a, OBJECT_STATUS_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $00
 	jr z, Jump_2018
 	ld a, l
 	and $C0
-	add a, $40
+	add a, OBJECT_RECORD_SIZE
 	ld l, a
 	ld a, $00
 	adc a, h
@@ -5670,7 +5673,7 @@ Jump_1FFD:
 Jump_2018:
 	ld a, l
 	and $C0
-	add a, $1D
+	add a, OBJECT_STATUS_OFFSET
 	ld l, a
 	ld [hl], c
 	ld a, l
@@ -5684,17 +5687,18 @@ Jump_2025:
 	ret
 
 
+ClearObjectPool:
 Func_2028:
 	push de
 	push af
 	push hl
-	ld d, $40
-	ld hl, $D000
+	ld d, OBJECT_COUNT
+	ld hl, wObjectPool
 Jump_2030:
-	call Func_2044
+	call FreeObjectRecord
 	ld a, l
 	and $C0
-	add a, $40
+	add a, OBJECT_RECORD_SIZE
 	ld l, a
 	ld a, $00
 	adc a, h
@@ -5707,12 +5711,13 @@ Jump_2030:
 	ret
 
 
+FreeObjectRecord:
 Func_2044:
 	push af
 	push hl
 	ld a, l
 	and $C0
-	add a, $1D
+	add a, OBJECT_STATUS_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $02
@@ -7113,7 +7118,7 @@ Jump_2744:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2044
+	call FreeObjectRecord
 	xor a
 Jump_2777:
 	pop hl
@@ -7165,7 +7170,7 @@ Jump_27AE:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2044
+	call FreeObjectRecord
 	pop hl
 	pop de
 	pop bc
@@ -7194,7 +7199,7 @@ Jump_27BA:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2044
+	call FreeObjectRecord
 	ld a, $01
 	call Func_3090
 	pop hl
@@ -7517,7 +7522,7 @@ Jump_294C:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2044
+	call FreeObjectRecord
 	ld a, $01
 	call Func_3090
 	ld e, $14
@@ -7944,7 +7949,7 @@ Func_2B86:
 	push hl
 	call Func_2C24
 	ld a, $02
-	call Func_1FF5
+	call AllocateObjectRecord
 	jp z, Jump_2C1F
 	call Func_2125
 	ld c, l
@@ -8199,7 +8204,7 @@ Func_2CC3:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2044
+	call FreeObjectRecord
 	xor a
 	pop hl
 	ret
@@ -8920,7 +8925,7 @@ Func_3090:
 	push de
 	push af
 	ld a, $03
-	call Func_1FF5
+	call AllocateObjectRecord
 	call Func_2125
 	xor a
 	call Func_2115
@@ -9192,7 +9197,7 @@ Func_31E3:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2044
+	call FreeObjectRecord
 Jump_31FF:
 	pop hl
 	pop de
@@ -10156,7 +10161,7 @@ Func_372E:
 	push de
 	push bc
 	ld a, $04
-	call Func_1FF5
+	call AllocateObjectRecord
 	jr z, Jump_3761
 	ld a, l
 	and $C0
@@ -10219,7 +10224,7 @@ Func_3775:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2044
+	call FreeObjectRecord
 	xor a
 	pop hl
 	ret

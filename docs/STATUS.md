@@ -144,6 +144,10 @@ The same include now records current and previous 16-bit pixel-coordinate
 offsets and the two per-frame displacement bytes. `CenterLevelViewOnObject`
 converts those coordinates to cells and clamps the 21-by-19 visible region to
 the current level bounds.
+The runtime pool is 64 records at `wObjectPool`. `AllocateObjectRecord` scans
+status byte `+$1D` for a free slot, and `FreeObjectRecord` performs the
+status-2 cleanup before releasing a slot. `ClearObjectPool` applies that path
+to every record rather than discarding active state blindly.
 
 ## Level banks `$09-$26`
 

@@ -745,7 +745,7 @@ DispatchEntityHandler:
 
 Func_01_450F:
 	pop hl
-	call Func_2044
+	call FreeObjectRecord
 	pop bc
 	pop de
 	ret
@@ -7439,7 +7439,7 @@ Jump_01_7D3F:
 	jr z, Jump_01_7D51
 	cp $01
 	jr z, Jump_01_7D51
-	call Func_2044
+	call FreeObjectRecord
 Jump_01_7D51:
 	ld a, e
 	add a, $40

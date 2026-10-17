@@ -38,6 +38,9 @@ DEF wPlayerLives      EQU $CD02
 DEF wPlayerHealthRecoveryTicks EQU $CD03 ; decremented every other VBlank
 DEF wPlayerObjectType EQU $CD08
 
+; Sixty-four 64-byte runtime object records.
+DEF wObjectPool EQU $D000
+
 ; Little-endian callback selected from RuntimeCallbackTable and dispatched by
 ; the indirect jump at ROM0:$364D.
 DEF wRuntimeCallback EQU $C6BE

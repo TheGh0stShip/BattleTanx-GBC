@@ -481,7 +481,7 @@ Func_02_45C1:
 	push hl
 	call Func_2C24
 	ld a, $03
-	call Func_1FF5
+	call AllocateObjectRecord
 	call Func_2125
 	ld a, l
 	and $C0

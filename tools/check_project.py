@@ -1019,6 +1019,9 @@ def check_level_banks() -> None:
             "AddObjectHealth": (0x00, 0x2FA3),
             "SubtractObjectHealth": (0x00, 0x2FBB),
             "UpdatePlayerHealthRecovery": (0x00, 0x2FCE),
+            "AllocateObjectRecord": (0x00, 0x1FF5),
+            "ClearObjectPool": (0x00, 0x2028),
+            "FreeObjectRecord": (0x00, 0x2044),
             "LoadLevelLookupPointers": (0x05, 0x4088),
             "ObjectScoreValues": (0x05, 0x4EA0),
             "ObjectTypeParameterTable": (0x05, 0x5100),
@@ -1072,7 +1075,7 @@ def check_level_banks() -> None:
     core_symbols = {
         name: int(address, 16)
         for name, address in re.findall(
-            r"DEF ((?:wScore|wPlayer)\w*)\s+EQU \$([0-9A-Fa-f]+)", memory_source
+            r"DEF ((?:wScore|wPlayer)\w*|wObjectPool)\s+EQU \$([0-9A-Fa-f]+)", memory_source
         )
     }
     expected_core = {
@@ -1083,6 +1086,7 @@ def check_level_banks() -> None:
         "wPlayerHealthRecoveryTicks": 0xCD03,
         "wPlayerObjectType": 0xCD08,
         "wPlayerAlive": 0xCD09,
+        "wObjectPool": 0xD000,
     }
     if core_symbols != expected_core:
         fail(f"core WRAM symbols differ: {core_symbols.items() ^ expected_core.items()}")
@@ -1103,9 +1107,11 @@ def check_level_banks() -> None:
         "OBJECT_PREVIOUS_Y_OFFSET": 0x0B,
         "OBJECT_FRAME_DX_OFFSET": 0x1B,
         "OBJECT_FRAME_DY_OFFSET": 0x1C,
+        "OBJECT_STATUS_OFFSET": 0x1D,
         "OBJECT_TYPE_OFFSET": 0x1E,
         "OBJECT_HEALTH_OFFSET": 0x1F,
         "OBJECT_HEALTH_DELTA_MASK": 0x3F,
+        "OBJECT_COUNT": 64,
     }
     if object_constants != expected_object_constants:
         fail(
