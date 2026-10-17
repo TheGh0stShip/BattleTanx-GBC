@@ -716,14 +716,14 @@ Func_02_46E1: ; legacy alias
 	push de
 	push hl
 	ld d, $40
-Jump_02_46E7:
+.waitForMode2:
 	ldh a, [rSTAT]
 	and $02
-	jr z, Jump_02_46E7
-Jump_02_46ED:
+	jr z, .waitForMode2
+.waitForMode0Or1:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_02_46ED
+	jr nz, .waitForMode0Or1
 	ld a, d
 	ldh [rBCPS], a
 	ld a, $00
@@ -734,7 +734,7 @@ Jump_02_46ED:
 	ld a, $00
 	ldh [rBCPD], a
 	dec d
-	jr nz, Jump_02_46E7
+	jr nz, .waitForMode2
 	ld a, $00
 	ldh [rBCPS], a
 	ldh [rBCPD], a
@@ -752,10 +752,10 @@ Func_02_4710: ; legacy alias
 	push de
 	push hl
 	ld d, $00
-Jump_02_4716:
+.readColour:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_02_4716
+	jr nz, .readColour
 	ld a, d
 	ldh [rOCPS], a
 	ldh a, [rOCPD]
@@ -767,10 +767,10 @@ Jump_02_4716:
 	ld b, a
 	dec d
 	call Func_3856
-Jump_02_472D:
+.waitToWriteColour:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_02_472D
+	jr nz, .waitToWriteColour
 	ld a, d
 	ldh [rOCPS], a
 	ld a, c
@@ -783,7 +783,7 @@ Jump_02_472D:
 	inc d
 	ld a, $40
 	cp d
-	jr nz, Jump_02_4716
+	jr nz, .readColour
 	pop hl
 	pop de
 	pop bc
@@ -801,7 +801,7 @@ Func_02_474B: ; legacy alias
 	ldh [$FFC1], a
 	ld a, $1F
 	ldh [$FFC3], a
-Jump_02_475B:
+.nextFrame:
 	ldh a, [$FFC1]
 	call Func_3A40
 	ld e, l
@@ -810,14 +810,14 @@ Jump_02_475B:
 	call Func_3A40
 	ld a, $20
 	ldh [$FFC2], a
-Jump_02_476B:
+.nextColour:
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_02_4778
+	jr z, .transformColour
 	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
-Jump_02_4778:
+.transformColour:
 	ld a, [hli]
 	ld c, a
 	ld a, [hli]
@@ -826,13 +826,13 @@ Jump_02_4778:
 	push de
 	ld e, $01
 	or a
-	jr nz, Jump_02_478A
+	jr nz, .brightenColour
 	call Func_3856
-	jr Jump_02_478D
+	jr .storeColour
 
-Jump_02_478A:
+.brightenColour:
 	call Func_3867
-Jump_02_478D:
+.storeColour:
 	pop de
 	ld a, c
 	ld [de], a
@@ -843,7 +843,7 @@ Jump_02_478D:
 	ldh a, [$FFC2]
 	dec a
 	ldh [$FFC2], a
-	jr nz, Jump_02_476B
+	jr nz, .nextColour
 	ldh a, [$FFC0]
 	dec a
 	ldh [$FFC0], a
@@ -852,7 +852,7 @@ Jump_02_478D:
 	ldh a, [$FFC3]
 	dec a
 	ldh [$FFC3], a
-	jr nz, Jump_02_475B
+	jr nz, .nextFrame
 	ld a, $01
 	ldh [rSVBK], a
 	ret
@@ -871,24 +871,24 @@ Func_02_47AF: ; legacy alias, used by src/bank_00.asm
 	xor a
 	ldh [$FFC0], a
 	ldh [$FFC1], a
-Jump_02_47C8:
+.nextThousand:
 	ld de, $03E8
 	ldh a, [$FFC5]
 	or a
-	jr nz, Jump_02_47E3
+	jr nz, .subtractThousand
 	ldh a, [$FFC4]
 	or a
-	jr nz, Jump_02_47E3
+	jr nz, .subtractThousand
 	ldh a, [$FFC3]
 	cp d
-	jr c, Jump_02_4809
-	jr nz, Jump_02_47E3
+	jr c, .returnQuotient
+	jr nz, .subtractThousand
 	ldh a, [$FFC2]
 	cp e
-	jr nc, Jump_02_47E3
-	jr Jump_02_4809
+	jr nc, .subtractThousand
+	jr .returnQuotient
 
-Jump_02_47E3:
+.subtractThousand:
 	ldh a, [$FFC2]
 	sub $E8
 	ldh [$FFC2], a
@@ -907,9 +907,9 @@ Jump_02_47E3:
 	ldh a, [$FFC1]
 	adc a, $00
 	ldh [$FFC1], a
-	jr Jump_02_47C8
+	jr .nextThousand
 
-Jump_02_4809:
+.returnQuotient:
 	ldh a, [$FFC0]
 	ld c, a
 	ldh a, [$FFC1]
@@ -922,10 +922,10 @@ Func_02_4810: ; legacy alias
 	ld hl, $C600
 	xor a
 	ld e, $A0
-Jump_02_4816:
+.clearByte:
 	ld [hli], a
 	dec e
-	jr nz, Jump_02_4816
+	jr nz, .clearByte
 	call $FFF0
 	ret
 
@@ -952,7 +952,7 @@ Func_02_4D58: ; legacy alias
 TrackerScanStatus1Objects:
 	ld a, [wNearestTargetScanIndex]
 	cp $40
-	jp nc, Jump_02_4F7C
+	jp nc, TrackerFinishObjectScan
 	ld a, [wNearestTargetScanPtr]
 	ld l, a
 	ld a, [wNearestTargetScanPtr + 1]
@@ -1009,7 +1009,7 @@ TrackerScanStatus1Objects:
 	ld d, a
 TrackerCompareApproxDistance:
 	bit 7, b
-	jr z, Jump_02_4DCB
+	jr z, .xAbsolute
 	ld a, b
 	cpl
 	ld b, a
@@ -1017,9 +1017,9 @@ TrackerCompareApproxDistance:
 	cpl
 	ld c, a
 	inc bc
-Jump_02_4DCB:
+.xAbsolute:
 	bit 7, d
-	jr z, Jump_02_4DD6
+	jr z, .yAbsolute
 	ld a, d
 	cpl
 	ld d, a
@@ -1027,34 +1027,34 @@ Jump_02_4DCB:
 	cpl
 	ld e, a
 	inc de
-Jump_02_4DD6:
+.yAbsolute:
 	ld a, d
 	cp b
-	jr c, Jump_02_4DE6
-	jr nz, Jump_02_4DE0
+	jr c, .halveY
+	jr nz, .halveX
 	ld a, e
 	cp c
-	jr c, Jump_02_4DE6
-Jump_02_4DE0:
+	jr c, .halveY
+.halveX:
 	sra b
 	rr c
-	jr Jump_02_4DEA
+	jr .sumDistance
 
-Jump_02_4DE6:
+.halveY:
 	sra d
 	rr e
-Jump_02_4DEA:
+.sumDistance:
 	ld l, e
 	ld h, d
 	add hl, bc
 	ld a, [wNearestTargetDistance + 1]
 	cp h
 	ret c
-	jr nz, Jump_02_4DF9
+	jr nz, .storeNearest
 	ld a, [wNearestTargetDistance]
 	cp l
 	ret c
-Jump_02_4DF9:
+.storeNearest:
 	ld a, h
 	ld [wNearestTargetDistance + 1], a
 	ld a, l
@@ -1069,7 +1069,7 @@ Jump_02_4DF9:
 TrackerScanAuxRecords:
 	ld a, [wNearestTargetScanIndex]
 	cp $08
-	jp nc, Jump_02_4F43
+	jp nc, TrackerFinishAuxRecordScan
 	ld a, [wNearestTargetScanPtr]
 	ld l, a
 	ld a, [wNearestTargetScanPtr + 1]
@@ -1155,13 +1155,13 @@ TrackerScanAuxRecords:
 TrackerSelectAuxRecord:
 	ld a, [wNearestTargetPtr + 1]
 	and a
-	jr nz, Jump_02_4F00
+	jr nz, TrackerDrawSelectedAuxRecord
 	ld hl, $CD79
 	ld a, [$C91D]
 	and a
-	jr z, Jump_02_4E96
+	jr z, .storeSelection
 	ld hl, $CD6F
-Jump_02_4E96:
+.storeSelection:
 	ld a, l
 	ld [wNearestTargetPtr], a
 	ld a, h
@@ -1172,7 +1172,7 @@ Jump_02_4E96:
 TrackerScanType2Objects:
 	ld a, [wNearestTargetScanIndex]
 	cp $40
-	jp nc, Jump_02_4F7C
+	jp nc, TrackerFinishObjectScan
 	ld a, [wNearestTargetScanPtr]
 	ld l, a
 	ld a, [wNearestTargetScanPtr + 1]
@@ -1234,7 +1234,7 @@ TrackerScanType2Objects:
 	ld d, a
 	jp TrackerCompareApproxDistance
 
-Jump_02_4F00:
+TrackerDrawSelectedAuxRecord:
 	ld a, [wPlayerAlive]
 	and a
 	ret z
@@ -1287,7 +1287,7 @@ Jump_02_4F00:
 	ld d, a
 	jr TrackerDrawPointerSprites
 
-Jump_02_4F43:
+TrackerFinishAuxRecordScan:
 	ld a, [wPlayerAlive]
 	and a
 	ret z
@@ -1329,7 +1329,7 @@ Jump_02_4F43:
 	ld d, a
 	jp TrackerDrawPointerSprites
 
-Jump_02_4F7C:
+TrackerFinishObjectScan:
 	ld a, [wPlayerAlive]
 	and a
 	ret z
@@ -1378,7 +1378,7 @@ Jump_02_4F7C:
 TrackerDrawPointerSprites:
 	ld h, $10
 	bit 7, d
-	jr z, Jump_02_4FC7
+	jr z, .yAbsolute
 	ld a, e
 	cpl
 	ld e, a
@@ -1387,7 +1387,7 @@ TrackerDrawPointerSprites:
 	ld d, a
 	inc de
 	res 4, h
-Jump_02_4FC7:
+.yAbsolute:
 	ld a, e
 	and $E0
 	ld e, a
@@ -1396,7 +1396,7 @@ Jump_02_4FC7:
 	sla c
 	rl b
 	bit 7, b
-	jr z, Jump_02_4FE0
+	jr z, .xAbsolute
 	ld a, c
 	cpl
 	ld c, a
@@ -1405,7 +1405,7 @@ Jump_02_4FC7:
 	ld b, a
 	inc bc
 	set 5, h
-Jump_02_4FE0:
+.xAbsolute:
 	ld a, b
 	add a, e
 	ld e, a
@@ -1417,9 +1417,9 @@ Jump_02_4FE0:
 	add hl, de
 	ld a, [hl]
 	bit 7, c
-	jr nz, Jump_02_4FF3
+	jr nz, .selectLowNibble
 	swap a
-Jump_02_4FF3:
+.selectLowNibble:
 	and $0F
 	add a, b
 	ld hl, TrackerPointerFrames
