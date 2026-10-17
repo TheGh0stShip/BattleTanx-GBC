@@ -111,6 +111,10 @@ Object movement consumes bit 0 as an acceptance test: candidate axes are
 rejected when outside the level or when the tested cell has bit 0 clear.
 Objects with flag bit 3 use an eight-point footprint instead of one coordinate;
 the same flag selects a separate bit-3 region-conversion path.
+For that flag group, object state 0 starts a region transition when cell bit 1
+is set. State 1 rolls back an affected axis for bit 1 alone and starts a region
+transition when bit 2 is also set; state 2 performs no bit-1/2 response. These
+are structural state numbers because their gameplay identities remain unknown.
 
 ### 4.2 Tiles (odd bank, `16 * (record+7 + 1)` bytes)
 

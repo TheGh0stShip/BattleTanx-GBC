@@ -6254,7 +6254,7 @@ Jump_2353:
 	inc a
 	ld [$CA07], a
 Jump_236E:
-	call Func_27E8
+	call ResolveObjectType1ProximityMovement
 	call ResolveObjectLevelBit0Movement
 	call HandleObjectLevelBit3Cell
 	call DispatchNearbyType4Entity
@@ -6269,7 +6269,7 @@ Jump_2383:
 	call Func_2C58
 	call Func_2CC3
 	jr z, Jump_2335
-	call Func_267F
+	call HandleObjectLevelBit1And2Cells
 	ld a, $1D
 	add a, e
 	ld l, a
@@ -6872,7 +6872,11 @@ Jump_267D:
 	ret
 
 
-Func_267F:
+; For flag-bit-3 objects, apply the state-$20 response to cell bits 1 and 2.
+; State 0 starts a region transition on bit 1. State 1 handles each axis,
+; rolling it back on bit 1 alone or starting a transition when bit 2 is also
+; set. State 2 has no map response.
+HandleObjectLevelBit1And2Cells:
 	push af
 	push bc
 	push de
@@ -7139,7 +7143,10 @@ Jump_27E3:
 	ret
 
 
-Func_27E8:
+; Reject candidate movement when an active object comes within 20 pixels on
+; both axes of another type-1 entity. The first match restores both axes from
+; the object's current coordinates.
+ResolveObjectType1ProximityMovement:
 	push af
 	push bc
 	push de
@@ -7174,7 +7181,7 @@ Jump_2800:
 	cp b
 	jr z, Jump_2848
 Jump_2817:
-	call Func_285B
+	call ObjectCandidatesWithin20Pixels
 	jr z, Jump_2848
 	ld a, l
 	and $C0
@@ -7231,7 +7238,9 @@ Jump_2856:
 	ret
 
 
-Func_285B:
+; Return 1 when candidate positions +$14/+17 of the objects at HL and BC are
+; within 20 pixels on both axes.
+ObjectCandidatesWithin20Pixels:
 	push de
 	push bc
 	push hl

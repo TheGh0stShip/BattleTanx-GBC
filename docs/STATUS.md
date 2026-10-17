@@ -138,6 +138,10 @@ The larger state-dependent bit-1/2 response remains unnamed.
 The same update chain names the 64-record proximity scan that selects the
 first active type-4 entity within 12 pixels on both axes, plus the banked
 entity-handler dispatcher it invokes.
+The remaining map response is now structurally named: object state 0 starts a
+region transition on cell bit 1; state 1 rolls back an axis for bit 1 alone or
+starts a transition when bit 2 is also set; state 2 ignores these bits. A
+separate 64-record scan rejects movement within 20 pixels of a type-1 entity.
 
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have
