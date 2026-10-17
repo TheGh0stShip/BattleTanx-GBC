@@ -190,7 +190,7 @@ Jump_0175:
 	ld [$C6E2], a
 	ld a, $01
 	ld [rROMB0], a
-	call Func_3AAE
+	call InstallMenuRuntimeCodeFar
 	call RAM_D56A
 	call RAM_D62A
 	ld a, $01
@@ -11059,7 +11059,9 @@ Func_3A88:
 	ret
 
 
-Func_3AAE:
+; Copy the bank-$01 menu/flow runtime images into their WRAM execution ranges.
+InstallMenuRuntimeCodeFar:
+Func_3AAE: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -11207,7 +11209,10 @@ Func_3B9F: ; legacy alias
 	ret
 
 
-Func_3BB0:
+; Install the basic interrupt mode, then copy bank-$01 scene-streaming runtime
+; images into WRAM bank 1.
+InstallSceneRuntimeCodeFar:
+Func_3BB0: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
