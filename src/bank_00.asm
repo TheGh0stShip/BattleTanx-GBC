@@ -292,7 +292,7 @@ RespawnPlayer:
 .beginGameplay:
 	ld e, $58
 	call Audio_QueueSound
-	call InitializeLevelEntityDispatcherFar
+	call ResetNearestObjectTrackerFar
 	call ResetGameplayFrameState
 .beginFrame:
 	xor a
@@ -415,7 +415,7 @@ RunPauseLoopFar:
 Func_033A: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_4000)
 	ld [rROMB0], a
 	call Func_01_4000
 	pop af
@@ -427,7 +427,7 @@ HandlePlayerLifeLossFar:
 Func_034B: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_409E)
 	ld [rROMB0], a
 	call Func_01_409E
 	pop af
@@ -552,7 +552,7 @@ LoadLevelLookupPointersFar:
 Func_0402: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $05
+	ld a, BANK(LoadLevelLookupPointers)
 	ld [rROMB0], a
 	call LoadLevelLookupPointers
 	pop af
@@ -1179,7 +1179,7 @@ ConvertU8ToPackedBcdFar:
 Func_06C5: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_40CE)
 	ld [rROMB0], a
 	call Func_01_40CE
 	pop af
@@ -1193,7 +1193,7 @@ ConvertU16ToPackedBcdFar:
 Func_06D6: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_4102)
 	ld [rROMB0], a
 	call Func_01_4102
 	pop af
@@ -1207,7 +1207,7 @@ ConvertU32ToPackedBcdFar:
 Func_06E7: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_4143)
 	ld [rROMB0], a
 	call Func_01_4143
 	pop af
@@ -1340,37 +1340,37 @@ Func_0781:
 LoadObjectPalettes:
 	ld a, $08
 	ld [rROMB0], a
-	ld a, $27
+	ld a, BANK(Bank27ObjectPalette)
 	ld [rROMB0], a
 	ld hl, Bank27ObjectPalette
 	ld b, $00
 	ld c, $01
 	call LoadObjectPaletteRange
-	ld a, $28
+	ld a, BANK(Bank28ObjectPalette)
 	ld [rROMB0], a
 	ld hl, Bank28ObjectPalette
 	ld b, $01
 	ld c, $01
 	call LoadObjectPaletteRange
-	ld a, $29
+	ld a, BANK(Bank29ObjectPalette)
 	ld [rROMB0], a
 	ld hl, Bank29ObjectPalette
 	ld b, $02
 	ld c, $01
 	call LoadObjectPaletteRange
-	ld a, $08
+	ld a, BANK(Bank08ObjectPalette46EA)
 	ld [rROMB0], a
 	ld hl, Bank08ObjectPalette46EA
 	ld b, $03
 	ld c, $01
 	call LoadObjectPaletteRange
-	ld a, $08
+	ld a, BANK(Bank08ObjectPalettes67FD)
 	ld [rROMB0], a
 	ld hl, Bank08ObjectPalettes67FD
 	ld b, $04
 	ld c, $04
 	call LoadObjectPaletteRange
-	ld a, $08
+	ld a, BANK(Bank08UiFontPalette)
 	ld [rROMB0], a
 	ld hl, Bank08UiFontPalette + 2 ; colours 1-3 + 2 bytes of SpriteTiles44A8
 	ld b, $07
@@ -1382,7 +1382,7 @@ LoadObjectPalettes:
 ; Load the interface sheets used in VRAM bank 1, including the UI font and
 ; the numeric subset of the alphanumeric font.
 LoadInterfaceTilesVRAM1:
-	ld a, $08
+	ld a, BANK(Bank08InterfaceTiles60F8)
 	ld [rROMB0], a
 	ld a, $01
 	ldh [rVBK], a
@@ -1401,28 +1401,28 @@ LoadInterfaceTilesVRAM1:
 	ld a, $80
 	ld bc, Bank08InterfaceTiles611A
 	call CopyTilesToVRAM
-	ld a, $08
+	ld a, BANK(Bank08HudIconTiles)
 	ld [rROMB0], a
 	ld e, $53
 	ld d, $0A
 	ld a, $80
 	ld bc, Bank08HudIconTiles
 	call CopyTilesToVRAM
-	ld a, $08
+	ld a, BANK(Bank08InterfaceTiles6815)
 	ld [rROMB0], a
 	ld e, $5D
 	ld d, $0C
 	ld a, $80
 	ld bc, Bank08InterfaceTiles6815
 	call CopyTilesToVRAM
-	ld a, $08
+	ld a, BANK(Bank08UiFontTiles)
 	ld [rROMB0], a
 	ld e, $43
 	ld d, $3D
 	ld a, $88
 	ld bc, Bank08UiFontTiles + $10
 	call CopyTilesToVRAM
-	ld a, $08
+	ld a, BANK(Bank08InterfaceTiles69FD)
 	ld [rROMB0], a
 	ld e, $3B
 	ld d, $08
@@ -1437,7 +1437,7 @@ LoadInterfaceTilesVRAM1:
 LoadInterfaceTilesVRAM0:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $08
+	ld a, BANK(Bank08InterfaceTiles626B)
 	ld [rROMB0], a
 	xor a
 	ldh [rVBK], a
@@ -1553,31 +1553,31 @@ LoadInterfacePalettes:
 	push hl
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $08
+	ld a, BANK(Bank08HudIconPalette)
 	ld [rROMB0], a
 	ld hl, Bank08HudIconPalette
 	ld bc, wHudIconPalette
 	ld e, $08
 	call CopyBytesShort
-	ld a, $08
+	ld a, BANK(Bank08UiFontPalette)
 	ld [rROMB0], a
 	ld hl, Bank08UiFontPalette
 	ld bc, wUiFontPalette
 	ld e, $08
 	call CopyBytesShort
-	ld a, $08
+	ld a, BANK(Bank08ArrowUpPalette)
 	ld [rROMB0], a
 	ld hl, Bank08ArrowUpPalette
 	ld bc, wArrowUpPalette
 	ld e, $08
 	call CopyBytesShort
-	ld a, $08
+	ld a, BANK(Bank08ArrowDownPalette)
 	ld [rROMB0], a
 	ld hl, Bank08ArrowDownPalette
 	ld bc, wArrowDownPalette
 	ld e, $08
 	call CopyBytesShort
-	ld a, $08
+	ld a, BANK(Bank08AlphanumericFontPalette)
 	ld [rROMB0], a
 	ld hl, Bank08AlphanumericFontPalette
 	ld bc, wAlphanumericFontPalette
@@ -1693,13 +1693,15 @@ Func_0A23: ; legacy alias
 	ret
 
 
-; Select the bank-$02 entity update routine for the current level group and
-; install its JP stub and iteration state at $C8D4-$C8DE.
-InitializeLevelEntityDispatcherFar:
+; Far call to ResetNearestObjectTracker (bank $02): unless a target is already
+; held, reset the nearest-target scan and install the scan routine selected by
+; NearestTargetScanModesByLevel[wLevelNumber] in the JP stub at wNearestTargetScanJump.
+ResetNearestObjectTrackerFar:
+InitializeLevelEntityDispatcherFar: ; legacy alias (earlier, inaccurate name)
 Func_0A48: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(Func_02_406F)
 	ld [rROMB0], a
 	call Func_02_406F
 	pop af
@@ -1790,7 +1792,7 @@ InstallGameplayInterruptHandlersFar:
 Func_0AB3: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(Func_02_418A)
 	ld [rROMB0], a
 	call Func_02_418A
 	pop af
@@ -1804,7 +1806,7 @@ InstallBasicInterruptHandlersFar:
 Func_0AC4: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(Func_02_4238)
 	ld [rROMB0], a
 	call Func_02_4238
 	pop af
@@ -2070,7 +2072,7 @@ GetObjectScoreValue:
 	push hl
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $05
+	ld a, BANK(ObjectScoreValues)
 	ld [rROMB0], a
 	ld a, l
 	and OBJECT_RECORD_ALIGN_MASK
@@ -2651,7 +2653,7 @@ Func_0DB6: ; legacy alias
 ; screen position, dynamic tile base, VRAM-bank-1, and OBJ-palette attributes.
 WriteObjectOrientationOam:
 Func_0F0C: ; legacy alias
-	ld a, $05
+	ld a, BANK(ObjectOrientationLayoutPointers)
 	ld [rROMB0], a
 	ld hl, ObjectOrientationLayoutPointers
 	ldh a, [$FF81]
@@ -2697,7 +2699,7 @@ Func_0F0C: ; legacy alias
 ; into the dynamic sprite-tile allocation at DE.
 CopyObjectOrientationTiles:
 Func_0F43: ; legacy alias
-	ld a, $05
+	ld a, BANK(ObjectOrientationTilePointers)
 	ld [rROMB0], a
 	ld hl, ObjectOrientationTilePointers
 	ldh a, [$FF81]
@@ -3687,7 +3689,7 @@ StartLevelCellRegionTransitions:
 	ldh [hLevelRegionRetryCount], a
 	cp $06
 	jr z, .completeRegion
-	jr z, .advanceCell
+	jr z, .advanceCell ; original defect: never taken (Z is already clear); falls through to .cellChanged
 .cellChanged:
 	call DrawLevelCellIfVisible
 	ldh a, [hLevelRegionChangedCount]
@@ -4576,7 +4578,7 @@ LoadLevelData:
 	push hl
 	ld [wLevelNumber], a
 	ld b, a
-	ld a, $05
+	ld a, BANK(LevelRecordPointers)
 	ld [rROMB0], a
 	ld a, b
 	sla a
@@ -4927,7 +4929,7 @@ RefreshLevelViewport:
 SetLevelViewCellPosition:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(SetLevelViewCellPositionBank2)
 	ld [rROMB0], a
 	call SetLevelViewCellPositionBank2
 	pop af
@@ -6255,7 +6257,7 @@ Func_2241: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	ldh [$FF81], a
-	ld a, $05
+	ld a, BANK(ObjectVelocityTable)
 	ld [rROMB0], a
 	ldh a, [$FF80]
 	ld h, a
@@ -6269,7 +6271,7 @@ Func_2241: ; legacy alias
 	ld c, a
 	ld b, $00
 	add hl, bc
-	ld bc, $4600
+	ld bc, ObjectVelocityTable
 	add hl, bc
 	ld a, OBJECT_VEHICLE_VELOCITY_X_OFFSET
 	add a, e
@@ -6326,7 +6328,7 @@ Func_2295: ; legacy alias
 	add a, $08
 	and $0F
 	ldh [$FF81], a
-	ld a, $05
+	ld a, BANK(ObjectVelocityTable)
 	ld [rROMB0], a
 	ldh a, [$FF80]
 	ld h, a
@@ -6340,7 +6342,7 @@ Func_2295: ; legacy alias
 	ld c, a
 	ld b, $00
 	add hl, bc
-	ld bc, $4600
+	ld bc, ObjectVelocityTable
 	add hl, bc
 	ld a, OBJECT_VEHICLE_VELOCITY_X_OFFSET
 	add a, e
@@ -6496,7 +6498,7 @@ Func_22ED: ; legacy alias
 	jp .commitPosition
 
 
-; Require cell-map bit 0 at eight points around a 20-by-16-pixel footprint.
+; Require cell-map bit 0 at eight points of a 20-by-20-pixel box: x -10/0/+10, y -8/+2/+12.
 TestLevelCellBit0Footprint:
 	push bc
 	push de
@@ -7149,7 +7151,7 @@ HandleObjectLevelBit1And2Cells:
 	and $C0
 	add a, $23
 	ld l, a
-	ld [hl], a
+	ld [hl], a ; original defect: stores L into +$23 instead of incrementing it (Y path increments)
 	inc a
 	ld a, [hl]
 	ld a, $01
@@ -7903,7 +7905,7 @@ DispatchEntityUpdateFar:
 Func_2A88: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(UpdateNearestObjectTracker)
 	ld [rROMB0], a
 	call UpdateNearestObjectTracker
 	pop af
@@ -7914,7 +7916,7 @@ Func_2A88: ; legacy alias
 LoadEncodedFontTiles:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $08
+	ld a, BANK(EncodedFontTiles)
 	ld [rROMB0], a
 	xor a
 	ldh [rVBK], a
@@ -7989,7 +7991,7 @@ DrawEncodedGlyph:
 	ld c, a
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $08
+	ld a, BANK(EncodedGlyphTable)
 	ld [rROMB0], a
 	ld b, $00
 	ld hl, EncodedGlyphTable
@@ -8207,7 +8209,7 @@ GetVehicleMuzzlePositionFar:
 Func_2C24: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(GetObjectDirectionalOffsetPosition)
 	ld [rROMB0], a
 	call GetObjectDirectionalOffsetPosition
 	pop af
@@ -8731,7 +8733,7 @@ GetDirectionDifferenceFar:
 Func_2EA7: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(GetSignedDirectionDifference)
 	ld [rROMB0], a
 	call GetSignedDirectionDifference
 	pop af
@@ -8742,7 +8744,7 @@ Func_2EA7: ; legacy alias
 Audio_InitFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $06
+	ld a, BANK(Audio_Init)
 	ld [rROMB0], a
 	call Audio_Init
 	ld a, [wVestigialStateC8E6]
@@ -8786,7 +8788,7 @@ Music_Update:
 	ld c, a
 	ld a, [hli]
 	ld [wMusicDelay], a
-	ld a, $06
+	ld a, BANK(Music_HandleEvent)
 	ld [rROMB0], a
 	push hl
 	call Music_HandleEvent
@@ -8817,7 +8819,7 @@ Audio_Update:
 .NoiseTimerDone:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $06
+	ld a, BANK(SfxSequence_Update)
 	ld [rROMB0], a
 	call SfxSequence_Update
 	call Music_Update
@@ -9030,9 +9032,9 @@ CheckNextScoreThreshold:
 Func_302D:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(ScoreThresholdTable)
 	ld [rROMB0], a
-	ld hl, $418F
+	ld hl, ScoreThresholdTable
 	ld a, [wScoreThresholdIndex]
 	inc a
 	ld c, a
@@ -9085,7 +9087,7 @@ SpawnVehicleMuzzleEffectFar:
 Func_307F: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(SpawnDirectionalOffsetEffect)
 	ld [rROMB0], a
 	call SpawnDirectionalOffsetEffect
 	pop af
@@ -9147,7 +9149,7 @@ InitializeTimedEffectSubtype1Far:
 Func_30D1: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(InitEffectSubtype1Animation)
 	ld [rROMB0], a
 	call InitEffectSubtype1Animation
 	pop af
@@ -9159,7 +9161,7 @@ InitializeTimedEffectSubtype0Far:
 Func_30E2: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(InitEffectSubtype0Animation)
 	ld [rROMB0], a
 	call InitEffectSubtype0Animation
 	pop af
@@ -9171,7 +9173,7 @@ InitializeTimedEffectSubtype2Far:
 Func_30F3: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(InitEffectSubtype2Animation)
 	ld [rROMB0], a
 	call InitEffectSubtype2Animation
 	pop af
@@ -9535,7 +9537,7 @@ LoadHudBaseMapsFar:
 Func_32A3: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_4233)
 	ld [rROMB0], a
 	call Func_01_4233
 	pop af
@@ -9550,7 +9552,7 @@ Func_32B4: ; legacy alias
 	push de
 	push hl
 	ld d, $87
-	ld hl, $C421
+	ld hl, wVramDmaStagingBuffer + $21
 	ld [hl], d
 	inc l
 	ld [hl], d
@@ -9563,7 +9565,7 @@ Func_32B4: ; legacy alias
 	inc l
 	ld [hl], d
 	inc l
-	ld hl, $C461
+	ld hl, wVramDmaStagingBuffer + $61
 	ld d, $16
 	ld [hl], d
 	inc l
@@ -9589,7 +9591,7 @@ LoadPauseHudMapsFar:
 Func_32DE: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_42A2)
 	ld [rROMB0], a
 	call Func_01_42A2
 	pop af
@@ -9719,7 +9721,7 @@ Func_334A:
 	ld d, [hl]
 	call MultiplyU8ByU16
 	ld d, h
-	ld hl, $C421
+	ld hl, wVramDmaStagingBuffer + $21
 	ld a, d
 	sub $07
 	jr nc, .firstCellFull
@@ -9904,20 +9906,20 @@ Func_3439:
 .drawCharge:
 	add a, $30
 	ld c, a
-	ld hl, $C407
+	ld hl, wVramDmaStagingBuffer + $07
 	call WriteHudTileAndAttribute
 	jr .drawAlert
 
 .clearPowerup:
 	ld c, $01
-	ld hl, $C407
+	ld hl, wVramDmaStagingBuffer + $07
 	call WriteHudTileAndAttribute
 	inc hl
 	call WriteHudTileAndAttribute
 	inc hl
 	call WriteHudTileAndAttribute
 	ld c, $04
-	ld hl, $C428
+	ld hl, wVramDmaStagingBuffer + $28
 	call WriteHudTileAndAttribute
 	inc hl
 	call WriteHudTileAndAttribute
@@ -9930,13 +9932,13 @@ Func_3439:
 	jr z, .hideAlert
 	ld c, $5A
 	ld b, $87
-	ld hl, $C40A
+	ld hl, wVramDmaStagingBuffer + $0A
 	call WriteHudTileAndAttribute
 	inc hl
 	inc c
 	call WriteHudTileAndAttribute
 	inc c
-	ld hl, $C42A
+	ld hl, wVramDmaStagingBuffer + $2A
 	call WriteHudTileAndAttribute
 	inc hl
 	inc c
@@ -9946,12 +9948,12 @@ Func_3439:
 .hideAlert:
 	ld c, $01
 	ld b, $87
-	ld hl, $C40A
+	ld hl, wVramDmaStagingBuffer + $0A
 	call WriteHudTileAndAttribute
 	inc hl
 	call WriteHudTileAndAttribute
 	ld c, $04
-	ld hl, $C42A
+	ld hl, wVramDmaStagingBuffer + $2A
 	call WriteHudTileAndAttribute
 	inc hl
 	call WriteHudTileAndAttribute
@@ -9983,13 +9985,13 @@ Func_34DF:
 	ld h, a
 	ld c, [hl]
 	ld b, $86
-	ld hl, $C408
+	ld hl, wVramDmaStagingBuffer + $08
 	call WriteHudTileAndAttribute
 	inc hl
 	inc c
 	call WriteHudTileAndAttribute
 	inc c
-	ld hl, $C428
+	ld hl, wVramDmaStagingBuffer + $28
 	call WriteHudTileAndAttribute
 	inc hl
 	inc c
@@ -10044,7 +10046,7 @@ Func_3533:
 	ld a, [wPlayerLives]
 	add a, $30
 	ld c, a
-	ld hl, $C401
+	ld hl, wVramDmaStagingBuffer + $01
 	call WriteHudTileAndAttribute
 	pop bc
 	pop hl
@@ -10105,7 +10107,7 @@ Func_356B:
 	ld d, a
 	ld hl, $FF90
 	call ConvertU32ToPackedBcdFar
-	ld hl, $C40D
+	ld hl, wVramDmaStagingBuffer + $0D
 	xor a
 	ldh [$FF98], a
 	ld bc, $FF92
@@ -10160,7 +10162,7 @@ Bank1NoOpFar:
 Func_35C6: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Bank01NoOpEntry)
 	ld [rROMB0], a
 	call Bank01NoOpEntry
 	pop af
@@ -10194,7 +10196,7 @@ AnimatePlayerHealthBarFillFar:
 Func_35F7: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_446E)
 	ld [rROMB0], a
 	call Func_01_446E
 	pop af
@@ -10454,7 +10456,7 @@ Func_372E: ; legacy alias
 DispatchEntityHandlerFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(DispatchEntityHandler)
 	ld [rROMB0], a
 	call DispatchEntityHandler
 	pop af
@@ -10516,7 +10518,7 @@ Func_3793: ; legacy alias
 SelectObjectSpritePaletteFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $08
+	ld a, BANK(SelectObjectSpritePalette)
 	ld [rROMB0], a
 	call SelectObjectSpritePalette
 	pop af
@@ -10529,7 +10531,7 @@ RenderStatus4ObjectSpriteFar:
 Func_37BD: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_4687)
 	ld [rROMB0], a
 	call Func_01_4687
 	pop af
@@ -10541,7 +10543,7 @@ InitializeLevelObjectsFar:
 Func_37CE: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $04
+	ld a, BANK(InitializeLevelObjects)
 	ld [rROMB0], a
 	call InitializeLevelObjects
 	pop af
@@ -10552,7 +10554,7 @@ Func_37CE: ; legacy alias
 QueuePendingLevelObjectFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $04
+	ld a, BANK(QueuePendingLevelObject)
 	ld [rROMB0], a
 	call QueuePendingLevelObject
 	pop af
@@ -10563,7 +10565,7 @@ QueuePendingLevelObjectFar:
 UpdatePendingLevelObjectsFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $04
+	ld a, BANK(UpdatePendingLevelObjects)
 	ld [rROMB0], a
 	call UpdatePendingLevelObjects
 	pop af
@@ -10574,7 +10576,7 @@ UpdatePendingLevelObjectsFar:
 InitializeObjectSequenceStateFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $03
+	ld a, BANK(InitializeObjectSequenceState)
 	ld [rROMB0], a
 	call InitializeObjectSequenceState
 	pop af
@@ -10587,7 +10589,7 @@ UpdateCurrentObjectSequenceFar:
 Func_3812: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $03
+	ld a, BANK(Func_03_5CD0)
 	ld [rROMB0], a
 	call Func_03_5CD0
 	pop af
@@ -10600,7 +10602,7 @@ UpdateLevelObjectAuxStateFar:
 Func_3823: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $03
+	ld a, BANK(UpdateLevelObjectAuxState)
 	ld [rROMB0], a
 	call UpdateLevelObjectAuxState
 	pop af
@@ -10612,7 +10614,7 @@ DispatchLevelStateCheckFar:
 Func_3834: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $03
+	ld a, BANK(DispatchStateCheck)
 	ld [rROMB0], a
 	call DispatchStateCheck
 	pop af
@@ -10626,7 +10628,7 @@ ActivateMatchingLevelObjectAuxStateFar:
 Func_3845: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $03
+	ld a, BANK(Func_03_6923)
 	ld [rROMB0], a
 	call Func_03_6923
 	pop af
@@ -10639,7 +10641,7 @@ DarkenRgb555:
 Func_3856:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_46B1)
 	ld [rROMB0], a
 	call Func_01_46B1
 	pop af
@@ -10652,7 +10654,7 @@ BrightenRgb555:
 Func_3867:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_4703)
 	ld [rROMB0], a
 	call Func_01_4703
 	pop af
@@ -10665,7 +10667,7 @@ DarkenBackgroundPalettes:
 Func_3878:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_475E)
 	ld [rROMB0], a
 	call Func_01_475E
 	pop af
@@ -10679,7 +10681,7 @@ FadeBackgroundPalettesToWhite:
 Func_3889:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_4799)
 	ld [rROMB0], a
 	call Func_01_4799
 	pop af
@@ -10850,7 +10852,7 @@ ClearBackgroundPalettes:
 Func_3960:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(ClearBackgroundPalettesImpl)
 	ld [rROMB0], a
 	call ClearBackgroundPalettesImpl
 	pop af
@@ -11005,7 +11007,7 @@ DarkenObjectPalettes:
 Func_3A1E:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(DarkenObjectPalettesImpl)
 	ld [rROMB0], a
 	call DarkenObjectPalettesImpl
 	pop af
@@ -11019,7 +11021,7 @@ BuildBackgroundPaletteFadeFrames:
 Func_3A2F:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(BuildBackgroundPaletteFadeFramesImpl)
 	ld [rROMB0], a
 	call BuildBackgroundPaletteFadeFramesImpl
 	pop af
@@ -11118,7 +11120,7 @@ InstallMenuRuntimeCodeFar:
 Func_3AAE: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_5867)
 	ld [rROMB0], a
 	call Func_01_5867
 	pop af
@@ -11130,7 +11132,7 @@ Func_3AAE: ; legacy alias
 ; selected for the current world and level. One menu-selected mode skips it.
 RunLevelIntroSceneFlow:
 Func_3ABF: ; legacy alias
-	ld a, $01
+	ld a, BANK(Func_01_5BF1)
 	ld [rROMB0], a
 	call ClearShadowOamAndTransferFar
 	ld a, [wGameStartMode]
@@ -11138,7 +11140,7 @@ Func_3ABF: ; legacy alias
 	jr z, .return
 	call Func_01_5BF1
 	ld a, [wLevelNumber]
-	ld hl, $6609
+	ld hl, LevelRowSceneFlags
 	ld a, a
 	add a, l
 	ld l, a
@@ -11149,8 +11151,8 @@ Func_3ABF: ; legacy alias
 	or a
 	ld a, [wLevelNumber]
 	jr z, .queueSceneSounds
-	call Func_01_63B3
-	call Func_01_609A
+	call SelectLevelRowScene
+	call RunScrollingScene
 	call Func_01_6133
 .queueSceneSounds:
 	ld e, $10
@@ -11165,8 +11167,8 @@ Func_3ABF: ; legacy alias
 	call Audio_QueueSound
 	call Func_01_5BF1
 	ld a, [wLevelNumber]
-	call Func_01_63D1
-	call Func_01_609A
+	call SelectLevelScene
+	call RunScrollingScene
 	call ClearBackgroundPalettes
 .return:
 	ret
@@ -11176,7 +11178,7 @@ Func_3ABF: ; legacy alias
 ; by screen mode $0C for values 0/2, or screen mode 8 and its activity for 1.
 RunLevelExitScreenFlow:
 Func_3B12: ; legacy alias
-	ld a, $01
+	ld a, BANK(Func_01_5BF1)
 	ld [rROMB0], a
 	ld a, [wGameStartMode]
 	cp $00
@@ -11192,7 +11194,7 @@ Func_3B12: ; legacy alias
 	xor a
 	ldh [$FF82], a
 	ldh [$FF81], a
-	call Func_01_609A
+	call RunScrollingScene
 	call RunScreenMode12SetupFar
 	jr .return
 
@@ -11224,7 +11226,7 @@ RunLevelCompletionScreenFlow:
 Func_3B5A: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_6BBC)
 	ld [rROMB0], a
 	ld a, [wGameStartMode]
 	cp $01
@@ -11264,7 +11266,7 @@ RunBootScreenSequenceFar:
 Func_3B9F: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(Func_02_5C40)
 	ld [rROMB0], a
 	call Func_02_5C40
 	pop af
@@ -11278,7 +11280,7 @@ InstallSceneRuntimeCodeFar:
 Func_3BB0: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_6618)
 	ld [rROMB0], a
 	call InstallBasicInterruptHandlersFar
 	call Func_01_6618
@@ -11292,7 +11294,7 @@ RunScreenMode6SetupFar:
 Func_3BC4: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(Func_01_6CF0)
 	ld [rROMB0], a
 	call Func_01_6CF0
 	pop af
@@ -11306,7 +11308,7 @@ RunScoreIncrementLoopFar:
 Func_3BD5: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(ClearScoreThenIncrementForever)
 	ld [rROMB0], a
 	call ClearScoreThenIncrementForever
 	pop af
@@ -11319,7 +11321,7 @@ GetScoreThousandsFar:
 Func_3BE6: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(Func_02_47AF)
 	ld [rROMB0], a
 	call Func_02_47AF
 	pop af
@@ -11332,7 +11334,7 @@ SetScoreFromThousandsFar:
 Func_3BF7: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(Func_02_5D33)
 	ld [rROMB0], a
 	call Func_02_5D33
 	pop af
@@ -11345,7 +11347,7 @@ RunScreenMode12SetupFar:
 Func_3C08: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(ShowScreenMode12WithPasswordScoreLives)
 	ld [rROMB0], a
 	call ShowScreenMode12WithPasswordScoreLives
 	pop af
@@ -11493,7 +11495,7 @@ Func_3CC2: ; legacy alias
 	ldh [rLCDC], a
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(LoadIndexedSpriteGrid)
 	ld [rROMB0], a
 	call LoadIndexedSpriteGrid
 	pop af
@@ -11518,7 +11520,7 @@ Func_3CD9: ; legacy alias
 	ld [wVBlankPending], a
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $02
+	ld a, BANK(ClearAndTransferShadowOam)
 	ld [rROMB0], a
 	call ClearAndTransferShadowOam
 	pop af
@@ -11551,9 +11553,9 @@ StartScreenEffect:
 	ld [wScreenEffectCountdown], a
 	ld a, SCREEN_EFFECT_BLANK_COUNT
 	ld [wScreenEffectBlankCount], a
-	ld a, $58
+	ld a, LOW(ScreenEffectSteps)
 	ld [wScreenEffectStepTable], a
-	ld a, $63
+	ld a, HIGH(ScreenEffectSteps)
 	ld [wScreenEffectStepTable + 1], a
 	ld a, $00
 	ld [wScreenEffectObjectPtr], a
@@ -11564,7 +11566,7 @@ StartScreenEffect:
 	call PreserveScreenEffectObjects
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $08
+	ld a, BANK(EffectPalette5502)
 	ld [rROMB0], a
 	ld hl, EffectPalette5502
 	ld b, $03
@@ -11588,7 +11590,7 @@ StartScreenEffect:
 PreserveScreenEffectObjects:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(FreeObjectsOutsideStatuses1And4)
 	ld [rROMB0], a
 	call FreeObjectsOutsideStatuses1And4
 	pop af
@@ -11870,7 +11872,7 @@ UpdateScreenEffect:
 	call ConvertVisibleLevelCellBit2Regions
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $08
+	ld a, BANK(Bank08ObjectPalette46EA)
 	ld [rROMB0], a
 	ld hl, Bank08ObjectPalette46EA
 	ld b, $03
@@ -11886,7 +11888,7 @@ UpdateScreenEffect:
 ; Run bank $02's screen-mode-8 activity until it accepts joypad input.
 RunScreenMode8ActivityFar:
 Func_3F1F: ; legacy alias
-	ld a, $02
+	ld a, BANK(Func_02_6306)
 	ld [rROMB0], a
 	call Func_02_6306
 	ret
@@ -11897,7 +11899,7 @@ RunNoLivesScreenFar:
 Func_3F28: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $2A
+	ld a, BANK(Func_2A_7774)
 	ld [rROMB0], a
 	call Func_2A_7774
 	pop af

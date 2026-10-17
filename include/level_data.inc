@@ -12,8 +12,9 @@ ENDM
 ; Arguments: width, height, tiles, palettes, cell map, tile map, attribute map,
 ; tile count, palette count.
 ; +0 width, +1 height, +2 tile bank, +3 palette bank, +4 cell-map bank,
-; +5 map bank, +6 map bank again (copied to $C8BD, never read),
-; +7/+8 tile count - 1 (copied to $C8BE/$C8BF, never read), +9 palette count,
+; +5 map bank, +6 attribute-map bank (always equal to +5; copied to
+; wLevelAttributeMapBank, never read), +7/+8 last tile index = tile count - 1
+; (copied to wLevelLastTileIndex, never read), +9 palette count,
 ; +10 tiles, +12 palettes, +14 attribute map, +16 tile map, +18 cell map.
 ; LEVEL_SEMANTICS_RESEARCH.md lists every reader.
 MACRO level_record
@@ -27,7 +28,7 @@ ENDM
 ; Cell-map byte bits, from the readers in ROM0 (LEVEL_SEMANTICS_RESEARCH.md).
 ; Only bits 0-3 occur in ROM; bits 6-7 are set at run time.
 DEF CELLB_PASSABLE    EQU 0 ; clear: movement rejected (TestLevelCellBit0AtPixel)
-DEF CELLB_SOLID       EQU 1 ; set with bit 2 clear: flag-bit-3 objects are rolled back
+DEF CELLB_SOLID       EQU 1 ; drives only the flag-bit-3 object response (HandleObjectLevelBit1And2Cells); does not block movement
 DEF CELLB_DESTRUCTIBLE EQU 2 ; region converted by ConvertLevelCellBit2ToLookupState
 DEF CELLB_TOUCH_REGION EQU 3 ; region converted on contact (ConvertLevelCellBit3RegionAtPixel, +20 score)
 DEF CELLB_ANIMATED    EQU 6 ; set by StartLevelCellLookupTransition: tile $BB + frame
@@ -48,6 +49,19 @@ ENDM
 ; Three object initialization parameters followed by five reserved zeros.
 MACRO object_type_parameters
 	db \1, \2, \3, $00, $00, $00, $00, $00
+ENDM
+
+; Eight-byte bank $03 object-sequence record, stored after a count byte that is
+; layout only (no reader). Arguments: heading, distance, x_tile, y_tile,
+; end_action, arg, arg_copy.
+; +0 heading; +1/+2 distance word (never read; 8*(|dX|+|dY|) in 625 of 626);
+; +3 tile X; +4 tile Y; +5 end action (0 and 5 behave identically; +6 is read
+; only for action 3 or >= 6); +6 argument; +7 copy of +6 (never read).
+MACRO seq_point
+	ASSERT _NARG == 7
+	db \1
+	dw \2
+	db \3, \4, \5, \6, \7
 ENDM
 
 DEF LEVEL00_WIDTH EQU 64

@@ -822,5 +822,4 @@ ScreenEffectStepsEnd:
 	ds $7FFF - @, $00
 	db BANK(@)
 
-	ASSERT ScreenEffectSteps == $6358, "raw pointer: ROM0 StartScreenEffect (ld a,$58 / ld a,$63)"
 	ASSERT ScreenEffectStepsEnd - ScreenEffectSteps == 72 * 6

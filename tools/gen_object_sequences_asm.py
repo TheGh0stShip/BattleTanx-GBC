@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Generate explicit RGBDS source for bank-$03 object sequences."""
+"""Generate explicit RGBDS source for bank-$03 object sequences.
+
+Superseded: src/level_object_sequences.asm is hand-maintained and uses the
+seq_point macro. This generator still emits the older raw `db` form; its output
+is for comparison only and must not be written over the source.
+"""
 
 from __future__ import annotations
 

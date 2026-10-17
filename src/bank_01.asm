@@ -343,7 +343,7 @@ Func_01_4233: ; legacy alias, used by src/bank_00.asm
 	ld bc, Bank01Data_41E3
 	call Func_3202
 	ld d, $02
-	ld hl, $C440
+	ld hl, wVramDmaStagingBuffer + $40
 	ld bc, Bank01Data_420B
 	call Func_3202
 	pop hl
@@ -372,7 +372,7 @@ Func_01_42A2: ; legacy alias, used by src/bank_00.asm
 	ld bc, Bank01Data_4252
 	call Func_3202
 	ld d, $02
-	ld hl, $C440
+	ld hl, wVramDmaStagingBuffer + $40
 	ld bc, Bank01Data_427A
 	call Func_3202
 	ld a, $01
@@ -706,7 +706,7 @@ Jump_01_4486:
 	ldh [rHDMA4], a
 	ld a, $04
 	ldh [rHDMA5], a
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	and $01
 	jr nz, Jump_01_4482
 	ld a, l
@@ -864,7 +864,7 @@ PickupBonusScore3000:
 	ld a, [wBonusPickupCount]
 	inc a
 	ld [wBonusPickupCount], a
-	call Func_0A48
+	call ResetNearestObjectTrackerFar
 	jp FinishPickupFreeObject
 
 
@@ -980,7 +980,7 @@ PickupTriggerHudAlert:
 	call Audio_QueueSound
 	xor a
 	ld [wNearestTargetDistance + 1], a
-	call Func_0A48
+	call ResetNearestObjectTrackerFar
 	pop hl
 	push hl
 	ld a, l
@@ -1245,7 +1245,7 @@ Jump_01_47AB:
 	pop af
 	ldh [rSVBK], a
 	ld a, $01
-	ld [$C6D1], a
+	ld [wPaletteFadeFromWhite], a
 	call Func_3A2F
 	ld e, $1F
 Jump_01_47CA:
@@ -1428,7 +1428,7 @@ RAM_D56A: ; legacy alias, used by src/bank_00.asm
 	ld a, [wActiveSkillLevel]
 	ld [wSkillSetting], a
 	call ClearPasswordEntryChars
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	ld [wMenuPreviousButtons], a
 	call InstallMenuInterruptHandlers
 	call Func_0781
@@ -1457,7 +1457,7 @@ RAM_D56A: ; legacy alias, used by src/bank_00.asm
 	ld a, $00
 	ld bc, $0020
 	call ScreenTable_CallUpdate
-	ld a, $01
+	ld a, BANK(SetMenuCursorChoice)
 	ld [rROMB0], a
 	ld a, $01
 	ld e, $01
@@ -1552,7 +1552,7 @@ MenuEnterNewState:
 	ld a, [hl]
 	ld bc, $0020
 	call ScreenTable_CallUpdate
-	ld a, $01
+	ld a, BANK(EnableMenuCursorSpritesWaitVBlank)
 	ld [rROMB0], a
 	call EnableMenuCursorSpritesWaitVBlank
 	call InitMenuStateScreen
@@ -1668,7 +1668,7 @@ MenuVBlankHandler:
 	push de
 	push bc
 	push hl
-	ld a, [$D9FC]
+	ld a, [wMenuScanlineScrollTable + 1]
 	ldh [rSCY], a
 	ldh a, [rSVBK]
 	and $03
@@ -1693,11 +1693,11 @@ RAM_C828:
 	ldh a, [rLCDC]
 	res 4, a
 	ldh [rLCDC], a
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	and $01
 	jr z, RAM_C844
 	call Func_0A59
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	and $F0
 	cp $F0
 	jr nz, RAM_C844
@@ -1705,17 +1705,17 @@ RAM_C828:
 RAM_C844:
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $01
+	ld a, BANK(StepMenuScroll)
 	ld [rROMB0], a
 	call StepMenuScroll
 	pop af
 	ld [rROMB0], a
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	inc a
-	ld [$C6B7], a
-	ld a, [$C6B8]
+	ld [wVBlankCounter], a
+	ld a, [wVBlankCounter + 1]
 	adc a, $00
-	ld [$C6B8], a
+	ld [wVBlankCounter + 1], a
 	ld a, $01
 	ld [wVBlankPending], a
 	pop af
@@ -1864,7 +1864,7 @@ ActivateMenuChoice:
 	ld b, a
 	ld a, [wMenuGridColumn]
 	add a, b
-	ld [$CA06], a
+	ld [wLevelNumber], a
 	call ResetScore
 	call ResetPlayerLives
 	pop hl
@@ -1879,7 +1879,7 @@ Jump_01_4CDD:
 	ld a, $00
 	ld [wGameStartMode], a
 	xor a
-	ld [$CA06], a
+	ld [wLevelNumber], a
 	call ResetScore
 	call ResetPlayerLives
 Jump_01_4CF7:
@@ -2420,7 +2420,7 @@ HandleMenuState03Input:
 	ld c, $00
 	ld b, $0B
 	call DrawPasswordEntryChars
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	and $03
 	jr nz, Jump_01_50B0
 	call CycleObjectPalettes12
@@ -2494,7 +2494,7 @@ Jump_01_5114:
 	ld c, $00
 	ld b, $0B
 	call DrawPasswordEntryChars
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	and $03
 	jr nz, Jump_01_5125
 	call CycleObjectPalettes12
@@ -2526,7 +2526,7 @@ Jump_01_5144:
 	xor a
 	ld [wVBlankPending], a
 	call Audio_Update
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	or a
 	jr z, Jump_01_5140
 	xor a
@@ -2537,7 +2537,7 @@ Jump_01_5144:
 
 Jump_01_5164:
 	ld a, [wPasswordLevel]
-	ld [$CA06], a
+	ld [wLevelNumber], a
 	ld a, [wPasswordLives]
 	ld [wPlayerLives], a
 	ld a, [wPasswordScoreThousands]
@@ -3102,7 +3102,7 @@ Jump_01_54EC:
 UpdateMenuInputRepeat:
 	ld a, [wMenuRepeatTimer]
 	ld c, a
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	ld d, a
 	ld a, [wMenuPreviousButtons]
 	ld e, $00
@@ -3393,7 +3393,7 @@ RAM_D7CB: ; legacy alias, used by src/bank_2E.asm, tools/screen_data.py
 	ld h, b
 	call Func_3A88
 	xor a
-	ld [$C6D1], a
+	ld [wPaletteFadeFromWhite], a
 	call Func_3A2F
 	ld a, $00
 	ld [wMenuScrollStep], a
@@ -3481,7 +3481,7 @@ LoadEncodedFontTilesToVram1:
 RAM_D9CB: ; legacy alias, used by src/bank_08.asm, tools/bank08.py, tools/gen_bank08_asm.py
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, $08
+	ld a, BANK(EncodedFontTiles)
 	ld [rROMB0], a
 	ld a, $01
 	ldh [rVBK], a
@@ -4047,7 +4047,7 @@ Func_01_5BF1: ; legacy alias, used by src/bank_00.asm
 	ldh [$FF84], a
 	ldh [rLYC], a
 	ldh [rSCX], a
-	ldh [$FF95], a
+	ldh [hSceneScrollStarted], a
 	ldh [$FF8C], a
 	ldh [hSceneLcdStepPending], a
 	ldh [hSceneLcdStepPending], a
@@ -4070,7 +4070,7 @@ Jump_01_5C18:
 	ld a, $B4
 	ldh [$FF85], a
 	ld a, $60
-	ldh [$FF96], a
+	ldh [hSceneScrollDelay], a
 	ld a, $07
 	ldh [hSceneLcdStepLimit], a
 	ldh a, [rLCDC]
@@ -4386,13 +4386,13 @@ SceneVBlankHandler:
 	jr nz, RAM_C7FD
 	call StepSceneWindowSplit
 RAM_C7FD:
-	ldh a, [$FF96]
+	ldh a, [hSceneScrollDelay]
 	dec a
-	ldh [$FF96], a
+	ldh [hSceneScrollDelay], a
 	or a
 	jr nz, RAM_C809
 	ld a, $01
-	ldh [$FF95], a
+	ldh [hSceneScrollStarted], a
 RAM_C809:
 	ldh a, [$FF87]
 	ldh [rSCY], a
@@ -4403,23 +4403,23 @@ RAM_C809:
 	ldh [hSceneRowHdmaPending], a
 	call StartSceneTileRowHdma
 RAM_C818:
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	and $01
 	jr z, RAM_C82E
 	call Func_0A59
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	and $F0
 	cp $F0
 	jr nz, RAM_C82E
 	jp Jump_00DA
 
 RAM_C82E:
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	inc a
-	ld [$C6B7], a
-	ld a, [$C6B8]
+	ld [wVBlankCounter], a
+	ld a, [wVBlankCounter + 1]
 	adc a, $00
-	ld [$C6B8], a
+	ld [wVBlankCounter + 1], a
 	ld a, $01
 	ld [wVBlankPending], a
 	pop hl
@@ -4768,7 +4768,7 @@ RAM_D0DF:
 	ld d, a
 	call Func_3A88
 	xor a
-	ld [$C6D1], a
+	ld [wPaletteFadeFromWhite], a
 	call Func_3A2F
 	ld a, $01
 	ld [rROMB0], a
@@ -4793,7 +4793,7 @@ LoadScrollingScenePalette:
 	ld a, h
 	ldh [$FF89], a
 	ld a, [hl]
-	ldh [$FF92], a
+	ldh [hSceneRomBank], a
 	ld e, a
 	ld hl, wScrollingSceneLastRow
 	ld a, [hli]
@@ -4870,14 +4870,14 @@ Jump_01_60D9:
 	jr z, Jump_01_60D9
 	xor a
 	ld [wVBlankPending], a
-	ldh a, [$FF95]
+	ldh a, [hSceneScrollStarted]
 	or a
 	jr z, Jump_01_60D2
 	call AdvanceSceneScroll
 	ldh a, [$FF84]
 	or a
 	jr nz, Jump_01_6126
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	ld e, a
 	and $80
 	jr nz, Jump_01_6126
@@ -5221,7 +5221,7 @@ Jump_01_62CE:
 	ldh a, [$FF84]
 	or a
 	jr nz, Jump_01_62F6
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	and $80
 	jr nz, Jump_01_62F6
 	ld e, $24
@@ -5461,7 +5461,7 @@ Bank01RomImage_6432:
 	LOAD UNION "RAM code $D1F0", WRAMX[$D1F0] ; copied from $01:6432
 
 ComputeSceneRowPointer:
-	ldh a, [$FF92]
+	ldh a, [hSceneRomBank]
 	ld a, a
 	ld [rROMB0], a
 	ld hl, wScrollingSceneRows
@@ -5620,7 +5620,7 @@ Bank01RomImage_6505:
 
 StageSceneRowTiles:
 	call ComputeSceneRowPointer
-	ldh a, [$FF92]
+	ldh a, [hSceneRomBank]
 	ld a, a
 	ld [rROMB0], a
 	ld de, $0000
@@ -6714,7 +6714,7 @@ ClearPasswordBits:
 
 EncodePasswordFromProgress:
 Func_01_6BBC: ; legacy alias, used by src/bank_00.asm
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	inc a
 	ldh [hPasswordLevelNumber], a
 	call ClearPasswordBits
@@ -7336,11 +7336,54 @@ Jump_01_790E:
 	jr nz, Jump_01_790D
 	ret
 
-	db $3E, $2C, $21, $43, $C9, $77, $3E, $11, $01, $E9, $6C, $11, $B9, $6F, $CD, $A3
-	db $7A, $3E, $01, $21, $49, $C9, $77, $3E, $01, $21, $4B, $C9, $77, $3E, $11, $F5
-	db $AF, $EA, $C0, $C6, $76, $00, $00, $FA, $C0, $C6, $B7, $28, $F7, $AF, $EA, $C0
-	db $C6, $CD, $8B, $D8, $21, $4B, $C9, $7E, $3C, $77, $F1, $3D, $FE, $FF, $28, $0C
-	db $F5, $01, $E9, $6C, $01, $E9, $6C, $CD, $A3, $7A, $18, $D4, $C9
+; Unreferenced. Earlier form of ShowPasswordRejection: no sound, counter $11, one
+; RAM_D88B call per frame. Original defect kept: the reload repeats `ld bc` where
+; the first pass loads `ld de`, so DE is never reloaded.
+UnusedPasswordRejectionVariant:
+	ld a, $2C
+	ld hl, wBankedBgSourceBank
+	ld [hl], a
+	ld a, $11
+	ld bc, CodeRejectedTileMap
+	ld de, CodeRejectedAttrMap
+	call SetBankedRowSourcePtrs
+	ld a, $01
+	ld hl, wBgCopyRow
+	ld [hl], a
+	ld a, $01
+	ld hl, $C94B
+	ld [hl], a
+	ld a, $11
+	push af
+.l7954:
+	xor a
+	ld [wVBlankPending], a
+.l7958:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, .l7958
+	xor a
+	ld [wVBlankPending], a
+	call RAM_D88B
+	ld hl, $C94B
+	ld a, [hl]
+	inc a
+	ld [hl], a
+	pop af
+	dec a
+	cp $FF
+	jr z, .l7980
+	push af
+	ld bc, CodeRejectedTileMap
+	ld bc, CodeRejectedTileMap
+	call SetBankedRowSourcePtrs
+	jr .l7954
+.l7980:
+	ret
+	ASSERT @ - UnusedPasswordRejectionVariant == 77
 
 ShowPasswordRejection:
 	ld a, $2C
@@ -7398,18 +7441,107 @@ Jump_01_799E:
 Jump_01_79EB:
 	ret
 
-	db $AF, $EA, $54, $C9, $FA, $53, $C9, $21, $43, $C9, $77, $21, $48, $C9, $AF, $77
-	db $21, $49, $C9, $3E, $01, $77, $21, $4A, $C9, $3E, $01, $77, $3E, $14, $EA, $4E
-	db $C9, $AF, $EA, $C0, $C6, $76, $00, $00, $FA, $C0, $C6, $B7, $28, $F7, $AF, $EA
-	db $C0, $C6, $FA, $4F, $C9, $4F, $FA, $50, $C9, $47, $FA, $51, $C9, $5F, $FA, $52
-	db $C9, $57, $FA, $4E, $C9, $3D, $CD, $D4, $7A, $CD, $1B, $D9, $21, $4A, $C9, $7E
-	db $3C, $77, $FA, $4E, $C9, $3D, $EA, $4E, $C9, $20, $C6, $C9, $AF, $EA, $54, $C9
-	db $FA, $53, $C9, $21, $43, $C9, $77, $3E, $13, $EA, $4E, $C9, $EA, $48, $C9, $3E
-	db $01, $EA, $49, $C9, $AF, $EA, $C0, $C6, $76, $00, $00, $FA, $C0, $C6, $B7, $28
-	db $F7, $AF, $EA, $C0, $C6, $21, $4E, $C9, $3E, $14, $96, $EA, $4A, $C9, $FA, $4E
-	db $C9, $EA, $48, $C9, $FA, $4F, $C9, $4F, $FA, $50, $C9, $47, $FA, $51, $C9, $5F
-	db $FA, $52, $C9, $57, $AF, $CD, $D4, $7A, $CD, $1B, $D9, $FA, $4E, $C9, $3D, $EA
-	db $4E, $C9, $FE, $FF, $20, $BE, $C9
+; Unreferenced variant of ScrollSceneInFromLeft: grows the copy width instead of
+; stepping SCX. Only writer of wUnusedC954.
+UnusedWipeSceneInFromLeft:
+	xor a
+	ld [wUnusedC954], a
+	ld a, [wSceneBank]
+	ld hl, wBankedBgSourceBank
+	ld [hl], a
+	ld hl, wBgCopyColumn
+	xor a
+	ld [hl], a
+	ld hl, wBgCopyRow
+	ld a, $01
+	ld [hl], a
+	ld hl, wBgCopyWidth
+	ld a, $01
+	ld [hl], a
+	ld a, $14
+	ld [wBgRevealCounter], a
+.l7A0D:
+	xor a
+	ld [wVBlankPending], a
+.l7A11:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, .l7A11
+	xor a
+	ld [wVBlankPending], a
+	ld a, [wSceneTileAttrPtrs]
+	ld c, a
+	ld a, [wSceneTileAttrPtrs + 1]
+	ld b, a
+	ld a, [wSceneTileAttrPtrs + 2]
+	ld e, a
+	ld a, [wSceneTileAttrPtrs + 3]
+	ld d, a
+	ld a, [wBgRevealCounter]
+	dec a
+	call SetBankedSourcePtrsOffset
+	call CopyBankedTilemapRectToBG
+	ld hl, wBgCopyWidth
+	ld a, [hl]
+	inc a
+	ld [hl], a
+	ld a, [wBgRevealCounter]
+	dec a
+	ld [wBgRevealCounter], a
+	jr nz, .l7A0D
+	ret
+
+; Unreferenced variant of ScrollSceneInFromRight (width grows, no SCX step).
+UnusedWipeSceneInFromRight:
+	xor a
+	ld [wUnusedC954], a
+	ld a, [wSceneBank]
+	ld hl, wBankedBgSourceBank
+	ld [hl], a
+	ld a, $13
+	ld [wBgRevealCounter], a
+	ld [wBgCopyColumn], a
+	ld a, $01
+	ld [wBgCopyRow], a
+.l7A60:
+	xor a
+	ld [wVBlankPending], a
+.l7A64:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, .l7A64
+	xor a
+	ld [wVBlankPending], a
+	ld hl, wBgRevealCounter
+	ld a, $14
+	sub [hl]
+	ld [wBgCopyWidth], a
+	ld a, [wBgRevealCounter]
+	ld [wBgCopyColumn], a
+	ld a, [wSceneTileAttrPtrs]
+	ld c, a
+	ld a, [wSceneTileAttrPtrs + 1]
+	ld b, a
+	ld a, [wSceneTileAttrPtrs + 2]
+	ld e, a
+	ld a, [wSceneTileAttrPtrs + 3]
+	ld d, a
+	xor a
+	call SetBankedSourcePtrsOffset
+	call CopyBankedTilemapRectToBG
+	ld a, [wBgRevealCounter]
+	dec a
+	ld [wBgRevealCounter], a
+	cp $FF
+	jr nz, .l7A60
+	ret
+	ASSERT @ - UnusedWipeSceneInFromLeft == 183
 
 SetBankedRowSourcePtrs:
 	push bc
@@ -7474,20 +7606,116 @@ SetBankedSourcePtrsOffset:
 	ld [hli], a
 	ret
 
-	db $FA, $53, $C9, $EA, $43, $C9, $3E, $00, $EA, $4E, $C9, $EA, $48, $C9, $3E, $01
-	db $EA, $49, $C9, $AF, $EA, $C0, $C6, $76, $00, $00, $FA, $C0, $C6, $B7, $28, $F7
-	db $AF, $EA, $C0, $C6, $FA, $4F, $C9, $4F, $FA, $50, $C9, $47, $FA, $51, $C9, $5F
-	db $FA, $52, $C9, $57, $FA, $4E, $C9, $3C, $CD, $D4, $7A, $AF, $EA, $48, $C9, $FA
-	db $4E, $C9, $3C, $47, $3E, $14, $90, $EA, $4A, $C9, $CD, $1B, $D9, $CD, $90, $3C
-	db $FA, $4A, $C9, $EA, $48, $C9, $FA, $4E, $C9, $3C, $EA, $4A, $C9, $CD, $F1, $78
-	db $FA, $4E, $C9, $3C, $EA, $4E, $C9, $FE, $13, $20, $A8, $C9, $FA, $53, $C9, $EA
-	db $43, $C9, $3E, $00, $EA, $4E, $C9, $EA, $48, $C9, $3E, $01, $EA, $49, $C9, $AF
-	db $EA, $C0, $C6, $76, $00, $00, $FA, $C0, $C6, $B7, $28, $F7, $AF, $EA, $C0, $C6
-	db $FA, $4F, $C9, $4F, $FA, $50, $C9, $47, $FA, $51, $C9, $5F, $FA, $52, $C9, $57
-	db $AF, $CD, $D4, $7A, $FA, $4E, $C9, $3C, $EA, $48, $C9, $FA, $4E, $C9, $3C, $47
-	db $3E, $14, $90, $EA, $4A, $C9, $CD, $1B, $D9, $CD, $90, $3C, $FA, $48, $C9, $EA
-	db $4A, $C9, $AF, $EA, $48, $C9, $CD, $F1, $78, $FA, $4E, $C9, $3C, $EA, $4E, $C9
-	db $FE, $13, $20, $AB, $C9
+; Unreferenced variant of ScrollSceneOutFillFromLeft: counts 0 up to $12, copies then
+; fills, no SCX step.
+UnusedRevealSceneFillFromLeft:
+	ld a, [wSceneBank]
+	ld [wBankedBgSourceBank], a
+	ld a, $00
+	ld [wBgRevealCounter], a
+	ld [wBgCopyColumn], a
+	ld a, $01
+	ld [wBgCopyRow], a
+.l7B03:
+	xor a
+	ld [wVBlankPending], a
+.l7B07:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, .l7B07
+	xor a
+	ld [wVBlankPending], a
+	ld a, [wSceneTileAttrPtrs]
+	ld c, a
+	ld a, [wSceneTileAttrPtrs + 1]
+	ld b, a
+	ld a, [wSceneTileAttrPtrs + 2]
+	ld e, a
+	ld a, [wSceneTileAttrPtrs + 3]
+	ld d, a
+	ld a, [wBgRevealCounter]
+	inc a
+	call SetBankedSourcePtrsOffset
+	xor a
+	ld [wBgCopyColumn], a
+	ld a, [wBgRevealCounter]
+	inc a
+	ld b, a
+	ld a, $14
+	sub b
+	ld [wBgCopyWidth], a
+	call CopyBankedTilemapRectToBG
+	call Func_3C90
+	ld a, [wBgCopyWidth]
+	ld [wBgCopyColumn], a
+	ld a, [wBgRevealCounter]
+	inc a
+	ld [wBgCopyWidth], a
+	call FillBgRectWithTileAttr
+	ld a, [wBgRevealCounter]
+	inc a
+	ld [wBgRevealCounter], a
+	cp $13
+	jr nz, .l7B03
+	ret
+
+; Unreferenced variant of ScrollSceneOutFillFromRight (see above).
+UnusedRevealSceneFillFromRight:
+	ld a, [wSceneBank]
+	ld [wBankedBgSourceBank], a
+	ld a, $00
+	ld [wBgRevealCounter], a
+	ld [wBgCopyColumn], a
+	ld a, $01
+	ld [wBgCopyRow], a
+.l7B6F:
+	xor a
+	ld [wVBlankPending], a
+.l7B73:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, .l7B73
+	xor a
+	ld [wVBlankPending], a
+	ld a, [wSceneTileAttrPtrs]
+	ld c, a
+	ld a, [wSceneTileAttrPtrs + 1]
+	ld b, a
+	ld a, [wSceneTileAttrPtrs + 2]
+	ld e, a
+	ld a, [wSceneTileAttrPtrs + 3]
+	ld d, a
+	xor a
+	call SetBankedSourcePtrsOffset
+	ld a, [wBgRevealCounter]
+	inc a
+	ld [wBgCopyColumn], a
+	ld a, [wBgRevealCounter]
+	inc a
+	ld b, a
+	ld a, $14
+	sub b
+	ld [wBgCopyWidth], a
+	call CopyBankedTilemapRectToBG
+	call Func_3C90
+	ld a, [wBgCopyColumn]
+	ld [wBgCopyWidth], a
+	xor a
+	ld [wBgCopyColumn], a
+	call FillBgRectWithTileAttr
+	ld a, [wBgRevealCounter]
+	inc a
+	ld [wBgRevealCounter], a
+	cp $13
+	jr nz, .l7B6F
+	ret
+	ASSERT @ - UnusedRevealSceneFillFromLeft == 213
 
 FillSceneBgRowsWithTrailingTile:
 Func_01_7BC5: ; legacy alias (automatic entry label)
@@ -7718,5 +7946,3 @@ Bank01ZeroFill: ; no reader; zero fill to the bank marker
 	db BANK(@) ; ROM bank marker
 
 ; Relocation pins: ROM0 refers to these with raw numbers (src/bank_00.asm is not edited here).
-	ASSERT BANK(ScoreThresholdTable) == $01 && ScoreThresholdTable == $418F, "raw pointer: ROM0 ld hl, $418F"
-	ASSERT BANK(LevelRowSceneFlags) == $01 && LevelRowSceneFlags == $6609, "raw pointer: ROM0 ld hl, $6609"

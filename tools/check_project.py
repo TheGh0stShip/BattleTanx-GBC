@@ -1363,6 +1363,7 @@ def check_level_banks() -> None:
     expected_memory = {
         "wLevelTileBank": 0xC8B9, "wLevelPaletteBank": 0xC8BA,
         "wLevelCellMapBank": 0xC8BB, "wLevelMapBank": 0xC8BC,
+        "wLevelAttributeMapBank": 0xC8BD, "wLevelLastTileIndex": 0xC8BE,
         "wLevelPaletteCount": 0xC8C0, "wLevelTiles": 0xC8C1,
         "wLevelPalettes": 0xC8C3, "wLevelAttributeMap": 0xC8C5,
         "wLevelTileMap": 0xC8C7, "wLevelCellMap": 0xC8C9,

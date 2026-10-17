@@ -97,6 +97,15 @@ def run_case(root, base, name, rel, label, mode, min_refs, n=None):
         idx = [i for i, l in enumerate(lines) if l.split(";")[0].strip() in (f"{label}:", f"{label}::")]
         if len(idx) != 1:
             return False, f"label {label} not found once in {rel}"
+        # labels written before the insertion point that share its address stay put
+        before = set()
+        j = idx[0] - 1
+        while j >= 0 and (lines[j].split(";")[0].strip() == "" or re.match(r"^[A-Za-z_]\w*::?$", lines[j].split(";")[0].strip())
+                          or lines[j].lstrip().upper().startswith("ASSERT")):
+            m = re.match(r"^([A-Za-z_]\w*)::?$", lines[j].split(";")[0].strip())
+            if m:
+                before.add(m.group(1))
+            j -= 1
         lines.insert(idx[0], f"\tds {N}, $00 ; shift test")
         src.write_text("\n".join(lines))
         res, err = build(t)
@@ -108,7 +117,8 @@ def run_case(root, base, name, rel, label, mode, min_refs, n=None):
     rom1, sym1 = res
     bank, start = sym0[label]
     # labels at the bank marker ($7FFF) stay put: computed fills absorb the padding
-    moved = {k for k, (b, a) in sym0.items() if b == bank and a >= start and 0x4000 <= a < 0x7FFF}
+    moved = {k for k, (b, a) in sym0.items() if b == bank and a >= start and 0x4000 <= a < 0x7FFF
+             and not (a == start and k in before)}
     for k, (b, a) in sym0.items():
         want = (b, a + N) if k in moved else (b, a)
         if sym1.get(k) != want:
@@ -149,6 +159,14 @@ def run_case(root, base, name, rel, label, mode, min_refs, n=None):
                 relocated.add(w)
                 ok = True
                 break
+        if not ok and not isinstance(d, tuple):
+            # split immediates: LOW()/HIGH() of a moved label loaded as two bytes
+            for tgt in targets:
+                if (rom0[d], rom1[d]) in (((tgt & 0xFF), ((tgt + N) & 0xFF)), ((tgt >> 8), ((tgt + N) >> 8))) \
+                        and rom0[d] != rom1[d]:
+                    relocated.add(("split", d))
+                    ok = True
+                    break
         if not ok:
             unexplained.append(d)
     if unexplained:

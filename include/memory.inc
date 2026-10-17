@@ -134,6 +134,8 @@ DEF wLevelTileBank             EQU $C8B9
 DEF wLevelPaletteBank          EQU $C8BA
 DEF wLevelCellMapBank          EQU $C8BB
 DEF wLevelMapBank              EQU $C8BC
+DEF wLevelAttributeMapBank     EQU $C8BD ; written by LoadLevelRecord, never read
+DEF wLevelLastTileIndex        EQU $C8BE ; 2 bytes LE, written by LoadLevelRecord, never read
 DEF wLevelPaletteCount         EQU $C8C0
 DEF wLevelTiles                EQU $C8C1 ; 2-byte pointer
 DEF wLevelPalettes             EQU $C8C3 ; 2-byte pointer

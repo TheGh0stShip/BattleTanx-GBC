@@ -60,6 +60,21 @@ def sign(v):
     return (v > 0) - (v < 0)
 
 
+AUX_FLAG_MODE = {"wLevelAuxType4Active": 4, "wLevelAuxType3Pending": 3, "wLevelAuxType2AllReached": 2}
+
+
+def state_check_modes(root: pathlib.Path) -> dict:
+    """Level -> auxiliary mode its LevelNNStateCheck depends on, read from source."""
+    import re
+    src = (root / "src" / "bank_03.asm").read_text()
+    out = {}
+    for m in re.finditer(r"^Level(\d\d)StateCheck:\n(.*?)(?=^[A-Za-z]\w*:)", src, re.M | re.S):
+        flags = [f for f in re.findall(r"ld a, \[(\w+)\]", m.group(2)) if f in AUX_FLAG_MODE]
+        if flags:
+            out[int(m.group(1))] = AUX_FLAG_MODE[flags[-1]]
+    return out
+
+
 def validate(rom: bytes) -> tuple[int, int]:
     try:
         levels = S.parse(rom)
@@ -112,10 +127,21 @@ def validate(rom: bytes) -> tuple[int, int]:
             # take InitializeLevelObjects' ordinary sequence path.
             if record[0] & 0x80 or record[0] == 6 or record[5] & 0x80:
                 continue
+            check(record[5] < 0x40,
+                  f"SPN01: level {level['level']} spawn {index} byte 5 ${record[5]:02X} sets object +$2D bit 6 (recorded-path flag)")
             key = (level["level"], record[5] & 0x3F)
             references.setdefault(key, []).append(index)
             check(key in sequence_keys,
                   f"SEQ12: level {key[0]} spawn {index} selects missing sequence slot {key[1]}")
+    modes = state_check_modes(pathlib.Path(__file__).resolve().parent.parent)
+    check(len(modes) == 13, f"AUX01: {len(modes)} level state checks read an auxiliary flag, expected 13")
+    for level in objects:
+        lvl = level["level"]
+        players = [i for i, r in enumerate(level["spawns"]) if r[0] == 3]
+        check(len(players) == 1, f"SPN02: level {lvl} has {len(players)} type-3 (player start) records")
+        present = {a[6] for a in level["auxiliaries"] if a[6]}
+        if lvl in modes:
+            check(modes[lvl] in present, f"AUX01: level {lvl} completion needs an auxiliary mode-{modes[lvl]} record")
     unused = sequence_keys - set(references)
     check(unused == UNUSED_SEQUENCES,
           f"SEQ12: unused sequences {sorted(unused ^ UNUSED_SEQUENCES)} differ from the list")
@@ -183,6 +209,15 @@ def negative_tests(rom: bytes) -> int:
     level, index, _ = first_spawn
     spawn_slot_offset = O.offset(level["spawn_address"] + index * O.SPAWN_SIZE + 5)
     cases.append(("spawn sequence reference", {spawn_slot_offset: 0x3F}, "SEQ12: level 0"))
+    cases.append(("spawn byte 5 bit 6", {spawn_slot_offset: rom[spawn_slot_offset] | 0x40}, "SPN01: level 0"))
+    lv0 = objects[0]
+    player = next(i for i, r in enumerate(lv0["spawns"]) if r[0] == 3)
+    cases.append(("player start record", {O.offset(lv0["spawn_address"] + player * O.SPAWN_SIZE): 0}, "SPN02: level 0"))
+    mode4 = next(i for i, a in enumerate(lv0["auxiliaries"]) if a[6] == 4)
+    # swap modes with a mode-3 record of another level so the global mode counts stay equal
+    other, m3 = next((lv, i) for lv in objects[1:] for i, a in enumerate(lv["auxiliaries"]) if a[6] == 3)
+    cases.append(("completion auxiliary mode", {O.offset(lv0["aux_address"] + mode4 * O.AUX_SIZE + 6): 3,
+                                                O.offset(other["aux_address"] + m3 * O.AUX_SIZE + 6): 4}, "AUX01: level 0"))
     level3 = L.parse_levels(rom)[3]
     route_address = level3.cellmap_addr + 10 * level3.width + 73
     route_cell = level3.cell_bank * L.BANK_SIZE + route_address - 0x4000

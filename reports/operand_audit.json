@@ -1,0 +1,599 @@
+{
+ "dw_rom_label_collisions_per_bank": {
+  "$00": 1,
+  "$06": 2,
+  "$2B": 1,
+  "$30": 6,
+  "$33": 4,
+  "$39": 4,
+  "$3A": 2
+ },
+ "indirect_transfers": {
+  "by_kind": {
+   "jp hl": 6,
+   "pushed constant (synthetic return candidate)": 6,
+   "transfer to RAM": 2
+  },
+  "items": [
+   {
+    "at": "src/bank_00.asm:9",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "transfer to RAM",
+    "owner": "VBlankInterrupt"
+   },
+   {
+    "at": "src/bank_00.asm:21",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "transfer to RAM",
+    "owner": "LCDInterrupt"
+   },
+   {
+    "at": "src/bank_00.asm:10259",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "jp hl",
+    "owner": "DispatchRuntimeCallbackUnlessPaused"
+   },
+   {
+    "at": "src/bank_00.asm:10928",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "pushed constant (synthetic return candidate)",
+    "owner": "ScreenTable_CallInit"
+   },
+   {
+    "at": "src/bank_00.asm:10929",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "jp hl",
+    "owner": "ScreenTable_CallInit"
+   },
+   {
+    "at": "src/bank_00.asm:10966",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "pushed constant (synthetic return candidate)",
+    "owner": "ScreenTable_CallUpdate"
+   },
+   {
+    "at": "src/bank_00.asm:10967",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "jp hl",
+    "owner": "ScreenTable_CallUpdate"
+   },
+   {
+    "at": "src/bank_01.asm:762",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "jp hl",
+    "owner": "DispatchEntityHandler"
+   },
+   {
+    "at": "src/bank_01.asm:1588",
+    "documented": true,
+    "in_ram_image": true,
+    "kind": "pushed constant (synthetic return candidate)",
+    "owner": "RAM_D6CE"
+   },
+   {
+    "at": "src/bank_01.asm:1602",
+    "documented": true,
+    "in_ram_image": true,
+    "kind": "jp hl",
+    "owner": "RAM_D6CE"
+   },
+   {
+    "at": "src/bank_03.asm:417",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "pushed constant (synthetic return candidate)",
+    "owner": "UpdateObjectSequenceMovement"
+   },
+   {
+    "at": "src/bank_03.asm:962",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "pushed constant (synthetic return candidate)",
+    "owner": "CheckObjectNearPlayerBox"
+   },
+   {
+    "at": "src/bank_03.asm:2100",
+    "documented": false,
+    "in_ram_image": false,
+    "kind": "pushed constant (synthetic return candidate)",
+    "owner": "AppendRecordedPathWaypoint_Primed"
+   },
+   {
+    "at": "src/bank_03.asm:2516",
+    "documented": true,
+    "in_ram_image": false,
+    "kind": "jp hl",
+    "owner": "DispatchStateCheck"
+   }
+  ],
+  "undocumented": []
+ },
+ "ram_literals": {
+  "by_address": {
+   "$C0FF": {
+    "layout": 2
+   },
+   "$C729": {
+    "RAM code address": 5
+   },
+   "$C7F1": {
+    "RAM code address": 5
+   },
+   "$C94B": {
+    "shared scratch": 7
+   },
+   "$CD2B": {
+    "write-only": 1
+   },
+   "$CD2C": {
+    "write-only": 1
+   },
+   "$CD2D": {
+    "write-only": 1
+   },
+   "$CD2E": {
+    "write-only": 1
+   },
+   "$CD2F": {
+    "write-only": 1
+   },
+   "$CD30": {
+    "write-only": 1
+   },
+   "$CD31": {
+    "write-only": 1
+   },
+   "$CD32": {
+    "write-only": 1
+   },
+   "$D000": {
+    "bank-dependent (SVBK)": 12
+   },
+   "$D120": {
+    "RAM code address": 1
+   },
+   "$D130": {
+    "RAM code address": 1
+   },
+   "$D140": {
+    "RAM code address": 1
+   },
+   "$D160": {
+    "RAM code address": 1
+   },
+   "$D1B0": {
+    "RAM code address": 1
+   },
+   "$D1F0": {
+    "RAM code address": 1
+   },
+   "$D230": {
+    "RAM code address": 1
+   },
+   "$D260": {
+    "RAM code address": 1
+   },
+   "$D270": {
+    "RAM code address": 1
+   },
+   "$D2C0": {
+    "RAM code address": 1
+   },
+   "$D2F0": {
+    "RAM code address": 1
+   },
+   "$D310": {
+    "RAM code address": 1
+   },
+   "$D330": {
+    "RAM code address": 1
+   },
+   "$D370": {
+    "RAM code address": 1
+   },
+   "$D3B0": {
+    "RAM code address": 1
+   },
+   "$D561": {
+    "write-only": 1
+   },
+   "$D562": {
+    "write-only": 1
+   },
+   "$D564": {
+    "write-only": 3
+   },
+   "$D565": {
+    "write-only": 3
+   },
+   "$D56A": {
+    "RAM code address": 1
+   },
+   "$D62A": {
+    "RAM code address": 1
+   },
+   "$D70A": {
+    "RAM code address": 1
+   },
+   "$D7CA": {
+    "RAM code address": 1
+   },
+   "$D7CB": {
+    "RAM code address": 1
+   },
+   "$D7FF": {
+    "bank-dependent (SVBK)": 1
+   },
+   "$D88B": {
+    "RAM code address": 1
+   },
+   "$D91B": {
+    "RAM code address": 1
+   },
+   "$D9CB": {
+    "RAM code address": 1
+   },
+   "$DBFB": {
+    "bank-dependent (SVBK)": 3
+   },
+   "$DBFD": {
+    "bank-dependent (SVBK)": 2
+   },
+   "$DBFE": {
+    "bank-dependent (SVBK)": 1
+   },
+   "$DBFF": {
+    "bank-dependent (SVBK)": 1
+   },
+   "$DC00": {
+    "bank-dependent (SVBK)": 9
+   },
+   "$DC01": {
+    "bank-dependent (SVBK)": 1
+   },
+   "$DC02": {
+    "bank-dependent (SVBK)": 1
+   },
+   "$DC03": {
+    "bank-dependent (SVBK)": 3
+   },
+   "$DC40": {
+    "bank-dependent (SVBK)": 2
+   },
+   "$FF80": {
+    "shared scratch": 63
+   },
+   "$FF81": {
+    "shared scratch": 43
+   },
+   "$FF82": {
+    "shared scratch": 24
+   },
+   "$FF83": {
+    "shared scratch": 22
+   },
+   "$FF84": {
+    "shared scratch": 20
+   },
+   "$FF85": {
+    "shared scratch": 18
+   },
+   "$FF86": {
+    "shared scratch": 22
+   },
+   "$FF87": {
+    "shared scratch": 15
+   },
+   "$FF88": {
+    "shared scratch": 14
+   },
+   "$FF89": {
+    "shared scratch": 13
+   },
+   "$FF8A": {
+    "shared scratch": 12
+   },
+   "$FF8B": {
+    "shared scratch": 13
+   },
+   "$FF8C": {
+    "shared scratch": 8
+   },
+   "$FF8D": {
+    "shared scratch": 5
+   },
+   "$FF8E": {
+    "shared scratch": 4
+   },
+   "$FF90": {
+    "shared scratch": 10
+   },
+   "$FF91": {
+    "shared scratch": 3
+   },
+   "$FF92": {
+    "shared scratch": 3
+   },
+   "$FF93": {
+    "shared scratch": 3
+   },
+   "$FF94": {
+    "shared scratch": 2
+   },
+   "$FF95": {
+    "shared scratch": 3
+   },
+   "$FF96": {
+    "shared scratch": 2
+   },
+   "$FF97": {
+    "shared scratch": 4
+   },
+   "$FF98": {
+    "shared scratch": 11
+   },
+   "$FF99": {
+    "shared scratch": 2
+   },
+   "$FF9A": {
+    "shared scratch": 4
+   },
+   "$FF9B": {
+    "shared scratch": 4
+   },
+   "$FFA0": {
+    "shared scratch": 9
+   },
+   "$FFA1": {
+    "shared scratch": 6
+   },
+   "$FFA2": {
+    "shared scratch": 1
+   },
+   "$FFA3": {
+    "shared scratch": 1
+   },
+   "$FFA4": {
+    "shared scratch": 1
+   },
+   "$FFA5": {
+    "shared scratch": 1
+   },
+   "$FFA6": {
+    "shared scratch": 1
+   },
+   "$FFA7": {
+    "shared scratch": 1
+   },
+   "$FFAB": {
+    "shared scratch": 5
+   },
+   "$FFB0": {
+    "shared scratch": 8
+   },
+   "$FFB1": {
+    "shared scratch": 5
+   },
+   "$FFB2": {
+    "shared scratch": 5
+   },
+   "$FFC0": {
+    "shared scratch": 14
+   },
+   "$FFC1": {
+    "shared scratch": 10
+   },
+   "$FFC2": {
+    "shared scratch": 7
+   },
+   "$FFC3": {
+    "shared scratch": 7
+   },
+   "$FFC4": {
+    "shared scratch": 4
+   },
+   "$FFC5": {
+    "shared scratch": 4
+   },
+   "$FFDB": {
+    "layout": 2
+   },
+   "$FFF4": {
+    "layout": 2
+   },
+   "$FFF7": {
+    "layout": 1
+   }
+  },
+  "by_class": {
+   "RAM code address": 33,
+   "bank-dependent (SVBK)": 36,
+   "layout": 7,
+   "shared scratch": 444,
+   "write-only": 16
+  }
+ },
+ "raw_bank_bytes": {
+  "by_class": {
+   "data bank selected for a pointer computed at run time": 15,
+   "restores the caller's bank $01": 8,
+   "unresolved": 4
+  },
+  "items": [
+   {
+    "at": "src/bank_00.asm:196",
+    "bank": "$01",
+    "class": "unresolved",
+    "owner": "RunMenuAndLevelLoop"
+   },
+   {
+    "at": "src/bank_00.asm:201",
+    "bank": "$01",
+    "class": "unresolved",
+    "owner": "RunMenuAndLevelLoop"
+   },
+   {
+    "at": "src/bank_00.asm:1341",
+    "bank": "$08",
+    "class": "unresolved",
+    "owner": "LoadObjectPalettes"
+   },
+   {
+    "at": "src/bank_00.asm:2486",
+    "bank": "$05",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "RenderObjectOrientationGraphic"
+   },
+   {
+    "at": "src/bank_00.asm:2572",
+    "bank": "$08",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "RenderObjectOrientationGraphic"
+   },
+   {
+    "at": "src/bank_00.asm:4514",
+    "bank": "$05",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "LoadLevelRecord"
+   },
+   {
+    "at": "src/bank_00.asm:4600",
+    "bank": "$01",
+    "class": "restores the caller's bank $01",
+    "owner": "LoadLevelData"
+   },
+   {
+    "at": "src/bank_00.asm:4916",
+    "bank": "$01",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "RefreshLevelViewport"
+   },
+   {
+    "at": "src/bank_00.asm:5395",
+    "bank": "$05",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "GetLevelCellTileAndAttr"
+   },
+   {
+    "at": "src/bank_00.asm:6381",
+    "bank": "$01",
+    "class": "unresolved",
+    "owner": "UpdateAllObjects"
+   },
+   {
+    "at": "src/bank_00.asm:8148",
+    "bank": "$05",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "SpawnVehicleProjectile"
+   },
+   {
+    "at": "src/bank_00.asm:9195",
+    "bank": "$05",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "Func_3104"
+   },
+   {
+    "at": "src/bank_00.asm:9255",
+    "bank": "$02",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "Func_315F"
+   },
+   {
+    "at": "src/bank_00.asm:9298",
+    "bank": "$02",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "Func_3190"
+   },
+   {
+    "at": "src/bank_00.asm:9314",
+    "bank": "$08",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "Func_3190"
+   },
+   {
+    "at": "src/bank_00.asm:10997",
+    "bank": "$01",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "ScreenTable_LoadEntry"
+   },
+   {
+    "at": "src/bank_00.asm:11663",
+    "bank": "$05",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "LoadScreenEffectPart"
+   },
+   {
+    "at": "src/bank_00.asm:11698",
+    "bank": "$08",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "RenderScreenEffect"
+   },
+   {
+    "at": "src/bank_00.asm:11730",
+    "bank": "$08",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "CopyScreenEffectPartTiles"
+   },
+   {
+    "at": "src/bank_00.asm:11793",
+    "bank": "$05",
+    "class": "data bank selected for a pointer computed at run time",
+    "owner": "BuildScreenEffectPartOam"
+   },
+   {
+    "at": "src/bank_01.asm:1455",
+    "bank": "$01",
+    "class": "restores the caller's bank $01",
+    "owner": "InitMenuSystem"
+   },
+   {
+    "at": "src/bank_01.asm:1507",
+    "bank": "$01",
+    "class": "restores the caller's bank $01",
+    "owner": "MenuLoopTop"
+   },
+   {
+    "at": "src/bank_01.asm:1550",
+    "bank": "$01",
+    "class": "restores the caller's bank $01",
+    "owner": "MenuEnterNewState"
+   },
+   {
+    "at": "src/bank_01.asm:4773",
+    "bank": "$01",
+    "class": "restores the caller's bank $01",
+    "owner": "RAM_D0DF"
+   },
+   {
+    "at": "src/bank_01.asm:4814",
+    "bank": "$01",
+    "class": "restores the caller's bank $01",
+    "owner": "LoadScrollingScenePalette"
+   },
+   {
+    "at": "src/bank_01.asm:5492",
+    "bank": "$01",
+    "class": "restores the caller's bank $01",
+    "owner": "ComputeSceneRowPointer"
+   },
+   {
+    "at": "src/bank_01.asm:5648",
+    "bank": "$01",
+    "class": "restores the caller's bank $01",
+    "owner": "RAM_D37C"
+   }
+  ]
+ },
+ "rom_address_operands": {
+  "by_class": {},
+  "items": []
+ }
+}

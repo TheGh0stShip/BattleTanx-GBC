@@ -430,4 +430,3 @@ LevelAttributeLookupPointers:
 	ASSERT LevelTileAnimationSet0 == $517A
 
 ; Relocation pin: ROM0 Func_2241/Func_2295 use ld bc, $4600 (src/bank_00.asm is not edited here).
-	ASSERT BANK(ObjectVelocityTable) == $05 && ObjectVelocityTable == $4600, "raw pointer: ROM0 ld bc, $4600"

@@ -188,7 +188,10 @@ Channel 4 notes `$0C-$14` take their instrument and NR51 bits from
 NoiseNoteTable; channel 4 writes no frequency. Channel 4 note-ons are
 dropped while `wNoiseLockTimer` is non-zero and NR52 reports channel 4 on.
 Music `$00` is only `FF FF` (stop). Music `$07` ends with stop; the others
-loop. Each sequence is followed by `FE FF` (`$07`: `00 FF FF`), never read.
+loop. Each looping sequence is followed by `FE FF`, never read. `$07` is
+followed by `00 FF FF`: Music_Update reads the `$00` as the stop event's
+delay byte (a dead write, because the stop clears `wMusicPtr`); the trailing
+`FF FF` is never read.
 
 ### 5.4 Music pointer entry (4 bytes)
 

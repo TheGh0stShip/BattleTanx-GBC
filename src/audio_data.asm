@@ -5365,7 +5365,8 @@ Music_07:
 	music_off 2, 0
 	music_off 3, 0
 	music_stop $FF, $FF
-	db $00, $FF, $FF ; not reached by Music_HandleEvent
+	db $00 ; read by Music_Update as the stop event's delay (dead write: wMusicPtr is cleared)
+	db $FF, $FF ; never read
 
 Music_08:
 	music_instrument 2, INSTRUMENT_CH2_ALTERNATE, 0

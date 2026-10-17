@@ -32,7 +32,7 @@ InitializeObjectSequenceState:
 	push hl
 	push bc
 	push hl
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	ld h, $00
 	ld l, a
 	add hl, hl
@@ -1193,6 +1193,9 @@ AimObjectAtPlayer_CheckFacing:
 	jp Jump_03_62E5
 
 
+; Locks itself out: wRecordedPathWriteIndex ($CD15) is 0 at level start, and its
+; only increment is in AppendRecordedPathWaypoint, which is reached only from
+; here after the zero-index exit test below.
 UnusedStartRecordedPathFollow:
 Func_03_61FC: ; legacy alias (automatic entry label)
 	ld l, e
@@ -1755,7 +1758,7 @@ TriggerAuxLinkedRegion:
 	ld a, [de]
 	and a
 	jp nz, CheckAuxRegion_Next
-	ld a, [$C91D]
+	ld a, [wHudAlertActive]
 	and a
 	jr z, CheckAuxRegion_Next
 	inc hl
@@ -1782,7 +1785,7 @@ TriggerAuxPendingRegion:
 	jr z, CheckAuxRegion_Next
 	inc a
 	ld [hl], a
-	call Func_0A48
+	call ResetNearestObjectTrackerFar
 	ld l, e
 	ld h, d
 	jr CheckAuxRegion_Triggered
@@ -2280,6 +2283,8 @@ Jump_03_674B:
 	ld a, [de]
 	and a
 	jr z, PathSnap_SetDesiredHeading
+	; Original defect: hl is entry +4, so nine dec hl land on the previous
+	; entry's +3 (Y high byte), not its +4 heading byte.
 	push hl
 	dec hl
 	dec hl
@@ -2325,6 +2330,7 @@ Jump_03_679B:
 	ld a, [de]
 	and a
 	jr z, Jump_03_67B7
+	; This push/pop-wrapped dec hl run restores hl unchanged and has no effect.
 	push hl
 	dec hl
 	dec hl
@@ -2498,7 +2504,7 @@ StateCheckTable:
 	dw Level14StateCheck
 
 DispatchStateCheck:
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	ld l, a
 	ld h, $00
 	add hl, hl

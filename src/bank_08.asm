@@ -509,7 +509,8 @@ Bank08ObjectPalettes67FD:
 Bank08InterfaceTiles6815:
 	INCBIN "assets/bank_08/interface_tiles_6815.bin" ; 12 tiles
 
-Bank08InterfacePalette68D5: ; palette-shaped record, no reader found
+PaletteRecord68D5: ; palette-shaped record, no reader found
+Bank08InterfacePalette68D5: ; legacy alias, used by tools/bank08.py and reports/
 	dw $0000, $001F, $465F, $7FFF
 
 ; LoadInterfaceTilesVRAM0: 4 tiles -> VRAM0 tiles $CE-$D1.

@@ -1,13 +1,69 @@
 ; BattleTanx (USA) - ROM bank $02
 
 SECTION "ROM Bank $02", ROMX[$4000], BANK[$02]
-	db $CD, $28, $20, $CD, $58, $20, $CD, $ED, $22, $CD, $FE, $20, $AF, $EA, $C0, $C6
-	db $76, $00, $00, $FA, $C0, $C6, $B7, $28, $F7, $AF, $EA, $C0, $C6, $F0, $44, $FE
-	db $90, $38, $FA, $FE, $97, $30, $F6, $3E, $01, $E0, $4F, $3E, $C1, $E0, $51, $3E
-	db $00, $E0, $52, $3E, $80, $E0, $53, $AF, $E0, $54, $3E, $27, $E0, $55, $CD, $F0
-	db $FF, $3E, $01, $E0, $4F, $3E, $C4, $E0, $51, $3E, $00, $E0, $52, $3E, $9C, $E0
-	db $53, $AF, $E0, $54, $3E, $04, $E0, $55, $AF, $E0, $4F, $3E, $C4, $E0, $51, $3E
-	db $40, $E0, $52, $3E, $9C, $E0, $53, $AF, $E0, $54, $3E, $04, $E0, $55, $C9
+; Unreferenced frame routine. $400C-$406D equal RespawnPlayer.beginFrame
+; ($00:0250-$02B1); the four leading calls and the final ret differ.
+UnreferencedBank02FrameRoutine:
+	call ClearObjectPool
+	call ResetSpriteAllocators
+	call UpdateAllObjects
+	call ClearUnusedShadowOamEntries
+	xor a
+	ld [wVBlankPending], a
+.waitVBlank:
+	halt
+	nop
+	nop
+	ld a, [wVBlankPending]
+	or a
+	jr z, .waitVBlank
+	xor a
+	ld [wVBlankPending], a
+.waitForHdmaWindow:
+	ldh a, [rLY]
+	cp $90
+	jr c, .waitForHdmaWindow
+	cp $97
+	jr nc, .waitForHdmaWindow
+	ld a, $01
+	ldh [rVBK], a
+	ld a, HIGH(wDynamicSpriteTiles)
+	ldh [rHDMA1], a
+	ld a, LOW(wDynamicSpriteTiles)
+	ldh [rHDMA2], a
+	ld a, $80
+	ldh [rHDMA3], a
+	xor a
+	ldh [rHDMA4], a
+	ld a, DYNAMIC_SPRITE_TRANSFER_TILE_COUNT - 1
+	ldh [rHDMA5], a
+	call OAMDMARoutine
+	ld a, $01
+	ldh [rVBK], a
+	ld a, $C4
+	ldh [rHDMA1], a
+	ld a, $00
+	ldh [rHDMA2], a
+	ld a, $9C
+	ldh [rHDMA3], a
+	xor a
+	ldh [rHDMA4], a
+	ld a, $04
+	ldh [rHDMA5], a
+	xor a
+	ldh [rVBK], a
+	ld a, $C4
+	ldh [rHDMA1], a
+	ld a, $40
+	ldh [rHDMA2], a
+	ld a, $9C
+	ldh [rHDMA3], a
+	xor a
+	ldh [rHDMA4], a
+	ld a, $04
+	ldh [rHDMA5], a
+	ret
+	ASSERT @ - UnreferencedBank02FrameRoutine == $6F
 
 ResetNearestObjectTracker:
 Func_02_406F: ; legacy alias, used by src/bank_00.asm
@@ -486,24 +542,24 @@ Func_02_4548: ; legacy alias
 	ret
 
 ObjectAnimationFrames4565:
-	db $A8, $44, $38, $45, $C8, $45, $58, $46, $58, $46, $C8, $45, $38, $45, $A8, $44
+	dw SpriteTiles44A8, SpriteTiles4538, SpriteTiles45C8, SpriteTiles4658, SpriteTiles4658, SpriteTiles45C8, SpriteTiles4538, SpriteTiles44A8
 ObjectAnimationFrames4575:
-	db $F0, $46, $80, $47, $10, $48, $A0, $48, $30, $49
+	dw SpriteTiles46F0, SpriteTiles4780, SpriteTiles4810, SpriteTiles48A0, SpriteTiles4930
 ObjectAnimationFrames457F:
-	db $C8, $49, $58, $4A, $E8, $4A
-	db $78, $4B, $08, $4C, $98, $4C, $28, $4D, $B8, $4D, $48, $4E, $D8, $4E, $68, $4F
+	dw SpriteTiles49C8, SpriteTiles4A58, SpriteTiles4AE8
+	dw SpriteTiles4B78, SpriteTiles4C08, SpriteTiles4C98, SpriteTiles4D28, SpriteTiles4DB8, SpriteTiles4E48, SpriteTiles4ED8, SpriteTiles4F68
 ObjectAnimationFrames4595:
-	db $00, $50, $40, $50, $80, $50, $C0, $50
+	dw SpriteTiles5000, SpriteTiles5040, SpriteTiles5080, SpriteTiles50C0
 ObjectAnimationFrames459D:
-	db $08, $51, $48, $51, $88, $51, $C8, $51
+	dw SpriteTiles5108, SpriteTiles5148, SpriteTiles5188, SpriteTiles51C8
 ObjectAnimationFrames45A5:
-	db $10, $52, $50, $52, $90, $52, $D0, $52
+	dw SpriteTiles5210, SpriteTiles5250, SpriteTiles5290, SpriteTiles52D0
 ObjectAnimationFrames45AD:
-	db $18, $53, $58, $53, $98, $53, $D8, $53
+	dw SpriteTiles5318, SpriteTiles5358, SpriteTiles5398, SpriteTiles53D8
 ObjectAnimationFrames45B5:
-	db $20, $54, $30, $54, $40, $54
+	dw SpriteTiles5420, SpriteTiles5430, SpriteTiles5440
 ObjectAnimationFrames45BB:
-	db $58, $54, $68, $54, $78, $54
+	dw SpriteTiles5458, SpriteTiles5468, SpriteTiles5478
 
 SpawnDirectionalOffsetEffect:
 Func_02_45C1: ; legacy alias
@@ -926,7 +982,7 @@ Func_02_4810: ; legacy alias
 	ld [hli], a
 	dec e
 	jr nz, .clearByte
-	call $FFF0
+	call OAMDMARoutine
 	ret
 
 

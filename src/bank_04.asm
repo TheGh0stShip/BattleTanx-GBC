@@ -27,7 +27,7 @@ InitializeLevelObjects:
 	ld [wObjectSlowTickCounter], a
 	ld [wObjectSequenceThrottleCounter], a
 	ld [wForceRecordedPathAppend], a
-	ld a, [$CA06]
+	ld a, [wLevelNumber]
 	ld h, $00
 	ld l, a
 	add hl, hl

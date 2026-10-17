@@ -35,8 +35,8 @@
    - `UnusedStartRecordedPathFollow` (`$03:61FC`);
    - `GetLevelObjectHealthPenaltyNoLoad` (`$04:62F7`).
 
-   Also `$02:4000-$406E` and three superseded instruction-shaped `db` blocks at
-   `$01:7934`, `$01:79EC` and `$01:7AF0` (see FINAL_FUNCTIONS.md).
+   `$02:4000-$406E` and the five bank-`$01` routines at `$7934-$7BC4` are now
+   explicit instruction source (see completion/RUNTIME_SYSTEMS.md).
 3. **Recorded-path following.** The feature cannot start through any recovered
    route. `wRecordedPath` is written only by `AppendRecordedPathWaypoint`, whose
    sole caller is `UnusedStartRecordedPathFollow`; that entry has no direct,
@@ -47,7 +47,9 @@
    Each ring entry is X word, Y word, heading, then three unused bytes.
    `LoadAdjacentPathWaypointTarget` moves by exactly one eight-byte entry and
    reads only X/Y (`+0..+3`); the earlier claim that its reverse path read `+5`
-   was incorrect. Bytes `+5..+7` are never read or written.
+   was incorrect. Bytes `+5..+7` are never read or written. The real anomaly
+   is the nine `dec hl` in `SnapAndAdvanceRecordedPathWaypoint`, which read the
+   previous entry's +3. This original defect is documented, not corrected.
 4. **Bank `$03` sequences** (`tools/object_sequence_fields.py`):
    - **Unread fields.** Nothing reads +1, +2, +7 or the count byte. +1/+2 is the
      pixel distance to the next waypoint (one exception: level 3 slot 2

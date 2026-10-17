@@ -93,11 +93,16 @@ DEF wBgRevealCounter                 EQU $C94E ; 1; step counter/row-column inde
 DEF wRecordedPathWriteIndex          EQU $CD15 ; 1; 0-63
 DEF wRecordedPathWrapCount           EQU $CD16 ; 1; written only
 DEF wRecordedPathStarted             EQU $CD17 ; 1
-DEF wRecordedPath                    EQU $CDEF ; $200; 64 x 8: X word, Y word, heading, 3 unused
+DEF wRecordedPath                    EQU $CDEF ; $200; 64 x 8: X word, Y word, heading; +5-+7 never written (keep $FF fill), never read
 DEF hScenePaletteBuildIndex          EQU $FFA8 ; 1
 DEF hSceneRasterFxEnabled            EQU $FFAC ; 1
 DEF hSceneWaitCountdown              EQU $FFAD ; 1
 DEF hScenePaletteFadeOffset          EQU $FFAE ; 1
+; Bank $01 scene roles; these HRAM bytes are time-shared with bank $00 hLevelRegion* scratch.
+DEF hSceneRomBank                    EQU $FF92 ; 1, copied from wScrollingSceneBank; written to rROMB0 (time-shared with hLevelRegionTop)
+DEF hSceneScrollStarted              EQU $FF95 ; 1 (time-shared with hLevelRegionX)
+DEF hSceneScrollDelay                EQU $FF96 ; 1, VBlank countdown that sets hSceneScrollStarted at 0
 DEF hScoreDigitsStarted              EQU $FFB8 ; 1
 DEF hPasswordLevelNumber             EQU $FFC6 ; 1
+DEF wUnusedC954                     EQU $C954 ; written only by the unreferenced UnusedWipeSceneIn* routines
 ENDC
