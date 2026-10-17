@@ -179,6 +179,15 @@ def check_indexed_sprite_grids(rom, sym):
     return len(expected)
 
 
+def check_bank01_screen_pointer_residue(rom, sym):
+    label = "Bank01ScreenMode06PointerResidue"
+    check(sym[label] == (2, 0x481E), "screen pointer residue: symbol moved")
+    check(rd(rom, 2, 0x481E, 2) == rd(rom, 1, 0x481E, 2),
+          "screen pointer residue: no longer matches bank $01 at the same address")
+    check(word(rom, 2, 0x481E) == sym["Func_2C_5F9F"][1],
+          "screen pointer residue: value is not ScreenMode06_LoadTiles")
+
+
 def check_palettes(rom, sym):
     for label, n in (("MenuCursorObjectPalette", 3), ("PasswordBgPalettes", 16), ("PasswordObjPaletteColours", 6),
                      ("BurstObjPalettes", 32), ("Bank02ObjPalette7Colours", 3)):
@@ -308,6 +317,7 @@ def validate(root, rom, sym):
     n = check_dispatch_tables(rom, sym)
     check_picture_descriptors(rom, sym)
     grids = check_indexed_sprite_grids(rom, sym)
+    check_bank01_screen_pointer_residue(rom, sym)
     check_palettes(rom, sym)
     check_source(root)
     check_assets(root, rom)
@@ -336,6 +346,7 @@ def negative_tests(root, rom, sym):
         ("bank marker", {(3, 0x7FFF): 0x00}, "bank $03: marker"),
         ("dispatch target", {(1, sym["EntityHandlerTable"][1] + 1): 0x00}, "EntityHandlerTable target"),
         ("indexed grid descriptor", {(2, sym["IndexedSpriteGridDescriptors"][1]): 0xD1}, "descriptor 0"),
+        ("screen pointer residue", {(2, 0x481E): rom[off(2, 0x481E)] ^ 1}, "screen pointer residue"),
     ]
     n = 0
     for name, chg, expect in cases:

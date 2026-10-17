@@ -19,7 +19,7 @@ Removed (every byte now explicit source or a typed asset above):
 | `assets/bank_01/58DF.bin` | 190 | `a75d94ed60171923b82c48b35755edb6b42b0773` | menu cursor tiles (asset) + tile ids, palette, picture descriptors (source) |
 | `assets/bank_01/6E8A.bin` | 2663 | `4de5c9d075f323e234666d2bbaf76a4bb47daa73` | password tiles + two sprite blocks (assets) + glyph/attribute/palette/column tables, unread gaps (source) |
 | `assets/bank_01/7D5D.bin` | 675 | `5e124bf19108661ec5b93d94c3ecc1cff71a5734` | `ds` fill + `db BANK(@)` |
-| `assets/bank_02/481E.bin` | 1338 | `d025e46aab762189ab4575c3f7bf1740acb8bbe9` | two indexed sprite-grid assets + two unused tiles + one unknown word + alignment padding + `Bank02ObjPalette7` (source) |
+| `assets/bank_02/481E.bin` | 1338 | `d025e46aab762189ab4575c3f7bf1740acb8bbe9` | two indexed sprite-grid assets + two unused tiles + same-address bank-$01 pointer residue + alignment padding + `Bank02ObjPalette7` (source) |
 | `assets/bank_02/5040.bin` | 3072 | `abd1fa78360b7370b2202b1a5808808c4bfb2ec1` | `TrackerPointerFrames` (source) + `tracker_direction_lookup.bin` |
 | `assets/bank_02/5DE0.bin` | 1165 | `5b4fdb833d8b48c8402237dcc03d62558fe04177` | palettes, tile grids, tables (source) + `burst_tiles.2bpp` |
 | `assets/bank_02/66DC.bin` | 6436 | `bde6747983763d66d3bfee56cfcac24e6a61eaee` | `ds` fill + `db BANK(@)` |

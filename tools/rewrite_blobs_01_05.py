@@ -55,7 +55,7 @@ BLOBS = {
         (0x78B1, 0x78F1, "bin", "Bank01SpriteTiles78B1", "4 tiles; InitPasswordCursorOamSlots12To15 -> VRAM $8700 (tiles $70-$73)", "assets/bank_01/sprite_tiles_78B1.2bpp"),
     ],
     ("src/bank_02.asm", "assets/bank_02/481E.bin", 2, 0x481E, 0x4D58): [
-        (0x481E, 0x4820, "dw", "Bank02UnknownWord481E", "unread word", None),
+        (0x481E, 0x4820, "dw", "Bank01ScreenMode06PointerResidue", "unread same-address residue from bank $01's ScreenModeTable entry 6", None),
         (0x4820, 0x4830, "db", "IndexedSpriteGridAlignmentPadding", "zero alignment padding", None),
         (0x4830, 0x4AB0, "bin", "IndexedSpriteGrid1Tiles", "40 tiles; IndexedSpriteGridDescriptors entry 1", "assets/bank_02/indexed_sprite_grid_1.2bpp"),
         (0x4AB0, 0x4AD0, "bin", "UnusedIndexedSpriteGridTiles", "two unused tiles between grids", "assets/bank_02/unused_indexed_sprite_grid_tiles.2bpp"),

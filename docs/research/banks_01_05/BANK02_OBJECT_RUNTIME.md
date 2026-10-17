@@ -67,7 +67,8 @@ Reached only through ROM0 `Func_3F1F`.
 - `IndexedSpriteGrid1Tiles` (`$4830-$4AAF`) and
   `IndexedSpriteGrid0Tiles` (`$4AD0-$4D4F`) are the two 40-tile sources.
 - The 32 bytes between the grids are two unused 2bpp tiles. Before the first
-  grid, `Bank02UnknownWord481E` remains unexplained and is followed by 16 zero
+  grid, `Bank01ScreenMode06PointerResidue` is an unread same-address copy of
+  bank `$01:$481E`, the `ScreenMode06_LoadTiles` pointer, followed by 16 zero
   bytes that align the grid to `$4830`.
 - `Bank02ObjPalette7` (`$4D50`) is a complete four-colour record. The loader
   supplies colour 0 itself and reads colours 1-3 from `Bank02ObjPalette7Colours`

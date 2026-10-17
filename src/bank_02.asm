@@ -930,9 +930,10 @@ Func_02_4810: ; legacy alias
 	ret
 
 
-; Unread word followed by zero padding to the next $10-byte boundary.
-Bank02UnknownWord481E:
-	dw $5F9F
+; Same-address residue from bank $01's ScreenModeTable entry 6. Nothing in
+; bank $02 reads it; preserving the symbolic value documents its provenance.
+Bank01ScreenMode06PointerResidue:
+	dw Func_2C_5F9F
 IndexedSpriteGridAlignmentPadding:
 	ds $10, $00
 
