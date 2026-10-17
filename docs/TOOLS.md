@@ -7,9 +7,14 @@
 | `make battletanx.gbc` | Assemble the committed source tree | No |
 | `make verify-source` | Build, report, naming and repository-safety gate | No |
 | `make compare` | Compare the linked image with the supported cartridge | Yes |
+| `make check-assets` | Verify all 158 source assets against the cartridge manifests | Yes |
 | `make check` | Complete project validation suite | Yes |
 | `make report` | Generate the objdiff v2 reconstruction report | No |
 | `make progress` | Check reviewed names for all function entries | No |
+| `make extract-assets` | Recreate all 158 source assets from the verified cartridge | Yes |
+
+The complete first-time setup and expected output transcript is in
+[`REPRODUCTION.md`](REPRODUCTION.md).
 
 ## Inspection exports
 

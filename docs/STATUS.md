@@ -1,6 +1,6 @@
 # Decompilation status
 
-Last audited: 2026-10-16
+Last audited: 2026-10-17
 
 ## Prior-work search
 
@@ -25,6 +25,10 @@ claim.
 - Bank `$07` is explicit as one malformed eight-byte sound-patch slot, an
   unread copy of bank `$06` beginning at patch slot 1, zero fill, and its
   marker; its former whole-bank asset is removed.
+- `tools/prepare_assets.py` can recreate all 158 binary source assets from a
+  legally obtained supported cartridge, including the two non-contiguous
+  bank-`$08` aggregates. The clean setup is documented command by command in
+  [`REPRODUCTION.md`](REPRODUCTION.md).
 
 This is complete binary reconstruction. It is not complete semantic recovery.
 
@@ -108,7 +112,7 @@ interrupt routine. Fields whose behavior is not yet established remain raw.
 
 1. Confirm or refute the SVBK=2 STAT hazard on hardware, trace fixed scenes
    0-5, and check the ROM-bank invariants on hardware.
-2. Investigate the 11 bounded but unexplained bytes in banks `$01-$05`.
+2. Investigate the 12 neutral bytes listed in the whole-ROM unresolved audit.
 3. Identify neutral level, scene, screen, object, and audio names from behavior.
 4. Run relocation/shift tests before declaring source freely editable.
 5. Validate timing-sensitive and RAM-executed behavior on physical hardware.

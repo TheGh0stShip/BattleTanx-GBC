@@ -82,6 +82,11 @@ See the [architecture contract](docs/ARCHITECTURE.md),
 [research provenance](docs/PROVENANCE.md) before changing source labels or
 formats.
 
+For a clean-checkout setup with exact commands and expected output, follow the
+[reproduction manual](docs/REPRODUCTION.md). The separate
+[completeness statement](docs/COMPLETENESS.md) explains why a 100% byte match
+does not mean every byte's gameplay meaning is known.
+
 ## Repository map
 
 - `src/` — authoritative RGBDS source, one file per ROM bank plus recovered
@@ -93,6 +98,10 @@ formats.
 - `reports/` — deterministic range, operand, asset and semantic inventories.
 - `tools/` — tracing, assembly emission, extraction, validation and reporting.
 - `docs/STATUS.md` — concise progress and unresolved-work ledger.
+- `docs/REPRODUCTION.md` — legal-ROM setup, asset recovery, build, validation,
+  and expected outputs.
+- `docs/COMPLETENESS.md` — exact boundary between reconstruction and semantic
+  recovery.
 - `docs/PASSWORDS.txt` — ROM-derived canonical passwords and recovered format.
 - `docs/HIDDEN_FEATURES.md` — audited reset chord, menus, and unreachable
   development remnants.

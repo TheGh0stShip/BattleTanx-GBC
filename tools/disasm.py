@@ -3,8 +3,9 @@
 
 Usage: disasm.py baserom.gbc outdir
 
-Writes outdir/src/bank_XX.asm, outdir/src/main.asm and the list of binary
-assets that tools/extract_assets.py must produce (assets.txt).
+Writes outdir/src/bank_XX.asm, outdir/src/main.asm and a bootstrap-era asset
+manifest. The reviewed project uses tools/prepare_assets.py with assets.txt and
+asset_slices.txt instead.
 
 Superseded: output differs from hand-maintained src/ and assets.txt; comparison
 only. Write to a scratch OUTDIR, never to the project root (`make disasm` does).

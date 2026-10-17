@@ -13,6 +13,10 @@
 | MD5 | `4ca71b12d89a5bcfcc52095081ae9f51` |
 | Toolchain | RGBDS 1.0.4 |
 
+See [`REPRODUCTION.md`](REPRODUCTION.md) for a command-by-command clean setup,
+including complete asset regeneration from a legally obtained supported image.
+See [`COMPLETENESS.md`](COMPLETENESS.md) for the limits of the 100% figure.
+
 ## Gates
 
 `make verify-source` requires no retail cartridge. It assembles the committed

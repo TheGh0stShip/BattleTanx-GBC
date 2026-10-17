@@ -174,9 +174,11 @@ checked on an emulator or on hardware.
 19. **Opaque assets:** `assets/bank_07/audio_build_residue.bin` (3,061 bytes, a
     copy of bank `$06` data; byte 0 is emitted by `Bank07MalformedSoundPatch00`).
 20. **Tooling:**
-    - `make extract-assets` cannot regenerate `object_animation_tiles.bin` or
-      `effect_tiles.bin`, and `extract_assets.py` breaks on inline `#` comments
-      (w127).
+    - Closed 2026-10-17: `make extract-assets` now uses
+      `tools/prepare_assets.py`, accepts commented manifests, verifies both
+      cartridge hashes before writing, and regenerates all 158 files including
+      `object_animation_tiles.bin` and `effect_tiles.bin` from their
+      non-contiguous slices.
     - `IndexedSpriteGridDescriptors` stores raw `$D0,$4A`/`$30,$48` instead of
       `IndexedSpriteGrid0Tiles`/`IndexedSpriteGrid1Tiles`; a shift is detected by
       address pins, not tracked (w127).

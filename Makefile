@@ -4,11 +4,11 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check verify-source check-repository compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion passwords progress report diag disasm clean tidy
+.PHONY: all check verify-source check-repository compare check-project check-baserom check-assets extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion passwords progress report diag disasm clean tidy
 
 all: compare
 
-check: compare check-project graphics maps levels screens objects bank08 relocation banks0105 completion passwords progress check-repository
+check: compare check-project check-assets graphics maps levels screens objects bank08 relocation banks0105 completion passwords progress check-repository
 
 # ROM-independent gate used by pull requests and ordinary source review.
 verify-source: $(ROM) progress report check-repository
@@ -22,9 +22,12 @@ check-project:
 check-baserom:
 	@$(PYTHON) tools/verify_rom.py $(BASEROM)
 
+check-assets: check-baserom
+	$(PYTHON) tools/prepare_assets.py $(BASEROM) --check
+
 # Maintenance target for deliberately refreshing the committed source assets.
 extract-assets: assets.txt check-baserom
-	$(PYTHON) tools/extract_assets.py $(BASEROM) assets.txt
+	$(PYTHON) tools/prepare_assets.py $(BASEROM)
 
 graphics: graphics.txt check-baserom
 	$(PYTHON) tools/extract_graphics.py $(BASEROM) graphics.txt build/graphics

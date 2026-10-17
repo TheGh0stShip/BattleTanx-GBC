@@ -369,10 +369,12 @@ black/black/black/white RGB555 record with no reader.
   (2,960 B, 27 slices, $08:5490-$60EF). Palette and step records sit
   between slices, so the three-field `assets.txt` format cannot describe
   them; `tools/bank08.py` also compares them.
-- `make extract-assets` cannot regenerate these two files
-  (`extract_bank08.py` writes only to `build/bank08`), so a clean
-  re-extraction would lose them. `extract_assets.py` also fails on inline
-  `#` comments.
+- Closed 2026-10-17: `make extract-assets` uses
+  `tools/prepare_assets.py`. It accepts comments, verifies SHA-1 and SHA-256
+  before writing, reconstructs ordinary assets from `assets.txt`, and rebuilds
+  the two slice-only files from `asset_slices.txt`. A scratch extraction of all
+  158 files compares byte-for-byte with the committed tree and rebuilds the
+  expected cartridge.
 - Slices outside their file's `assets.txt` range (`interface_tiles_626B.bin`
   +$2F0 at $08:6250; `level_14/tilemap.bin`+$518 at $27/$28/$29:4518) were
   covered only indirectly before `check_asset_slices`.
