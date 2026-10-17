@@ -189,7 +189,7 @@ raw pointer.
 make clean
 make check
 battletanx.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
-bank 08: every byte classified (code 27, fill 4623, graphics 9824, graphics (not loaded) 16, graphics (unreachable table entries only) 992, marker 1, palette 64, palette record 336, table 330, unknown 171), 23 negative tests rejected
+bank 08: every byte classified (code 27, fill 4623, graphics 9824, graphics (duplicate, not loaded) 16, graphics (not loaded) 16, graphics (unreachable table entries only) 992, marker 1, palette 64, palette record 336, palette record (unused) 8, table 330, unknown 147), 25 negative tests rejected
 object banks: $27-$29 fully accounted (fill 39945, graphics 3888, marker 3, palette 24, residue 5292), 20 negative tests rejected
 unused banks: $3C-$3F are 65536 checked $FF padding bytes
 code-bank tails: banks $03/$04 explicit through their bank markers
@@ -209,7 +209,7 @@ scene maps: 11 fixed scenes (2640 cells) plus the referenced bank-$3B compatibil
 levels: 15 levels, 112000 cells; CSV, palette and PNG outputs round-trip verified
 screens: 17 pictures; CSV, palette and PNG outputs round-trip verified
 objects: 3 banks; frame, orientation, layout and palette outputs round-trip verified
-bank08: 83 graphics ranges, glyph map, 11 strings, 16 metatiles; all outputs round-trip verified
+bank08: 84 graphics ranges, glyph map, 11 strings, 16 metatiles; all outputs round-trip verified
 relocation: 152 raw pointers and 80 raw bank bytes pinned; 384 ranges cover banks $09-$3A; 126 assets; 5 negative tests rejected
 level comparison: report matches all 15 levels
 shift: PASS [relocate] level 0 odd bank (cell map, tiles, lookup table, palettes): 4 labels moved by 16; 4 pointer words relocated; no other byte changed

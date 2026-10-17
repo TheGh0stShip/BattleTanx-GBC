@@ -187,12 +187,14 @@ def parse(rom: bytes):
         (0x60F8, 0x6108, "graphics", "Bank08InterfaceTiles60F8"),
         (0x6108, 0x610A, "unknown", "Bank08Unknown6108"),
         (0x610A, 0x6112, "palette record", "PaletteRecord610A"),
-        (0x6112, 0x611A, "unknown", "Bank08Unknown6112"),
+        (0x6112, 0x611A, "palette record (unused)", "Bank08UnusedPalette6112"),
         (0x611A, 0x621A, "graphics", "Bank08InterfaceTiles611A"),
         (0x621A, 0x6222, "palette record", "PaletteRecord621A"),
         (0x6222, 0x6242, "graphics", "Bank08InterfaceTiles6222"),
         (0x6242, 0x624A, "palette record", "PaletteRecord6242"),
-        (0x624A, 0x6263, "unknown", "Bank08Unknown624A"),
+        (0x624A, 0x6250, "unknown", "Bank08Unknown624A"),
+        (0x6250, 0x6260, "graphics (duplicate, not loaded)", "Bank08DuplicateInterfaceTile6250"),
+        (0x6260, 0x6263, "unknown", "Bank08Unknown6260"),
         (0x6263, 0x626B, "palette record", "PaletteRecord6263"),
         (0x626B, 0x674B, "graphics", "Bank08InterfaceTiles626B"),
         (0x674B, 0x6753, "palette", "Bank08HudIconPalette"),
@@ -217,6 +219,10 @@ def parse(rom: bytes):
         (CODE[1], 0x7FFF, "fill", "fill"),
         (0x7FFF, 0x8000, "marker", "bank marker"),
     ]
+    check(r(0x6112, 8) == bytes.fromhex("1f001f001f001f00"),
+          "unused palette record $6112 changed")
+    check(r(0x6250, 16) == r(0x626B + 47 * 16, 16),
+          "duplicate interface tile $6250 no longer matches tile 47 at $655B")
     # loaded tile blocks must match the static graphics ranges they claim
     for src, n, *_ in TILE_LOADS:
         hit = [s for s, e, c, _ in static if s <= src and src + 16 * n <= e and c.startswith("graphics")]
@@ -275,6 +281,8 @@ SYMBOLS = {
     "Bank08UiFontPalette": (0x08, 0x44A0), "Bank08ObjectPalette46EA": (0x08, 0x46EA),
     "EffectPalette5502": (0x08, 0x5502), "Bank08InterfaceTiles60F8": (0x08, 0x60F8),
     "Bank08InterfaceTiles611A": (0x08, 0x611A), "Bank08InterfaceTiles6222": (0x08, 0x6222),
+    "Bank08UnusedPalette6112": (0x08, 0x6112),
+    "Bank08DuplicateInterfaceTile6250": (0x08, 0x6250),
     "Bank08InterfaceTiles626B": (0x08, 0x626B), "Bank08HudIconPalette": (0x08, 0x674B),
     "Bank08HudIconTiles": (0x08, 0x6753), "ObjectSpritePaletteIndexTable": (0x08, 0x67F3),
     "Bank08ObjectPalettes67FD": (0x08, 0x67FD), "Bank08InterfaceTiles6815": (0x08, 0x6815),
@@ -341,6 +349,8 @@ def negative_tests(rom: bytes, root: pathlib.Path) -> int:
         "effect record pointer": ({(5, 0x59E0 + 1): 0x98}, "overlaps"),
         "effect read outside area": ({(5, 0x59E0 + 2): 0x40}, "outside sprite area"),
         "palette record colour 0": ({(8, 0x5100): 0x01}, "palette record 5100"),
+        "unused palette record": ({(8, 0x6113): 0x80}, "unused palette record $6112"),
+        "duplicate interface tile": ({(8, 0x6250): 0x00}, "duplicate interface tile $6250"),
         "effect table end": ({(5, 0x6358 + 6 * 72): 0x01}, "does not end after 72"),
         "effect countdown": ({(0, rom.find(bytes.fromhex("3e4bea59c9"), 0, 0x4000) + 1): 0x4C}, "$C959 = $4B"),
         "palette index value": ({(8, 0x67F3): 0x04}, "palette index table"),

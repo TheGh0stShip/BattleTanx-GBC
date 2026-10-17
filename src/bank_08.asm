@@ -437,8 +437,10 @@ Bank08Unknown6108: ; 2 bytes, no reader found; meaning unknown
 PaletteRecord610A: ; palette-shaped record, no reader found
 	dw $0000, $001F, $033F, $03FE
 
-Bank08Unknown6112: ; 8 bytes, no reader found; meaning unknown
-	db $1F, $00, $1F, $00, $1F, $00, $1F, $00
+; Complete, valid RGB555 palette record; no reader was found. All four entries
+; are the same blue colour.
+Bank08UnusedPalette6112:
+	dw $001F, $001F, $001F, $001F
 
 ; LoadInterfaceTilesVRAM1: 16 tiles -> VRAM1 tiles $C3-$D2.
 Bank08InterfaceTiles611A:
@@ -454,9 +456,15 @@ Bank08InterfaceTiles6222:
 PaletteRecord6242: ; palette-shaped record, no reader found
 	dw $0000, $001C, $025C, $03FF
 
-Bank08Unknown624A: ; 25 bytes, no reader found; meaning unknown
-	db $01, $00, $01, $00, $01, $00, $FF, $FF, $00, $FF, $0C, $FF, $FC, $1F, $1C, $FF
-	db $3E, $C1, $7F, $AA, $7F, $80, $80, $00, $01
+Bank08Unknown624A: ; 6 bytes, no reader found; meaning unknown
+	db $01, $00, $01, $00, $01, $00
+
+; Unread duplicate of tile 47 in Bank08InterfaceTiles626B.
+Bank08DuplicateInterfaceTile6250:
+	INCBIN "assets/bank_08/interface_tiles_626B.bin", 47 * 16, 16
+
+Bank08Unknown6260: ; 3 bytes, no reader found; meaning unknown
+	db $80, $00, $01
 
 PaletteRecord6263: ; palette-shaped record, no reader found
 	dw $0000, $10A3, $3200, $42E0

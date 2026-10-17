@@ -20,18 +20,18 @@ corrected here:
    8-byte records that start 2 bytes earlier.
 6. ROM0 reads BG palette 7 from `$44A2`, 8 bytes, so the read runs 2 bytes
    into the first sprite tile.
-7. Unknown bytes dropped from 7,309 to **171**.
+7. Unknown bytes dropped from 7,309 to **147**.
 
 | Class | Bytes |
 | --- | ---: |
 | code | 27 |
 | graphics, reader-proven | 9824 |
 | graphics, referenced only by unreachable effect steps | 992 |
-| graphics, never loaded (UI font tile 0, blank) | 16 |
+| graphics, never loaded (blank font tile and duplicated interface tile) | 32 |
 | palettes read by code | 64 |
-| palette-shaped records (12 bytes of them are read: `$46EA`, `$5502`) | 336 |
+| palette-shaped records (12 bytes read; 8-byte unused record at `$6112`) | 344 |
 | tables (metatiles 192, palette-index 10, glyph 128) | 330 |
-| unknown | 171 |
+| unknown | 147 |
 | fill + marker | 4624 |
 | **total** | **16384** |
 
@@ -44,9 +44,9 @@ corrected here:
 
 **Bounded only**: 1,503 bytes.
 - 992 graphics reached only by unreachable table entries;
-- the 16-byte unloaded tile;
-- 324 bytes of unread palette-shaped records;
-- 171 unknown bytes.
+- 32 bytes of unloaded graphics;
+- 332 bytes of unread palette-shaped records;
+- 147 unknown bytes.
 
 The two totals sum to 16,384.
 
@@ -116,7 +116,7 @@ derives and checks them.
 ## 5. Validation
 
 `tools/bank08.py` runs from `check_bank08_graphics_assets` in
-`tools/check_project.py`. Its 23 negative tests are each rejected for the
+`tools/check_project.py`. Its 25 negative tests are each rejected for the
 intended reason:
 - tile load count;
 - glyph table entry;
@@ -129,6 +129,8 @@ intended reason:
 - effect record pointer;
 - effect read outside area;
 - palette-record colour 0;
+- unused palette record;
+- duplicated interface tile;
 - effect table end;
 - effect countdown immediate;
 - palette-index value;
@@ -143,7 +145,7 @@ intended reason:
 - symbol address.
 
 `make bank08` (`tools/extract_bank08.py`) writes `build/bank08/`:
-- 83 graphics sheets;
+- 84 graphics sheets;
 - glyph CSV/JSON;
 - strings CSV;
 - metatiles PNG/CSV;
@@ -158,15 +160,16 @@ All of them round-trip to the original bytes.
 - **A 66-tile alphanumeric font at `$69B5`.**
 - **`$44A8-$60F7` as one opaque range or duplicated data.** No 32-byte match
   exists elsewhere in the ROM, and there is no previous-bank residue.
-- **`$6112-$6119` as a palette.** Its colour 0 is `$001F`, so it stays unknown.
+- **`$6112-$6119` as non-palette data.** Its four identical `$001F` RGB555
+  words form a complete unused palette record.
 - **The step table ending at step 18.** It has 72 coherent steps; 19-71 are
   unreachable.
 
 ## 7. Unresolved
 
-1. 171 unknown bytes: `$6108-$6109` (`81 00`), `$6112-$6119` (`$001F` x4),
-   `$624A-$6262` (25 bytes; 16 of them are tile-shaped), and `$6A7D-$6B04`
-   (136 high-entropy bytes).
+1. 147 unknown bytes: `$6108-$6109` (`81 00`), `$624A-$624F` (6 bytes),
+   `$6260-$6262` (3 bytes), and `$6A7D-$6B04` (136 high-entropy bytes).
+   `$6250-$625F` is an unread exact duplicate of tile 47 at `$655B`.
 2. The purpose of the 40 unread palette-shaped records (42 in total).
 3. Why effect steps 19-71 exist but cannot be reached.
 4. The bound on `obj+$1E` for `SelectObjectSpritePalette`.
@@ -298,12 +301,14 @@ All of them round-trip to the original bytes.
 | `60F8-6107` | 16 | graphics | Bank08InterfaceTiles60F8 |
 | `6108-6109` | 2 | unknown | Bank08Unknown6108 |
 | `610A-6111` | 8 | palette record | PaletteRecord610A |
-| `6112-6119` | 8 | unknown | Bank08Unknown6112 |
+| `6112-6119` | 8 | palette record (unused) | Bank08UnusedPalette6112 |
 | `611A-6219` | 256 | graphics | Bank08InterfaceTiles611A |
 | `621A-6221` | 8 | palette record | PaletteRecord621A |
 | `6222-6241` | 32 | graphics | Bank08InterfaceTiles6222 |
 | `6242-6249` | 8 | palette record | PaletteRecord6242 |
-| `624A-6262` | 25 | unknown | Bank08Unknown624A |
+| `624A-624F` | 6 | unknown | Bank08Unknown624A |
+| `6250-625F` | 16 | graphics (duplicate, not loaded) | Bank08DuplicateInterfaceTile6250 |
+| `6260-6262` | 3 | unknown | Bank08Unknown6260 |
 | `6263-626A` | 8 | palette record | PaletteRecord6263 |
 | `626B-674A` | 1248 | graphics | Bank08InterfaceTiles626B |
 | `674B-6752` | 8 | palette | Bank08HudIconPalette |
