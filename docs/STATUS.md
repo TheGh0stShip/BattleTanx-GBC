@@ -573,6 +573,8 @@ Semantic understanding:
   instrument 5 is the only explicit selection, and channel-4 notes select
   instruments 8-10 through the noise table. Records 4, 6 and 7 are unused;
   default record 3 is assigned but every channel-4 note overrides it.
+  Channel-specific register macros represent all used and assigned records;
+  a neutral preservation macro marks the three records with no reference.
 - All 36 ordinary sound-patch records use channel-specific register macros;
   patch 0 stays split only to preserve a label on its two unread tail bytes.
 - Not audio: bank `$05` (sprite layouts and level parameters).

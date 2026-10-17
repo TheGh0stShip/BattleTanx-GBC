@@ -67,6 +67,10 @@ for channel 2, and NoiseNoteTable selects 8-10 for channel 4. Every channel-4
 note in the ROM is in the NoiseNoteTable range, so default instrument 3 is
 assigned but never reaches the register-write path. Instruments 4, 6 and 7
 have no static reference. These facts are checked mechanically.
+The source represents all 11 records with channel-specific register macros;
+unused records use a neutral preservation macro because their channel meaning
+cannot be established. The channel-2 macro calls out that its third byte is
+written to NR23 and immediately replaced by the note-frequency low byte.
 
 ## 3. Code
 

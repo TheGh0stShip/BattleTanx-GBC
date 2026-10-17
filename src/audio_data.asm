@@ -706,17 +706,17 @@ MusicPointerTablePadding:
 ; defaults 0-3, NoiseNoteTable 8-10). +0..+2 are written to the channel's
 ; first three registers; +3 is ORed into the trigger register with bit 7.
 Instruments:
-	db $8E, $47, $70, $00 ; 0: channel 1 default: NR10, NR11, NR12, NR14
-	db $47, $77, $00, $00 ; 1: channel 2 default: NR21, NR22, NR23, NR24
-	db $80, $00, $20, $00 ; 2: channel 3 default: NR30, NR31, NR32, NR34
-	db $00, $63, $40, $00 ; 3: channel 4 default; every ROM note overrides it
-	db $8E, $07, $77, $00 ; 4: unreferenced
-	db $07, $77, $00, $00 ; 5: channel 2 alternate
-	db $1F, $67, $26, $40 ; 6: unreferenced
-	db $00, $C1, $72, $00 ; 7: unreferenced
-	db $3A, $41, $99, $40 ; 8: channel 4 noise instrument 1
-	db $3A, $41, $00, $40 ; 9: channel 4 noise instrument 2
-	db $0D, $43, $5A, $40 ; 10: channel 4 noise instrument 3
+	instrument_ch1 $8E, $47, $70, $00 ; 0: channel 1 default
+	instrument_ch2 $47, $77, $00, $00 ; 1: channel 2 default
+	instrument_ch3 $80, $00, $20, $00 ; 2: channel 3 default
+	instrument_ch4 $00, $63, $40, $00 ; 3: assigned, but every ROM note overrides it
+	instrument_unreferenced $8E, $07, $77, $00 ; 4
+	instrument_ch2 $07, $77, $00, $00 ; 5: channel 2 alternate
+	instrument_unreferenced $1F, $67, $26, $40 ; 6
+	instrument_unreferenced $00, $C1, $72, $00 ; 7
+	instrument_ch4 $3A, $41, $99, $40 ; 8: noise instrument 1
+	instrument_ch4 $3A, $41, $00, $40 ; 9: noise instrument 2
+	instrument_ch4 $0D, $43, $5A, $40 ; 10: noise instrument 3
 
 Music_00:
 	music_stop $FF, $FF

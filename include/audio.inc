@@ -25,6 +25,25 @@ MACRO sound_patch_ch4 ; NR41, NR42, NR43, NR44, NR51, unread x2
 	db 4, \1, \2, \3, \4, \5, \6, \7
 ENDM
 
+; Four-byte Instruments records. The first three values are written to the
+; named channel registers and the last is ORed into the trigger register.
+MACRO instrument_ch1 ; NR10, NR11, NR12, NR14 bits
+	db \1, \2, \3, \4
+ENDM
+MACRO instrument_ch2 ; NR21, NR22, initial NR23, NR24 bits
+	; Music_HandleEvent replaces the initial NR23 byte with the note low byte.
+	db \1, \2, \3, \4
+ENDM
+MACRO instrument_ch3 ; NR30, NR31, NR32, NR34 bits
+	db \1, \2, \3, \4
+ENDM
+MACRO instrument_ch4 ; NR41, NR42, NR43, NR44 bits
+	db \1, \2, \3, \4
+ENDM
+MACRO instrument_unreferenced ; four preserved bytes, channel interpretation unknown
+	db \1, \2, \3, \4
+ENDM
+
 ; Sound-effect sequence events -------------------------------------------
 ; op has bit 0 set and (op & $F0) != $20: start sound patch, then wait.
 MACRO sfx_patch ; op, patch id, delay frames

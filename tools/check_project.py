@@ -848,6 +848,19 @@ def check_audio() -> None:
         fail("audio: channel-4 patch source is not 19 typed records")
     if len(re.findall(r"^\s*db\s+2,", patch_source, re.MULTILINE)) != 1:
         fail("audio: channel-2 patch 0 representation changed")
+    instrument_source = audio_data_source.split("Instruments:", 1)[1].split(
+        "Music_00:", 1
+    )[0]
+    expected_instrument_macros = {
+        "instrument_ch1": 1,
+        "instrument_ch2": 2,
+        "instrument_ch3": 1,
+        "instrument_ch4": 4,
+        "instrument_unreferenced": 3,
+    }
+    for macro, count in expected_instrument_macros.items():
+        if len(re.findall(rf"^\s*{macro}\b", instrument_source, re.MULTILINE)) != count:
+            fail(f"audio: instrument source does not contain {count} {macro} records")
     audio_driver_source = (ROOT / "src" / "bank_06.asm").read_text()
     if re.search(r"^Jump_06_[0-9A-F]{4}:", audio_driver_source, re.MULTILINE):
         fail("audio: an automatic internal driver label returned")
