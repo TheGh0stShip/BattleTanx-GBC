@@ -91,10 +91,14 @@ original `Func_XXXX` aliases for compatibility with work in other banks.
 `EnableLCD` sets that bit again. `CopyTilesToVRAM` copies `D` complete
 16-byte tiles from `BC`, using `A` as the destination page and `E` as the first
 tile number while avoiding VRAM mode 3. `ClearGameMemory` preserves
-`$C000-$C0FE` but clears the remaining fixed WRAM, OAM, HRAM, and every
-switchable WRAM bank. `ResetDisplayState` uses the safe LCD-off helper before
-resetting scroll/window registers, DMG palettes, and the tile-data selection
-bit. These names describe proven mechanics, not higher-level gameplay roles.
+`$C000-$C0FE` and `$CF00-$CFFF` but clears fixed WRAM `$C0FF-$CEFF`, OAM,
+HRAM, and every switchable WRAM bank. `ResetDisplayState` uses the safe
+LCD-off helper before resetting scroll/window registers, DMG palettes, and the
+tile-data selection
+bit. `ClearCgbPalettes` resets both 64-byte CGB palette memories, while the
+background and object palette writers expose their verified start-index and
+count contracts. These names describe proven mechanics, not higher-level
+gameplay roles.
 
 ## Level banks `$09-$26`
 

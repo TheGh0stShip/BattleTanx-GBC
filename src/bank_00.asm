@@ -707,6 +707,9 @@ Jump_04C0:
 	ret
 
 
+; Clear all 64 bytes of CGB background palette RAM and all 64 bytes of CGB
+; object palette RAM.
+ClearCgbPalettes:
 Func_04CD:
 	push af
 	push de
@@ -737,6 +740,7 @@ Jump_04E2:
 	ret
 
 
+ClearHardwareOAM:
 Func_04F4:
 	push af
 	push de
@@ -757,6 +761,9 @@ Jump_04FC:
 	ret
 
 
+; Clear the byte count encoded by nonzero B at HL: B * $100 bytes when C is
+; zero, otherwise (B - 1) * $100 + C bytes.
+ClearMemory:
 Func_050B:
 	xor a
 Jump_050C:
@@ -768,6 +775,8 @@ Jump_050C:
 	ret
 
 
+; Set one CGB background-palette colour: D = palette, E = colour, BC = RGB555.
+SetBackgroundPaletteColor:
 Func_0514:
 	ld a, d
 	add a, a
@@ -792,6 +801,8 @@ Jump_051B:
 	ret
 
 
+; Load C complete CGB background palettes at index B from HL.
+LoadBackgroundPaletteRange:
 Func_052F:
 	ld a, b
 	add a, a
@@ -822,6 +833,9 @@ Jump_0547:
 	ret
 
 
+; Load one CGB object palette at index B from the three RGB555 colours at HL;
+; colour 0 is synthesized as black/transparent.
+LoadSingleObjectPalette:
 Func_0553:
 	ld a, b
 	add a, a
@@ -855,6 +869,9 @@ Jump_0571:
 	ret
 
 
+; Load C consecutive CGB object palettes starting at index B.  Each source
+; record contains colours 1-3; colour 0 is synthesized as black/transparent.
+LoadObjectPaletteRange:
 Func_057D:
 	ld a, b
 	add a, a
@@ -1181,8 +1198,8 @@ Func_071F:
 	ret
 
 
-; Clear the game-owned WRAM area, OAM, HRAM, and all seven switchable WRAM
-; banks.  The fixed-bank stack and boot-state bytes at $C000-$C0FE survive.
+; Clear $C0FF-$CEFF, OAM, HRAM, and all seven switchable WRAM banks.  Fixed
+; WRAM at $C000-$C0FE and $CF00-$CFFF survives.
 ClearGameMemory:
 Func_072C:
 	push af
