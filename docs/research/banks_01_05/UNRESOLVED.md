@@ -81,7 +81,5 @@
      `hLevelRegionX` (`$FF95`), which looks like reuse of HRAM.
    - The score BCD buffer at `$FFB0-$FFB4` overlaps
      `hSceneRowTileVramAddress`.
-9. **Labels**: `CycleObjectPalettes12` shares its address with
-   `InitPasswordCursorOamSlots8To11`, and its name does not match the code.
-10. **Gameplay identities**: these are not assigned for the burst effect, the
+9. **Gameplay identities**: these are not assigned for the burst effect, the
     screen effect, the tracker pointer, the scenes and the pictures.

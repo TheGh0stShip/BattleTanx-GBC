@@ -33,10 +33,10 @@ independently against `src/` and the base ROM bytes.
 `$C94E` is now `wBgRevealCounter`. It is shared by the four scroll routines and
 by `ShowPasswordRejection`, which counts 8 row draws with it and no scrolling.
 
-`CycleObjectPalettes12` shares its address with
-`InitPasswordCursorOamSlots8To11`. The routine loads sprite tiles and OAM; it
-does not cycle palettes, so the older label looks misattributed (see
-UNRESOLVED.md).
+`CycleObjectPalettes12` is a separate routine at `$6762`. It advances the
+14-frame `ObjectPaletteCycleTable` and loads its six colour bytes into OBJ
+palettes 1 and 2. `InitPasswordCursorOamSlots8To11` is at `$696E`; it loads
+four cursor tiles and initializes the corresponding OAM entries.
 
 ## Bank $03
 
