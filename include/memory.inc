@@ -73,10 +73,14 @@ DEF wLevelScrollY              EQU $CA05
 DEF wLevelNumber               EQU $CA06
 DEF wLevelWidth                EQU $CA09
 DEF wLevelHeight               EQU $CA0A
+DEF wLevelPixelWidth           EQU $CA0B ; 2-byte width multiplied by 8
+DEF wLevelPixelHeight          EQU $CA0D ; 2-byte height multiplied by 8
 DEF wLevelViewY                EQU $CA0F
 DEF wLevelViewX                EQU $CA10
+DEF wLevelViewRowOffset        EQU $CA11 ; 2-byte view Y multiplied by width
 DEF wLevelRingY                EQU $CA13
 DEF wLevelRingX                EQU $CA14
+DEF wLevelRingRowOffset        EQU $CA15 ; 2-byte ring Y multiplied by 32
 DEF wLevelRowOffsets           EQU $CA17 ; little-endian offset per row
 
 

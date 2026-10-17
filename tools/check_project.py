@@ -789,6 +789,9 @@ def check_level_banks() -> None:
             "UpdateLevelCamera": (0x00, 0x1804),
             "RefreshLevelViewport": (0x00, 0x1AE4),
             "SetLevelScrollPosition": (0x00, 0x1B18),
+            "SetLevelViewCellPosition": (0x00, 0x1B07),
+            "CacheLevelRingRowOffset": (0x00, 0x1B3A),
+            "CacheLevelViewRowOffset": (0x00, 0x1B4F),
             "ScrollLevelRight": (0x00, 0x1B75),
             "ScrollLevelLeft": (0x00, 0x1BE4),
             "ScrollLevelDown": (0x00, 0x1C4D),
@@ -808,6 +811,7 @@ def check_level_banks() -> None:
             "LevelTileAnimationSet2": (0x05, 0x54CC),
             "LevelTileAnimationSet3": (0x05, 0x56A7),
             "LevelTileAnimationSet4": (0x05, 0x5800),
+            "SetLevelViewCellPositionBank2": (0x02, 0x4263),
         }
         for name, where in expected_symbols.items():
             if symbols.get(name) != where:
@@ -829,9 +833,11 @@ def check_level_banks() -> None:
         "wLevelCameraX": 0xCA00, "wLevelCameraY": 0xCA02,
         "wLevelScrollX": 0xCA04, "wLevelScrollY": 0xCA05,
         "wLevelNumber": 0xCA06, "wLevelWidth": 0xCA09,
-        "wLevelHeight": 0xCA0A, "wLevelViewY": 0xCA0F,
-        "wLevelViewX": 0xCA10, "wLevelRingY": 0xCA13,
-        "wLevelRingX": 0xCA14, "wLevelRowOffsets": 0xCA17,
+        "wLevelHeight": 0xCA0A, "wLevelPixelWidth": 0xCA0B,
+        "wLevelPixelHeight": 0xCA0D, "wLevelViewY": 0xCA0F,
+        "wLevelViewX": 0xCA10, "wLevelViewRowOffset": 0xCA11,
+        "wLevelRingY": 0xCA13, "wLevelRingX": 0xCA14,
+        "wLevelRingRowOffset": 0xCA15, "wLevelRowOffsets": 0xCA17,
     }
     if memory_symbols != expected_memory:
         fail(f"levels: WRAM symbols differ: {memory_symbols.items() ^ expected_memory.items()}")

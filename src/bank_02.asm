@@ -287,7 +287,7 @@ Func_02_4238:
 	ret
 
 
-Func_02_4263:
+SetLevelViewCellPositionBank2:
 	push bc
 	push de
 	ld e, b
@@ -319,7 +319,7 @@ Func_02_4263:
 	ld a, c
 	ld [wLevelViewY], a
 	ld a, c
-	call Func_1B4F
+	call CacheLevelViewRowOffset
 	pop de
 	pop bc
 	ret

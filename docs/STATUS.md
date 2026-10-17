@@ -113,6 +113,10 @@ the wrapped BG-map origin; crossing a cell boundary redraws only the newly
 exposed row or column. Their entry points and camera fields are named and
 address-checked.
 
+Level initialization also names the banked cell-position setter and its ROM0
+wrapper. Checked cache fields retain the level's pixel dimensions, the current
+view-row offset into the cell map, and the wrapped BG-map row offset.
+
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have
 behavioral names. Four eight-byte object-type parameter records at `$5100`

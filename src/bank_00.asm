@@ -1416,7 +1416,7 @@ Func_0903:
 	call LoadLevelData
 	ld b, $00
 	ld c, $00
-	call Func_1B07
+	call SetLevelViewCellPosition
 	ret
 
 
@@ -4339,9 +4339,9 @@ LoadLevelRecord:
 	rl b
 	push af
 	ld a, c
-	ld [$CA0B], a
+	ld [wLevelPixelWidth], a
 	ld a, b
-	ld [$CA0C], a
+	ld [wLevelPixelWidth + 1], a
 	pop af
 	ld a, $01
 	add a, e
@@ -4358,9 +4358,9 @@ LoadLevelRecord:
 	rl b
 	push af
 	ld a, c
-	ld [$CA0D], a
+	ld [wLevelPixelHeight], a
 	ld a, b
-	ld [$CA0E], a
+	ld [wLevelPixelHeight + 1], a
 	pop af
 	ld a, $02
 	add a, e
@@ -4401,7 +4401,7 @@ LoadLevelData:
 	call LoadLevelRecord
 	ld b, $00
 	ld c, $00
-	call Func_1B07
+	call SetLevelViewCellPosition
 	ld b, $00
 	ld c, $00
 	call SetLevelScrollPosition
@@ -4568,7 +4568,7 @@ Jump_1A02:
 	ld b, a
 	ldh a, [$FF82]
 	ld c, a
-	call Func_1B07
+	call SetLevelViewCellPosition
 	pop hl
 	pop de
 	pop bc
@@ -4733,12 +4733,12 @@ RefreshLevelViewport:
 	ret
 
 
-Func_1B07:
+SetLevelViewCellPosition:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_4263
+	call SetLevelViewCellPositionBank2
 	pop af
 	ld [rROMB0], a
 	ret
@@ -4759,13 +4759,13 @@ SetLevelScrollPosition:
 	srl a
 	srl a
 	ld [wLevelRingY], a
-	call Func_1B3A
+	call CacheLevelRingRowOffset
 	pop bc
 	pop af
 	ret
 
 
-Func_1B3A:
+CacheLevelRingRowOffset:
 	push af
 	push hl
 	ld l, a
@@ -4776,15 +4776,15 @@ Func_1B3A:
 	add hl, hl
 	add hl, hl
 	ld a, l
-	ld [$CA15], a
+	ld [wLevelRingRowOffset], a
 	ld a, h
-	ld [$CA16], a
+	ld [wLevelRingRowOffset + 1], a
 	pop hl
 	pop af
 	ret
 
 
-Func_1B4F:
+CacheLevelViewRowOffset:
 	push af
 	push bc
 	push de
@@ -4806,9 +4806,9 @@ Jump_1B60:
 Jump_1B66:
 	push af
 	ld a, l
-	ld [$CA11], a
+	ld [wLevelViewRowOffset], a
 	ld a, h
-	ld [$CA12], a
+	ld [wLevelViewRowOffset + 1], a
 	pop af
 	pop hl
 	pop de
@@ -6375,14 +6375,14 @@ Jump_2447:
 	ret
 
 Jump_244E:
-	ld a, [$CA0C]
+	ld a, [wLevelPixelWidth + 1]
 	add a, $80
 	ld e, a
 	ld a, b
 	add a, $80
 	cp e
 	jr nz, Jump_2460
-	ld a, [$CA0B]
+	ld a, [wLevelPixelWidth]
 	ld e, a
 	ld a, c
 	cp e
@@ -6417,14 +6417,14 @@ Jump_2478:
 	ret
 
 Jump_2480:
-	ld a, [$CA0E]
+	ld a, [wLevelPixelHeight + 1]
 	add a, $80
 	ld c, a
 	ld a, d
 	add a, $80
 	cp c
 	jr nz, Jump_2492
-	ld a, [$CA0D]
+	ld a, [wLevelPixelHeight]
 	ld c, a
 	ld a, e
 	cp c
