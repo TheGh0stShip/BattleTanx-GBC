@@ -46,6 +46,20 @@ DEF wPlayerSpawnDirection EQU $CD1B ; low seven bits from level record
 DEF wHudPowerupPalette EQU $C6F1 ; 8-byte CGB palette
 DEF wHudAlertActive    EQU $C91D
 
+; Per-frame sprite construction. Shadow OAM is allocated from both ends; when
+; exhausted, writers receive the four-byte discard entry immediately after it.
+DEF wDynamicSpriteTiles        EQU $C100
+DEF wShadowOam                 EQU $C600 ; 40 four-byte entries
+DEF wDiscardedOamEntry         EQU $C6A0
+DEF wShadowOamFreeCount        EQU $C6C2
+DEF wShadowOamFrontPtr         EQU $C6C3 ; 2-byte pointer
+DEF wShadowOamBackPtr          EQU $C6C5 ; 2-byte pointer
+DEF wDynamicSpriteTileCount    EQU $C6C7
+DEF wDynamicSpriteTileWritePtr EQU $C6C8 ; 2-byte pointer
+DEF SHADOW_OAM_ENTRY_COUNT     EQU 40
+DEF DYNAMIC_SPRITE_TRANSFER_TILE_COUNT EQU 40
+DEF DYNAMIC_SPRITE_TILE_REJECT_AT EQU 49
+
 ; Sixty-four 64-byte runtime object records.
 DEF wObjectPool EQU $D000
 

@@ -148,6 +148,14 @@ The runtime pool is 64 records at `wObjectPool`. `AllocateObjectRecord` scans
 status byte `+$1D` for a free slot, and `FreeObjectRecord` performs the
 status-2 cleanup before releasing a slot. `ClearObjectPool` applies that path
 to every record rather than discarding active state blindly.
+Sprite construction uses a bidirectional 40-entry shadow-OAM allocator at
+`wShadowOam`: ordinary entries grow from the front, overlays grow from the
+back, and exhausted writers receive a separate discard entry. The unused
+middle is cleared before DMA so stale sprites cannot survive. Native 16-byte
+sprite tiles are staged separately at `wDynamicSpriteTiles`; its allocator
+rejects totals of 49 or more, although the observed VBlank HDMA transfers only
+the first 40 tiles. That capacity mismatch is preserved as an unresolved
+original behavior rather than normalized.
 Object positions use 16.8 fixed point: an 8-bit fractional byte followed by a
 16-bit pixel coordinate for each axis. Candidate bytes `+$13-$18` are committed
 to current bytes `+$00-$05`; the previous integer coordinates, screen

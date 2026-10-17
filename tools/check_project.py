@@ -1051,6 +1051,12 @@ def check_level_banks() -> None:
             "AllocateObjectRecord": (0x00, 0x1FF5),
             "ClearObjectPool": (0x00, 0x2028),
             "FreeObjectRecord": (0x00, 0x2044),
+            "ResetSpriteAllocators": (0x00, 0x2058),
+            "ClassifyShadowOamCapacity": (0x00, 0x2080),
+            "AllocateShadowOamFront": (0x00, 0x2090),
+            "AllocateShadowOamBack": (0x00, 0x20B1),
+            "AllocateDynamicSpriteTiles": (0x00, 0x20D2),
+            "ClearUnusedShadowOamEntries": (0x00, 0x20FE),
             "SetObjectDirection": (0x00, 0x2115),
             "SetObjectPosition": (0x00, 0x2125),
             "UpdateObjectScreenPosition": (0x00, 0x214D),
@@ -1131,6 +1137,46 @@ def check_level_banks() -> None:
     }
     if core_symbols != expected_core:
         fail(f"core WRAM symbols differ: {core_symbols.items() ^ expected_core.items()}")
+
+    sprite_symbols = {
+        name: int(address, 16)
+        for name, address in re.findall(
+            r"DEF (w(?:DynamicSprite\w+|ShadowOam\w*|DiscardedOamEntry))\s+EQU \$([0-9A-Fa-f]+)",
+            memory_source,
+        )
+    }
+    expected_sprite_symbols = {
+        "wDynamicSpriteTiles": 0xC100,
+        "wShadowOam": 0xC600,
+        "wDiscardedOamEntry": 0xC6A0,
+        "wShadowOamFreeCount": 0xC6C2,
+        "wShadowOamFrontPtr": 0xC6C3,
+        "wShadowOamBackPtr": 0xC6C5,
+        "wDynamicSpriteTileCount": 0xC6C7,
+        "wDynamicSpriteTileWritePtr": 0xC6C8,
+    }
+    if sprite_symbols != expected_sprite_symbols:
+        fail(
+            "sprite allocator symbols differ: "
+            f"{sprite_symbols.items() ^ expected_sprite_symbols.items()}"
+        )
+    sprite_constants = {
+        name: int(value)
+        for name, value in re.findall(
+            r"DEF ((?:SHADOW_OAM|DYNAMIC_SPRITE)_\w+)\s+EQU (\d+)",
+            memory_source,
+        )
+    }
+    expected_sprite_constants = {
+        "SHADOW_OAM_ENTRY_COUNT": 40,
+        "DYNAMIC_SPRITE_TRANSFER_TILE_COUNT": 40,
+        "DYNAMIC_SPRITE_TILE_REJECT_AT": 49,
+    }
+    if sprite_constants != expected_sprite_constants:
+        fail(
+            "sprite allocator constants differ: "
+            f"{sprite_constants.items() ^ expected_sprite_constants.items()}"
+        )
 
     object_source = (ROOT / "include" / "object.inc").read_text()
     object_constants = {

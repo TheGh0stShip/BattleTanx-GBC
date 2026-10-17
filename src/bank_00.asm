@@ -306,15 +306,15 @@ Jump_0261:
 	jr nc, Jump_0261
 	ld a, $01
 	ldh [rVBK], a
-	ld a, $C1
+	ld a, HIGH(wDynamicSpriteTiles)
 	ldh [rHDMA1], a
-	ld a, $00
+	ld a, LOW(wDynamicSpriteTiles)
 	ldh [rHDMA2], a
 	ld a, $80
 	ldh [rHDMA3], a
 	xor a
 	ldh [rHDMA4], a
-	ld a, $27
+	ld a, DYNAMIC_SPRITE_TRANSFER_TILE_COUNT - 1
 	ldh [rHDMA5], a
 	call OAMDMARoutine
 	ld a, $01
@@ -350,7 +350,7 @@ Jump_0261:
 	ld a, [wLevelScrollY]
 	ld [wPendingScrollY], a
 	call Func_3C56
-	call Func_2058
+	call ResetSpriteAllocators
 	xor a
 	ld [$CD2A], a
 	ld hl, wFrameCounter
@@ -368,7 +368,7 @@ Jump_0261:
 Jump_02E9:
 	call Func_22ED
 	call Func_3823
-	call Func_20FE
+	call ClearUnusedShadowOamEntries
 	call UpdatePlayerHealthRecovery
 	ldh a, [rLY]
 	call DrawHudStatus
@@ -1292,7 +1292,7 @@ Jump_078D:
 	inc l
 	dec b
 	jr nz, Jump_078D
-	ld hl, $C600
+	ld hl, wShadowOam
 	ld b, $A0
 	call ClearBytes
 	ldh a, [rLCDC]
@@ -1500,7 +1500,7 @@ LoadOAMDMARoutine:
 	LOAD UNION "RAM code $FFF0", HRAM[$FFF0] ; copied from $00:0925
 
 OAMDMARoutine:
-	ld a, $C6
+	ld a, HIGH(wShadowOam)
 	ldh [rDMA], a
 	ld a, $28
 RAM_FFF6:
@@ -1580,7 +1580,7 @@ Func_09AB:
 	ld bc, $1000
 	call ClearMemory
 	call ClearObjectPool
-	call Func_2058
+	call ResetSpriteAllocators
 	call EnableBackground
 	call ResetOamState
 	call LoadCurrentLevel
@@ -2412,7 +2412,7 @@ Jump_0DCB:
 	cp $03
 	jr z, Jump_0E39
 	ld a, $09
-	call Func_20D2
+	call AllocateDynamicSpriteTiles
 	cp $FF
 	jr z, Jump_0E31
 	ldh [$FF84], a
@@ -2585,7 +2585,7 @@ Func_0F0C:
 	ld l, a
 	ld c, $09
 Jump_0F1F:
-	call Func_2090
+	call AllocateShadowOamFront
 	ldh a, [$FF83]
 	ld b, a
 	ld a, [hli]
@@ -5735,30 +5735,36 @@ Func_2044:
 	ret
 
 
+; Reset the per-frame shadow-OAM and dynamic sprite-tile allocators. Ordinary
+; entries grow upward from $C600; priority/overlay entries grow downward from
+; $C69C. Dynamic tile bytes grow upward from $C100.
+ResetSpriteAllocators:
 Func_2058:
 	ld a, $00
-	ld [$C6C3], a
+	ld [wShadowOamFrontPtr], a
 	ld a, $C6
-	ld [$C6C4], a
+	ld [wShadowOamFrontPtr + 1], a
 	ld a, $9C
-	ld [$C6C5], a
+	ld [wShadowOamBackPtr], a
 	ld a, $C6
-	ld [$C6C6], a
-	ld a, $28
-	ld [$C6C2], a
+	ld [wShadowOamBackPtr + 1], a
+	ld a, SHADOW_OAM_ENTRY_COUNT
+	ld [wShadowOamFreeCount], a
 	xor a
-	ld [$C6C7], a
-	ld a, $00
-	ld [$C6C8], a
-	ld a, $C1
-	ld [$C6C9], a
+	ld [wDynamicSpriteTileCount], a
+	ld a, LOW(wDynamicSpriteTiles)
+	ld [wDynamicSpriteTileWritePtr], a
+	ld a, HIGH(wDynamicSpriteTiles)
+	ld [wDynamicSpriteTileWritePtr + 1], a
 	ret
 
 
+; Return 1 when A shadow-OAM entries remain available, otherwise return 2.
+ClassifyShadowOamCapacity:
 Func_2080:
 	push bc
 	ld b, a
-	ld a, [$C6C2]
+	ld a, [wShadowOamFreeCount]
 	sub b
 	jr c, Jump_208C
 	ld a, $01
@@ -5771,70 +5777,80 @@ Jump_208C:
 	ret
 
 
+; Allocate one shadow-OAM entry from the front in DE. Once exhausted, return
+; the discard entry so callers may keep writing without corrupting live OAM.
+AllocateShadowOamFront:
 Func_2090:
-	ld a, [$C6C2]
+	ld a, [wShadowOamFreeCount]
 	or a
 	jr nz, Jump_209A
-	ld de, $C6A0
+	ld de, wDiscardedOamEntry
 	ret
 
 Jump_209A:
 	dec a
-	ld [$C6C2], a
-	ld a, [$C6C3]
+	ld [wShadowOamFreeCount], a
+	ld a, [wShadowOamFrontPtr]
 	ld e, a
 	add a, $04
-	ld [$C6C3], a
-	ld a, [$C6C4]
+	ld [wShadowOamFrontPtr], a
+	ld a, [wShadowOamFrontPtr + 1]
 	ld d, a
 	adc a, $00
-	ld [$C6C4], a
+	ld [wShadowOamFrontPtr + 1], a
 	ret
 
 
+; Allocate one shadow-OAM entry from the back in DE, or return the discard
+; entry when all 40 slots have already been consumed.
+AllocateShadowOamBack:
 Func_20B1:
-	ld a, [$C6C2]
+	ld a, [wShadowOamFreeCount]
 	or a
 	jr nz, Jump_20BB
-	ld de, $C6A0
+	ld de, wDiscardedOamEntry
 	ret
 
 Jump_20BB:
 	dec a
-	ld [$C6C2], a
-	ld a, [$C6C5]
+	ld [wShadowOamFreeCount], a
+	ld a, [wShadowOamBackPtr]
 	ld e, a
 	sub $04
-	ld [$C6C5], a
-	ld a, [$C6C6]
+	ld [wShadowOamBackPtr], a
+	ld a, [wShadowOamBackPtr + 1]
 	ld d, a
 	sbc a, $00
-	ld [$C6C6], a
+	ld [wShadowOamBackPtr + 1], a
 	ret
 
 
+; Reserve A native 16-byte tiles in the dynamic sprite staging buffer. Return
+; its first tile index in A and byte destination in DE; return A=$FF, DE=0 if
+; the resulting count would reach 49. The VBlank path only transfers 40 tiles.
+AllocateDynamicSpriteTiles:
 Func_20D2:
 	ld d, a
-	ld a, [$C6C7]
+	ld a, [wDynamicSpriteTileCount]
 	ld c, a
 	add a, d
-	cp $31
+	cp DYNAMIC_SPRITE_TILE_REJECT_AT
 	jr nc, Jump_20F8
-	ld [$C6C7], a
+	ld [wDynamicSpriteTileCount], a
 	ld a, d
 	add a, a
 	add a, a
 	add a, a
 	add a, a
 	ld b, a
-	ld a, [$C6C8]
+	ld a, [wDynamicSpriteTileWritePtr]
 	ld e, a
 	add a, b
-	ld [$C6C8], a
-	ld a, [$C6C9]
+	ld [wDynamicSpriteTileWritePtr], a
+	ld a, [wDynamicSpriteTileWritePtr + 1]
 	ld d, a
 	adc a, $00
-	ld [$C6C9], a
+	ld [wDynamicSpriteTileWritePtr + 1], a
 	ld a, c
 	ret
 
@@ -5846,12 +5862,15 @@ Jump_20F8:
 	ret
 
 
+; Clear every still-unallocated shadow-OAM entry between the front and back
+; allocations so stale sprites cannot survive into the next hardware DMA.
+ClearUnusedShadowOamEntries:
 Func_20FE:
-	ld a, [$C6C3]
+	ld a, [wShadowOamFrontPtr]
 	ld l, a
-	ld a, [$C6C4]
+	ld a, [wShadowOamFrontPtr + 1]
 	ld h, a
-	ld a, [$C6C2]
+	ld a, [wShadowOamFreeCount]
 	or a
 	ret z
 	ld d, a
@@ -8325,7 +8344,7 @@ Func_2D4C:
 	jr z, Jump_2D7C
 	cp $02
 	jr z, Jump_2DA6
-	call Func_2090
+	call AllocateShadowOamFront
 	ld a, l
 	and $C0
 	add a, $07
@@ -8349,7 +8368,7 @@ Func_2D4C:
 	ret
 
 Jump_2D7C:
-	call Func_2090
+	call AllocateShadowOamFront
 	ld a, l
 	and $C0
 	add a, $07
@@ -8380,7 +8399,7 @@ Jump_2D9A:
 	ret
 
 Jump_2DA6:
-	call Func_2090
+	call AllocateShadowOamFront
 	ld a, l
 	and $C0
 	add a, $07
@@ -9065,7 +9084,7 @@ Func_3104:
 	ld l, a
 	ld a, [hl]
 	ldh [$FF8A], a
-	call Func_20D2
+	call AllocateDynamicSpriteTiles
 	cp $FF
 	jr z, Jump_3157
 	ldh [$FF84], a
@@ -9093,7 +9112,7 @@ Func_315F:
 	ldh a, [$FF8A]
 	ld c, a
 Jump_316D:
-	call Func_2090
+	call AllocateShadowOamFront
 	ldh a, [$FF82]
 	ld b, a
 	ld a, [hli]
@@ -11438,7 +11457,7 @@ Jump_3E18:
 	jr z, Jump_3E32
 	push bc
 	ld a, [$C95F]
-	call Func_20D2
+	call AllocateDynamicSpriteTiles
 	cp $FF
 	jr z, Jump_3E31
 	ld [$C964], a
@@ -11529,7 +11548,7 @@ Func_3E81:
 	ld a, [$C95F]
 	ld c, a
 Jump_3E92:
-	call Func_2090
+	call AllocateShadowOamFront
 	ld a, [$C958]
 	ld b, a
 	ld a, [hli]
