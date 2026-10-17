@@ -93,6 +93,9 @@ formats.
 - `reports/` — deterministic range, operand, asset and semantic inventories.
 - `tools/` — tracing, assembly emission, extraction, validation and reporting.
 - `docs/STATUS.md` — concise progress and unresolved-work ledger.
+- `docs/PASSWORDS.txt` — ROM-derived canonical passwords and recovered format.
+- `docs/HIDDEN_FEATURES.md` — audited reset chord, menus, and unreachable
+  development remnants.
 - `docs/research/` — detailed evidence for each recovered subsystem.
 - `.recomp.json` — public project metadata for compatible catalogs.
 

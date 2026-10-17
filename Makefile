@@ -4,11 +4,11 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check verify-source check-repository compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion progress report diag disasm clean tidy
+.PHONY: all check verify-source check-repository compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion passwords progress report diag disasm clean tidy
 
 all: compare
 
-check: compare check-project graphics maps levels screens objects bank08 relocation banks0105 completion progress check-repository
+check: compare check-project graphics maps levels screens objects bank08 relocation banks0105 completion passwords progress check-repository
 
 # ROM-independent gate used by pull requests and ordinary source review.
 verify-source: $(ROM) progress report check-repository
@@ -62,6 +62,10 @@ completion: compare
 	$(PYTHON) tools/operand_audit.py
 	$(PYTHON) tools/completion_invariants.py
 	$(PYTHON) tools/semantic_invariants.py
+
+# ROM-derived password list and encoder/decoder round trips.
+passwords:
+	$(PYTHON) tools/passwords.py --check
 
 # Diagnostic (non-shipping) ROM that traps scene-handler calls into bank-$01 ROM
 # while another bank is mapped; written to build/diag/, never touches src/.
