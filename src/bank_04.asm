@@ -44,22 +44,22 @@ InitializeLevelObjects:
 	ld [wLevelObjectAuxTable + 1], a
 	ld bc, $0200
 	ld hl, $CDEF
-Jump_04_607E:
+.fillObjectState:
 	ld a, $FF
 	ld [hli], a
 	dec bc
 	ld a, c
 	or b
-	jr nz, Jump_04_607E
+	jr nz, .fillObjectState
 	ld bc, PENDING_LEVEL_OBJECT_COUNT * PENDING_LEVEL_OBJECT_SIZE
 	ld hl, wPendingLevelObjectQueue
-Jump_04_608C:
+.fillPendingQueue:
 	ld a, $FF
 	ld [hli], a
 	dec bc
 	ld a, c
 	or b
-	jr nz, Jump_04_608C
+	jr nz, .fillPendingQueue
 	xor a
 	ld [$CD17], a
 	ld [$CD15], a
@@ -71,12 +71,12 @@ Jump_04_608C:
 	ld b, $28
 	xor a
 	ld [wLevelObjectRecordIndex], a
-Jump_04_60AC:
+.nextSpawnRecord:
 	push bc
 	push hl
 	ld a, [hli]
 	bit 7, a
-	jp nz, Jump_04_6243
+	jp nz, .advanceSpawnRecord
 	ld [wLevelObjectRecordType], a
 	ld c, [hl]
 	inc hl
@@ -92,7 +92,7 @@ Jump_04_60AC:
 	dec hl
 	ld a, [wLevelObjectRecordType]
 	cp $06
-	jr nz, Jump_04_60DE
+	jr nz, .handleObjectRecord
 	inc hl
 	inc hl
 	push bc
@@ -103,12 +103,12 @@ Jump_04_60AC:
 	pop de
 	pop bc
 	call SetObjectPosition
-	jp Jump_04_6243
+	jp .advanceSpawnRecord
 
-Jump_04_60DE:
+.handleObjectRecord:
 	ld a, [hl]
 	bit 7, a
-	jr nz, Jump_04_6133
+	jr nz, .handleSpecialRecord
 	push hl
 	ld a, [wLevelObjectRecordType]
 	push de
@@ -120,14 +120,14 @@ Jump_04_60DE:
 	ld b, $01
 	ld c, $04
 	and a
-	jr z, Jump_04_6106
+	jr z, .createObject
 	ld b, $00
 	ld c, $05
 	cp $01
-	jr z, Jump_04_6106
+	jr z, .createObject
 	ld b, $02
 	ld c, $03
-Jump_04_6106:
+.createObject:
 	ld a, b
 	push bc
 	call CreateObjectAtOrigin
@@ -157,12 +157,12 @@ Jump_04_6106:
 	ld a, [de]
 	ld b, a
 	call InitializeObjectSequenceStateFar
-	jp Jump_04_61E7
+	jp .initializeCommonFields
 
-Jump_04_6133:
+.handleSpecialRecord:
 	ld a, [wLevelObjectRecordType]
 	cp $03
-	jr nz, Jump_04_616B
+	jr nz, .checkType5
 	ld a, [hl]
 	and $7F
 	ld [wPlayerSpawnDirection], a
@@ -178,18 +178,18 @@ Jump_04_6133:
 	inc hl
 	ld a, [wGameStartMode]
 	cp $01
-	jp z, Jump_04_6243
+	jp z, .advanceSpawnRecord
 	ld a, [hl]
 	ld [wPlayerObjectType], a
 	ld a, [wLevelObjectRecordType]
 	call GetLevelObjectHealthPenalty
 	ld a, d
 	ld [wPlayerSpawnHealthPenalty], a
-	jp Jump_04_6243
+	jp .advanceSpawnRecord
 
-Jump_04_616B:
+.checkType5:
 	cp $05
-	jr nz, Jump_04_6182
+	jr nz, .selectSpecialObjectType
 	push bc
 	ld a, [wLevelObjectRecordType]
 	push de
@@ -199,9 +199,9 @@ Jump_04_616B:
 	pop de
 	ld b, $03
 	ld c, $00
-	jr Jump_04_61A5
+	jr .createSpecialObject
 
-Jump_04_6182:
+.selectSpecialObjectType:
 	push bc
 	ld a, [wLevelObjectRecordType]
 	push de
@@ -213,14 +213,14 @@ Jump_04_6182:
 	ld b, $01
 	ld c, $04
 	and a
-	jr z, Jump_04_61A5
+	jr z, .createSpecialObject
 	ld b, $00
 	ld c, $05
 	cp $01
-	jr z, Jump_04_61A5
+	jr z, .createSpecialObject
 	ld b, $02
 	ld c, $03
-Jump_04_61A5:
+.createSpecialObject:
 	ld a, b
 	push bc
 	call CreateObjectAtOrigin
@@ -266,7 +266,7 @@ Jump_04_61A5:
 	ld l, a
 	xor a
 	ld [hl], a
-Jump_04_61E7:
+.initializeCommonFields:
 	ld a, l
 	and $C0
 	add a, $26
@@ -307,12 +307,12 @@ Jump_04_61E7:
 	ld a, [hli]
 	ld b, $00
 	and a
-	jr z, Jump_04_622A
+	jr z, .storeBehaviorMode
 	ld b, $01
 	cp $01
-	jr z, Jump_04_622A
+	jr z, .storeBehaviorMode
 	ld b, $02
-Jump_04_622A:
+.storeBehaviorMode:
 	ld a, e
 	and $C0
 	add a, $29
@@ -331,7 +331,7 @@ Jump_04_622A:
 	ld e, a
 	ld a, $01
 	ld [de], a
-Jump_04_6243:
+.advanceSpawnRecord:
 	ld a, [wLevelObjectRecordIndex]
 	inc a
 	ld [wLevelObjectRecordIndex], a
@@ -341,34 +341,34 @@ Jump_04_6243:
 	pop af
 	dec a
 	ld b, a
-	jp nz, Jump_04_60AC
+	jp nz, .nextSpawnRecord
 	ld a, [wLevelObjectAuxTable]
 	ld l, a
 	ld a, [wLevelObjectAuxTable + 1]
 	ld h, a
 	ld de, wLevelObjectAuxState
 	ld a, LEVEL_OBJECT_AUX_COUNT
-Jump_04_6262:
+.nextAuxRecord:
 	push af
 	push hl
 	push de
 	push hl
 	push de
 	ld b, LEVEL_OBJECT_AUX_STATE_SIZE
-Jump_04_6269:
+.clearAuxStateByte:
 	xor a
 	ld [de], a
 	ld a, b
 	dec a
 	ld b, a
-	jr nz, Jump_04_6269
+	jr nz, .clearAuxStateByte
 	pop de
 	ld bc, $0006
 	add hl, bc
 	ld a, [hl]
 	pop hl
 	and a
-	jr z, Jump_04_6296
+	jr z, .advanceAuxRecord
 	ld a, [hli]
 	ld [de], a
 	inc de
@@ -397,7 +397,7 @@ Jump_04_6269:
 	ld [de], a
 	inc de
 	ld [de], a
-Jump_04_6296:
+.advanceAuxRecord:
 	pop hl
 	ld bc, LEVEL_OBJECT_AUX_STATE_SIZE
 	add hl, bc
@@ -408,7 +408,7 @@ Jump_04_6296:
 	add hl, bc
 	pop af
 	dec a
-	jr nz, Jump_04_6262
+	jr nz, .nextAuxRecord
 	ret
 
 
@@ -418,48 +418,48 @@ GetLevelObjectHealthPenalty:
 	ld [wLevelObjectSkillScratch], a
 	ld d, $26
 	and a
-	jr z, Jump_04_62BB
+	jr z, .type0Penalty
 	ld d, $20
 	cp $01
-	jr z, Jump_04_62BB
+	jr z, .type0Penalty
 	ld d, $1C
-Jump_04_62BB:
+.type0Penalty:
 	ld a, e
 	and a
 	ret z
 	ld a, [wLevelObjectSkillScratch]
 	ld d, $1D
 	and a
-	jr z, Jump_04_62CE
+	jr z, .type1Penalty
 	ld d, $17
 	cp $01
-	jr z, Jump_04_62CE
+	jr z, .type1Penalty
 	ld d, $11
-Jump_04_62CE:
+.type1Penalty:
 	ld a, e
 	cp $01
 	ret z
 	ld a, [wLevelObjectSkillScratch]
 	ld d, $2F
 	and a
-	jr z, Jump_04_62E2
+	jr z, .type2Penalty
 	ld d, $29
 	cp $01
-	jr z, Jump_04_62E2
+	jr z, .type2Penalty
 	ld d, $23
-Jump_04_62E2:
+.type2Penalty:
 	ld a, e
 	cp $02
 	ret z
 	ld a, [wLevelObjectSkillScratch]
 	ld d, $1C
 	and a
-	jr z, Jump_04_62F6
+	jr z, .return
 	ld d, $16
 	cp $01
-	jr z, Jump_04_62F6
+	jr z, .return
 	ld d, $10
-Jump_04_62F6:
+.return:
 	ret
 
 
@@ -467,48 +467,48 @@ GetLevelObjectHealthPenaltyNoLoad:
 	ld a, [wLevelObjectSkillScratch]
 	ld d, $26
 	and a
-	jr z, Jump_04_6307
+	jr z, .type0Penalty
 	ld d, $20
 	cp $01
-	jr z, Jump_04_6307
+	jr z, .type0Penalty
 	ld d, $1C
-Jump_04_6307:
+.type0Penalty:
 	ld a, e
 	and a
 	ret z
 	ld a, [wLevelObjectSkillScratch]
 	ld d, $1D
 	and a
-	jr z, Jump_04_631A
+	jr z, .type1Penalty
 	ld d, $17
 	cp $01
-	jr z, Jump_04_631A
+	jr z, .type1Penalty
 	ld d, $11
-Jump_04_631A:
+.type1Penalty:
 	ld a, e
 	cp $01
 	ret z
 	ld a, [wLevelObjectSkillScratch]
 	ld d, $2F
 	and a
-	jr z, Jump_04_632E
+	jr z, .type2Penalty
 	ld d, $29
 	cp $01
-	jr z, Jump_04_632E
+	jr z, .type2Penalty
 	ld d, $23
-Jump_04_632E:
+.type2Penalty:
 	ld a, e
 	cp $02
 	ret z
 	ld a, [wLevelObjectSkillScratch]
 	ld d, $1C
 	and a
-	jr z, Jump_04_6342
+	jr z, .return
 	ld d, $16
 	cp $01
-	jr z, Jump_04_6342
+	jr z, .return
 	ld d, $10
-Jump_04_6342:
+.return:
 	ret
 
 
@@ -524,11 +524,11 @@ QueuePendingLevelObject:
 	ld d, h
 	ld hl, wPendingLevelObjectQueue
 	ld b, PENDING_LEVEL_OBJECT_COUNT
-Jump_04_6353:
+.findFreeEntry:
 	push bc
 	ld a, [hl]
 	bit 7, a
-	jr z, Jump_04_6389
+	jr z, .advanceEntry
 	ld a, e
 	and $C0
 	add a, $3B
@@ -566,14 +566,14 @@ Jump_04_6353:
 	pop af
 	ret
 
-Jump_04_6389:
+.advanceEntry:
 	inc hl
 	inc hl
 	inc hl
 	pop af
 	dec a
 	ld b, a
-	jr nz, Jump_04_6353
+	jr nz, .findFreeEntry
 	ret
 
 
@@ -587,35 +587,35 @@ UpdatePendingLevelObjects:
 	ld [wObjectSlowTickCounter], a
 	ld hl, wPendingLevelObjectQueue
 	ld b, PENDING_LEVEL_OBJECT_COUNT
-Jump_04_63A5:
+.nextEntry:
 	push bc
 	push hl
 	ld a, [hli]
 	bit 7, a
-	jr nz, Jump_04_63C6
+	jr nz, .advanceEntry
 	ld b, a
 	ld a, [hli]
 	ld c, a
 	ld a, [hl]
 	dec [hl]
 	and a
-	jr nz, Jump_04_63C6
+	jr nz, .advanceEntry
 	push hl
 	call TrySpawnPendingLevelObject
 	pop hl
 	and a
-	jr nz, Jump_04_63BF
+	jr nz, .clearEntry
 	inc [hl]
-	jr Jump_04_63C6
+	jr .advanceEntry
 
-Jump_04_63BF:
+.clearEntry:
 	ld a, $FF
 	ld [hl], a
 	dec hl
 	ld [hl], a
 	dec hl
 	ld [hl], a
-Jump_04_63C6:
+.advanceEntry:
 	pop hl
 	inc hl
 	inc hl
@@ -623,7 +623,7 @@ Jump_04_63C6:
 	pop af
 	dec a
 	ld b, a
-	jr nz, Jump_04_63A5
+	jr nz, .nextEntry
 	ret
 
 
@@ -667,13 +667,13 @@ TrySpawnPendingLevelObject:
 	call AbsoluteDifferenceBCDE
 	ld a, d
 	and a
-	jr nz, Jump_04_6418
+	jr nz, .checkYDistance
 	ld a, $50
 	sub e
-	jr nc, Jump_04_6418
+	jr nc, .checkYDistance
 	ld a, $01
 	ld [wPendingSpawnOutsideView], a
-Jump_04_6418:
+.checkYDistance:
 	pop de
 	pop bc
 	ld e, [hl]
@@ -693,25 +693,25 @@ Jump_04_6418:
 	call AbsoluteDifferenceBCDE
 	ld a, d
 	and a
-	jr nz, Jump_04_643F
+	jr nz, .checkOutsideView
 	ld a, $48
 	sub e
-	jr nc, Jump_04_643F
+	jr nc, .checkOutsideView
 	ld a, $01
 	ld [wPendingSpawnOutsideView], a
-Jump_04_643F:
+.checkOutsideView:
 	pop de
 	pop bc
 	ld a, [wPendingSpawnOutsideView]
 	and a
-	jr nz, Jump_04_6449
+	jr nz, .spawnObject
 	pop hl
 	ret
 
-Jump_04_6449:
+.spawnObject:
 	ld a, [hl]
 	bit 7, a
-	jr nz, Jump_04_6495
+	jr nz, .spawnSpecialObject
 	ld a, [wLevelObjectRecordType]
 	call GetLevelObjectHealthPenalty
 	push hl
@@ -719,14 +719,14 @@ Jump_04_6449:
 	ld b, $01
 	ld c, $05
 	and a
-	jr z, Jump_04_646B
+	jr z, .createObject
 	ld b, $00
 	ld c, $04
 	cp $01
-	jr z, Jump_04_646B
+	jr z, .createObject
 	ld b, $02
 	ld c, $03
-Jump_04_646B:
+.createObject:
 	ld a, b
 	push bc
 	push de
@@ -756,20 +756,20 @@ Jump_04_646B:
 	ld a, [de]
 	ld b, a
 	call InitializeObjectSequenceStateFar
-	jr Jump_04_6506
+	jr .initializeCommonFields
 
-Jump_04_6495:
+.spawnSpecialObject:
 	ld a, [wLevelObjectRecordType]
 	cp $05
-	jr nz, Jump_04_64A9
+	jr nz, .selectSpecialObjectType
 	ld a, [wLevelObjectRecordType]
 	call GetLevelObjectHealthPenalty
 	push bc
 	ld b, $03
 	ld c, $00
-	jr Jump_04_64C6
+	jr .createSpecialObject
 
-Jump_04_64A9:
+.selectSpecialObjectType:
 	push bc
 	ld a, [wLevelObjectRecordType]
 	call GetLevelObjectHealthPenalty
@@ -777,14 +777,14 @@ Jump_04_64A9:
 	ld b, $01
 	ld c, $04
 	and a
-	jr z, Jump_04_64C6
+	jr z, .createSpecialObject
 	ld b, $00
 	ld c, $05
 	cp $01
-	jr z, Jump_04_64C6
+	jr z, .createSpecialObject
 	ld b, $02
 	ld c, $03
-Jump_04_64C6:
+.createSpecialObject:
 	ld a, b
 	push bc
 	push de
@@ -830,7 +830,7 @@ Jump_04_64C6:
 	ld l, a
 	xor a
 	ld [hl], a
-Jump_04_6506:
+.initializeCommonFields:
 	ld a, l
 	and $C0
 	add a, $26
@@ -865,12 +865,12 @@ Jump_04_6506:
 	ld a, [hli]
 	ld b, $00
 	and a
-	jr z, Jump_04_6542
+	jr z, .storeBehaviorMode
 	ld b, $01
 	cp $01
-	jr z, Jump_04_6542
+	jr z, .storeBehaviorMode
 	ld b, $02
-Jump_04_6542:
+.storeBehaviorMode:
 	ld a, e
 	and $C0
 	add a, $29
@@ -900,7 +900,7 @@ AbsoluteDifferenceBCDE:
 	sbc a, d
 	ld d, a
 	and $80
-	jr z, Jump_04_6573
+	jr z, .nonnegative
 	ld a, e
 	cpl
 	add a, $01
@@ -912,7 +912,7 @@ AbsoluteDifferenceBCDE:
 	ld a, $01
 	ret
 
-Jump_04_6573:
+.nonnegative:
 	xor a
 	ret
 
