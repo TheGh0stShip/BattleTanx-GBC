@@ -10227,7 +10227,10 @@ Jump_362B:
 	jr Jump_363B
 
 
-Func_362D:
+; Increment the dormant return-to-menu counter. At 20, restart the outer menu
+; flow; otherwise continue through the normal runtime callback dispatch.
+AdvanceReturnToMenuCounter:
+Func_362D: ; legacy alias
 	ld a, [$CD0F]
 	inc a
 	ld [$CD0F], a
@@ -11287,7 +11290,10 @@ Func_3BC4: ; legacy alias
 	ret
 
 
-Func_3BD5:
+; Enter the bank-$01 loop that clears the score and increments it forever,
+; repeatedly refreshing its quotient-by-1000 scratch value.
+RunScoreIncrementLoopFar:
+Func_3BD5: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -11468,7 +11474,10 @@ Func_3C90: ; legacy alias
 	ret
 
 
-Func_3CC2:
+; Disable object display, then load the bank-$02 sprite grid selected by E,
+; including its VRAM tiles, palette, shadow OAM entries, and OAM DMA transfer.
+LoadIndexedSpriteGridFar:
+Func_3CC2: ; legacy alias
 	ldh a, [rLCDC]
 	res 1, a
 	ldh [rLCDC], a
