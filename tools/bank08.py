@@ -244,7 +244,7 @@ def parse(rom: bytes):
         (0x621A, 0x6222, "palette record", "PaletteRecord621A"),
         (0x6222, 0x6242, "graphics", "Bank08InterfaceTiles6222"),
         (0x6242, 0x624A, "palette record", "PaletteRecord6242"),
-        (0x624A, 0x6250, "palette record (unused)", "Bank08UnusedObjectPalette624A"),
+        (0x624A, 0x6250, "unknown", "Bank08Unknown624A"),
         (0x6250, 0x6260, "graphics (duplicate, not loaded)", "Bank08DuplicateInterfaceTile6250"),
         (0x6260, 0x6263, "unknown", "Bank08Unknown6260"),
         (0x6263, 0x626B, "palette record", "PaletteRecord6263"),
@@ -274,8 +274,6 @@ def parse(rom: bytes):
     ]
     check(r(0x6112, 8) == bytes.fromhex("1f001f001f001f00"),
           "unused palette record $6112 changed")
-    check(r(0x624A, 6) == bytes.fromhex("010001000100"),
-          "unused three-colour palette record $624A changed")
     check(r(0x6250, 16) == r(0x626B + 47 * 16, 16),
           "duplicate interface tile $6250 no longer matches tile 47 at $655B")
     unused_palette = [word(rom, 8, 0x6AFD + 2 * i) for i in range(4)]
@@ -415,7 +413,6 @@ def negative_tests(rom: bytes, root: pathlib.Path) -> int:
         "effect read outside area": ({(5, 0x59E0 + 2): 0x40}, "outside sprite area"),
         "palette record colour 0": ({(8, 0x5100): 0x01}, "palette record 5100"),
         "unused palette record": ({(8, 0x6113): 0x80}, "unused palette record $6112"),
-        "unused object palette record": ({(8, 0x624A): 0x02}, "unused three-colour palette record $624A"),
         "duplicate interface tile": ({(8, 0x6250): 0x00}, "duplicate interface tile $6250"),
         "effect table end": ({(5, 0x6358 + 6 * 72): 0x01}, "does not end after 72"),
         "effect countdown": ({(0, rom.find(bytes.fromhex("3e4bea59c9"), 0, 0x4000) + 1): 0x4C}, "$C959 = $4B"),

@@ -390,7 +390,7 @@ labelled and address-checked.
 Bank `$08` is fully classified; see [`research/BANK08_RESEARCH.md`](research/BANK08_RESEARCH.md). Every boundary is
 derived from loader operands, palette loads, the bank-`$02` object animation
 frame tables, the bank-`$05` effect step table, the glyph table and the
-metatile table, and checked by `tools/bank08.py` (29 negative tests). The
+metatile table, and checked by `tools/bank08.py` (28 negative tests). The
 ten-entry status-4 palette-index table is bounded by level-record values 0-8
 and the one-way handler transition from 8 to 9.
 Corrections to the earlier description: the UI font is 62 tiles (`$4000`;
@@ -402,10 +402,9 @@ separated by 8-byte palette-shaped records. An unreferenced block at `$6A7D`
 is now represented as eight native 2bpp tiles followed by a four-word RGB555
 palette, without assigning it a gameplay role. Byte totals: code 27, graphics
 10,976 (992 referenced only by unreachable effect steps and 160 never loaded),
-palettes 72 (8 never loaded), palette-shaped records 350, tables 330,
-fill/marker 4,624, and 5 unknown bytes (`$6108-$6109` and `$6260-$6262`).
-The six bytes at `$624A-$624F` form an unused three-colour RGB555 record;
-its purpose remains unknown.
+palettes 72 (8 never loaded), palette-shaped records 344, tables 330,
+fill/marker 4,624, and 11 unknown bytes (`$6108-$6109`, `$624A-$624F`,
+`$6260-$6262`).
 
 The ROM0 screen-effect path is now named through its full 75-frame lifetime.
 It renders three parts per frame from the bank-`$05` step records, copying
