@@ -32,7 +32,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
-| Graphics | 61 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three orientation sets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Establish the remaining mixed graphics/data formats in banks `$27-$29` and identify remaining layouts |
+| Graphics | 61 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three fully classified orientation sets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Resolve the remaining mixed ranges in bank `$08` and identify individual layouts |
 | Maps | All eleven fixed backgrounds, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions, indices, attributes, flips, and palettes | Resolve the bank `$3B` prefix and name individual scenes and levels |
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
@@ -195,9 +195,15 @@ by an unidentified two-byte value at `$4510` and an explicit three-color object
 palette at `$4512`; the palette loader supplies the transparent color and loads
 these records into object palette slots 0, 1, and 2.
 
-The `$4518-$4BFF` range in each bank remains lossless opaque sprite data until
-its readers and internal boundaries are established. Each bank then has
-`$33FF` zero bytes and its marker at `$7FFF`.
+The orientation graphics end at `$450F`. The word at `$4510` resembles an
+RGB555 color but is unread and remains unnamed. Each palette occupies six bytes
+at `$4512-$4517`. Bytes `$4518-$4BFB` are an unread, byte-identical copy of the
+same offsets in bank `$26` (part of level 14's tile map), not sprite data.
+Zero fill begins at `$4BFC` and continues to the bank marker at `$7FFF`.
+Every byte in banks `$27-$29` is now classified, with the unknown meaning of
+the `$4510` word and the run-time bound of one bank selector retained as open
+questions. `make objects` emits frame, assembled-orientation, layout, and
+palette inspection files and verifies their round trips.
 
 ## Scene-background descriptors
 

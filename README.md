@@ -50,6 +50,8 @@ make            # builds from committed sources/assets and compares with baserom
   `make graphics`; generated PNG previews are under `build/graphics/`
 - `make maps` - renders all descriptor-driven fixed and scrolling scenes and
   writes tile-index/attribute CSV plus decoded palette values under `build/maps/`
+- `make objects` - renders the three object-orientation banks and round-trips
+  their frames, assembled orientations, layouts, and palettes under `build/objects/`
 - `tools/` - tracer/disassembler used to generate the initial source
 
 ## Method
@@ -74,7 +76,7 @@ only to bootstrap; from then on `src/` is the source of truth.
 
 All 1,048,576 bytes reconstruct exactly. That establishes a complete binary
 rebuild, not a complete understanding of the source. The tracer currently reaches
-37,612 instruction bytes from known entry points, pointers, executable RAM images, and
+38,772 instruction bytes from known entry points, pointers, executable RAM images, and
 reviewed standalone routine entries. The optional gap pass currently adds zero
 bytes; confirmed data ranges are explicitly excluded from instruction tracing.
 

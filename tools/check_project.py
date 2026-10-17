@@ -189,11 +189,6 @@ def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> 
             (bank * 0x4000, 0x510)
         for bank in (0x27, 0x28, 0x29)
     }
-    expected_assets.update({
-        pathlib.Path(f"assets/bank_{bank:02X}/sprite_data_4518.bin"):
-            (bank * 0x4000 + 0x518, 0x6E8)
-        for bank in (0x27, 0x28, 0x29)
-    })
     manifest = {path: (start, size) for path, start, size in entries}
     for path, where in expected_assets.items():
         if manifest.get(path) != where:
@@ -269,6 +264,15 @@ def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> 
         for name, where in expected_symbols.items():
             if symbols.get(name) != where:
                 fail(f"sprite palette symbol {name} is at {symbols.get(name)}, expected {where}")
+
+    # Banks $27-$29 full layout, assets and negative tests (BANKS_27_29_RESEARCH.md).
+    sys.path.insert(0, str(ROOT / "tools"))
+    import object_banks  # pylint: disable=import-outside-toplevel
+
+    try:
+        print(object_banks.validate_all(ROOT))
+    except object_banks.ObjectBankError as exc:
+        fail(f"object banks: {exc}")
 
 
 def check_scene_descriptors(rom: bytes) -> None:

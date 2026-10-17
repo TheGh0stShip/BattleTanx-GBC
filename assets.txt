@@ -91,11 +91,8 @@ assets/levels/level_14/tiles.2bpp 0x95e00 0x1880
 assets/levels/level_14/tilemap.bin 0x98000 0x1e00
 assets/levels/level_14/attrmap.bin 0x99e00 0x1e00
 assets/bank_27/orientation_tiles.bin 0x9c000 0x510
-assets/bank_27/sprite_data_4518.bin 0x9c518 0x6e8
 assets/bank_28/orientation_tiles.bin 0xa0000 0x510
-assets/bank_28/sprite_data_4518.bin 0xa0518 0x6e8
 assets/bank_29/orientation_tiles.bin 0xa4000 0x510
-assets/bank_29/sprite_data_4518.bin 0xa4518 0x6e8
 assets/screens/fixedscreen2a_tiles.2bpp 0xa8000 0x1d00
 assets/screens/screenmode01_tiles.2bpp 0xaa2b2 0x4b0
 assets/screens/screenmode12_tiles.2bpp 0xaaae1 0x940
