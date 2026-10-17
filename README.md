@@ -103,3 +103,9 @@ RGBDS 1.0.4, validates every committed asset against its ROM range, checks traci
 invariants, rebuilds the cartridge, round-trips confirmed graphics through PNG,
 and renders and validates every recovered scene, level, object-orientation, and
 full-screen picture package before verifying the retail hashes.
+
+## License
+
+Everything in this repository is distributed under the GNU General Public
+License version 3. See [`LICENSE`](LICENSE). BattleTanx and the original game's
+copyrights and trademarks remain the property of their respective owners.
