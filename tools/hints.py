@@ -154,6 +154,7 @@ NAMES = {
     0x0A59: "ReadJoypad",
     0x0C3D: "ObjectMaxHealthByType",
     0x0C41: "GetObjectMaxHealth",
+    0x1927: "PositionPlayerAtSpawn",
     0x194B: "CenterLevelViewOnObject",
     0x1FF5: "AllocateObjectRecord",
     0x2028: "ClearObjectPool",

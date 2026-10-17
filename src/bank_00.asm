@@ -235,15 +235,15 @@ Jump_01B4:
 	call SetObjectHealthToMax
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
-	ld a, [$CD1B]
+	ld a, [wPlayerSpawnDirection]
 	ld [hl], a
 	ld b, $00
 	ld c, $00
 	call ResetLevelEndState
 	call SetLevelScrollPosition
-	call Func_1927
+	call PositionPlayerAtSpawn
 	call CenterLevelViewOnObject
 	call RefreshLevelViewport
 	call ResetOamState
@@ -4510,18 +4510,19 @@ LoadLevelData:
 	ret
 
 
+PositionPlayerAtSpawn:
 Func_1927:
 	push af
 	push bc
 	push de
 	push hl
-	ld a, [$CD0B]
+	ld a, [wPlayerSpawnX]
 	ld c, a
-	ld a, [$CD0C]
+	ld a, [wPlayerSpawnX + 1]
 	ld b, a
-	ld a, [$CD0D]
+	ld a, [wPlayerSpawnY]
 	ld e, a
-	ld a, [$CD0E]
+	ld a, [wPlayerSpawnY + 1]
 	ld d, a
 	ld a, [wPlayerObject]
 	ld l, a

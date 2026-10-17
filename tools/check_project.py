@@ -1027,6 +1027,7 @@ def check_level_banks() -> None:
             "UpdateObjectScreenPosition": (0x00, 0x214D),
             "SaveObjectPreviousPosition": (0x00, 0x21F7),
             "CommitObjectNextPosition": (0x00, 0x221F),
+            "PositionPlayerAtSpawn": (0x00, 0x1927),
             "LoadLevelLookupPointers": (0x05, 0x4088),
             "ObjectScoreValues": (0x05, 0x4EA0),
             "ObjectTypeParameterTable": (0x05, 0x5100),
@@ -1091,6 +1092,9 @@ def check_level_banks() -> None:
         "wPlayerHealthRecoveryTicks": 0xCD03,
         "wPlayerObjectType": 0xCD08,
         "wPlayerAlive": 0xCD09,
+        "wPlayerSpawnX": 0xCD0B,
+        "wPlayerSpawnY": 0xCD0D,
+        "wPlayerSpawnDirection": 0xCD1B,
         "wObjectPool": 0xD000,
     }
     if core_symbols != expected_core:

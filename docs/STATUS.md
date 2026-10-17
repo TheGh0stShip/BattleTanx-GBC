@@ -153,6 +153,10 @@ Object positions use 16.8 fixed point: an 8-bit fractional byte followed by a
 to current bytes `+$00-$05`; the previous integer coordinates, screen
 coordinates, visibility flag, and 16-way direction field are then refreshed
 through named helpers.
+The level-object loader identifies its player-start record and stores
+`wPlayerSpawnX`, `wPlayerSpawnY`, and `wPlayerSpawnDirection`.
+`PositionPlayerAtSpawn` applies those coordinates to `wPlayerObject`; the
+direction is installed in the same initialization path.
 
 ## Level banks `$09-$26`
 

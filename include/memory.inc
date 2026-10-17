@@ -37,6 +37,9 @@ DEF wPlayerObject     EQU $CD00 ; 2-byte pointer
 DEF wPlayerLives      EQU $CD02
 DEF wPlayerHealthRecoveryTicks EQU $CD03 ; decremented every other VBlank
 DEF wPlayerObjectType EQU $CD08
+DEF wPlayerSpawnX     EQU $CD0B ; 2-byte little-endian pixel coordinate
+DEF wPlayerSpawnY     EQU $CD0D ; 2-byte little-endian pixel coordinate
+DEF wPlayerSpawnDirection EQU $CD1B ; low seven bits from level record
 
 ; Sixty-four 64-byte runtime object records.
 DEF wObjectPool EQU $D000

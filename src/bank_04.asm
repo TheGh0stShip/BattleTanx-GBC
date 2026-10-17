@@ -165,15 +165,15 @@ Jump_04_6133:
 	jr nz, Jump_04_616B
 	ld a, [hl]
 	and $7F
-	ld [$CD1B], a
+	ld [wPlayerSpawnDirection], a
 	ld a, c
-	ld [$CD0B], a
+	ld [wPlayerSpawnX], a
 	ld a, b
-	ld [$CD0C], a
+	ld [wPlayerSpawnX + 1], a
 	ld a, e
-	ld [$CD0D], a
+	ld [wPlayerSpawnY], a
 	ld a, d
-	ld [$CD0E], a
+	ld [wPlayerSpawnY + 1], a
 	inc hl
 	inc hl
 	ld a, [$C6CD]
