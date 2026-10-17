@@ -186,6 +186,13 @@ bytes `+$29` and `+$2A` hold the power-up kind and remaining charges. Its
 An independent four-tile indicator blinks while `wHudAlertActive` is nonzero;
 its gameplay meaning is not yet named.
 
+The interface palette buffers are now connected end to end. Five bank-`$08`
+palettes are copied into named eight-byte WRAM records. `LoadInterfacePalettes`
+also snapshots hardware BG palette 6 into `wBackgroundPalette6`; the VBlank
+routine uploads that saved palette followed by `wUiFontPalette` to BG palette
+slots 6 and 7. Power-up palette pointers now use the corresponding WRAM labels
+instead of raw addresses.
+
 Background fades use a 2 KiB cache in WRAM bank 2: 32 complete 64-byte CGB
 palette frames from `wBackgroundPaletteFadeFrames` through `$D7FF`.
 `PrepareBackgroundPaletteFade` clears the cache and copies the target colours

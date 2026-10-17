@@ -1559,8 +1559,8 @@ LoadInterfacePalettes:
 	ld bc, wAlphanumericFontPalette
 	ld e, $08
 	call CopyBytesShort
-	ld hl, $C719
-	ld de, $FF69
+	ld hl, wBackgroundPalette6
+	ld de, rBCPD
 	ld c, $08
 	ld b, $00
 Jump_0991:
@@ -9824,7 +9824,7 @@ Jump_34CE:
 HudPowerupFirstTiles:
 	db $00, $4E, $52, $56
 HudPowerupPalettes:
-	dw $0000, $C701, $C709, $C711
+	dw $0000, wArrowUpPalette, wArrowDownPalette, wAlphanumericFontPalette
 
 ; Draw power-up kind D as a 2-by-2 icon and copy its eight-byte CGB palette to
 ; the buffer consumed by the installed scanline palette uploader.

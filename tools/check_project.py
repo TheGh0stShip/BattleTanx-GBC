@@ -1155,6 +1155,23 @@ def check_level_banks() -> None:
     if core_symbols != expected_core:
         fail(f"core WRAM symbols differ: {core_symbols.items() ^ expected_core.items()}")
 
+    interface_palette_symbols = {
+        name: int(address, 16)
+        for name, address in re.findall(
+            r"DEF (w(?:HudPowerupPalette|BackgroundPalette6))\s+EQU \$([0-9A-Fa-f]+)",
+            memory_source,
+        )
+    }
+    expected_interface_palette_symbols = {
+        "wHudPowerupPalette": 0xC6F1,
+        "wBackgroundPalette6": 0xC719,
+    }
+    if interface_palette_symbols != expected_interface_palette_symbols:
+        fail(
+            "interface palette symbols differ: "
+            f"{interface_palette_symbols.items() ^ expected_interface_palette_symbols.items()}"
+        )
+
     sprite_symbols = {
         name: int(address, 16)
         for name, address in re.findall(

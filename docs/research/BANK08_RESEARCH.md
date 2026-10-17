@@ -63,7 +63,7 @@ The two totals sum to 16,384.
 | `RenderScreenEffect` / `CopyScreenEffectPartTiles` | bank-`$05` step table `$6358` (72 steps x 3 record words; 5-byte records: count, tile source, OAM template) | count x 16 | WRAM staging; OAM attribute OR 3 (OBJ palette 3, VRAM1) |
 | `LoadObjectPalettes` | `$46EA` (3 colours, OBJ 3), `$67FD` (4 x 3 colours, OBJ 4-7), `$44A2` (8 bytes, BG 7) | `Func_057D` / `Func_052F` | OCPD / BCPD |
 | ROM0 `$3CFB` effect start / ROM0 `$3F00` | `$5502` / `$46EA` (3 colours, OBJ 3) | `Func_057D` | OCPD |
-| `LoadInterfacePalettes` | `$44A0`, `$674B`, `$691D`, `$6965`, `$69AD` (8 bytes each) | `CopyBytesShort` | WRAM `$C721`, `$C6F9`, `$C701`, `$C709`, `$C711` (LOAD blocks kept) |
+| `LoadInterfacePalettes` | `$44A0`, `$674B`, `$691D`, `$6965`, `$69AD` (8 bytes each) | `CopyBytesShort` | `wUiFontPalette`, `wHudIconPalette`, `wArrowUpPalette`, `wArrowDownPalette`, `wAlphanumericFontPalette` (LOAD blocks kept) |
 | `SelectObjectSpritePalette` (`$6DD5`, bank-`$08` code) | `$67F3 + obj+$1E` | 1 byte | `$FF80` = (value & 3) + 4 |
 
 **Selectors.** All bank-`$08` selections are the immediate `$08`. No

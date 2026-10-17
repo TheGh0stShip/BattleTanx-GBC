@@ -44,6 +44,7 @@ DEF wPlayerSpawnDirection EQU $CD1B ; low seven bits from level record
 ; HUD state. The power-up renderer copies one eight-byte CGB palette here for
 ; the scanline palette uploader. The alert flag blinks a four-tile indicator.
 DEF wHudPowerupPalette EQU $C6F1 ; 8-byte CGB palette
+DEF wBackgroundPalette6 EQU $C719 ; 8-byte palette preserved for VBlank upload
 DEF wHudAlertActive    EQU $C91D
 
 ; Per-frame sprite construction. Shadow OAM is allocated from both ends; when
