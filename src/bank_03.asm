@@ -132,7 +132,7 @@ InitializeObjectSequenceState:
 	ld d, h
 	ld e, l
 	pop hl
-	call Func_2125
+	call SetObjectPosition
 	pop hl
 	ld bc, $0008
 	add hl, bc

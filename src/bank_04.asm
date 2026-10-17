@@ -102,7 +102,7 @@ Jump_04_60AC:
 	call Func_372E
 	pop de
 	pop bc
-	call Func_2125
+	call SetObjectPosition
 	jp Jump_04_6243
 
 Jump_04_60DE:
@@ -247,7 +247,7 @@ Jump_04_61A5:
 	ld a, $80
 	ld [hl], a
 	pop bc
-	call Func_2125
+	call SetObjectPosition
 	ld a, l
 	and $C0
 	add a, $2D
@@ -811,7 +811,7 @@ Jump_04_64C6:
 	ld a, $80
 	ld [hl], a
 	pop bc
-	call Func_2125
+	call SetObjectPosition
 	ld a, l
 	and $C0
 	add a, $2D

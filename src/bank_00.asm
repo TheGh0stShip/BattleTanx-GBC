@@ -1765,9 +1765,9 @@ Func_0AD5:
 	call AllocateObjectRecord
 	ld bc, $0000
 	ld de, $0000
-	call Func_2125
+	call SetObjectPosition
 	xor a
-	call Func_2115
+	call SetObjectDirection
 	pop af
 	call Func_0D0F
 	ld a, l
@@ -1836,7 +1836,7 @@ Jump_0B3B:
 	ld c, $F0
 	call Func_372E
 	pop bc
-	call Func_2125
+	call SetObjectPosition
 Jump_0B4C:
 	ldh a, [$FF82]
 	cp $03
@@ -4527,7 +4527,7 @@ Func_1927:
 	ld l, a
 	ld a, [wPlayerObject + 1]
 	ld h, a
-	call Func_2125
+	call SetObjectPosition
 	pop hl
 	pop de
 	pop bc
@@ -5860,13 +5860,14 @@ Jump_210D:
 	ret
 
 
+SetObjectDirection:
 Func_2115:
 	push hl
 	push af
 	push af
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	pop af
 	and $0F
@@ -5876,6 +5877,9 @@ Func_2115:
 	ret
 
 
+; Initialize the candidate 16.8 position from BC,DE, commit it, snapshot it as
+; the previous position, and recalculate screen coordinates.
+SetObjectPosition:
 Func_2125:
 	push af
 	push bc
@@ -5883,7 +5887,7 @@ Func_2125:
 	push hl
 	ld a, l
 	and $C0
-	add a, $13
+	add a, OBJECT_NEXT_X_SUBPIXEL_OFFSET
 	ld l, a
 	xor a
 	ld [hli], a
@@ -5899,11 +5903,11 @@ Func_2125:
 	ld [hl], a
 	pop hl
 	push hl
-	call Func_221F
-	call Func_21F7
+	call CommitObjectNextPosition
+	call SaveObjectPreviousPosition
 	pop hl
 	push hl
-	call Func_214D
+	call UpdateObjectScreenPosition
 	pop hl
 	pop de
 	pop bc
@@ -5911,6 +5915,7 @@ Func_2125:
 	ret
 
 
+UpdateObjectScreenPosition:
 Func_214D:
 	push af
 	push bc
@@ -6041,6 +6046,7 @@ Jump_21DF:
 	ret
 
 
+SaveObjectPreviousPosition:
 Func_21F7:
 	push hl
 	push bc
@@ -6077,6 +6083,7 @@ Func_21F7:
 	ret
 
 
+CommitObjectNextPosition:
 Func_221F:
 	push de
 	push hl
@@ -6084,7 +6091,7 @@ Func_221F:
 	ld d, h
 	ld a, l
 	and $C0
-	add a, $13
+	add a, OBJECT_NEXT_X_SUBPIXEL_OFFSET
 	ld l, a
 	ld a, e
 	and $C0
@@ -6261,7 +6268,7 @@ Func_22ED:
 	ld hl, $D000
 Jump_2302:
 	ld e, l
-	call Func_214D
+	call UpdateObjectScreenPosition
 	ld a, $08
 	add a, e
 	ld l, a
@@ -6287,8 +6294,8 @@ Jump_2302:
 
 Jump_232B:
 	ld l, e
-	call Func_21F7
-	call Func_221F
+	call SaveObjectPreviousPosition
+	call CommitObjectNextPosition
 	call UpdateObjectFrameDisplacement
 Jump_2335:
 	ld a, e
@@ -7951,7 +7958,7 @@ Func_2B86:
 	ld a, $02
 	call AllocateObjectRecord
 	jp z, Jump_2C1F
-	call Func_2125
+	call SetObjectPosition
 	ld c, l
 	ld b, h
 	pop hl
@@ -8926,9 +8933,9 @@ Func_3090:
 	push af
 	ld a, $03
 	call AllocateObjectRecord
-	call Func_2125
+	call SetObjectPosition
 	xor a
-	call Func_2115
+	call SetObjectDirection
 	ld a, l
 	and $C0
 	add a, $1E
@@ -9940,7 +9947,7 @@ Func_35D7:
 	ld [wPlayerObject + 1], a
 	ld bc, $0028
 	ld de, $003C
-	call Func_2125
+	call SetObjectPosition
 	pop hl
 	pop de
 	pop bc
@@ -10087,7 +10094,7 @@ Func_36AF:
 	cp $02
 	jr nz, Jump_36C1
 	ld a, $0C
-	call Func_2115
+	call SetObjectDirection
 	call Func_0C74
 	jr Jump_3726
 
@@ -10095,7 +10102,7 @@ Jump_36C1:
 	cp $01
 	jr nz, Jump_36CF
 	ld a, $04
-	call Func_2115
+	call SetObjectDirection
 	call Func_0C74
 	jr Jump_3726
 
@@ -10103,7 +10110,7 @@ Jump_36CF:
 	cp $04
 	jr nz, Jump_36DD
 	ld a, $00
-	call Func_2115
+	call SetObjectDirection
 	call Func_0C74
 	jr Jump_3726
 
@@ -10111,7 +10118,7 @@ Jump_36DD:
 	cp $08
 	jr nz, Jump_36EB
 	ld a, $08
-	call Func_2115
+	call SetObjectDirection
 	call Func_0C74
 	jr Jump_3726
 
@@ -10119,7 +10126,7 @@ Jump_36EB:
 	cp $06
 	jr nz, Jump_36F9
 	ld a, $0E
-	call Func_2115
+	call SetObjectDirection
 	call Func_0C74
 	jr Jump_3726
 
@@ -10127,7 +10134,7 @@ Jump_36F9:
 	cp $0A
 	jr nz, Jump_3707
 	ld a, $0A
-	call Func_2115
+	call SetObjectDirection
 	call Func_0C74
 	jr Jump_3726
 
@@ -10135,7 +10142,7 @@ Jump_3707:
 	cp $05
 	jr nz, Jump_3715
 	ld a, $02
-	call Func_2115
+	call SetObjectDirection
 	call Func_0C74
 	jr Jump_3726
 
@@ -10143,7 +10150,7 @@ Jump_3715:
 	cp $09
 	jr nz, Jump_3723
 	ld a, $06
-	call Func_2115
+	call SetObjectDirection
 	call Func_0C74
 	jr Jump_3726
 

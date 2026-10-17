@@ -482,7 +482,7 @@ Func_02_45C1:
 	call Func_2C24
 	ld a, $03
 	call AllocateObjectRecord
-	call Func_2125
+	call SetObjectPosition
 	ld a, l
 	and $C0
 	add a, $1E

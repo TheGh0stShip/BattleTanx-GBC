@@ -148,6 +148,11 @@ The runtime pool is 64 records at `wObjectPool`. `AllocateObjectRecord` scans
 status byte `+$1D` for a free slot, and `FreeObjectRecord` performs the
 status-2 cleanup before releasing a slot. `ClearObjectPool` applies that path
 to every record rather than discarding active state blindly.
+Object positions use 16.8 fixed point: an 8-bit fractional byte followed by a
+16-bit pixel coordinate for each axis. Candidate bytes `+$13-$18` are committed
+to current bytes `+$00-$05`; the previous integer coordinates, screen
+coordinates, visibility flag, and 16-way direction field are then refreshed
+through named helpers.
 
 ## Level banks `$09-$26`
 
