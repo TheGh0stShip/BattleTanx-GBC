@@ -19,6 +19,8 @@ claim.
 - Whole-ROM match: 1,048,576 / 1,048,576 bytes (100%)
 - ROM banks represented: 64 / 64
 - Copied RAM images detected: 38 (31 executable, 7 data-only)
+- Banks `$3C-$3F` are confirmed unused cartridge capacity: all 65,536 bytes
+  are explicit `$FF` padding rather than opaque assets.
 
 This is complete binary reconstruction. It is not complete semantic recovery.
 

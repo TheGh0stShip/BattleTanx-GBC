@@ -125,7 +125,3 @@ assets/bank_38/4000.bin 0xe0000 0x4000
 assets/bank_39/4000.bin 0xe4000 0x4000
 assets/bank_3A/4000.bin 0xe8000 0x4000
 assets/bank_3B/4000.bin 0xec000 0x4000
-assets/bank_3C/4000.bin 0xf0000 0x4000
-assets/bank_3D/4000.bin 0xf4000 0x4000
-assets/bank_3E/4000.bin 0xf8000 0x4000
-assets/bank_3F/4000.bin 0xfc000 0x4000

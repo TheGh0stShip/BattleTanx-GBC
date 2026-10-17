@@ -1139,6 +1139,20 @@ def check_text(rom: bytes) -> None:
     print("text: 3 option entries, 11 strings, 2 renderer calls, 4 negative tests rejected")
 
 
+def check_unused_banks(rom: bytes, entries: list[tuple[pathlib.Path, int, int]]) -> None:
+    """Banks $3C-$3F are entirely unprogrammed $FF cartridge capacity."""
+    start = 0x3C * 0x4000
+    if rom[start:] != bytes([0xFF]) * (4 * 0x4000):
+        fail("unused banks: banks $3C-$3F contain a non-$FF byte")
+    if any(start <= offset for _, offset, _ in entries):
+        fail("unused banks: banks $3C-$3F returned to the asset manifest")
+    for bank in range(0x3C, 0x40):
+        source = (ROOT / "src" / f"bank_{bank:02X}.asm").read_text()
+        if 'INCBIN "assets/' in source or "ds $4000, $FF" not in source:
+            fail(f"unused banks: bank ${bank:02X} is not explicit $FF padding")
+    print("unused banks: $3C-$3F are 65536 checked $FF padding bytes")
+
+
 def main() -> None:
     check_toolchain()
     entries = read_manifest()
@@ -1146,6 +1160,7 @@ def main() -> None:
     check_bank08_graphics_assets(entries)
     check_sprite_bank_palettes(entries)
     rom = (ROOT / "baserom.gbc").read_bytes()
+    check_unused_banks(rom, entries)
     check_scene_descriptors(rom)
     check_menu_states(rom)
     check_menu_memory_symbols()
