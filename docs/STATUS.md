@@ -100,6 +100,12 @@ background and object palette writers expose their verified start-index and
 count contracts. These names describe proven mechanics, not higher-level
 gameplay roles.
 
+The same ROM0 pass identifies the three-byte random-state seed and update,
+the multiply-based `RandomBelowB` sampler, the 20-byte tilemap-row copier,
+and the paired tile/attribute writer. Hardware initialization and OAM reset
+retain compatibility aliases at their original addresses so banked callers do
+not need coordinated edits.
+
 ## Level banks `$09-$26`
 
 The 30 banks are structured as 15 two-bank levels through the record table at
