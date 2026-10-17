@@ -710,7 +710,7 @@ Jump_02_46BA:
 
 
 ClearBackgroundPalettesImpl:
-Func_02_46E1: ; legacy alias, used by src/bank_00.asm
+Func_02_46E1: ; legacy alias
 	push af
 	push bc
 	push de
@@ -746,7 +746,7 @@ Jump_02_46ED:
 
 
 DarkenObjectPalettesImpl:
-Func_02_4710: ; legacy alias, used by src/bank_00.asm
+Func_02_4710: ; legacy alias
 	push af
 	push bc
 	push de
@@ -792,7 +792,7 @@ Jump_02_472D:
 
 
 BuildBackgroundPaletteFadeFramesImpl:
-Func_02_474B: ; legacy alias, used by src/bank_00.asm
+Func_02_474B: ; legacy alias
 	ld a, $02
 	ldh [rSVBK], a
 	ld a, $1F

@@ -10696,10 +10696,10 @@ Func_389A: ; legacy alias
 	push de
 	push hl
 	ld d, $00
-Jump_38A0:
+.waitForReadableVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_38A0
+	jr nz, .waitForReadableVram
 	ld a, d
 	ldh [rBCPS], a
 	ldh a, [rBCPD]
@@ -10711,14 +10711,14 @@ Jump_38A0:
 	ld b, a
 	dec d
 	call StepRgb555TowardTarget
-Jump_38B7:
+.waitForNextRestrictedPeriod:
 	ldh a, [rSTAT]
 	and $02
-	jr z, Jump_38B7
-Jump_38BD:
+	jr z, .waitForNextRestrictedPeriod
+.waitForWritableVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_38BD
+	jr nz, .waitForWritableVram
 	ld a, d
 	ldh [rBCPS], a
 	ld a, c
@@ -10737,7 +10737,7 @@ Jump_38BD:
 	inc hl
 	sla a
 	cp d
-	jr nz, Jump_38A0
+	jr nz, .waitForReadableVram
 	pop hl
 	pop de
 	pop bc
@@ -10770,7 +10770,7 @@ Func_38E2: ; legacy alias
 	srl a
 	and $1F
 	cp h
-	jr z, Jump_390C
+	jr z, .stepGreen
 	add a, e
 	sla a
 	sla a
@@ -10780,7 +10780,7 @@ Func_38E2: ; legacy alias
 	or d
 	and $7F
 	ld b, a
-Jump_390C:
+.stepGreen:
 	pop hl
 	push hl
 	sla l
@@ -10803,7 +10803,7 @@ Jump_390C:
 	srl a
 	and $1F
 	cp h
-	jr z, Jump_394B
+	jr z, .stepRed
 	add a, e
 	sla a
 	swap a
@@ -10823,7 +10823,7 @@ Jump_390C:
 	and $E0
 	or c
 	ld c, a
-Jump_394B:
+.stepRed:
 	pop hl
 	ld a, l
 	and $1F
@@ -10831,14 +10831,14 @@ Jump_394B:
 	ld a, c
 	and $1F
 	cp l
-	jr z, Jump_395D
+	jr z, .return
 	add a, e
 	ld d, a
 	ld a, c
 	and $E0
 	or d
 	ld c, a
-Jump_395D:
+.return:
 	pop hl
 	pop de
 	ret
@@ -10851,7 +10851,7 @@ Func_3960:
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_46E1
+	call ClearBackgroundPalettesImpl
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10882,25 +10882,25 @@ Func_3971:
 	nop
 	nop
 	nop
-Jump_3989:
+.pollButton:
 	ld a, [wJoypadHeld]
 	or a
-	jr nz, Jump_39A6
+	jr nz, .return
 	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
-Jump_3996:
+.waitForVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_3996
+	jr z, .waitForVBlank
 	xor a
 	ld [wVBlankPending], a
 	dec d
-	jr nz, Jump_3989
-Jump_39A6:
+	jr nz, .pollButton
+.return:
 	ret
 
 
@@ -11006,7 +11006,7 @@ Func_3A1E:
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_4710
+	call DarkenObjectPalettesImpl
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11020,7 +11020,7 @@ Func_3A2F:
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_474B
+	call BuildBackgroundPaletteFadeFramesImpl
 	pop af
 	ld [rROMB0], a
 	ret
