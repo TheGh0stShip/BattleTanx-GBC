@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 166 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 215 remain. `make progress` recomputes the per-bank
+At this revision, 168 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 213 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -216,6 +216,10 @@ HUD attribute and tile staging maps before dynamic status fields are drawn.
 `DrawEmptyHudHealthBar` writes the verified zero-health six-cell pattern used
 when the HUD is first transferred; later frame updates replace it with the
 scaled live-health pattern.
+`LoadPauseHudMapsFar` identifies the alternate HUD maps transferred only by
+the active pause loop. `RunNoLivesScreenFar` identifies the bank-`$2A`
+animated fixed-screen path reached only after the player's lives reach zero;
+neither label guesses the pictures' wording from appearance.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 

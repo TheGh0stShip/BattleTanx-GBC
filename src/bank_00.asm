@@ -114,7 +114,7 @@ Jump_00C7:
 	ld e, $83
 	call Audio_QueueSound
 	call PrepareDisplayForScreenTransition
-	call Func_3F28
+	call RunNoLivesScreenFar
 	call FadePalettesToBlackWithSound
 	jp Jump_016C
 
@@ -9509,7 +9509,10 @@ Func_32B4: ; legacy alias
 	ret
 
 
-Func_32DE:
+; Load and transfer the alternate HUD maps displayed by the bank-$01 pause
+; loop while gameplay remains suspended.
+LoadPauseHudMapsFar:
+Func_32DE: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -11757,7 +11760,9 @@ Func_3F1F:
 	ret
 
 
-Func_3F28:
+; Run the bank-$2A animated fixed screen reached only after lives reach zero.
+RunNoLivesScreenFar:
+Func_3F28: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $2A

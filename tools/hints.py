@@ -255,6 +255,8 @@ NAMES = {
     0x3202: "CopyMapRows20Wide",
     0x32A3: "LoadHudBaseMapsFar",
     0x32B4: "DrawEmptyHudHealthBar",
+    0x32DE: "LoadPauseHudMapsFar",
+    0x3F28: "RunNoLivesScreenFar",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",

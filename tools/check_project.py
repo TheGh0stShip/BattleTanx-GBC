@@ -1076,6 +1076,8 @@ def check_level_banks() -> None:
             "CopyMapRows20Wide": (0x00, 0x3202),
             "LoadHudBaseMapsFar": (0x00, 0x32A3),
             "DrawEmptyHudHealthBar": (0x00, 0x32B4),
+            "LoadPauseHudMapsFar": (0x00, 0x32DE),
+            "RunNoLivesScreenFar": (0x00, 0x3F28),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),
