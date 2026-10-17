@@ -14,7 +14,7 @@ Func_02_406F: ; legacy alias, used by src/bank_00.asm
 	ld a, [wNearestTargetDistance + 1]
 	inc a
 	ret z
-Jump_02_4074:
+ResetNearestObjectTrackerState:
 	xor a
 	ld [wNearestTargetScanIndex], a
 	ld [wNearestTargetPtr], a
@@ -29,36 +29,36 @@ Jump_02_4074:
 	add hl, bc
 	ld a, [hl]
 	cp $00
-	jr nz, Jump_02_409D
+	jr nz, .checkAuxScanMode
 	ld de, TrackerScanStatus1Objects
 	ld hl, $CFDD
-	jr Jump_02_40C7
+	jr .installScanner
 
-Jump_02_409D:
+.checkAuxScanMode:
 	cp $01
-	jr nz, Jump_02_40A9
+	jr nz, .checkAuxSelectMode
 	ld de, TrackerScanAuxRecords
 	ld hl, $CD65
-	jr Jump_02_40C7
+	jr .installScanner
 
-Jump_02_40A9:
+.checkAuxSelectMode:
 	cp $03
-	jr nz, Jump_02_40B5
+	jr nz, .checkType2ScanMode
 	ld de, TrackerSelectAuxRecord
 	ld hl, $CD6F
-	jr Jump_02_40C7
+	jr .installScanner
 
-Jump_02_40B5:
+.checkType2ScanMode:
 	cp $02
-	jr nz, Jump_02_40C1
+	jr nz, .useStatus1Scanner
 	ld de, TrackerScanType2Objects
 	ld hl, $CFDD
-	jr Jump_02_40C7
+	jr .installScanner
 
-Jump_02_40C1:
+.useStatus1Scanner:
 	ld de, TrackerScanStatus1Objects
 	ld hl, $CFDD
-Jump_02_40C7:
+.installScanner:
 	ld a, l
 	ld [wNearestTargetScanPtr], a
 	ld a, h
@@ -371,7 +371,7 @@ Func_02_43EC: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	and a
-	jr nz, Jump_02_4406
+	jr nz, .selectOffsetTable
 	ld a, l
 	and $C0
 	add a, $08
@@ -379,9 +379,9 @@ Func_02_43EC: ; legacy alias
 	ld a, [hl]
 	and $10
 	ld a, $FF
-	jr z, Jump_02_4406
+	jr z, .selectOffsetTable
 	inc a
-Jump_02_4406:
+.selectOffsetTable:
 	add a, $01
 	add a, a
 	add a, $A2
@@ -476,10 +476,10 @@ Func_02_4548: ; legacy alias
 	ld a, [hl]
 	ld c, a
 	bit 7, a
-	jr z, Jump_02_4561
+	jr z, .storeMagnitude
 	cpl
 	inc a
-Jump_02_4561:
+.storeMagnitude:
 	ld b, a
 	pop hl
 	pop af
@@ -600,24 +600,24 @@ Func_02_463D: ; legacy alias
 	call Func_0421
 	and $03
 	cp $02
-	jr z, Jump_02_4659
+	jr z, .useLongAnimation
 	cp $01
-	jr z, Jump_02_4652
+	jr z, .useShortAnimation
 	ld de, ObjectAnimationFrames4575
 	ld a, $14
-	jr Jump_02_4660
+	jr .storeAnimation
 
-Jump_02_4652:
+.useShortAnimation:
 	ld de, ObjectAnimationFrames4565
 	ld a, $20
-	jr Jump_02_4660
+	jr .storeAnimation
 
-Jump_02_4659:
+.useLongAnimation:
 	ld de, ObjectAnimationFrames457F
 	ld a, $2C
-	jr Jump_02_4660
+	jr .storeAnimation
 
-Jump_02_4660:
+.storeAnimation:
 	push af
 	ld a, l
 	and $C0
@@ -655,31 +655,31 @@ Func_02_4688: ; legacy alias
 	call Func_0421
 	and $03
 	cp $03
-	jr z, Jump_02_46B2
+	jr z, .useVariant3
 	cp $02
-	jr z, Jump_02_46AA
+	jr z, .useVariant2
 	cp $01
-	jr z, Jump_02_46A2
+	jr z, .useVariant1
 	ld de, ObjectAnimationFrames4595
 	ld bc, TrackerPointerFrames + $C2
-	jr Jump_02_46BA
+	jr .storeAnimation
 
-Jump_02_46A2:
+.useVariant1:
 	ld de, ObjectAnimationFrames459D
 	ld bc, TrackerPointerFrames + $1CA
-	jr Jump_02_46BA
+	jr .storeAnimation
 
-Jump_02_46AA:
+.useVariant2:
 	ld de, ObjectAnimationFrames45A5
 	ld bc, TrackerPointerFrames + $2D2
-	jr Jump_02_46BA
+	jr .storeAnimation
 
-Jump_02_46B2:
+.useVariant3:
 	ld de, ObjectAnimationFrames45AD
 	ld bc, TrackerPointerFrames + $3DA
-	jr Jump_02_46BA
+	jr .storeAnimation
 
-Jump_02_46BA:
+.storeAnimation:
 	ld a, l
 	and $C0
 	add a, $20
@@ -1293,7 +1293,7 @@ Jump_02_4F43:
 	ret z
 	ld a, [wNearestTargetPtr + 1]
 	and a
-	jp z, Jump_02_4074
+	jp z, ResetNearestObjectTrackerState
 	ld a, [wPlayerObject]
 	ld l, a
 	ld a, [wPlayerObject + 1]
