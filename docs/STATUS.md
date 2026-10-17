@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 132 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 249 remain. `make progress` recomputes the per-bank
+At this revision, 135 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 246 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -167,6 +167,10 @@ the HUD, waits for Start to clear the flag, refreshes the HUD, and restores its
 position. `ProcessGameplayInput` owns that toggle, recognizes the simultaneous
 A/B/Select/Start reset chord, and otherwise tail-dispatches the selected
 control callback with the player-object pointer and held-button byte.
+The three callback targets are conservatively named `HandleControlScheme0`,
+`HandleControlScheme1`, and `HandleControlScheme2` from their proven selection
+by `wControlSetting`; their lower-level movement helpers remain unnamed until
+the overlapping player-object fields are understood.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 

@@ -1470,7 +1470,7 @@ Func_08C6:
 	call LoadOAMDMARoutine
 	call InstallBasicInterruptHandlersFar
 	call EnableLCD
-	ld hl, Func_367F
+	ld hl, HandleControlScheme1
 	ld a, l
 	ld [wRuntimeCallback], a
 	ld a, h
@@ -10132,7 +10132,8 @@ Jump_3647:
 	jp hl
 
 
-Func_364E:
+HandleControlScheme0:
+Func_364E: ; legacy alias
 	pop hl
 	ld a, e
 	and $02
@@ -10167,7 +10168,8 @@ Jump_3676:
 Jump_367E:
 	ret
 
-Func_367F:
+HandleControlScheme1:
+Func_367F: ; legacy alias
 	pop hl
 	ld a, e
 	and $02
@@ -10202,7 +10204,8 @@ Jump_36A7:
 	ret
 
 
-Func_36AF:
+HandleControlScheme2:
+Func_36AF: ; legacy alias
 	pop hl
 	ld a, e
 	and $0F
