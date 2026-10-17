@@ -1882,7 +1882,7 @@ Jump_0B4C:
 	ld e, a
 	ldh a, [$FF86]
 	ld d, a
-	call Func_0B65
+	call RedrawLevelCells2x3AroundPixel
 Jump_0B61:
 	pop hl
 	pop bc
@@ -1890,7 +1890,10 @@ Jump_0B61:
 	ret
 
 
-Func_0B65:
+; Convert pixel X in BC and pixel Y in DE to cells, then redraw the two columns
+; from X-1 through X across the three rows from Y-1 through Y+1.
+RedrawLevelCells2x3AroundPixel:
+Func_0B65: ; legacy alias
 	push af
 	push bc
 	push de

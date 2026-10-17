@@ -212,6 +212,7 @@ NAMES = {
     0x09AB: "InitializeLevelRuntime",
     0x0AB3: "InstallGameplayInterruptHandlersFar",
     0x0AC4: "InstallBasicInterruptHandlersFar",
+    0x0B65: "RedrawLevelCells2x3AroundPixel",
     0x035C: "PrepareDisplayForScreenTransition",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",

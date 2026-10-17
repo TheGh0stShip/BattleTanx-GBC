@@ -123,6 +123,11 @@ mode, resets scrolling and tile selection, and clears both OAM copies.
 `ClearShadowOamAndTransferFar` identifies the final bank-`$02` clear plus HRAM
 DMA step.
 
+The object-removal path's ROM0 `$0B65` helper is now
+`RedrawLevelCells2x3AroundPixel`: it converts BC/DE pixel coordinates to cells
+and redraws exactly two columns by three rows around that point through
+`DrawLevelCellIfVisible`.
+
 Boot register A is preserved as `wBootHardwareMode` before the memory clear;
 the compatibility guard accepts only the CGB value `$11`. The main loop stages
 SCX and SCY through `wPendingScrollX` and `wPendingScrollY`, then increments the
