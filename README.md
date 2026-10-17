@@ -4,7 +4,10 @@ A matching disassembly of **BattleTanx** for Game Boy Color (USA). The source in
 `src/` assembles with RGBDS into a ROM that is byte-for-byte identical to the
 retail cartridge.
 
-No ROM or ROM-derived binary assets are included. Supply your own dump.
+All data required to assemble the cartridge, including graphics, maps, and other
+binary resources that have not yet been promoted to explicit assembly, is kept
+in the repository. A verified retail dump is still required for the comparison
+and structural-validation gates.
 
 ## Source strategy
 
@@ -32,7 +35,7 @@ Requires RGBDS 1.0.x and Python 3.
 
 ```sh
 cp /path/to/BattleTanx.gbc baserom.gbc
-make            # verifies baserom, extracts assets, builds, compares
+make            # builds from committed sources/assets and compares with baserom
 ```
 
 `make compare` fails unless `battletanx.gbc` hashes identically to the retail ROM.
@@ -41,8 +44,8 @@ make            # verifies baserom, extracts assets, builds, compares
 
 - `src/main.asm` - includes every bank; `src/bank_XX.asm` - one file per ROM bank
 - `include/hardware.inc` - hardware register names
-- `assets/` - binary blobs (graphics, maps, tables) extracted from `baserom.gbc`
-  by `make assets`; untracked
+- `assets/` - committed source assets for graphics, maps, and data ranges that
+  have not yet been expressed directly as assembly
 - `graphics.txt` - confirmed native 2bpp ranges rendered losslessly by
   `make graphics`; generated PNG previews are under `build/graphics/`
 - `make maps` - renders all descriptor-driven fixed and scrolling scenes and
@@ -51,7 +54,8 @@ make            # verifies baserom, extracts assets, builds, compares
 
 ## Method
 
-1. `tools/verify_rom.py` verifies the base ROM hash before anything else.
+1. `tools/verify_rom.py` verifies the base ROM used by the comparison and
+   structural-validation gates.
 2. `tools/trace.py` does recursive-descent tracing from the reset/interrupt vectors,
    tracking MBC5 bank writes (`ld a, n` / `ld [$2000], a`), the bank-1 screen table at
    `$47EC`, stored code pointers, and regions copied into WRAM/HRAM by `CopyBytes`
@@ -76,7 +80,7 @@ bytes; confirmed data ranges are explicitly excluded from instruction tracing.
 
 Detailed recovery status, control-flow gaps, and the current roadmap are tracked
 in [`docs/STATUS.md`](docs/STATUS.md). Run `make check` before committing; it pins
-RGBDS 1.0.4, validates every extracted asset against its ROM range, checks tracing
+RGBDS 1.0.4, validates every committed asset against its ROM range, checks tracing
 invariants, round-trips confirmed graphics through PNG, rebuilds the cartridge,
 renders and validates every recovered scene tilemap, and verifies the retail
 hashes.

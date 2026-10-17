@@ -1,7 +1,6 @@
-# Never commit ROMs or ROM-extracted data
+# Never commit ROM images or generated build products.
 *.gbc
 *.gb
-assets/
 build/
 *.sym
 *.map

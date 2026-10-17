@@ -4,19 +4,20 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check compare check-project check-baserom assets graphics maps levels disasm clean tidy
+.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels disasm clean tidy
 
 all: compare
 
 check: compare check-project graphics maps levels
 
-check-project: assets
+check-project:
 	$(PYTHON) tools/check_project.py
 
 check-baserom:
 	@$(PYTHON) tools/verify_rom.py $(BASEROM)
 
-assets: assets.txt check-baserom
+# Maintenance target for deliberately refreshing the committed source assets.
+extract-assets: assets.txt check-baserom
 	$(PYTHON) tools/extract_assets.py $(BASEROM) assets.txt
 
 graphics: graphics.txt check-baserom
@@ -32,7 +33,7 @@ levels: check-baserom
 disasm: check-baserom
 	$(PYTHON) tools/disasm.py $(BASEROM) .
 
-build/main.o: $(SRCS) | assets
+build/main.o: $(SRCS) assets.txt
 	@mkdir -p build
 	rgbasm -Werror -o $@ src/main.asm
 
@@ -46,4 +47,3 @@ tidy:
 	rm -rf build $(ROM) $(ROM:.gbc=.sym) $(ROM:.gbc=.map)
 
 clean: tidy
-	rm -rf assets
