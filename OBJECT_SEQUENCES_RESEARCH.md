@@ -8,7 +8,7 @@ table that selects the active block by `wLevelNumber`.
 
 | Range | Bytes | Content |
 | --- | ---: | --- |
-| `$4000-$4013` | 20 | five four-byte signed-vector lookup rows used by `$03:$67FA` |
+| `$4000-$4013` | 20 | five four-byte signed-vector lookup rows used by `QuantizeSignedVectorDirection` |
 | `$4014-$4017` | 4 | four quadrant offsets used by the same routine |
 | `$4018-$5BF2` | 7,131 | fifteen contiguous per-level object-sequence blocks |
 | `$5BF3-$5C10` | 30 | fifteen pointers selected by `wLevelNumber` |
@@ -39,6 +39,16 @@ pointer therefore proves the final sequence boundary.
 another object field. The update code at `$03:$5ED2` and `$03:$5FF2` repeats
 the same lookup. The active table pointer is retained in
 `wLevelObjectSequenceTable`.
+
+`QuantizeSignedVectorDirection` takes signed eight-bit vector components in
+`B` and `C`, folds their signs and relative magnitudes through the two lookup
+tables, and returns the game's eight-bit direction value in `A`. Its two known
+callers reduce that result to a 16-direction object orientation.
+
+The adjacent `StateCheckTable` is independently indexed by `wLevelNumber`.
+Its fifteen destinations are therefore named `Level00StateCheck` through
+`Level14StateCheck`; their individual victory-condition semantics remain
+unnamed where the tested WRAM flags have not yet been identified.
 
 The eight-byte records are structurally proven, but not every field has a safe
 gameplay name yet. Fields +3 and +4 are scaled by eight when establishing a

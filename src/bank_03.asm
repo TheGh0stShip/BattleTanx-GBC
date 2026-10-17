@@ -1108,7 +1108,7 @@ Jump_03_615D:
 	sub b
 	ld b, a
 	push de
-	call Func_03_67FA
+	call QuantizeSignedVectorDirection
 	pop de
 	srl a
 	srl a
@@ -1243,7 +1243,7 @@ Func_03_61FC:
 	ld b, a
 	push de
 	push hl
-	call Func_03_67FA
+	call QuantizeSignedVectorDirection
 	pop hl
 	pop de
 	srl a
@@ -1505,7 +1505,7 @@ Jump_03_637E:
 
 
 Func_03_6391:
-	call Func_37F0
+	call UpdatePendingLevelObjectsFar
 	ld a, $01
 	ld [$CD13], a
 	xor a
@@ -2390,7 +2390,7 @@ Jump_03_67DA:
 	ret
 
 
-Func_03_67FA:
+QuantizeSignedVectorDirection:
 	ld de, $0000
 	bit 7, b
 	jr z, Jump_03_6807
@@ -2470,21 +2470,21 @@ Jump_03_684B:
 
 
 StateCheckTable:
-	dw Func_03_6887
-	dw Func_03_688F
-	dw Func_03_689D
-	dw Func_03_68A5
-	dw Func_03_68AD
-	dw Func_03_68B5
-	dw Func_03_68BD
-	dw Func_03_68C5
-	dw Func_03_68CD
-	dw Func_03_68DB
-	dw Func_03_68E9
-	dw Func_03_68F1
-	dw Func_03_68F9
-	dw Func_03_6901
-	dw Func_03_6909
+	dw Level00StateCheck
+	dw Level01StateCheck
+	dw Level02StateCheck
+	dw Level03StateCheck
+	dw Level04StateCheck
+	dw Level05StateCheck
+	dw Level06StateCheck
+	dw Level07StateCheck
+	dw Level08StateCheck
+	dw Level09StateCheck
+	dw Level10StateCheck
+	dw Level11StateCheck
+	dw Level12StateCheck
+	dw Level13StateCheck
+	dw Level14StateCheck
 
 DispatchStateCheck:
 	ld a, [$CA06]
@@ -2499,14 +2499,14 @@ DispatchStateCheck:
 	jp hl
 
 
-Func_03_6887:
+Level00StateCheck:
 	ld a, [$CD14]
 	and a
 	jp z, Jump_03_6911
 	ret
 
 
-Func_03_688F:
+Level01StateCheck:
 	ld a, [$C6EF]
 	cp $06
 	ret nz
@@ -2516,49 +2516,49 @@ Func_03_688F:
 	ret
 
 
-Func_03_689D:
+Level02StateCheck:
 	ld a, [$CD14]
 	and a
 	jp z, Jump_03_6911
 	ret
 
 
-Func_03_68A5:
+Level03StateCheck:
 	ld a, [$CD12]
 	and a
 	jp z, Jump_03_6911
 	ret
 
 
-Func_03_68AD:
+Level04StateCheck:
 	ld a, [$CD12]
 	and a
 	jp z, Jump_03_6911
 	ret
 
 
-Func_03_68B5:
+Level05StateCheck:
 	ld a, [$CD13]
 	and a
 	jp nz, Jump_03_6911
 	ret
 
 
-Func_03_68BD:
+Level06StateCheck:
 	ld a, [$CD12]
 	and a
 	jp z, Jump_03_6911
 	ret
 
 
-Func_03_68C5:
+Level07StateCheck:
 	ld a, [$CD2A]
 	and a
 	ret nz
 	jp Jump_03_6911
 
 
-Func_03_68CD:
+Level08StateCheck:
 	ld a, [$C6EF]
 	cp $08
 	ret nz
@@ -2568,7 +2568,7 @@ Func_03_68CD:
 	ret
 
 
-Func_03_68DB:
+Level09StateCheck:
 	ld a, [$C6F0]
 	cp $07
 	ret nz
@@ -2578,35 +2578,35 @@ Func_03_68DB:
 	ret
 
 
-Func_03_68E9:
+Level10StateCheck:
 	ld a, [$CD14]
 	and a
 	jp z, Jump_03_6911
 	ret
 
 
-Func_03_68F1:
+Level11StateCheck:
 	ld a, [$CD12]
 	and a
 	jp z, Jump_03_6911
 	ret
 
 
-Func_03_68F9:
+Level12StateCheck:
 	ld a, [$CD14]
 	and a
 	jp z, Jump_03_6911
 	ret
 
 
-Func_03_6901:
+Level13StateCheck:
 	ld a, [$CD2A]
 	and a
 	ret nz
 	jp Jump_03_6911
 
 
-Func_03_6909:
+Level14StateCheck:
 	ld a, [$CD14]
 	and a
 	jp z, Jump_03_6911

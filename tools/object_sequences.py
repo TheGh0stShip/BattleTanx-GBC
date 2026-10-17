@@ -98,7 +98,16 @@ def validate_project(root: pathlib.Path) -> str:
             "LevelObjectSequenceTables": (BANK, LEVEL_TABLE),
             "InitializeObjectSequenceState": (BANK, 0x5C11),
             "InitializeObjectSequenceStateFar": (0x00, 0x3801),
+            "QuantizeSignedVectorDirection": (BANK, 0x67FA),
+            "StateCheckTable": (BANK, 0x685A),
+            "DispatchStateCheck": (BANK, 0x6878),
         }
+        for level, address in enumerate((
+            0x6887, 0x688F, 0x689D, 0x68A5, 0x68AD,
+            0x68B5, 0x68BD, 0x68C5, 0x68CD, 0x68DB,
+            0x68E9, 0x68F1, 0x68F9, 0x6901, 0x6909,
+        )):
+            expected[f"Level{level:02}StateCheck"] = (BANK, address)
         for level in levels:
             expected[f"Level{level['level']:02}ObjectSequences"] = (BANK, level["start"])
             for sequence in level["sequences"]:

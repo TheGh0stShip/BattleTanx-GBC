@@ -512,7 +512,7 @@ Jump_04_6342:
 	ret
 
 
-Func_04_6343:
+QueuePendingLevelObject:
 	ld a, l
 	and $C0
 	add a, $3A
@@ -577,7 +577,7 @@ Jump_04_6389:
 	ret
 
 
-Func_04_6392:
+UpdatePendingLevelObjects:
 	ld a, [$CD27]
 	inc a
 	ld [$CD27], a
@@ -601,7 +601,7 @@ Jump_04_63A5:
 	and a
 	jr nz, Jump_04_63C6
 	push hl
-	call Func_04_63D0
+	call TrySpawnPendingLevelObject
 	pop hl
 	and a
 	jr nz, Jump_04_63BF
@@ -627,7 +627,7 @@ Jump_04_63C6:
 	ret
 
 
-Func_04_63D0:
+TrySpawnPendingLevelObject:
 	ld a, c
 	ld [$CD24], a
 	ld a, b
@@ -664,7 +664,7 @@ Func_04_63D0:
 	ld [$CD25], a
 	push bc
 	push de
-	call Func_04_655C
+	call AbsoluteDifferenceBCDE
 	ld a, d
 	and a
 	jr nz, Jump_04_6418
@@ -690,7 +690,7 @@ Jump_04_6418:
 	ld a, b
 	adc a, $00
 	ld b, a
-	call Func_04_655C
+	call AbsoluteDifferenceBCDE
 	ld a, d
 	and a
 	jr nz, Jump_04_643F
@@ -892,7 +892,7 @@ Jump_04_6542:
 	ret
 
 
-Func_04_655C:
+AbsoluteDifferenceBCDE:
 	ld a, c
 	sub e
 	ld e, a

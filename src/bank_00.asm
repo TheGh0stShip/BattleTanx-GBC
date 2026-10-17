@@ -1726,7 +1726,7 @@ Func_0AF5:
 	push bc
 	push de
 	push hl
-	call Func_37DF
+	call QueuePendingLevelObjectFar
 	pop hl
 	pop de
 	pop bc
@@ -10207,23 +10207,23 @@ Func_37CE:
 	ret
 
 
-Func_37DF:
+QueuePendingLevelObjectFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $04
 	ld [rROMB0], a
-	call Func_04_6343
+	call QueuePendingLevelObject
 	pop af
 	ld [rROMB0], a
 	ret
 
 
-Func_37F0:
+UpdatePendingLevelObjectsFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $04
 	ld [rROMB0], a
-	call Func_04_6392
+	call UpdatePendingLevelObjects
 	pop af
 	ld [rROMB0], a
 	ret

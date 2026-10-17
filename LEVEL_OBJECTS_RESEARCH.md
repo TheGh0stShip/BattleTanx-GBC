@@ -24,6 +24,14 @@ and clears the final two bytes. There are 37 enabled auxiliary records. Their
 later consumer is the bank-$03 routine at `$6923`, but their gameplay purpose
 and field meanings are not yet established.
 
+The later object-management path is now named from its verified mechanics.
+`QueuePendingLevelObject` records a level-object index in a 20-entry WRAM
+queue. `UpdatePendingLevelObjects` services that queue every 75 calls, and
+`TrySpawnPendingLevelObject` reads the corresponding 12-byte initialization
+record and creates it once its coordinates enter the checked camera window.
+`AbsoluteDifferenceBCDE` is the shared unsigned 16-bit difference helper used
+for both axes; it returns the magnitude in `DE` and the original sign in `A`.
+
 ## Representation and validation
 
 `src/level_objects.asm` writes all 600 initialization records, all 120

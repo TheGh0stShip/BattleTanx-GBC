@@ -100,8 +100,16 @@ def validate_project(root: pathlib.Path) -> str:
     check("ld a, $08" in source, "8-record auxiliary copy loop changed")
     symbols = read_symbols(root / "battletanx.sym")
     if symbols is not None:
-        expected = {"LevelObjectDataPointers": (BANK, DIRECTORY),
-                    "InitializeLevelObjects": (BANK, 0x601C)}
+        expected = {
+            "LevelObjectDataPointers": (BANK, DIRECTORY),
+            "InitializeLevelObjects": (BANK, 0x601C),
+            "QueuePendingLevelObject": (BANK, 0x6343),
+            "UpdatePendingLevelObjects": (BANK, 0x6392),
+            "TrySpawnPendingLevelObject": (BANK, 0x63D0),
+            "AbsoluteDifferenceBCDE": (BANK, 0x655C),
+            "QueuePendingLevelObjectFar": (0x00, 0x37DF),
+            "UpdatePendingLevelObjectsFar": (0x00, 0x37F0),
+        }
         for level in levels:
             number = level["level"]
             expected[f"Level{number:02}ObjectSpawns"] = (BANK, level["spawn_address"])
