@@ -7694,16 +7694,19 @@ Jump_29B3:
 	ret
 
 
-Func_29B8:
+; Return half the Manhattan distance between the two objects' 16-bit world
+; coordinates in BC: (abs(dx) + abs(dy)) / 2.
+GetHalfObjectManhattanDistance:
+Func_29B8: ; legacy alias
 	push de
 	push hl
 	ld a, l
 	and $C0
-	inc a
+	inc a ; OBJECT_X_OFFSET
 	ld l, a
 	ld a, e
 	and $C0
-	inc a
+	inc a ; OBJECT_X_OFFSET
 	ld e, a
 	ld a, [de]
 	sub [hl]
@@ -7727,11 +7730,11 @@ Jump_29DA:
 	push bc
 	ld a, l
 	and $C0
-	add a, $04
+	add a, OBJECT_Y_OFFSET
 	ld l, a
 	ld a, e
 	and $C0
-	add a, $04
+	add a, OBJECT_Y_OFFSET
 	ld e, a
 	ld a, [de]
 	ld c, [hl]
@@ -8549,7 +8552,7 @@ Jump_2DF5:
 	ld a, [hl]
 	and $08
 	jr z, Jump_2E46
-	call Func_29B8
+	call GetHalfObjectManhattanDistance
 	ldh a, [$FF83]
 	cp b
 	jr c, Jump_2E46

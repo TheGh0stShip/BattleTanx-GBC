@@ -259,6 +259,7 @@ NAMES = {
     0x3F28: "RunNoLivesScreenFar",
     0x28C5: "ResolveProjectileHit",
     0x2977: "TestObjectScreenProximity12",
+    0x29B8: "GetHalfObjectManhattanDistance",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",

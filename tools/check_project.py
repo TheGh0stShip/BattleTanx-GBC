@@ -1080,6 +1080,7 @@ def check_level_banks() -> None:
             "RunNoLivesScreenFar": (0x00, 0x3F28),
             "ResolveProjectileHit": (0x00, 0x28C5),
             "TestObjectScreenProximity12": (0x00, 0x2977),
+            "GetHalfObjectManhattanDistance": (0x00, 0x29B8),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),

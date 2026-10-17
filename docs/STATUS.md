@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 170 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 211 remain. `make progress` recomputes the per-bank
+At this revision, 171 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 210 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
