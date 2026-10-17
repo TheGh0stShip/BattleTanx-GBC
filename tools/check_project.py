@@ -1239,6 +1239,33 @@ def check_level_banks() -> None:
             f"{effect_constants.items() ^ expected_effect_constants.items()}"
         )
 
+    screen_mode_symbols = {
+        name: int(value, 16)
+        for name, value in re.findall(
+            r"DEF (wScreenMode(?:Entry|Bank|Init|Draw))\s+EQU \$([0-9A-Fa-f]+)",
+            memory_source,
+        )
+    }
+    # Derived aliases are intentionally checked through the linker below; only
+    # the concrete entry base is represented by a numeric EQU in the include.
+    if screen_mode_symbols != {"wScreenModeEntry": 0xC6E3}:
+        fail(f"screen-mode WRAM base differs: {screen_mode_symbols}")
+    required_screen_mode_aliases = (
+        "DEF wScreenModeBank   EQU wScreenModeEntry",
+        "DEF wScreenModeInit   EQU wScreenModeEntry + 2",
+        "DEF wScreenModeDraw   EQU wScreenModeEntry + 4",
+    )
+    if any(alias not in memory_source for alias in required_screen_mode_aliases):
+        fail("screen-mode WRAM field aliases differ")
+    screen_mode_constants = {
+        name: int(value)
+        for name, value in re.findall(
+            r"DEF (SCREEN_MODE_(?:ENTRY_SIZE|COUNT))\s+EQU (\d+)", memory_source
+        )
+    }
+    if screen_mode_constants != {"SCREEN_MODE_ENTRY_SIZE": 8, "SCREEN_MODE_COUNT": 13}:
+        fail(f"screen-mode constants differ: {screen_mode_constants}")
+
     object_source = (ROOT / "include" / "object.inc").read_text()
     object_constants = {
         name: int(value, 16)

@@ -319,6 +319,9 @@ It copies a packed width-by-height attribute rectangle to VRAM bank 1 and the
 matching tile rectangle to bank 0, applying the 32-byte BG-map row stride and
 preserving all input registers. The paired 32-frame black and white palette
 transitions and the far level-lookup initializer also have behavioral names.
+The screen dispatcher now exposes its eight-byte WRAM entry explicitly:
+bank byte, reserved byte, initialization pointer, drawing pointer, and a
+reserved word. Its 13-entry count and copied size are checked constants.
 
 Banks `$27`, `$28`, and `$29` each start with nine orientation frames of nine
 native 2bpp tiles. Bank `$05:$4020` contains the 16-entry orientation lookup:

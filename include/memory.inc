@@ -216,6 +216,15 @@ DEF wScreenDescriptor     EQU $C6D2 ; 14-byte copy of the current screen descrip
 DEF wScreenWidth          EQU $C6DC ; descriptor +10, CopyScreenMaps width
 DEF wScreenHeight         EQU $C6DD ; descriptor +11, CopyScreenMaps height
 
+; Eight-byte entry copied from bank 1's ScreenModeTable before its banked
+; initialization or drawing callback is dispatched.
+DEF wScreenModeEntry  EQU $C6E3 ; bank, reserved, init, draw, reserved word
+DEF wScreenModeBank   EQU wScreenModeEntry
+DEF wScreenModeInit   EQU wScreenModeEntry + 2 ; 2-byte pointer
+DEF wScreenModeDraw   EQU wScreenModeEntry + 4 ; 2-byte pointer
+DEF SCREEN_MODE_ENTRY_SIZE EQU 8
+DEF SCREEN_MODE_COUNT      EQU 13
+
 ; Encoded text cursor used by the options menu text renderer.
 DEF wTextColumn EQU $C8DF
 DEF wTextRow    EQU $C8E0

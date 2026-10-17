@@ -10733,7 +10733,7 @@ ScreenTable_CallInit:
 	push de
 	push hl
 	call ScreenTable_LoadEntry
-	ld hl, $C6E3
+	ld hl, wScreenModeBank
 	ld a, [hli]
 	ld e, a
 	inc hl
@@ -10765,7 +10765,7 @@ ScreenTable_CallUpdate:
 	push hl
 	push bc
 	call ScreenTable_LoadEntry
-	ld hl, $C6E3
+	ld hl, wScreenModeBank
 	ld a, [hli]
 	ld e, a
 	inc hl
@@ -10806,8 +10806,8 @@ ScreenTable_LoadEntry:
 	ld a, $00
 	adc a, h
 	ld h, a
-	ld bc, $C6E3
-	ld e, $08
+	ld bc, wScreenModeEntry
+	ld e, SCREEN_MODE_ENTRY_SIZE
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
