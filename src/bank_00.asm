@@ -82,7 +82,7 @@ Jump_0076:
 	jp Func_0192
 
 Jump_0090:
-	call Func_035C
+	call PrepareDisplayForScreenTransition
 	ld e, $88
 	call Audio_QueueSound
 	call Func_3B12
@@ -113,7 +113,7 @@ Jump_00A6:
 Jump_00C7:
 	ld e, $83
 	call Audio_QueueSound
-	call Func_035C
+	call PrepareDisplayForScreenTransition
 	call Func_3F28
 	call FadePalettesToBlackWithSound
 	jp Jump_016C
@@ -184,7 +184,7 @@ Jump_016C:
 	ld a, [$C6E2]
 	or a
 	jr nz, Jump_0175
-	call Func_035C
+	call PrepareDisplayForScreenTransition
 Jump_0175:
 	xor a
 	ld [$C6E2], a
@@ -425,7 +425,10 @@ Func_034B:
 	ret
 
 
-Func_035C:
+; Wait for VBlank, hide and clear the HUD/palettes, install the basic interrupt
+; mode, clear both OAM copies, reset scrolling, and select unsigned BG tiles.
+PrepareDisplayForScreenTransition:
+Func_035C: ; legacy alias
 	xor a
 	ld [wVBlankPending], a
 Jump_0360:
@@ -441,7 +444,7 @@ Jump_0360:
 	call ClearCgbPalettes
 	call InstallBasicInterruptHandlersFar
 	call ResetOamState
-	call Func_3CD9
+	call ClearShadowOamAndTransferFar
 	xor a
 	ldh [rSCY], a
 	ldh [rSCX], a
@@ -10954,7 +10957,7 @@ Func_3AAE:
 Func_3ABF:
 	ld a, $01
 	ld [rROMB0], a
-	call Func_3CD9
+	call ClearShadowOamAndTransferFar
 	ld a, [$C6CD]
 	cp $01
 	jr z, Jump_3B11
@@ -11045,7 +11048,7 @@ Func_3B5A:
 	ld a, [$C6CD]
 	cp $01
 	jr z, Jump_3B9A
-	call Func_035C
+	call PrepareDisplayForScreenTransition
 	ld e, $82
 	call Audio_QueueSound
 	ld a, [wLevelNumber]
@@ -11286,7 +11289,10 @@ Func_3CC2:
 	ret
 
 
-Func_3CD9:
+; On the next VBlank, clear all 40 shadow OAM entries in bank 2 and invoke the
+; HRAM DMA routine so hardware OAM is cleared as well.
+ClearShadowOamAndTransferFar:
+Func_3CD9: ; legacy alias
 	xor a
 	ld [wVBlankPending], a
 Jump_3CDD:

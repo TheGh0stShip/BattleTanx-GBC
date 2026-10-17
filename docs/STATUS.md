@@ -117,6 +117,12 @@ sources. The basic installer places an LCD `reti`, copies the minimal VBlank
 handler, and enables VBlank alone. Original address aliases remain available
 to banked callers.
 
+`PrepareDisplayForScreenTransition` now names the common VBlank-synchronized
+path that hides and clears the HUD and palettes, installs the basic interrupt
+mode, resets scrolling and tile selection, and clears both OAM copies.
+`ClearShadowOamAndTransferFar` identifies the final bank-`$02` clear plus HRAM
+DMA step.
+
 Boot register A is preserved as `wBootHardwareMode` before the memory clear;
 the compatibility guard accepts only the CGB value `$11`. The main loop stages
 SCX and SCY through `wPendingScrollX` and `wPendingScrollY`, then increments the
