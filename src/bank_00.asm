@@ -10832,7 +10832,7 @@ Func_3A1E:
 
 
 ; Build 31 intermediate 64-byte background-palette frames in WRAM bank 2.
-; Frame 31 at $D7C0 is the target prepared by PrepareBackgroundPaletteFade.
+; Frame 31 is the target prepared by PrepareBackgroundPaletteFade.
 BuildBackgroundPaletteFadeFrames:
 Func_3A2F:
 	ld a, [ROM_BANK_MARKER]
@@ -10845,11 +10845,11 @@ Func_3A2F:
 	ret
 
 
-; Return WRAM-bank-2 address $D000 + A * 64 in HL.
+; Return wBackgroundPaletteFadeFrames + A * 64 in HL (WRAM bank 2).
 GetBackgroundPaletteFrameAddress:
 Func_3A40:
 	push bc
-	ld hl, $D000
+	ld hl, wBackgroundPaletteFadeFrames
 	ld b, a
 	ld c, $00
 	srl b
@@ -10908,7 +10908,7 @@ Jump_3A7D:
 
 
 ; Clear the 32-frame palette cache, then copy E target bytes from bank D and
-; source HL to frame 31 at $D7C0. Unwritten target colours remain black.
+; source HL to frame 31. Unwritten target colours remain black.
 PrepareBackgroundPaletteFade:
 Func_3A88:
 	ld a, [ROM_BANK_MARKER]
@@ -10918,11 +10918,11 @@ Func_3A88:
 	ld a, $02
 	ldh [rSVBK], a
 	push hl
-	ld hl, $D000
-	ld bc, $0800
+	ld hl, wBackgroundPaletteFadeFrames
+	ld bc, BACKGROUND_PALETTE_CACHE_SIZE
 	call ClearMemory
 	pop hl
-	ld bc, $D7C0
+	ld bc, wBackgroundPaletteFadeTarget
 	call CopyBytesShort
 	ld a, $01
 	ldh [rSVBK], a

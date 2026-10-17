@@ -225,6 +225,14 @@ DEF wScreenModeDraw   EQU wScreenModeEntry + 4 ; 2-byte pointer
 DEF SCREEN_MODE_ENTRY_SIZE EQU 8
 DEF SCREEN_MODE_COUNT      EQU 13
 
+; WRAM bank 2 holds 32 complete eight-palette frames for full-screen fades.
+; The final frame is the target and frames 0-30 are generated intermediates.
+DEF wBackgroundPaletteFadeFrames EQU $D000
+DEF BACKGROUND_PALETTE_FRAME_SIZE EQU 64
+DEF BACKGROUND_PALETTE_FRAME_COUNT EQU 32
+DEF BACKGROUND_PALETTE_CACHE_SIZE EQU BACKGROUND_PALETTE_FRAME_SIZE * BACKGROUND_PALETTE_FRAME_COUNT
+DEF wBackgroundPaletteFadeTarget EQU wBackgroundPaletteFadeFrames + BACKGROUND_PALETTE_FRAME_SIZE * (BACKGROUND_PALETTE_FRAME_COUNT - 1)
+
 ; Encoded text cursor used by the options menu text renderer.
 DEF wTextColumn EQU $C8DF
 DEF wTextRow    EQU $C8E0

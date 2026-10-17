@@ -187,8 +187,9 @@ An independent four-tile indicator blinks while `wHudAlertActive` is nonzero;
 its gameplay meaning is not yet named.
 
 Background fades use a 2 KiB cache in WRAM bank 2: 32 complete 64-byte CGB
-palette frames from `$D000` through `$D7FF`. `PrepareBackgroundPaletteFade`
-clears the cache and copies the target colours into frame 31 at `$D7C0`;
+palette frames from `wBackgroundPaletteFadeFrames` through `$D7FF`.
+`PrepareBackgroundPaletteFade` clears the cache and copies the target colours
+into frame 31 at `wBackgroundPaletteFadeTarget`;
 `BuildBackgroundPaletteFadeFrames` constructs the preceding RGB555 steps.
 `LoadBackgroundPaletteFrame` installs any complete frame, while
 `CopyBackgroundPaletteFromFrame` extracts one eight-byte palette for scrolling

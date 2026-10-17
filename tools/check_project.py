@@ -1266,6 +1266,16 @@ def check_level_banks() -> None:
     if screen_mode_constants != {"SCREEN_MODE_ENTRY_SIZE": 8, "SCREEN_MODE_COUNT": 13}:
         fail(f"screen-mode constants differ: {screen_mode_constants}")
 
+    palette_cache_definitions = (
+        "DEF wBackgroundPaletteFadeFrames EQU $D000",
+        "DEF BACKGROUND_PALETTE_FRAME_SIZE EQU 64",
+        "DEF BACKGROUND_PALETTE_FRAME_COUNT EQU 32",
+        "DEF BACKGROUND_PALETTE_CACHE_SIZE EQU BACKGROUND_PALETTE_FRAME_SIZE * BACKGROUND_PALETTE_FRAME_COUNT",
+        "DEF wBackgroundPaletteFadeTarget EQU wBackgroundPaletteFadeFrames + BACKGROUND_PALETTE_FRAME_SIZE * (BACKGROUND_PALETTE_FRAME_COUNT - 1)",
+    )
+    if any(definition not in memory_source for definition in palette_cache_definitions):
+        fail("background-palette fade cache definitions differ")
+
     object_source = (ROOT / "include" / "object.inc").read_text()
     object_constants = {
         name: int(value, 16)
