@@ -1037,16 +1037,6 @@ def check_level_banks() -> None:
     if actual != expected:
         fail(f"levels: assets.txt ranges differ: {sorted(actual ^ expected)[:4]}")
 
-    manifest = {str(path): (start, size) for path, start, size in read_manifest()}
-    bank5_assets = {
-        "assets/bank_05/bank04_copy_40B1.bin": (0x140B1, 0x24F),
-        "assets/bank_05/bank04_copy_431E.bin": (0x1431E, 0xE2),
-        "assets/bank_05/bank04_copy_452C.bin": (0x1452C, 0xD4),
-    }
-    for path, where in bank5_assets.items():
-        if manifest.get(path) != where:
-            fail(f"levels: bank $05 asset {path} is {manifest.get(path)}, expected {where}")
-
     if tuple(
         int.from_bytes(rom[position : position + 2], "little")
         for position in range(0x14EA0, 0x14EA8, 2)

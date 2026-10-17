@@ -68,7 +68,6 @@
 7. **Unread bytes**:
    - `Bank02Unread481E`, `Bank02Unread4AB0`, and `Bank02Unread4D50`
      (52 bytes total around two recovered indexed sprite grids);
-   - the bank `$05` copies of bank `$04` (1,029);
    - `Bank01Unread77D6/785E/786C`;
    - `Bank02Unread5E80`;
    - two screen-effect gaps;

@@ -53,16 +53,16 @@ LoadLevelLookupPointers:
 	ld [wLevelAttributeLookupBank], a
 	ret
 
-Bank05Bank04Copy40B1: ; byte-identical copy of bank $04 $40B1-$42FF (level 0-3 spawn records); no reader in bank $05
-	INCBIN "assets/bank_05/bank04_copy_40B1.bin"
+Bank05Bank04Copy40B1: ; unused byte-identical fragment of bank $04 level-object spawn records
+	bank05_bank04_copy_40b1
 
 LevelRecordPointers:
 	dw Level00_Record, Level01_Record, Level02_Record, Level03_Record, Level04_Record
 	dw Level05_Record, Level06_Record, Level07_Record, Level08_Record, Level09_Record
 	dw Level10_Record, Level11_Record, Level12_Record, Level13_Record, Level14_Record
 
-Bank05Bank04Copy431E: ; byte-identical copy of bank $04 $431E-$43FF; no reader in bank $05
-	INCBIN "assets/bank_05/bank04_copy_431E.bin"
+Bank05Bank04Copy431E: ; unused byte-identical fragment of bank $04 level-object spawn records
+	bank05_bank04_copy_431e
 
 Level00_Record:
 	level_record LEVEL00_WIDTH, LEVEL00_HEIGHT, Level00_Tiles, Level00_BGPalettes, Level00_CellMap, Level00_TileMap, Level00_AttrMap, LEVEL00_TILE_COUNT, LEVEL00_PALETTE_COUNT
@@ -95,8 +95,8 @@ Level13_Record:
 Level14_Record:
 	level_record LEVEL14_WIDTH, LEVEL14_HEIGHT, Level14_Tiles, Level14_BGPalettes, Level14_CellMap, Level14_TileMap, Level14_AttrMap, LEVEL14_TILE_COUNT, LEVEL14_PALETTE_COUNT
 
-Bank05Bank04Copy452C: ; byte-identical copy of bank $04 $452C-$45FF; no reader in bank $05
-	INCBIN "assets/bank_05/bank04_copy_452C.bin"
+Bank05Bank04Copy452C: ; unused byte-identical fragment of bank $04 level-object spawn records
+	bank05_bank04_copy_452c
 
 ObjectVelocityTable: ; 16 speed classes x 16 directions; X then Y, signed 32-bit, 1/256 px per frame
 ; Read by ROM0 Func_2241/Func_2295 (class = object +$1A, direction = object +$19).

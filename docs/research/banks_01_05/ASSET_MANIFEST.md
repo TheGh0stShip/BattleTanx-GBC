@@ -10,9 +10,6 @@
 | `assets/bank_02/tracker_direction_lookup.bin` | $02 | 2048 | `bc3392db623b91add8fedead651e6343497ca4ed` | 0x9440 | nibble-packed dx/dy -> direction lookup | added |
 | `assets/bank_02/indexed_sprite_grid_1.2bpp` | $02 | 640 | `5352a2e8419f9638a4fc9921150a92a7b0821e4a` | 0x8830 | 2bpp, 40 tiles | added |
 | `assets/bank_02/indexed_sprite_grid_0.2bpp` | $02 | 640 | `d48c5682c7882d9be5f6891bd69982e63a25c382` | 0x8ad0 | 2bpp, 40 tiles | added |
-| `assets/bank_05/bank04_copy_40B1.bin` | $05 | 591 | `792cffcbd524b60e0d27cf502338bde0cea167d9` | 0x140b1 | byte copy of bank $04, no reader | added |
-| `assets/bank_05/bank04_copy_431E.bin` | $05 | 226 | `c6a46c321fd468fa326334348905a76eee4a1f51` | 0x1431e | byte copy of bank $04, no reader | added |
-| `assets/bank_05/bank04_copy_452C.bin` | $05 | 212 | `c56bb413a4cecfa6e10d45085786ca13c571ab0a` | 0x1452c | byte copy of bank $04, no reader | added |
 
 Removed (every byte now explicit source or a typed asset above):
 
@@ -25,7 +22,7 @@ Removed (every byte now explicit source or a typed asset above):
 | `assets/bank_02/5040.bin` | 3072 | `abd1fa78360b7370b2202b1a5808808c4bfb2ec1` | `TrackerPointerFrames` (source) + `tracker_direction_lookup.bin` |
 | `assets/bank_02/5DE0.bin` | 1165 | `5b4fdb833d8b48c8402237dcc03d62558fe04177` | palettes, tile grids, tables (source) + `burst_tiles.2bpp` |
 | `assets/bank_02/66DC.bin` | 6436 | `bde6747983763d66d3bfee56cfcac24e6a61eaee` | `ds` fill + `db BANK(@)` |
-| `assets/bank_05/40B1.bin` | 591 | `792cffcbd524b60e0d27cf502338bde0cea167d9` | `bank04_copy_40B1.bin` (renamed provenance) |
-| `assets/bank_05/431E.bin` | 226 | `c6a46c321fd468fa326334348905a76eee4a1f51` | `bank04_copy_431E.bin` |
-| `assets/bank_05/452C.bin` | 2420 | `bea028e4bebe0382a2ad4351fc6c8ae1d8486de2` | `bank04_copy_452C.bin` ($D4 bytes) + `ObjectVelocityTable` and zero gap (source) |
+| `assets/bank_05/40B1.bin` | 591 | `792cffcbd524b60e0d27cf502338bde0cea167d9` | explicit unused bank-$04 spawn-record residue |
+| `assets/bank_05/431E.bin` | 226 | `c6a46c321fd468fa326334348905a76eee4a1f51` | explicit unused bank-$04 spawn-record residue |
+| `assets/bank_05/452C.bin` | 2420 | `bea028e4bebe0382a2ad4351fc6c8ae1d8486de2` | explicit unused bank-$04 spawn-record residue ($D4 bytes) + `ObjectVelocityTable` and zero gap (source) |
 | `assets/bank_05/59E0.bin` | 9760 | `af5cb34c827a99d926d9a72ffd557befe94b08e7` | `src/screen_effect_tables.asm` |

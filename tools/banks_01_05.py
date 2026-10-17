@@ -127,7 +127,9 @@ def check_dispatch_tables(rom, sym):
 
 # ------------------------------------------------------------------ source structure
 SUPERSEDED = ["assets/bank_05/59E0.bin", "assets/bank_02/66DC.bin", "assets/bank_01/7D5D.bin",
-              "assets/bank_05/40B1.bin", "assets/bank_05/431E.bin", "assets/bank_05/452C.bin"]
+              "assets/bank_05/40B1.bin", "assets/bank_05/431E.bin", "assets/bank_05/452C.bin",
+              "assets/bank_05/bank04_copy_40B1.bin", "assets/bank_05/bank04_copy_431E.bin",
+              "assets/bank_05/bank04_copy_452C.bin"]
 
 
 def check_source(root):
@@ -136,6 +138,8 @@ def check_source(root):
         check(f'"{a}"' not in text, f"source: superseded blob {a} included again")
     check("INCLUDE \"src/screen_effect_tables.asm\"" in text, "source: effect tables not included")
     check("ObjectVelocityTable:" in text, "source: velocity table not explicit")
+    check("bank05_bank04_copy_40b1" in text and "bank05_bank04_copy_431e" in text and
+          "bank05_bank04_copy_452c" in text, "source: bank $04 residue macros not used")
 
 
 # ------------------------------------------------------------------ bank $01 structures
