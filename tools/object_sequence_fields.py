@@ -31,6 +31,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import object_sequences as S  # noqa: E402
 import level_objects as O  # noqa: E402
+import level_data as L  # noqa: E402
 
 SEQUENCES, RECORDS = 203, 626
 TERMINAL_EXCEPTIONS = {(3, 6): 5, (6, 15): 0}
@@ -40,6 +41,10 @@ HEADING_EXCEPTIONS = {(3, 2, 2): 0x0B, (3, 11, 0): 0x05}
 AXIS = {0: (0, -1), 4: (1, 0), 8: (0, 1), 12: (-1, 0)}
 UNUSED_SEQUENCES = {(3, 11), (9, 1), (9, 2), (10, 17)}
 TERMINAL_EXCEPTION_SPAWNS = {(3, 6): (14,), (6, 15): (12,)}
+TERMINAL_EXCEPTION_OVERREADS = {
+    (3, 6): bytes.fromhex("040c30003a220000"),
+    (6, 15): bytes.fromhex("244d3d4d564d774d"),
+}
 
 
 class FieldError(ValueError):
@@ -117,6 +122,37 @@ def validate(rom: bytes) -> tuple[int, int]:
     exception_spawns = {key: tuple(references.get(key, ())) for key in TERMINAL_EXCEPTIONS}
     check(exception_spawns == TERMINAL_EXCEPTION_SPAWNS,
           f"SEQ12: terminal-exception spawn references changed: {exception_spawns}")
+    level_data = L.parse_levels(rom)
+    for key, spawn_indices in TERMINAL_EXCEPTION_SPAWNS.items():
+        level, slot = key
+        sequence = next(points for lv, candidate, points in seqs
+                        if (lv, candidate) == key)
+        spawn = objects[level]["spawns"][spawn_indices[0]]
+        check(spawn[0] in (0, 1, 2),
+              f"SEQ13: level {level} slot {slot} is no longer a persistent vehicle")
+        start = (int.from_bytes(spawn[1:3], "little") // 8,
+                 int.from_bytes(spawn[3:5], "little") // 8)
+        check(start == (sequence[0][3], sequence[0][4]),
+              f"SEQ13: level {level} slot {slot} spawn no longer starts at waypoint 0")
+        lv = level_data[level]
+        cells = L.read(rom, lv.cell_bank, lv.cellmap_addr, lv.cells)
+        for i in range(len(sequence) - 1):
+            x0, y0 = sequence[i][3], sequence[i][4]
+            x1, y1 = sequence[i + 1][3], sequence[i + 1][4]
+            dx, dy = sign(x1 - x0), sign(y1 - y0)
+            x, y = x0, y0
+            while True:
+                check(cells[y * lv.width + x] & 1,
+                      f"SEQ13: level {level} slot {slot} route blocked at ({x}, {y})")
+                if (x, y) == (x1, y1):
+                    break
+                x, y = x + dx, y + dy
+        end = next(s["address"] + 1 + 8 * len(s["points"])
+                   for parsed in levels for s in parsed["sequences"]
+                   if (parsed["level"], s["slot"]) == key)
+        got = rom[S.offset(end):S.offset(end) + 8]
+        check(got == TERMINAL_EXCEPTION_OVERREADS[key],
+              f"SEQ14: level {level} slot {slot} overread bytes changed")
     return len(seqs), sum(len(p) for *_, p in seqs)
 
 
@@ -147,6 +183,16 @@ def negative_tests(rom: bytes) -> int:
     level, index, _ = first_spawn
     spawn_slot_offset = O.offset(level["spawn_address"] + index * O.SPAWN_SIZE + 5)
     cases.append(("spawn sequence reference", {spawn_slot_offset: 0x3F}, "SEQ12: level 0"))
+    level3 = L.parse_levels(rom)[3]
+    route_address = level3.cellmap_addr + 10 * level3.width + 73
+    route_cell = level3.cell_bank * L.BANK_SIZE + route_address - 0x4000
+    cases.append(("terminal route", {route_cell: 0x00}, "SEQ13: level 3 slot 6 route blocked"))
+    level3_slot6 = next(s for lv in levels for s in lv["sequences"]
+                        if (lv["level"], s["slot"]) == (3, 6))
+    overread = S.offset(level3_slot6["address"] + 1 + 8 * len(level3_slot6["points"]))
+    # The pseudo-record begins at sequence 7's count byte, so corruption is
+    # rejected first by the underlying sequence-layout check.
+    cases.append(("terminal overread", {overread: rom[overread] ^ 1}, "layout: level 3 slot 7"))
     n = 0
     for name, changes, expect in cases:
         data = bytearray(rom)

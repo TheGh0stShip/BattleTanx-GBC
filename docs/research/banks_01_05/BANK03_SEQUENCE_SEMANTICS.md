@@ -28,7 +28,10 @@ The table is cached at `$CD1C`, and each object stores its sequence slot in
 - **Data**: 203 sequences, 626 records.
   - 201 sequences end with action 2 (patrol back and forth).
   - Level 3 slot 6 and level 6 slot 15 end in 5/0, and their forward target read
-    runs past the sequence (UNRESOLVED.md item 5). Both exceptions are pinned by
+    runs past the sequence. Both persistent-vehicle spawns begin at waypoint 0,
+    and every cell through the final waypoint is passable, proving the malformed
+    transitions are reachable unless gameplay destroys or diverts the vehicle.
+    Their exact pseudo-records and routes are pinned by
     `tools/object_sequence_fields.py`, together with:
     - the unread distance field +1/+2;
     - +7 = +6;

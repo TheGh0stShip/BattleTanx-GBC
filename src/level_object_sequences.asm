@@ -274,6 +274,9 @@ Level03ObjectSequence06:
 	db $0C, $68, $00, $49, $05, $05, $10, $10 ; point 1
 	db $00, $30, $00, $3C, $05, $05, $18, $18 ; point 2
 
+; Sequence 06 advances here after point 2. These bytes are interpreted as the
+; pseudo-record 04 0C 30 00 3A 22 00 00, targeting tile (0, $3A).
+Level03ObjectSequence06Overread:
 Level03ObjectSequence07:
 	db 4
 	db $0C, $30, $00, $3A, $22, $00, $00, $00 ; point 0
@@ -617,6 +620,10 @@ Level06ObjectSequence15:
 
 ASSERT @ - Level06ObjectSequence15 == $11
 
+; Sequence 15 advances here after point 1. The pointer table begins with the
+; pseudo-record 24 4D 3D 4D 56 4D 77 4D; heading $24 cannot match a direction
+; masked to $0F, so the object remains in its turn loop.
+Level06ObjectSequence15Overread:
 Level07ObjectSequences:
 	dw Level07ObjectSequence00, Level07ObjectSequence01, Level07ObjectSequence02, Level07ObjectSequence03, Level07ObjectSequence04, Level07ObjectSequence05, Level07ObjectSequence06, Level07ObjectSequence07
 	dw Level07ObjectSequence08, Level07ObjectSequence09, Level07ObjectSequence10, Level07ObjectSequence11, Level07ObjectSequence12, Level07ObjectSequence13, Level07ObjectSequence14, $0000

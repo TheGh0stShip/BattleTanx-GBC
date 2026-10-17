@@ -48,15 +48,20 @@
    - **Unread fields.** Nothing reads +1, +2, +7 or the count byte. +1/+2 is the
      pixel distance to the next waypoint (one exception: level 3 slot 2
      record 2 stores 9, computed 8), and +7 always equals +6.
-   - **Level 3 slot 6** ends in action 5. Its forward target read runs into
-     `Level03ObjectSequence07`, giving tile (0, `$3A`).
-   - **Level 6 slot 15** ends in action 0. Its read runs into the
-     `Level07ObjectSequences` pointer table, giving heading `$24`. The rotation is
-     masked to `$0F`, so an object that gets there would turn forever. The stored
-     distance `$38` suggests a lost third waypoint.
+   - **Original terminal-record defects.** Level 3 slot 6 ends in action 5 and
+     advances into `Level03ObjectSequence07`, interpreting
+     `04 0C 30 00 3A 22 00 00` as a record targeting tile (0, `$3A`). Level 6
+     slot 15 ends in action 0 and advances into the `Level07ObjectSequences`
+     pointer table. Its pseudo-record begins with heading `$24`; object
+     direction is masked to `$0F`, so it remains in the turn loop forever.
 
-     Both slots are used by spawn records: level 3 spawn 14 and level 6 spawn
-     12. Whether the objects survive to their last waypoint is not known.
+     These are dynamically reachable data defects, not merely theoretical
+     reads. Level 3 spawn 14 and level 6 spawn 12 are persistent vehicles,
+     start exactly at waypoint 0, and have all-passable (`$01`) cell-map routes
+     through their last authored waypoint. Player destruction or interference
+     can prevent an individual occurrence. The validator pins both routes and
+     both exact overread records. Level 6's stored distance `$38` still suggests
+     a lost third waypoint, but the missing intended data cannot be recovered.
    - **Unused sequences.** No spawn record uses (3, 11), (9, 1), (9, 2) or
      (10, 17). The complete spawn-to-sequence cross-check is enforced by
      `tools/object_sequence_fields.py`.
