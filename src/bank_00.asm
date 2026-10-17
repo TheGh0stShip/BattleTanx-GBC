@@ -9093,15 +9093,15 @@ Func_3090: ; legacy alias
 	jr Jump_30CD
 
 Jump_30C0:
-	call Func_30D1
+	call InitializeTimedEffectSubtype1Far
 	jr Jump_30CD
 
 Jump_30C5:
-	call Func_30F3
+	call InitializeTimedEffectSubtype2Far
 	jr Jump_30CD
 
 Jump_30CA:
-	call Func_30E2
+	call InitializeTimedEffectSubtype0Far
 Jump_30CD:
 	pop de
 	pop bc
@@ -9109,7 +9109,8 @@ Jump_30CD:
 	ret
 
 
-Func_30D1:
+InitializeTimedEffectSubtype1Far:
+Func_30D1: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
@@ -9120,7 +9121,8 @@ Func_30D1:
 	ret
 
 
-Func_30E2:
+InitializeTimedEffectSubtype0Far:
+Func_30E2: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
@@ -9131,7 +9133,8 @@ Func_30E2:
 	ret
 
 
-Func_30F3:
+InitializeTimedEffectSubtype2Far:
+Func_30F3: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
