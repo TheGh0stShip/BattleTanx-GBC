@@ -1206,8 +1206,8 @@ Jump_0708:
 	jr z, Jump_0708
 	xor a
 	ld [wVBlankPending], a
-	call Func_3878
-	call Func_3A1E
+	call DarkenBackgroundPalettes
+	call DarkenObjectPalettes
 	dec d
 	jr nz, Jump_0701
 	ret
@@ -1218,7 +1218,7 @@ Func_071F:
 	call Audio_QueueSound
 	ld d, $20
 	ld e, $01
-	call Func_3889
+	call FadeBackgroundPalettesToWhite
 	ret
 
 
@@ -10426,6 +10426,8 @@ Func_3845:
 	ret
 
 
+; Subtract E from each RGB555 channel in BC, saturating at zero.
+DarkenRgb555:
 Func_3856:
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -10437,6 +10439,8 @@ Func_3856:
 	ret
 
 
+; Add E to each RGB555 channel in BC, saturating at 31.
+BrightenRgb555:
 Func_3867:
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -10448,6 +10452,8 @@ Func_3867:
 	ret
 
 
+; Darken all 32 background-palette colours by E through the bank-$01 helper.
+DarkenBackgroundPalettes:
 Func_3878:
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -10459,6 +10465,9 @@ Func_3878:
 	ret
 
 
+; Capture the current background palettes, build a fade toward white, and play
+; its frames through the bank-$01 implementation.
+FadeBackgroundPalettesToWhite:
 Func_3889:
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -10621,6 +10630,8 @@ Jump_395D:
 	ret
 
 
+; Clear all 32 background-palette colours through the bank-$02 implementation.
+ClearBackgroundPalettes:
 Func_3960:
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -10770,6 +10781,8 @@ ScreenTable_LoadEntry:
 	ret
 
 
+; Darken all 32 object-palette colours by E through the bank-$02 helper.
+DarkenObjectPalettes:
 Func_3A1E:
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -10781,6 +10794,9 @@ Func_3A1E:
 	ret
 
 
+; Build 31 intermediate 64-byte background-palette frames in WRAM bank 2.
+; Frame 31 at $D7C0 is the target prepared by PrepareBackgroundPaletteFade.
+BuildBackgroundPaletteFadeFrames:
 Func_3A2F:
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -10792,6 +10808,8 @@ Func_3A2F:
 	ret
 
 
+; Return WRAM-bank-2 address $D000 + A * 64 in HL.
+GetBackgroundPaletteFrameAddress:
 Func_3A40:
 	push bc
 	ld hl, $D000
@@ -10806,11 +10824,13 @@ Func_3A40:
 	ret
 
 
+; Load all eight background palettes from cached frame E in WRAM bank 2.
+LoadBackgroundPaletteFrame:
 Func_3A52:
 	ld a, $02
 	ldh [rSVBK], a
 	ld a, e
-	call Func_3A40
+	call GetBackgroundPaletteFrameAddress
 	ld c, $08
 	ld b, $00
 	push de
@@ -10821,11 +10841,13 @@ Func_3A52:
 	ret
 
 
+; Copy palette D from cached frame E to the eight-byte buffer at BC.
+CopyBackgroundPaletteFromFrame:
 Func_3A68:
 	ld a, $02
 	ldh [rSVBK], a
 	ld a, e
-	call Func_3A40
+	call GetBackgroundPaletteFrameAddress
 	ld a, d
 	add a, a
 	add a, a
@@ -10848,6 +10870,9 @@ Jump_3A7D:
 	ret
 
 
+; Clear the 32-frame palette cache, then copy E target bytes from bank D and
+; source HL to frame 31 at $D7C0. Unwritten target colours remain black.
+PrepareBackgroundPaletteFade:
 Func_3A88:
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -10918,7 +10943,7 @@ Jump_3AF3:
 	ld a, [wLevelNumber]
 	call Func_01_63D1
 	call Func_01_609A
-	call Func_3960
+	call ClearBackgroundPalettes
 Jump_3B11:
 	ret
 

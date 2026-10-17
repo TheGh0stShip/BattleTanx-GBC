@@ -178,6 +178,16 @@ bytes `+$29` and `+$2A` hold the power-up kind and remaining charges. Its
 An independent four-tile indicator blinks while `wHudAlertActive` is nonzero;
 its gameplay meaning is not yet named.
 
+Background fades use a 2 KiB cache in WRAM bank 2: 32 complete 64-byte CGB
+palette frames from `$D000` through `$D7FF`. `PrepareBackgroundPaletteFade`
+clears the cache and copies the target colours into frame 31 at `$D7C0`;
+`BuildBackgroundPaletteFadeFrames` constructs the preceding RGB555 steps.
+`LoadBackgroundPaletteFrame` installs any complete frame, while
+`CopyBackgroundPaletteFromFrame` extracts one eight-byte palette for scrolling
+scene transitions. The separate RGB555 helpers saturate each channel while
+brightening or darkening. ROM0 `$389A` is a coherent palette-step routine but
+has no call or jump reference in the cartridge, so it remains unnamed.
+
 ## Level banks `$09-$26`
 
 The 30 banks are structured as 15 two-bank levels through the record table at
