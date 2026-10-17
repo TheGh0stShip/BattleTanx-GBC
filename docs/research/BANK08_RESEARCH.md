@@ -29,10 +29,10 @@ corrected here:
 | graphics, referenced only by unreachable effect steps | 992 |
 | graphics, never loaded (blank font tile, duplicate, and `$6A7D` tiles) | 160 |
 | palettes read by code | 64 |
-| palette-shaped records (12 bytes read; 8-byte unused record at `$6112`) | 344 |
+| palette-shaped records (12 bytes read; unused records at `$6112` and `$624A`) | 350 |
 | palette, never loaded (`$6AFD`) | 8 |
 | tables (metatiles 192, palette-index 10, glyph 128) | 330 |
-| unknown | 11 |
+| unknown | 5 |
 | fill + marker | 4624 |
 | **total** | **16384** |
 
@@ -46,9 +46,9 @@ corrected here:
 **Bounded only**: 1,503 bytes.
 - 992 graphics reached only by unreachable table entries;
 - 160 bytes of unloaded graphics;
-- 332 bytes of unread palette-shaped records;
+- 338 bytes of unread palette-shaped records;
 - 8 bytes of unloaded palette;
-- 11 unknown bytes.
+- 5 unknown bytes.
 
 The two totals sum to 16,384.
 
@@ -133,7 +133,7 @@ derives and checks them.
 ## 5. Validation
 
 `tools/bank08.py` runs from `check_bank08_graphics_assets` in
-`tools/check_project.py`. Its 28 negative tests are each rejected for the
+`tools/check_project.py`. Its 29 negative tests are each rejected for the
 intended reason:
 - tile load count;
 - glyph table entry;
@@ -187,10 +187,11 @@ All of them round-trip to the original bytes.
 
 ## 7. Unresolved
 
-1. 11 unknown bytes: `$6108-$6109` (`81 00`), `$624A-$624F` (6 bytes), and
-   `$6260-$6262` (3 bytes). `$6250-$625F` is an unread exact duplicate of tile
-   47 at `$655B`.
-2. The purpose of the 40 unread palette-shaped records (42 in total).
+1. 5 unknown bytes: `$6108-$6109` (`81 00`) and `$6260-$6262` (3 bytes).
+   `$624A-$624F` is a complete, unused three-colour RGB555 record, while
+   `$6250-$625F` is an unread exact duplicate of tile 47 at `$655B`.
+2. The purpose of the 41 wholly unread palette-shaped records (43 in total,
+   including the six-byte record at `$624A`).
 3. Why effect steps 19-71 exist but cannot be reached.
 4. Gameplay identities of the sprites and metatiles. The renders suggest
    effects and a rotating BG object, which is not evidence.
@@ -324,7 +325,7 @@ All of them round-trip to the original bytes.
 | `621A-6221` | 8 | palette record | PaletteRecord621A |
 | `6222-6241` | 32 | graphics | Bank08InterfaceTiles6222 |
 | `6242-6249` | 8 | palette record | PaletteRecord6242 |
-| `624A-624F` | 6 | unknown | Bank08Unknown624A |
+| `624A-624F` | 6 | palette record (unused) | Bank08UnusedObjectPalette624A |
 | `6250-625F` | 16 | graphics (duplicate, not loaded) | Bank08DuplicateInterfaceTile6250 |
 | `6260-6262` | 3 | unknown | Bank08Unknown6260 |
 | `6263-626A` | 8 | palette record | PaletteRecord6263 |

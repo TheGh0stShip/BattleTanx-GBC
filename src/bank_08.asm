@@ -456,8 +456,10 @@ Bank08InterfaceTiles6222:
 PaletteRecord6242: ; palette-shaped record, no reader found
 	dw $0000, $001C, $025C, $03FF
 
-Bank08Unknown624A: ; 6 bytes, no reader found; meaning unknown
-	db $01, $00, $01, $00, $01, $00
+; Complete three-colour RGB555 record in the same format consumed by
+; LoadObjectPaletteRange. No reader was found, so its purpose is unknown.
+Bank08UnusedObjectPalette624A:
+	dw $0001, $0001, $0001
 
 ; Unread duplicate of tile 47 in Bank08InterfaceTiles626B.
 Bank08DuplicateInterfaceTile6250:
