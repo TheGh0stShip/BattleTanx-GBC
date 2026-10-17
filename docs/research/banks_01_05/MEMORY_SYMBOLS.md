@@ -59,7 +59,7 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$CD14` | `wLevelAuxType4Active` | 1 | Consistent. |
 | `$CD18` | `wLevelSpawnHealthPenalty` | 1 | Same meaning in both proposals; only bank_04 level spawn code uses it. Picked a name that matches the $CD1A naming. |
 | `$CD19` | `wLevelObjectRecordType` | 1 | 17 refs, all in bank_04 level-object spawning. Picked w10's name. |
-| `$CD1A` | `wPlayerSpawnHealthPenalty` | 1 | One write only (bank_04:187); no reader. Medium confidence. |
+| `$CD1A` | `wUnusedPlayerSpawnHealthPenalty` | 1 | Receives the player-record health penalty once in bank `$04`; player creation never reads it. Validator-pinned dead write. |
 | `$CD22` | `wLevelObjectSkillScratch` | 1 | Only bank_04 Func_04_62A7/62F7 code uses it. Scratch-like, but used in one place. |
 | `$CD23` | `wLevelObjectRecordIndex` | 1 | Only bank_03/04 level-object code uses it. |
 | `$CD24` | `wLevelObjectRespawnsLeft` | 1 | Consistent. |

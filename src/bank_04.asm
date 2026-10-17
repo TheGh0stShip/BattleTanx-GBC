@@ -184,7 +184,7 @@ InitializeLevelObjects:
 	ld a, [wLevelObjectRecordType]
 	call GetLevelObjectHealthPenalty
 	ld a, d
-	ld [wPlayerSpawnHealthPenalty], a
+	ld [wUnusedPlayerSpawnHealthPenalty], a ; dead write: player creation never reads it
 	jp .advanceSpawnRecord
 
 .checkType5:

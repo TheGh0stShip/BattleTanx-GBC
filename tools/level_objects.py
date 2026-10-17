@@ -117,6 +117,11 @@ def validate_project(root: pathlib.Path) -> str:
           source.count("ld c, OBJECT_TYPE0_FALLBACK_SPEED") == 3 and
           source.count("ld c, OBJECT_TYPE2_FALLBACK_SPEED") == 4,
           "level objects: fallback-speed mapping count changed")
+    check(source.count("ld [wUnusedPlayerSpawnHealthPenalty], a") == 1,
+          "level objects: dead player health-penalty write changed")
+    all_source = "".join(path.read_text() for path in (root / "src").glob("*.asm"))
+    check(all_source.count("wUnusedPlayerSpawnHealthPenalty") == 1,
+          "level objects: player health-penalty scratch gained a reader")
     aux_inc = (root / "include/level_objects.inc").read_text()
     expected_modes = {
         "LEVEL_AUX_MODE_TIMER": 1,
@@ -145,6 +150,9 @@ def validate_project(root: pathlib.Path) -> str:
     for name, address in expected_memory.items():
         check(definitions.get(name) == address,
               f"memory symbol {name} is {definitions.get(name)}, expected {address:#06x}")
+    banked_ram = (root / "include/banks_01_05_ram.inc").read_text()
+    check(re.search(r"^DEF wUnusedPlayerSpawnHealthPenalty\s+EQU \$CD1A\b", banked_ram, re.MULTILINE),
+          "memory symbol wUnusedPlayerSpawnHealthPenalty is missing")
     symbols = read_symbols(root / "battletanx.sym")
     if symbols is not None:
         expected = {

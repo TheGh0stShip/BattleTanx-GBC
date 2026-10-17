@@ -49,7 +49,7 @@ DEF wLevelAuxType2AllReached         EQU $CD13 ; 1 byte(s)
 DEF wLevelAuxType4Active             EQU $CD14 ; 1 byte(s)
 DEF wLevelSpawnHealthPenalty         EQU $CD18 ; 1 byte(s)
 DEF wLevelObjectRecordType           EQU $CD19 ; 1 byte(s)
-DEF wPlayerSpawnHealthPenalty        EQU $CD1A ; 1 byte(s)
+DEF wUnusedPlayerSpawnHealthPenalty  EQU $CD1A ; written once; never read
 DEF wLevelObjectSkillScratch         EQU $CD22 ; 1 byte(s)
 DEF wLevelObjectRecordIndex          EQU $CD23 ; 1 byte(s)
 DEF wLevelObjectRespawnsLeft         EQU $CD24 ; 1 byte(s)

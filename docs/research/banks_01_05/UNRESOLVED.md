@@ -60,13 +60,11 @@
    - **Unused sequences.** No spawn record uses (3, 11), (9, 1), (9, 2) or
      (10, 17). The complete spawn-to-sequence cross-check is enforced by
      `tools/object_sequence_fields.py`.
-5. **Bank `$04`**:
-   - `wPlayerSpawnHealthPenalty` (`$CD1A`) is written but never read.
-6. **Unread bytes**:
+5. **Unread bytes**:
    - `Bank02UnknownWord481E` (2 bytes before two recovered indexed sprite grids);
    - `Bank02Unread5E80`;
    - `$D7CA`/`$D260` single-`ret` data images.
-7. **RAM**:
+6. **RAM**:
    - `wC8E6` is written, but its purpose is unknown.
    - `wCommittedMusicSetting` and `wCommittedControlSetting` are write-only.
    - `$CD26` only ever holds `$55`.
@@ -76,5 +74,5 @@
      `hLevelRegionX` (`$FF95`), which looks like reuse of HRAM.
    - The score BCD buffer at `$FFB0-$FFB4` overlaps
      `hSceneRowTileVramAddress`.
-8. **Gameplay identities**: these are not assigned for the burst effect, the
+7. **Gameplay identities**: these are not assigned for the burst effect, the
     screen effect, the tracker pointer, the scenes and the pictures.
