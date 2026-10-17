@@ -95,9 +95,6 @@ Evidence: `src/bank_01.asm` and its callers in `src/bank_00.asm`, `src/bank_02.a
   Status 2 also runs `Func_2C35` first. The code shows no further reason for
   the choice.
 
-## Address-named routines that remain
+## Former address-named routines
 
-`Func_01_4ECF`, `Func_01_66F6`, `Func_01_6746`, `Func_01_6751`,
-`Func_01_6789`, `Func_01_696E`, `Func_01_6A1D`, `Func_01_6E44`,
-`Func_01_6243` (no caller) and the `7BC5-7CEF` scroll helpers. Their data
-sources are now named, but their exact role was not proven.
+All are named now; see FINAL_FUNCTIONS.md for the evidence and callers.

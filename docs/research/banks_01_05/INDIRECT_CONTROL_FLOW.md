@@ -11,6 +11,17 @@
 | ROM0 `$39C4`/`$39F1` pushed returns | synthetic return to restore the bank | — | — | yes |
 
 Interrupts: every bank switch saves `[$7FFF]`, which holds each bank's own
-number, so a save and restore interrupted mid-sequence is safe. The remaining
-interrupt-time question (bank `$01` code called from interrupt images without
-mapping) is in UNRESOLVED.md.
+number, so a save and restore interrupted mid-sequence is safe. The scene interrupt
+images call bank-`$01` ROM without mapping it, in three places:
+- `SceneStatHandler` -> `Bank01RomImage_5EE0`;
+- `SceneVBlankHandler` -> `StartSceneTileRowHdma`;
+- `StepSceneWindowSplit` -> `Bank01RomImage_5F26`.
+
+These calls are direct, not indirect. `tools/banks_01_05.py` decodes the three
+images and fails if the set changes. The timing invariant and its open sites
+are in UNRESOLVED.md item 1.
+
+None of the 27 entries named in FINAL_FUNCTIONS.md is the target of a `jp hl`,
+a table or a stored pointer. Two are reached by a pushed return:
+`AimObjectAtPlayerFromProximity` from `CheckObjectNearPlayerBox`, and
+`SnapAndAdvanceRecordedPathWaypoint` from the path-follow branch.

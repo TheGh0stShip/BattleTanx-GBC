@@ -38,6 +38,8 @@ tracer. Banks `$01`/`$02` hold 26 + 4 code images and 2 data images. Banks
 - **Need bank `$01` mapped**: `$D56A`, `$D62A`, `$D70A`, `$D330` and both
   bank-`$01` handler pairs call bank-`$01` routines.
 - **Menu VBlank handler**: saves the bank and maps bank `$01` itself.
-- **Scene VBlank handler**: calls `Func_01_6580` without mapping bank `$01`.
-  The scene STAT handler calls `Bank01RomImage_5EE0` the same way. See
-  UNRESOLVED.md.
+- **Scene VBlank handler**: calls `StartSceneTileRowHdma` (`$01:6580`) without
+  mapping bank `$01`. The scene STAT handler calls `Bank01RomImage_5EE0`, and
+  `StepSceneWindowSplit` (`$D140`) calls `Bank01RomImage_5F26`, the same way.
+  The call set is pinned by `tools/banks_01_05.py`; the invariant and the
+  timing-dependent sites are in UNRESOLVED.md item 1.

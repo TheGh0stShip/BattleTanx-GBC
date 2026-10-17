@@ -190,6 +190,45 @@ def check_ram_include(root):
     return len(names)
 
 
+# Scene interrupt images (installed by InstallSceneInterruptHandlers, or copied
+# for the window split) that call bank-$01 ROM directly, without mapping bank $01.
+# They are safe only while bank $01 is mapped whenever they can fire; see
+# docs/research/banks_01_05/INDIRECT_CONTROL_FLOW.md. This pins the set of such
+# calls so a new one cannot appear unnoticed.
+SCENE_IMAGES = {"Bank01RomImage_5D77": "SceneStatHandler", "Bank01RomImage_5E16": "SceneVBlankHandler",
+                "Bank01RomImage_5BD6": "StepSceneWindowSplit"}
+SCENE_BANK1_CALLS = {("SceneStatHandler", "Bank01RomImage_5EE0"), ("SceneVBlankHandler", "StartSceneTileRowHdma"),
+                     ("StepSceneWindowSplit", "Bank01RomImage_5F26")}
+_LEN3 = {0x01, 0x11, 0x21, 0x31, 0x08, 0xC2, 0xC3, 0xC4, 0xCA, 0xCC, 0xCD, 0xD2, 0xD4, 0xDA, 0xDC, 0xEA, 0xFA}
+_LEN2 = {0x06, 0x0E, 0x16, 0x1E, 0x26, 0x2E, 0x36, 0x3E, 0x18, 0x20, 0x28, 0x30, 0x38, 0xC6, 0xCE, 0xD6, 0xDE,
+         0xE6, 0xEE, 0xF6, 0xFE, 0xE0, 0xF0, 0xE8, 0xF8, 0xCB}
+
+
+def check_scene_interrupt_calls(root, rom, sym):
+    src = (root / "src" / "bank_01.asm").read_text()
+    by_addr = {}
+    for n, (b, a) in sorted(sym.items()):
+        if b == 1 and "." not in n:
+            by_addr.setdefault(a, n)
+    found = set()
+    for image, owner in SCENE_IMAGES.items():
+        m = re.search(rf"ld hl, {image}\n\tld de, \$([0-9A-F]{{4}})\n", src)
+        check(m, f"scene interrupts: copy of {image} not found")
+        start = sym[image][1]
+        end = start + int(m.group(1), 16)
+        a = start
+        while a < end:
+            op = rom[off(1, a)]
+            if op in (0xC2, 0xC3, 0xC4, 0xCA, 0xCC, 0xCD, 0xD2, 0xD4, 0xDA, 0xDC):
+                target = word(rom, 1, a + 1)
+                if 0x4000 <= target < 0x8000:
+                    found.add((owner, by_addr.get(target, f"${target:04X}")))
+            a += 3 if op in _LEN3 else 2 if op in _LEN2 else 1
+        check(a == end, f"scene interrupts: {owner} image does not decode to its end")
+    check(found == SCENE_BANK1_CALLS, f"scene interrupts: bank-$01 ROM calls changed: {sorted(found ^ SCENE_BANK1_CALLS)}")
+    return len(found)
+
+
 # ------------------------------------------------------------------ reports
 def build_reports(root, rom, sym):
     sys.path.insert(0, str(root / "tools"))
@@ -239,6 +278,7 @@ def validate(root, rom, sym):
     check_source(root)
     check_assets(root, rom)
     check_ram_include(root)
+    check_scene_interrupt_calls(root, rom, sym)
     return parts, n
 
 
@@ -287,6 +327,8 @@ def negative_tests(root, rom, sym):
         else:
             raise Banks0105Error("negative test not rejected: superseded blob")
     extra = [
+        ("scene interrupt call", {(1, 0x5E3B): 0x81}, "bank-$01 ROM calls changed"),
+        ("scene interrupt new call", {(1, sym["Bank01RomImage_5D77"][1] + i): v for i, v in enumerate((0xCD, 0x00, 0x50, 0x00))}, "bank-$01 ROM calls changed"),
         ("picture descriptor bank", {(1, sym["MenuState05PictureDescriptors"][1]): 0x2D}, "descriptor 0 bank"),
         ("picture descriptor padding", {(1, sym["MenuState05PictureDescriptors"][1] + 12): 0x01}, "descriptor 0 tail"),
         ("palette bit 15", {(2, sym["BurstObjPalettes"][1] + 1): 0x80}, "BurstObjPalettes word 0"),

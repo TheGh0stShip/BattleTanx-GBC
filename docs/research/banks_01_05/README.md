@@ -1,6 +1,7 @@
 # Banks $01-$05: research index
 
-Frozen baseline `ce487700b488c4fddbd45d178b88dc9910adea74`. Rebuild SHA-1
+Frozen baselines `ce487700b488c4fddbd45d178b88dc9910adea74` (main pass) and
+`e7566ceb909e19f999fc95985a961d748c943fea` (final function pass). Rebuild SHA-1
 `5078584e86c0b6f4687c424cc00bbd762ba6573a`.
 
 - [OVERVIEW.md](OVERVIEW.md): accounting, what is understood, what is not
@@ -14,7 +15,10 @@ Frozen baseline `ce487700b488c4fddbd45d178b88dc9910adea74`. Rebuild SHA-1
 - [MEMORY_SYMBOLS.md](MEMORY_SYMBOLS.md): RAM symbols
 - [ASSET_MANIFEST.md](ASSET_MANIFEST.md): assets
 - [RELOCATION_TESTS.md](RELOCATION_TESTS.md): pins and shift tests
+- [FINAL_FUNCTIONS.md](FINAL_FUNCTIONS.md): the last 27 bank `$01`/`$03` entries, branch labels, rechecked regions
 - [UNRESOLVED.md](UNRESOLVED.md): open questions
+
+Sequence field invariants: `tools/object_sequence_fields.py` (run by `make check`).
 
 Machine-readable reports, checked for freshness by `tools/banks_01_05.py`:
 - `reports/banks_01_05_accounting.json`;

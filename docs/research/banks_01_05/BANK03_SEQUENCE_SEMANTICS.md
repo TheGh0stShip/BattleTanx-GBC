@@ -27,8 +27,13 @@ The table is cached at `$CD1C`, and each object stores its sequence slot in
   when the reverse flag `+$31` is set.
 - **Data**: 203 sequences, 626 records.
   - 201 sequences end with action 2 (patrol back and forth).
-  - Level 3 slot 6 and level 6 slot 15 end in 0/5; the next advance would read
-    past the sequence. This is unresolved.
+  - Level 3 slot 6 and level 6 slot 15 end in 5/0, and their forward target read
+    runs past the sequence (UNRESOLVED.md item 5). Both exceptions are pinned by
+    `tools/object_sequence_fields.py`, together with:
+    - the unread distance field +1/+2;
+    - +7 = +6;
+    - the heading/axis rule;
+    - the unreachable records.
   - Record 2 of level 6 slots 11, 12, 14 and level 8 slot 2 is unreachable,
     because the reversal happens at record 1.
 
@@ -41,3 +46,12 @@ The table is cached at `$CD1C`, and each object stores its sequence slot in
   require a pickup count (`wBonusPickupCount`, `wPowerupType3PickupCount`).
 - **`AwardLevelCompletion`**: starts the completion countdown and adds 10,000
   points.
+
+## Recorded path
+
+The `$60AF-$67F9` routines are named in FINAL_FUNCTIONS.md.
+- A 64 x 8 ring, `wRecordedPath`, holds X word, Y word and heading entries.
+  The appender skips duplicate points.
+- A follower snaps an object to the reached entry and moves forward or backward
+  (`+$31`).
+- Nothing reachable starts recording, so this feature is probably unused.

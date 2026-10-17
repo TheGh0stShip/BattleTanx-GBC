@@ -47,6 +47,7 @@ relocation: compare
 # Banks $01-$05 structure, reports and shift tests (needs the linked symbols).
 banks0105: compare
 	$(PYTHON) tools/banks_01_05.py
+	$(PYTHON) tools/object_sequence_fields.py
 	$(PYTHON) tools/shift_test_01_05.py .
 
 # Semantic naming progress, kept separate from traced-byte coverage.

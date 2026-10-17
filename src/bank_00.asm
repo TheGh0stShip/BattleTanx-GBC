@@ -10162,7 +10162,7 @@ Func_35C6: ; legacy alias
 	push af
 	ld a, $01
 	ld [rROMB0], a
-	call Func_01_42EE
+	call Bank01NoOpEntry
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10602,7 +10602,7 @@ Func_3823: ; legacy alias
 	push af
 	ld a, $03
 	ld [rROMB0], a
-	call Func_03_6391
+	call UpdateLevelObjectAuxState
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11308,7 +11308,7 @@ Func_3BD5: ; legacy alias
 	push af
 	ld a, $01
 	ld [rROMB0], a
-	call Func_01_6E01
+	call ClearScoreThenIncrementForever
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11347,7 +11347,7 @@ Func_3C08: ; legacy alias
 	push af
 	ld a, $01
 	ld [rROMB0], a
-	call Func_01_6E44
+	call ShowScreenMode12WithPasswordScoreLives
 	pop af
 	ld [rROMB0], a
 	ret

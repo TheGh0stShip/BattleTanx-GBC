@@ -81,4 +81,19 @@ DEF hSceneLcdStepLimit               EQU $FFAF ; 1 byte(s)
 DEF hSceneRowTileVramAddress         EQU $FFB3 ; 2 byte(s)
 DEF hSceneTileSlot                   EQU $FFB5 ; 1 byte(s)
 DEF hSceneRowHdmaPending             EQU $FFB6 ; 1 byte(s)
+; added in the final banks $01/$03 pass (bank-local roles; see docs/research/banks_01_05/MEMORY_SYMBOLS.md)
+DEF wVramDmaStagingBuffer            EQU $C400 ; $140; HDMA source for HUD rows and scene row tiles
+DEF wBgCopyColumnsLeft               EQU $C94C ; 1
+DEF wBgCopyRowsLeft                  EQU $C94D ; 1
+DEF wBgRevealCounter                 EQU $C94E ; 1; step counter/row-column index for scroll, fill and rejection draws
+DEF wRecordedPathWriteIndex          EQU $CD15 ; 1; 0-63
+DEF wRecordedPathWrapCount           EQU $CD16 ; 1; written only
+DEF wRecordedPathStarted             EQU $CD17 ; 1
+DEF wRecordedPath                    EQU $CDEF ; $200; 64 x 8: X word, Y word, heading, 3 unused
+DEF hScenePaletteBuildIndex          EQU $FFA8 ; 1
+DEF hSceneRasterFxEnabled            EQU $FFAC ; 1
+DEF hSceneWaitCountdown              EQU $FFAD ; 1
+DEF hScenePaletteFadeOffset          EQU $FFAE ; 1
+DEF hScoreDigitsStarted              EQU $FFB8 ; 1
+DEF hPasswordLevelNumber             EQU $FFC6 ; 1
 ENDC

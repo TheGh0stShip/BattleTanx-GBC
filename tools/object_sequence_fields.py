@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+"""Field-level invariants of the bank $03 object sequence records.
+
+tools/object_sequences.py checks the layout (pointer tables, counts, packing).
+This checks what the readers in bank $03 depend on, and pins the known
+exceptions so a data change cannot slip past silently:
+
+  SEQ03  2..6 records per sequence (the initialiser reads record 1 as the first
+         target); 203 sequences, 626 records
+  SEQ04  heading byte +0 < 16 (copied unmasked into object +$2F; rotation compares
+         against a value masked with $0F)
+  SEQ05  end action +5 in {0, 2, 5}
+  SEQ06  record 0 never has action 2; every last record has action 2 except
+         TERMINAL_EXCEPTIONS, whose forward target read runs past the sequence
+  SEQ07  records after an earlier action-2 record are unreachable; exactly
+         UNREACHABLE
+  SEQ08  +7 == +6 (no reader of +7)
+  SEQ09  +1/+2 (no reader) is the little-endian pixel distance 8*(|dX|+|dY|) to
+         the next waypoint, except DISTANCE_EXCEPTIONS
+  SEQ10  consecutive waypoints differ in one axis and +0 points along it
+         (0 -Y, 4 +X, 8 +Y, 12 -X), except HEADING_EXCEPTIONS
+  SEQ11  waypoint tiles X <= $99, Y <= $74
+Usage: object_sequence_fields.py
+"""
+from __future__ import annotations
+
+import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import object_sequences as S  # noqa: E402
+
+SEQUENCES, RECORDS = 203, 626
+TERMINAL_EXCEPTIONS = {(3, 6): 5, (6, 15): 0}
+UNREACHABLE = {(6, 11, 2), (6, 12, 2), (6, 14, 2), (8, 2, 2)}
+DISTANCE_EXCEPTIONS = {(3, 2, 2): (9, 8)}
+HEADING_EXCEPTIONS = {(3, 2, 2): 0x0B, (3, 11, 0): 0x05}
+AXIS = {0: (0, -1), 4: (1, 0), 8: (0, 1), 12: (-1, 0)}
+
+
+class FieldError(ValueError):
+    pass
+
+
+def check(cond, msg):
+    if not cond:
+        raise FieldError(msg)
+
+
+def sign(v):
+    return (v > 0) - (v < 0)
+
+
+def validate(rom: bytes) -> tuple[int, int]:
+    try:
+        levels = S.parse(rom)
+    except S.SequenceError as exc:
+        raise FieldError(f"layout: {exc}") from exc
+    seqs = [(lv["level"], s["slot"], s["points"]) for lv in levels for s in lv["sequences"]]
+    check(len(seqs) == SEQUENCES and sum(len(p) for *_, p in seqs) == RECORDS,
+          f"SEQ03: {len(seqs)} sequences / {sum(len(p) for *_, p in seqs)} records")
+    unreachable = set()
+    for lv, slot, pts in seqs:
+        where = f"level {lv} slot {slot}"
+        check(2 <= len(pts) <= 6, f"SEQ03: {where} has {len(pts)} records")
+        for i, p in enumerate(pts):
+            check(p[0] < 16, f"SEQ04: {where} record {i} heading ${p[0]:02X}")
+            check(p[5] in (0, 2, 5), f"SEQ05: {where} record {i} action {p[5]}")
+            check(p[7] == p[6], f"SEQ08: {where} record {i} +7 differs from +6")
+            check(p[3] <= 0x99 and p[4] <= 0x74, f"SEQ11: {where} record {i} tile out of range")
+            if any(q[5] == 2 for q in pts[:i]):
+                unreachable.add((lv, slot, i))
+        check(pts[0][5] != 2, f"SEQ06: {where} record 0 has action 2")
+        last = pts[-1][5]
+        if (lv, slot) in TERMINAL_EXCEPTIONS:
+            check(last == TERMINAL_EXCEPTIONS[(lv, slot)], f"SEQ06: {where} terminal exception list is stale")
+        else:
+            check(last == 2, f"SEQ06: {where} terminal action not 2")
+        for i in range(len(pts) - 1):
+            a, b = pts[i], pts[i + 1]
+            dx, dy = b[3] - a[3], b[4] - a[4]
+            stored, want = a[1] | a[2] << 8, 8 * (abs(dx) + abs(dy))
+            key = (lv, slot, i)
+            if key in DISTANCE_EXCEPTIONS:
+                check((stored, want) == DISTANCE_EXCEPTIONS[key], f"SEQ09: {where} record {i} distance exception is stale")
+            else:
+                check(stored == want, f"SEQ09: {where} record {i} distance {stored} != {want}")
+            on_axis = (dx == 0) != (dy == 0) and AXIS.get(a[0]) == (sign(dx), sign(dy))
+            if key in HEADING_EXCEPTIONS:
+                check(a[0] == HEADING_EXCEPTIONS[key] and not on_axis, f"SEQ10: {where} record {i} heading exception is stale")
+            else:
+                check(on_axis, f"SEQ10: {where} record {i} heading ${a[0]:02X} does not point at the next waypoint")
+    check(unreachable == UNREACHABLE, f"SEQ07: unreachable records {sorted(unreachable ^ UNREACHABLE)} differ from the list")
+    return len(seqs), sum(len(p) for *_, p in seqs)
+
+
+def negative_tests(rom: bytes) -> int:
+    levels = S.parse(rom)
+    first = {(lv["level"], s["slot"]): s["address"] for lv in levels for s in lv["sequences"]}
+
+    def rec(lv, slot, i, field):
+        return S.offset(first[(lv, slot)] + 1 + 8 * i + field)
+
+    base = levels[0]["sequences"][0]
+    n0 = len(base["points"])
+    cases = [
+        ("heading", {rec(0, base["slot"], 0, 0): 0x10}, "SEQ04"),
+        ("action", {rec(0, base["slot"], 0, 5): 3}, "layout"),  # also outside the layout parser's observed set
+        ("terminal", {rec(0, base["slot"], n0 - 1, 5): 0}, "SEQ06: level 0"),
+        ("terminal list", {rec(3, 6, len(next(s for lv in levels for s in lv["sequences"] if lv["level"] == 3 and s["slot"] == 6)["points"]) - 1, 5): 2}, "terminal exception list is stale"),
+        ("unreachable", {rec(0, base["slot"], 1, 5): 2}, "SEQ07"),
+        ("field 7", {rec(0, base["slot"], 0, 7): rom[rec(0, base["slot"], 0, 7)] ^ 1}, "SEQ08"),
+        ("distance", {rec(0, base["slot"], 0, 1): (rom[rec(0, base["slot"], 0, 1)] + 8) & 0xFF}, "SEQ09"),
+        ("distance list", {rec(3, 2, 2, 1): 8}, "distance exception is stale"),
+        ("heading axis", {rec(0, base["slot"], 0, 0): (rom[rec(0, base["slot"], 0, 0)] + 4) & 0x0F}, "SEQ10"),
+        ("tile range", {rec(0, base["slot"], n0 - 1, 3): 0xFF}, "SEQ11"),
+    ]
+    n = 0
+    for name, changes, expect in cases:
+        data = bytearray(rom)
+        for o, v in changes.items():
+            data[o] = v
+        try:
+            validate(bytes(data))
+        except FieldError as exc:
+            check(expect in str(exc), f"negative test {name} rejected for the wrong reason: {exc}")
+            n += 1
+        else:
+            raise FieldError(f"negative test not rejected: {name}")
+    return n
+
+
+def main():
+    root = pathlib.Path(__file__).resolve().parent.parent
+    rom = (root / "baserom.gbc").read_bytes()
+    seqs, recs = validate(rom)
+    neg = negative_tests(rom)
+    print(f"object sequence fields: {seqs} sequences, {recs} records, "
+          f"{len(TERMINAL_EXCEPTIONS) + len(UNREACHABLE) + len(DISTANCE_EXCEPTIONS) + len(HEADING_EXCEPTIONS)} pinned exceptions; "
+          f"{neg} negative tests rejected")
+
+
+if __name__ == "__main__":
+    main()

@@ -225,7 +225,7 @@ Jump_03_5CED:
 	jp ObjectSequenceUpdateExit
 
 Jump_03_5D1A:
-	call Func_03_6429
+	call CheckObjectAuxRegionTriggers
 	ld a, e
 	and $C0
 	add a, $2D
@@ -259,7 +259,7 @@ Jump_03_5D1A:
 	and a
 	jr z, Jump_03_5D65
 Jump_03_5D4F:
-	call Func_03_60AF
+	call CheckObjectNearPlayerBox
 	jr Jump_03_5D65
 
 Jump_03_5D54:
@@ -955,9 +955,10 @@ Jump_03_60AC:
 	ret
 
 
-Func_03_60AF:
+CheckObjectNearPlayerBox:
+Func_03_60AF: ; legacy alias (automatic entry label)
 	push de
-	ld bc, Func_03_611C
+	ld bc, AimObjectAtPlayerFromProximity
 	push bc
 	ld l, e
 	ld h, d
@@ -968,15 +969,15 @@ Func_03_60AF:
 	ld a, [hl]
 	ld b, $55
 	cp $00
-	jr z, Jump_03_60D1
+	jr z, CheckObjectNearPlayerBox_StoreThreshold
 	ld b, $55
 	cp $02
-	jr z, Jump_03_60D1
+	jr z, CheckObjectNearPlayerBox_StoreThreshold
 	ld b, $55
 	cp $01
-	jr z, Jump_03_60D1
+	jr z, CheckObjectNearPlayerBox_StoreThreshold
 	ld b, $55
-Jump_03_60D1:
+CheckObjectNearPlayerBox_StoreThreshold:
 	ld a, b
 	ld [$CD26], a
 	ld a, l
@@ -1031,18 +1032,19 @@ Jump_03_60D1:
 	ld h, a
 	jp Jump_03_6065
 
-Func_03_611C:
+AimObjectAtPlayerFromProximity:
+Func_03_611C: ; legacy alias (automatic entry label)
 	pop de
 	ld a, l
 	and a
-	jr nz, Jump_03_614E
+	jr nz, AimObjectAtPlayer_SetLatch
 	ld a, e
 	and $C0
 	add a, $3B
 	ld e, a
 	ld a, [de]
 	bit 7, a
-	jr nz, Jump_03_615D
+	jr nz, AimObjectAtPlayer_ComputeDirection
 	ld a, e
 	and $C0
 	add a, $38
@@ -1069,7 +1071,7 @@ Func_03_611C:
 	ld [de], a
 	ret
 
-Jump_03_614E:
+AimObjectAtPlayer_SetLatch:
 	ld a, [$CD26]
 	cp $55
 	ld a, e
@@ -1079,7 +1081,7 @@ Jump_03_614E:
 	ld a, [de]
 	or $80
 	ld [de], a
-Jump_03_615D:
+AimObjectAtPlayer_ComputeDirection:
 	ld a, [wPlayerObject]
 	ld l, a
 	ld a, [wPlayerObject + 1]
@@ -1125,9 +1127,9 @@ Jump_03_615D:
 	ld e, a
 	ld a, [de]
 	sub b
-	jr nc, Jump_03_61A5
+	jr nc, AimObjectAtPlayer_StoreTurnSign
 	ld c, $01
-Jump_03_61A5:
+AimObjectAtPlayer_StoreTurnSign:
 	ld a, e
 	and $C0
 	add a, $32
@@ -1148,12 +1150,12 @@ Jump_03_61A5:
 	ld e, a
 	ld a, [de]
 	and $F0
-	jr z, Jump_03_61C5
+	jr z, AimObjectAtPlayer_CheckFacing
 	ld a, c
 	ld [de], a
 	ret
 
-Jump_03_61C5:
+AimObjectAtPlayer_CheckFacing:
 	ld a, e
 	and $C0
 	add a, $2F
@@ -1191,10 +1193,11 @@ Jump_03_61C5:
 	jp Jump_03_62E5
 
 
-Func_03_61FC:
+UnusedStartRecordedPathFollow:
+Func_03_61FC: ; legacy alias (automatic entry label)
 	ld l, e
 	ld h, d
-	ld a, [$CD15]
+	ld a, [wRecordedPathWriteIndex]
 	and a
 	jp z, Jump_03_62A5
 	ld a, l
@@ -1208,8 +1211,8 @@ Func_03_61FC:
 	ld [hl], a
 	ld [$CD29], a
 	xor a
-	ld [$CD17], a
-	call Func_03_6575
+	ld [wRecordedPathStarted], a
+	call AppendRecordedPathWaypoint
 	xor a
 	ld [$CD29], a
 	push bc
@@ -1267,7 +1270,7 @@ Func_03_61FC:
 	and $C0
 	add a, $2E
 	ld l, a
-	ld a, [$CD15]
+	ld a, [wRecordedPathWriteIndex]
 	ld [hl], a
 	pop hl
 	push hl
@@ -1281,7 +1284,7 @@ Func_03_61FC:
 	add hl, hl
 	add hl, hl
 	add hl, hl
-	ld de, $CDEF
+	ld de, wRecordedPath
 	add hl, de
 	ld c, [hl]
 	inc hl
@@ -1339,7 +1342,7 @@ Jump_03_62A8:
 	ld l, a
 	ld e, [hl]
 	pop hl
-	call Func_03_62E7
+	call SetObjectVelocityTowardPoint
 	pop de
 	ld a, e
 	and $C0
@@ -1361,21 +1364,22 @@ Jump_03_62E5:
 	ret
 
 
-Func_03_62E7:
+SetObjectVelocityTowardPoint:
+Func_03_62E7: ; legacy alias (automatic entry label)
 	push bc
 	push de
 	push hl
 	ld a, b
 	sub d
-	jr nc, Jump_03_62EF
+	jr nc, SetVelTowardPoint_AbsDx
 	cpl
-Jump_03_62EF:
+SetVelTowardPoint_AbsDx:
 	ld b, a
 	ld a, c
 	sub e
-	jr nc, Jump_03_62F5
+	jr nc, SetVelTowardPoint_AbsDy
 	cpl
-Jump_03_62F5:
+SetVelTowardPoint_AbsDy:
 	ld c, a
 	push bc
 	add a, b
@@ -1386,7 +1390,7 @@ Jump_03_62F5:
 	jr z, Jump_03_6312
 	ld h, b
 	ld l, $00
-Jump_03_6304:
+SetVelTowardPoint_DivXLoop:
 	ld a, l
 	sub c
 	ld l, a
@@ -1397,7 +1401,7 @@ Jump_03_6304:
 	jr c, Jump_03_6312
 Jump_03_630F:
 	inc de
-	jr Jump_03_6304
+	jr SetVelTowardPoint_DivXLoop
 
 Jump_03_6312:
 	pop bc
@@ -1411,7 +1415,7 @@ Jump_03_6312:
 	jr z, Jump_03_6330
 	ld h, c
 	ld l, $00
-Jump_03_6322:
+SetVelTowardPoint_DivYLoop:
 	ld a, l
 	sub b
 	ld l, a
@@ -1422,24 +1426,24 @@ Jump_03_6322:
 	jr c, Jump_03_6330
 Jump_03_632D:
 	inc de
-	jr Jump_03_6322
+	jr SetVelTowardPoint_DivYLoop
 
 Jump_03_6330:
 	pop bc
 	ld a, $03
 	ld hl, $0000
-Jump_03_6336:
+SetVelTowardPoint_MulX3:
 	add hl, bc
 	dec a
-	jr nz, Jump_03_6336
+	jr nz, SetVelTowardPoint_MulX3
 	ld b, h
 	ld c, l
 	ld a, $03
 	ld hl, $0000
-Jump_03_6341:
+SetVelTowardPoint_MulY3:
 	add hl, de
 	dec a
-	jr nz, Jump_03_6341
+	jr nz, SetVelTowardPoint_MulY3
 	ld d, h
 	ld e, l
 	pop hl
@@ -1473,7 +1477,7 @@ Jump_03_6341:
 	pop bc
 	ld a, d
 	sub b
-	jr nc, Jump_03_637E
+	jr nc, SetVelTowardPoint_CheckY
 	ld a, l
 	and $C0
 	add a, $0D
@@ -1486,7 +1490,7 @@ Jump_03_6341:
 	ld [hli], a
 	ld a, $FF
 	ld [hl], a
-Jump_03_637E:
+SetVelTowardPoint_CheckY:
 	ld a, e
 	sub c
 	ret nc
@@ -1505,7 +1509,8 @@ Jump_03_637E:
 	ret
 
 
-Func_03_6391:
+UpdateLevelObjectAuxState:
+Func_03_6391: ; legacy alias (automatic entry label)
 	call UpdatePendingLevelObjectsFar
 	ld a, $01
 	ld [wLevelAuxType2AllReached], a
@@ -1516,7 +1521,7 @@ Func_03_6391:
 	ld e, a
 	ld a, [wPlayerObject + 1]
 	ld d, a
-	call Func_03_6429
+	call CheckObjectAuxRegionTriggers
 	ld e, $01
 	ld a, [wLevelAuxTimerDivider]
 	inc a
@@ -1538,12 +1543,12 @@ Jump_03_63BF:
 	inc hl
 	inc hl
 	ld a, LEVEL_OBJECT_AUX_COUNT
-Jump_03_63CA:
+UpdateAuxState_Loop:
 	push af
 	push hl
 	ld a, [hli]
 	and a
-	jr z, Jump_03_641F
+	jr z, UpdateAuxState_Next
 	cp $01
 	jr z, Jump_03_63FF
 	cp $02
@@ -1552,26 +1557,26 @@ Jump_03_63CA:
 	jr z, Jump_03_6413
 	cp $04
 	jr z, Jump_03_63E2
-	jr Jump_03_641F
+	jr UpdateAuxState_Next
 
 Jump_03_63E2:
 	ld a, $01
 	ld [wLevelAuxType4Active], a
 	ld a, [wActiveFlag26ObjectCount]
 	and a
-	jr nz, Jump_03_641F
+	jr nz, UpdateAuxState_Next
 	ld [wLevelAuxType4Active], a
-	jr Jump_03_641F
+	jr UpdateAuxState_Next
 
 Jump_03_63F2:
 	inc hl
 	inc hl
 	ld a, [hli]
 	cp $02
-	jr z, Jump_03_641F
+	jr z, UpdateAuxState_Next
 	xor a
 	ld [wLevelAuxType2AllReached], a
-	jr Jump_03_641F
+	jr UpdateAuxState_Next
 
 Jump_03_63FF:
 	ld a, [hli]
@@ -1582,38 +1587,39 @@ Jump_03_63FF:
 	jr z, Jump_03_640A
 	add a, e
 	ld [hl], a
-	jr Jump_03_641F
+	jr UpdateAuxState_Next
 
 Jump_03_640A:
 	ld a, [wLevelAuxTimerExpiredCount]
 	inc a
 	ld [wLevelAuxTimerExpiredCount], a
-	jr Jump_03_641F
+	jr UpdateAuxState_Next
 
 Jump_03_6413:
 	inc hl
 	inc hl
 	ld a, [hli]
 	cp $01
-	jr z, Jump_03_641F
+	jr z, UpdateAuxState_Next
 	ld a, $01
 	ld [wLevelAuxType3Pending], a
-Jump_03_641F:
+UpdateAuxState_Next:
 	pop hl
 	ld bc, LEVEL_OBJECT_AUX_STATE_SIZE
 	add hl, bc
 	pop af
 	dec a
-	jr nz, Jump_03_63CA
+	jr nz, UpdateAuxState_Loop
 	ret
 
 
-Func_03_6429:
+CheckObjectAuxRegionTriggers:
+Func_03_6429: ; legacy alias (automatic entry label)
 	push de
 	ld hl, wLevelObjectAuxState
 	ld bc, LEVEL_OBJECT_AUX_STATE_SIZE
 	ld a, LEVEL_OBJECT_AUX_COUNT
-Jump_03_6432:
+CheckAuxRegion_Loop:
 	push af
 	push bc
 	push hl
@@ -1621,7 +1627,7 @@ Jump_03_6432:
 	add hl, bc
 	ld a, [hl]
 	and a
-	jp z, Jump_03_6552
+	jp z, CheckAuxRegion_Next
 	pop hl
 	push hl
 	ld a, e
@@ -1643,7 +1649,7 @@ Jump_03_6432:
 	ld a, [hli]
 	ld [$CD30], a
 	ld d, a
-	call Func_03_655C
+	call SubWordAbs
 	push af
 	inc hl
 	inc hl
@@ -1662,7 +1668,7 @@ Jump_03_6432:
 	jr c, Jump_03_6484
 Jump_03_6473:
 	pop de
-	jp Jump_03_6552
+	jp CheckAuxRegion_Next
 
 Jump_03_6477:
 	ld a, d
@@ -1672,7 +1678,7 @@ Jump_03_6477:
 	cp $0C
 	jr c, Jump_03_6484
 	pop de
-	jp Jump_03_6552
+	jp CheckAuxRegion_Next
 
 Jump_03_6484:
 	pop de
@@ -1699,7 +1705,7 @@ Jump_03_6484:
 	ld a, [hli]
 	ld [$CD32], a
 	ld d, a
-	call Func_03_655C
+	call SubWordAbs
 	push af
 	inc hl
 	ld a, [hli]
@@ -1715,7 +1721,7 @@ Jump_03_6484:
 	jr c, Jump_03_64CA
 Jump_03_64B9:
 	pop de
-	jp Jump_03_6552
+	jp CheckAuxRegion_Next
 
 Jump_03_64BD:
 	ld a, d
@@ -1725,7 +1731,7 @@ Jump_03_64BD:
 	cp $0C
 	jr c, Jump_03_64CA
 	pop de
-	jp Jump_03_6552
+	jp CheckAuxRegion_Next
 
 Jump_03_64CA:
 	pop de
@@ -1739,7 +1745,7 @@ Jump_03_64CA:
 	jr z, Jump_03_64FE
 	cp $05
 	jr z, Jump_03_6517
-	jp Jump_03_6552
+	jp CheckAuxRegion_Next
 
 Jump_03_64E1:
 	ld a, e
@@ -1748,19 +1754,19 @@ Jump_03_64E1:
 	ld e, a
 	ld a, [de]
 	and a
-	jp nz, Jump_03_6552
+	jp nz, CheckAuxRegion_Next
 	ld a, [$C91D]
 	and a
-	jr z, Jump_03_6552
+	jr z, CheckAuxRegion_Next
 	inc hl
 	ld a, [hl]
 	cp $01
-	jr nz, Jump_03_6552
+	jr nz, CheckAuxRegion_Next
 	inc a
 	ld [hl], a
 	ld l, e
 	ld h, d
-	jr Jump_03_654D
+	jr CheckAuxRegion_Triggered
 
 Jump_03_64FE:
 	ld a, e
@@ -1769,17 +1775,17 @@ Jump_03_64FE:
 	ld e, a
 	ld a, [de]
 	and a
-	jr nz, Jump_03_6552
+	jr nz, CheckAuxRegion_Next
 	inc hl
 	ld a, [hl]
 	cp $01
-	jr z, Jump_03_6552
+	jr z, CheckAuxRegion_Next
 	inc a
 	ld [hl], a
 	call Func_0A48
 	ld l, e
 	ld h, d
-	jr Jump_03_654D
+	jr CheckAuxRegion_Triggered
 
 Jump_03_6517:
 	ld a, e
@@ -1788,10 +1794,10 @@ Jump_03_6517:
 	ld e, a
 	ld a, [de]
 	and a
-	jr nz, Jump_03_6552
+	jr nz, CheckAuxRegion_Next
 	ld a, [hl]
 	and a
-	jr nz, Jump_03_6552
+	jr nz, CheckAuxRegion_Next
 	inc a
 	ld [hl], a
 	dec hl
@@ -1812,7 +1818,7 @@ Jump_03_6517:
 	ld [hl], a
 	ld l, e
 	ld h, d
-	jr Jump_03_654D
+	jr CheckAuxRegion_Triggered
 
 Jump_03_6541:
 	ld a, e
@@ -1821,28 +1827,29 @@ Jump_03_6541:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_6552
+	jr z, CheckAuxRegion_Next
 	xor a
 	ld [hl], a
-Jump_03_654D:
+CheckAuxRegion_Triggered:
 	pop hl
 	pop bc
 	pop af
 	pop de
 	ret
 
-Jump_03_6552:
+CheckAuxRegion_Next:
 	pop hl
 	pop bc
 	add hl, bc
 	pop af
 	dec a
-	jp nz, Jump_03_6432
+	jp nz, CheckAuxRegion_Loop
 	pop de
 	ret
 
 
-Func_03_655C:
+SubWordAbs:
+Func_03_655C: ; legacy alias (automatic entry label)
 	ld a, c
 	sub e
 	ld e, a
@@ -1850,7 +1857,7 @@ Func_03_655C:
 	sbc a, d
 	ld d, a
 	and $80
-	jr z, Jump_03_6573
+	jr z, SubWordAbs_NonNegative
 	ld a, e
 	cpl
 	add a, $01
@@ -1862,22 +1869,23 @@ Func_03_655C:
 	ld a, $01
 	ret
 
-Jump_03_6573:
+SubWordAbs_NonNegative:
 	xor a
 	ret
 
 
-Func_03_6575:
+AppendRecordedPathWaypoint:
+Func_03_6575: ; legacy alias (automatic entry label)
 	ld a, [wPlayerAlive]
 	and a
 	ret z
-	ld a, [$CD15]
+	ld a, [wRecordedPathWriteIndex]
 	ld h, $00
 	ld l, a
 	add hl, hl
 	add hl, hl
 	add hl, hl
-	ld bc, $CDEF
+	ld bc, wRecordedPath
 	add hl, bc
 	ld a, e
 	and $C0
@@ -1893,13 +1901,13 @@ Func_03_6575:
 	push hl
 	ld a, [$CD29]
 	and a
-	jr nz, Jump_03_65C2
+	jr nz, AppendRecordedPathWaypoint_LoadSecondWord
 	ld a, [hli]
 	cp c
-	jr nz, Jump_03_65C2
+	jr nz, AppendRecordedPathWaypoint_LoadSecondWord
 	ld a, [hli]
 	cp b
-	jr nz, Jump_03_65C2
+	jr nz, AppendRecordedPathWaypoint_LoadSecondWord
 	ld a, e
 	and $C0
 	add a, $16
@@ -1926,7 +1934,7 @@ Func_03_6575:
 	pop bc
 	ret
 
-Jump_03_65C2:
+AppendRecordedPathWaypoint_LoadSecondWord:
 	ld a, e
 	and $C0
 	add a, $16
@@ -1943,11 +1951,11 @@ Jump_03_65CE:
 	inc hl
 	inc hl
 	inc hl
-	ld a, [$CD17]
+	ld a, [wRecordedPathStarted]
 	and a
-	jr nz, Jump_03_65EF
+	jr nz, AppendRecordedPathWaypoint_Primed
 	inc a
-	ld [$CD17], a
+	ld [wRecordedPathStarted], a
 	ld a, e
 	and $C0
 	add a, $19
@@ -1965,7 +1973,7 @@ Jump_03_65CE:
 	ld [hl], c
 	ret
 
-Jump_03_65EF:
+AppendRecordedPathWaypoint_Primed:
 	ld a, e
 	and $C0
 	add a, $19
@@ -1991,15 +1999,15 @@ Jump_03_65FB:
 	ld [hl], b
 	dec hl
 	ld [hl], c
-	ld a, [$CD15]
+	ld a, [wRecordedPathWriteIndex]
 	inc a
 	and $3F
-	ld [$CD15], a
+	ld [wRecordedPathWriteIndex], a
 	ret nz
-	ld a, [$CD16]
+	ld a, [wRecordedPathWrapCount]
 	inc a
 	and $3F
-	ld [$CD16], a
+	ld [wRecordedPathWrapCount], a
 	ret
 
 Jump_03_661F:
@@ -2085,7 +2093,7 @@ Jump_03_6685:
 	push de
 	ld l, e
 	ld h, d
-	ld bc, Func_03_66BB
+	ld bc, SnapAndAdvanceRecordedPathWaypoint
 	push bc
 	ld a, l
 	and $C0
@@ -2124,13 +2132,14 @@ Jump_03_6685:
 	ld h, $04
 	jp Jump_03_6065
 
-Func_03_66BB:
+SnapAndAdvanceRecordedPathWaypoint:
+Func_03_66BB: ; legacy alias (automatic entry label)
 	pop de
 	ld a, l
 	and a
-	jr z, Jump_03_66FE
+	jr z, PathSnap_NotArrived
 	and $01
-	jr z, Jump_03_66DB
+	jr z, PathSnap_CheckYAxis
 	ld a, e
 	and $C0
 	add a, $34
@@ -2150,10 +2159,10 @@ Func_03_66BB:
 	inc de
 	ld a, b
 	ld [de], a
-Jump_03_66DB:
+PathSnap_CheckYAxis:
 	ld a, l
 	and $02
-	jr z, Jump_03_66FE
+	jr z, PathSnap_NotArrived
 	ld a, e
 	and $C0
 	add a, $36
@@ -2175,10 +2184,10 @@ Jump_03_66DB:
 	ld [de], a
 	ld a, l
 	cp $03
-	jr nz, Jump_03_66FE
-	jr Jump_03_6711
+	jr nz, PathSnap_NotArrived
+	jr PathSnap_AdvanceIndex
 
-Jump_03_66FE:
+PathSnap_NotArrived:
 	ld a, e
 	and $C0
 	add a, $39
@@ -2193,7 +2202,7 @@ Jump_03_66FE:
 	ld [de], a
 	jp Jump_03_67BA
 
-Jump_03_6711:
+PathSnap_AdvanceIndex:
 	ld a, e
 	and $C0
 	add a, $2E
@@ -2230,7 +2239,7 @@ Jump_03_6734:
 	ld a, b
 	and $3F
 	ld c, a
-	ld a, [$CD15]
+	ld a, [wRecordedPathWriteIndex]
 	cp c
 	jr nz, Jump_03_6747
 	jr Jump_03_674B
@@ -2256,7 +2265,7 @@ Jump_03_674B:
 	add hl, hl
 	add hl, hl
 	add hl, hl
-	ld bc, $CDEF
+	ld bc, wRecordedPath
 	add hl, bc
 	inc hl
 	inc hl
@@ -2270,7 +2279,7 @@ Jump_03_674B:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_6785
+	jr z, PathSnap_SetDesiredHeading
 	push hl
 	dec hl
 	dec hl
@@ -2286,7 +2295,7 @@ Jump_03_674B:
 	and $0F
 	ld b, a
 	pop hl
-Jump_03_6785:
+PathSnap_SetDesiredHeading:
 	ld a, e
 	and $C0
 	add a, $2F
@@ -2327,7 +2336,7 @@ Jump_03_679B:
 	dec hl
 	pop hl
 Jump_03_67B7:
-	call Func_03_67BF
+	call LoadAdjacentPathWaypointTarget
 Jump_03_67BA:
 	pop hl
 	pop de
@@ -2336,7 +2345,8 @@ Jump_03_67BA:
 	ret
 
 
-Func_03_67BF:
+LoadAdjacentPathWaypointTarget:
+Func_03_67BF: ; legacy alias (automatic entry label)
 	push de
 	push hl
 	push de
@@ -2346,7 +2356,7 @@ Func_03_67BF:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_67D6
+	jr z, PathTarget_Forward
 	dec hl
 	dec hl
 	dec hl
@@ -2357,7 +2367,7 @@ Func_03_67BF:
 	dec hl
 	jr Jump_03_67DA
 
-Jump_03_67D6:
+PathTarget_Forward:
 	ld bc, $0008
 	add hl, bc
 Jump_03_67DA:

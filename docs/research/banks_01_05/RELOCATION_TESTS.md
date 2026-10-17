@@ -40,6 +40,9 @@
 | RAM-code source image (bank `$01`) | fail-safe | pin at `$6609` |
 | data block read by raw ROM0 address | fail-safe | pin |
 | alignment-sensitive HDMA source | fail-safe | 16-byte alignment assert |
+| final pass: `ScrollSceneInFromLeft` (bank `$01`) | relocate | 20 labels, 6 words |
+| final pass: `ClearPasswordEntryChars` (bank `$01`) | fail-safe | pin at `$6609` |
+| final pass: `AppendRecordedPathWaypoint` (bank `$03`) | relocate | 72 labels, 44 words |
 
 - **Engine change**: labels at `$7FFF` (bank markers) are now excluded from
   the moved set, because computed fills absorb the padding.

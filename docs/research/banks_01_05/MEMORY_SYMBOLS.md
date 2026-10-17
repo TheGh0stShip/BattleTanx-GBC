@@ -4,7 +4,7 @@
 Raw operands replaced: 455.
 
 Rejected:
-- `$C400`: used as HUD map buffers in bank `$00` and as scene staging in bank `$01`.
+- `$C400` (main pass): used as HUD map buffers in bank `$00` and as scene staging in bank `$01`. Accepted in the final pass as `wVramDmaStagingBuffer`. In both banks the buffer is filled and then sent by HDMA (bank `$00` writes `$C4` as the HDMA source high byte), so one staging name fits; see below.
 - `$D000`: already `wObjectPool`.
 - HRAM `$FF80-$FF8D`, `$FF97`, `$FFB0-$FFB1`: shared scratch.
 - `$CD23`/`$CD24`: different meanings in banks `$03` and `$04`.
@@ -90,3 +90,29 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$FFB3` | `hSceneRowTileVramAddress` | 2 | Only Func_01_64F1 and Func_01_6580 (scene row upload) use it. Flagged as HRAM: no reuse found, but nearby bytes are scratch. |
 | `$FFB5` | `hSceneTileSlot` | 1 | Only bank_01 scene code uses it. Flagged as HRAM: no reuse found. |
 | `$FFB6` | `hSceneRowHdmaPending` | 1 | Only bank_01 scene code and its VBlank RAM code use it. |
+
+## Final bank $01/$03 pass (14 symbols, 85 raw operands)
+
+| Symbol | Address | Evidence |
+| --- | --- | --- |
+| `wVramDmaStagingBuffer` | `$C400` (`$140`) | HDMA source for the HUD rows and scene row tiles; `$C440` stays raw as +`$40` |
+| `wBgCopyColumnsLeft` / `wBgCopyRowsLeft` | `$C94C` / `$C94D` | down-counters in the bank-`$01` background copy loops |
+| `wBgRevealCounter` | `$C94E` | step and row/column counter for the four scene scroll routines and `ShowPasswordRejection` |
+| `wRecordedPathWriteIndex` | `$CD15` | ring index 0-63, copied to object `+$2E` |
+| `wRecordedPathWrapCount` | `$CD16` | incremented on wrap; never read |
+| `wRecordedPathStarted` | `$CD17` | 0: the next append reuses the current index |
+| `wRecordedPath` | `$CDEF` (`$200`) | 64 x 8 ring of X word, Y word, heading |
+| `hScenePaletteBuildIndex` | `$FFA8` | bank `$01` only |
+| `hSceneRasterFxEnabled` | `$FFAC` | gates the scene STAT step |
+| `hSceneWaitCountdown` | `$FFAD` | bank `$01` only |
+| `hScenePaletteFadeOffset` | `$FFAE` | bank `$01` only |
+| `hScoreDigitsStarted` | `$FFB8` | leading-zero suppression while drawing the score |
+| `hPasswordLevelNumber` | `$FFC6` | bank `$01` only |
+
+**Rejected**, with reasons:
+- HRAM reused by other banks (`$FF80-$FF8E`, `$FF96-$FFA7`, `$FFB0-$FFB2`);
+- written but never read (`$FFAB`, `$CD2B-$CD32`, `$D561-$D565`);
+- a role that differs by routine (`$C94B`);
+- an unclear role (`$CD26`, `$CD29`);
+- no writer found (`$C6ED`/`$C6EE`);
+- a time-shared or bank-dependent region (`$DBFB-$DC40`, `$D7FF`).

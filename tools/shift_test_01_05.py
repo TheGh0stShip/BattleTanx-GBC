@@ -42,6 +42,12 @@ CASES = [
      "ROM0 ld hl, $418F; pinned"),
     ("alignment-sensitive HDMA source", "src/bank_30.asm", "FixedScene07Tiles", "fail-safe", 0,
      "8-byte move breaks the 16-byte HDMA alignment ASSERT", 8),
+    ("final pass: named bank $01 scroll routine", "src/bank_01.asm", "ScrollSceneInFromLeft", "relocate", 2,
+     "callers and the RAM-image call use the label"),
+    ("final pass: named bank $01 entry before the ROM0-pinned tables", "src/bank_01.asm", "ClearPasswordEntryChars", "fail-safe", 0,
+     "shifts LevelRowSceneFlags ($6609), raw in ROM0; pinned"),
+    ("final pass: named bank $03 recorded-path appender", "src/bank_03.asm", "AppendRecordedPathWaypoint", "relocate", 1,
+     "only caller uses the label"),
 ]
 
 

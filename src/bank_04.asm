@@ -14,9 +14,9 @@ InitializeLevelObjects:
 	ld a, $01
 	ld [wLevelAuxType4Active], a
 	xor a
-	ld [$CD15], a
-	ld [$CD16], a
-	ld [$CD17], a
+	ld [wRecordedPathWriteIndex], a
+	ld [wRecordedPathWrapCount], a
+	ld [wRecordedPathStarted], a
 	ld [wLevelObjectRecordType], a
 	ld [wLevelObjectSequenceTable], a
 	ld [wLevelObjectSpawnTable], a
@@ -43,7 +43,7 @@ InitializeLevelObjects:
 	ld a, [hl]
 	ld [wLevelObjectAuxTable + 1], a
 	ld bc, $0200
-	ld hl, $CDEF
+	ld hl, wRecordedPath
 .fillObjectState:
 	ld a, $FF
 	ld [hli], a
@@ -61,9 +61,9 @@ InitializeLevelObjects:
 	or b
 	jr nz, .fillPendingQueue
 	xor a
-	ld [$CD17], a
-	ld [$CD15], a
-	ld [$CD16], a
+	ld [wRecordedPathStarted], a
+	ld [wRecordedPathWriteIndex], a
+	ld [wRecordedPathWrapCount], a
 	ld a, [wLevelObjectSpawnTable]
 	ld l, a
 	ld a, [wLevelObjectSpawnTable + 1]

@@ -28,10 +28,19 @@ address print before every statement in a scratch assembly.
 | Category | Bytes | Notes |
 | --- | ---: | --- |
 | Exact reconstruction | 81,920 | all five banks match |
-| Behaviour understood (code with evidence names, tables with traced readers, fill/marker) | most | 251 of 278 routine entries carry behaviour names |
+| Behaviour understood (code with evidence names, tables with traced readers, fill/marker) | most | all 278 routine entries carry behaviour names (FINAL_FUNCTIONS.md) |
 | Bounded, meaning unknown | 2,423 | `Bank02Unread481E` (1,332), bank `$05` copies of bank `$04` (1,029, no reader), unread gaps (`Bank01Unread77D6/785E/786C` 25, `Bank02Unread5E80` 9, two effect gaps 28) |
 | Unresolved control flow | 0 indirect sites | see INDIRECT_CONTROL_FLOW.md; open interrupt-bank question in UNRESOLVED.md |
 | Speculative visual interpretation | none used for naming | |
+
+## Final function pass
+
+- The last 27 automatic entries (17 in bank `$01`, 10 in bank `$03`) got companion
+  names; `make progress` reports 288/288.
+- 49 branch labels were renamed.
+- 14 more RAM symbols replace 85 raw operands.
+- New checks: the scene-interrupt bank-`$01` call set (`tools/banks_01_05.py`)
+  and the sequence field invariants (`tools/object_sequence_fields.py`).
 
 ## Source changes in this pass
 
