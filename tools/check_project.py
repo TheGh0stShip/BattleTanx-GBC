@@ -805,6 +805,21 @@ def check_audio() -> None:
     if music[0][0] != au.MUSIC_DATA:
         fail("audio: first music sequence does not follow the instrument table")
 
+    all_music_events = [event for start, _, _ in music
+                        for event in au.parse_music(rom, start)[0]]
+    instrument_uses = {
+        (event[1] >> 4, event[2])
+        for event in all_music_events if event[0] == "instrument"
+    }
+    if instrument_uses != {(2, 5)}:
+        fail(f"audio: explicit instrument uses changed: {sorted(instrument_uses)}")
+    channel4_notes = {
+        event[2] for event in all_music_events
+        if event[0] == "note" and event[1] >> 4 == 4
+    }
+    if channel4_notes != {0x0C, 0x0D, 0x0E, 0x10, 0x11, 0x13, 0x14}:
+        fail(f"audio: channel 4 note set changed: {sorted(channel4_notes)}")
+
     # Bank $07 has one malformed 8-byte patch slot, then duplicates bank $06
     # from sound-patch slot 1 through $4BFB (see AUDIO_RESEARCH.md).
     bank7 = rom[0x1C000:0x20000]
@@ -830,6 +845,19 @@ def check_audio() -> None:
     if re.search(r"^Jump_(?:2ED0|2EEC|2EF4|2F2F|2F48|2F6A|2F83):",
                  rom0_source, re.MULTILINE):
         fail("audio: an automatic ROM0 audio label returned")
+    audio_include = (ROOT / "include" / "audio.inc").read_text()
+    for name, value in {
+        "INSTRUMENT_CH1_DEFAULT": 0,
+        "INSTRUMENT_CH2_DEFAULT": 1,
+        "INSTRUMENT_CH3_DEFAULT": 2,
+        "INSTRUMENT_CH4_DEFAULT": 3,
+        "INSTRUMENT_CH2_ALTERNATE": 5,
+        "INSTRUMENT_NOISE_1": 8,
+        "INSTRUMENT_NOISE_2": 9,
+        "INSTRUMENT_NOISE_3": 10,
+    }.items():
+        if not re.search(rf"^DEF {name}\s+EQU {value}$", audio_include, re.MULTILINE):
+            fail(f"audio: {name} is not fixed at instrument {value}")
     bank7_asset = pathlib.Path("assets/bank_07/audio_build_residue.bin")
     entries = {
         pathlib.Path(path): (offset, size)

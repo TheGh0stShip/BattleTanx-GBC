@@ -61,9 +61,12 @@ adjacency and by parsing every sequence to its terminator.
 | `7FFF` | 1 | bank marker `$06` | `ROM_BANK_MARKER` |
 
 The instrument count (11) is bounded by `$4799`/`$479A` (the first music
-sequence) and is consistent with uses: defaults 0-3 (Audio_Init / music
-start write instruments 0-3 to channels 1-4), `music_instrument` uses 5,
-NoiseNoteTable uses 8-10. Instruments 4, 6 and 7 have no static reference.
+sequence) and is consistent with uses: music start assigns defaults 0-3 to
+channels 1-4, every explicit `music_instrument` event selects instrument 5
+for channel 2, and NoiseNoteTable selects 8-10 for channel 4. Every channel-4
+note in the ROM is in the NoiseNoteTable range, so default instrument 3 is
+assigned but never reaches the register-write path. Instruments 4, 6 and 7
+have no static reference. These facts are checked mechanically.
 
 ## 3. Code
 
@@ -203,7 +206,8 @@ loop. Each sequence is followed by `FE FF` (`$07`: `00 FF FF`), never read.
    build-time purpose is unknown: `SoundPatch00UnreadTail`, the four named
    table-padding ranges, music-pointer byte 3, and sequence trailers.
 4. Instruments 4, 6, 7 and music id `$89` (`Music_09`) have no static
-   reference. Dynamic id sources (ROM0 `$1042` uses `b` in {4, 5, `$1B`};
+   reference; channel 4's assigned default instrument 3 is always replaced
+   by NoiseNoteTable before use. Dynamic id sources (ROM0 `$1042` uses `b` in {4, 5, `$1B`};
    random `$81-$86`) were inspected; others may exist in untraced code.
 5. Track titles are not assigned. The frequency-table pitches are proven:
    index 0 is C2 and each following index advances one equal-tempered

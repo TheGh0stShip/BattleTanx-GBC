@@ -660,15 +660,15 @@ WaveformPattern:
 ; Music notes $0C-$14 on channel 4 use these pairs instead of the
 ; channel's instrument: +0 NR51 bit pattern, +1 instrument index.
 NoiseNoteTable:
-	db $11, 8 ; note $0C
-	db $11, 9 ; note $0D
-	db $11, 10 ; note $0E
-	db $10, 8 ; note $0F
-	db $10, 9 ; note $10
-	db $10, 10 ; note $11
-	db $01, 8 ; note $12
-	db $01, 9 ; note $13
-	db $01, 10 ; note $14
+	db $11, INSTRUMENT_NOISE_1 ; note $0C
+	db $11, INSTRUMENT_NOISE_2 ; note $0D
+	db $11, INSTRUMENT_NOISE_3 ; note $0E
+	db $10, INSTRUMENT_NOISE_1 ; note $0F
+	db $10, INSTRUMENT_NOISE_2 ; note $10
+	db $10, INSTRUMENT_NOISE_3 ; note $11
+	db $01, INSTRUMENT_NOISE_1 ; note $12
+	db $01, INSTRUMENT_NOISE_2 ; note $13
+	db $01, INSTRUMENT_NOISE_3 ; note $14
 
 ; First sound register of channels 1-4.
 ChannelRegisterBases:
@@ -706,23 +706,23 @@ MusicPointerTablePadding:
 ; defaults 0-3, NoiseNoteTable 8-10). +0..+2 are written to the channel's
 ; first three registers; +3 is ORed into the trigger register with bit 7.
 Instruments:
-	db $8E, $47, $70, $00 ; 0
-	db $47, $77, $00, $00 ; 1
-	db $80, $00, $20, $00 ; 2
-	db $00, $63, $40, $00 ; 3
-	db $8E, $07, $77, $00 ; 4
-	db $07, $77, $00, $00 ; 5
-	db $1F, $67, $26, $40 ; 6
-	db $00, $C1, $72, $00 ; 7
-	db $3A, $41, $99, $40 ; 8
-	db $3A, $41, $00, $40 ; 9
-	db $0D, $43, $5A, $40 ; 10
+	db $8E, $47, $70, $00 ; 0: channel 1 default: NR10, NR11, NR12, NR14
+	db $47, $77, $00, $00 ; 1: channel 2 default: NR21, NR22, NR23, NR24
+	db $80, $00, $20, $00 ; 2: channel 3 default: NR30, NR31, NR32, NR34
+	db $00, $63, $40, $00 ; 3: channel 4 default; every ROM note overrides it
+	db $8E, $07, $77, $00 ; 4: unreferenced
+	db $07, $77, $00, $00 ; 5: channel 2 alternate
+	db $1F, $67, $26, $40 ; 6: unreferenced
+	db $00, $C1, $72, $00 ; 7: unreferenced
+	db $3A, $41, $99, $40 ; 8: channel 4 noise instrument 1
+	db $3A, $41, $00, $40 ; 9: channel 4 noise instrument 2
+	db $0D, $43, $5A, $40 ; 10: channel 4 noise instrument 3
 
 Music_00:
 	music_stop $FF, $FF
 
 Music_01:
-	music_instrument 2, 5, 0
+	music_instrument 2, INSTRUMENT_CH2_ALTERNATE, 0
 	music_note 3, 16, 0
 	music_note 4, 12, 7
 	music_off 4, 2
@@ -1240,7 +1240,7 @@ Music_01:
 	db $FE, $FF ; not reached by Music_HandleEvent
 
 Music_02:
-	music_instrument 2, 5, 0
+	music_instrument 2, INSTRUMENT_CH2_ALTERNATE, 0
 	music_pan 2, $11, 0
 	music_note 2, 4, 0
 	music_note 4, 12, 6
@@ -5296,7 +5296,7 @@ Music_06:
 
 Music_07:
 	music_off 1, 15
-	music_instrument 2, 5, 0
+	music_instrument 2, INSTRUMENT_CH2_ALTERNATE, 0
 	music_pan 1, $11, 0
 	music_note 1, 39, 0
 	music_pan 2, $01, 0
@@ -5368,7 +5368,7 @@ Music_07:
 	db $00, $FF, $FF ; not reached by Music_HandleEvent
 
 Music_08:
-	music_instrument 2, 5, 0
+	music_instrument 2, INSTRUMENT_CH2_ALTERNATE, 0
 	music_pan 1, $11, 0
 	music_pan 2, $01, 0
 	music_note 2, 39, 0
@@ -6010,7 +6010,7 @@ Music_08:
 	db $FE, $FF ; not reached by Music_HandleEvent
 
 Music_09:
-	music_instrument 2, 5, 0
+	music_instrument 2, INSTRUMENT_CH2_ALTERNATE, 0
 	music_pan 2, $01, 0
 	music_note 2, 4, 0
 	music_pan 3, $10, 0

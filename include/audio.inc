@@ -3,6 +3,15 @@
 ; Music_HandleEvent ($06:$7D11); see AUDIO_RESEARCH.md. Command bytes whose
 ; other bits are not interpreted by the driver are kept as raw arguments.
 
+DEF INSTRUMENT_CH1_DEFAULT     EQU 0
+DEF INSTRUMENT_CH2_DEFAULT     EQU 1
+DEF INSTRUMENT_CH3_DEFAULT     EQU 2
+DEF INSTRUMENT_CH4_DEFAULT     EQU 3
+DEF INSTRUMENT_CH2_ALTERNATE   EQU 5
+DEF INSTRUMENT_NOISE_1         EQU 8
+DEF INSTRUMENT_NOISE_2         EQU 9
+DEF INSTRUMENT_NOISE_3         EQU 10
+
 ; Sound-effect sequence events -------------------------------------------
 ; op has bit 0 set and (op & $F0) != $20: start sound patch, then wait.
 MACRO sfx_patch ; op, patch id, delay frames

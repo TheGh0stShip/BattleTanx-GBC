@@ -569,6 +569,10 @@ Semantic understanding:
   unknown. The 90-entry frequency
   table is proven as a C2-F9 equal-tempered scale for square channels; the
   wave channel sounds the same indexes one octave lower.
+- Instrument use is fully bounded: defaults 0-3 are assigned by channel,
+  instrument 5 is the only explicit selection, and channel-4 notes select
+  instruments 8-10 through the noise table. Records 4, 6 and 7 are unused;
+  default record 3 is assigned but every channel-4 note overrides it.
 - Not audio: bank `$05` (sprite layouts and level parameters).
 - Bank `$07`: after one malformed sound-patch slot, `$4008-$4BFB` duplicates
   bank `$06`. All 57 sound-queue call sites and every computed bank selector
