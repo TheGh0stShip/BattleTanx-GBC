@@ -1067,6 +1067,7 @@ def check_level_banks() -> None:
             "UpdateStatus4ObjectLifetime": (0x00, 0x3775),
             "RenderStatus4Object": (0x00, 0x3793),
             "RenderStatus4ObjectSpriteFar": (0x00, 0x37BD),
+            "SpawnStatus4Object": (0x00, 0x372E),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),

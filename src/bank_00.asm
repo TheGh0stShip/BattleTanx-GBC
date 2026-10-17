@@ -1874,7 +1874,7 @@ Jump_0B3B:
 	push bc
 	ld b, $00
 	ld c, $F0
-	call Func_372E
+	call SpawnStatus4Object
 	pop bc
 	call SetObjectPosition
 Jump_0B4C:
@@ -10306,7 +10306,10 @@ Jump_3726:
 	ret
 
 
-Func_372E:
+; Allocate a status-4 object with type B and lifetime C, clearing its motion
+; and status-dependent state fields. Return the record pointer in HL.
+SpawnStatus4Object:
+Func_372E: ; legacy alias
 	push de
 	push bc
 	ld a, $04
@@ -10319,7 +10322,7 @@ Func_372E:
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_STATUS4_LIFETIME_OFFSET
 	ld l, a
 	ld [hl], c
 	ld a, l

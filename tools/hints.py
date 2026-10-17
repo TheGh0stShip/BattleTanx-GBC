@@ -246,6 +246,7 @@ NAMES = {
     0x3775: "UpdateStatus4ObjectLifetime",
     0x3793: "RenderStatus4Object",
     0x37BD: "RenderStatus4ObjectSpriteFar",
+    0x372E: "SpawnStatus4Object",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",
