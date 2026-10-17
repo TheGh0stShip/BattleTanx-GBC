@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate RGBDS source for the simple scrolling-scene banks $2F/$34-$3A."""
+"""Generate RGBDS source for scrolling-scene banks $2F/$34-$3B."""
 
 from __future__ import annotations
 
@@ -8,7 +8,8 @@ import sys
 
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-BANKS = (0x2F, *range(0x34, 0x3B))
+BANKS = (0x2F, *range(0x34, 0x3C))
+PREFIX_ENDS = {0x3B: 0x5090}
 DESCRIPTOR_START = 0x5A60
 DESCRIPTOR_COUNT = 36
 ROW_WIDTH = 20
@@ -45,7 +46,19 @@ def main() -> None:
             "",
             f'SECTION "ROM Bank ${bank:02X}", ROMX[$4000], BANK[${bank:02X}]',
         ]
-        position = 0x4000
+        position = PREFIX_ENDS.get(bank, 0x4000)
+        if position != 0x4000:
+            asset = pathlib.Path("assets/scenes") / f"bank_{bank:02X}_unknown_4000.bin"
+            data = rom[rom_offset(bank, 0x4000):rom_offset(bank, position)]
+            (ROOT / asset).write_bytes(data)
+            manifest.append((asset, rom_offset(bank, 0x4000), len(data)))
+            lines.extend([
+                "",
+                f"Bank{bank:02X}Unknown4000:",
+                "\t; No reader or internal boundary has been established.",
+                f'\tINCBIN "{asset.as_posix()}"',
+                f"ASSERT @ == ${position:04X}",
+            ])
         for index, graphics, rows, row_count, palette in records:
             if graphics != position or rows + row_count * ROW_WIDTH * 2 != palette:
                 raise SystemExit(f"bank ${bank:02X} scene {index} is not contiguous")

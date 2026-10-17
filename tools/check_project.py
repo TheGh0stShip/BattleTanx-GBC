@@ -361,8 +361,9 @@ def check_scene_descriptors(rom: bytes) -> None:
 def check_structured_scrolling_scene_banks(
     rom: bytes, entries: list[tuple[pathlib.Path, int, int]]
 ) -> None:
-    """Validate explicit scrolling-scene source in banks $2F/$34-$3A."""
-    banks = (0x2F, *range(0x34, 0x3B))
+    """Validate explicit scrolling-scene source in banks $2F/$34-$3B."""
+    banks = (0x2F, *range(0x34, 0x3C))
+    prefix_ends = {0x3B: 0x5090}
     scenes = {bank: [] for bank in banks}
     for index in range(36):
         record = rom[0x5A60 + index * 8:0x5A68 + index * 8]
@@ -377,11 +378,19 @@ def check_structured_scrolling_scene_banks(
 
     expected_assets = {}
     expected_symbols = {}
-    counts = {"graphics": 0, "rows": 0, "palettes": 0, "padding": 0}
+    counts = {
+        "graphics": 0, "rows": 0, "palettes": 0, "padding": 0, "unknown": 0
+    }
     for bank, records in scenes.items():
-        position = 0x4000
+        position = prefix_ends.get(bank, 0x4000)
         bank_base = bank * 0x4000 - 0x4000
-        for index, graphics, rows, row_count, palette in sorted(records):
+        if position != 0x4000:
+            path = pathlib.Path(f"assets/scenes/bank_{bank:02X}_unknown_4000.bin")
+            expected_assets[path] = (bank_base + 0x4000, position - 0x4000)
+            counts["unknown"] += position - 0x4000
+        for index, graphics, rows, row_count, palette in sorted(
+            records, key=lambda item: item[1]
+        ):
             if graphics != position or rows + row_count * 40 != palette:
                 fail(f"scrolling source: bank ${bank:02X} scene {index} is not contiguous")
             path = pathlib.Path(f"assets/scenes/scroll_scene_{index:02}_tiles.2bpp")
@@ -440,9 +449,10 @@ def check_structured_scrolling_scene_banks(
     if total != len(banks) * 0x4000:
         fail(f"scrolling source: accounted for {total} bytes, expected {len(banks) * 0x4000}")
     print(
-        f"scrolling source: 30 scenes in banks $2F/$34-$3A "
+        f"scrolling source: 32 scenes in banks $2F/$34-$3B "
         f"({counts['graphics']} graphics, {counts['rows']} rows, "
-        f"{counts['palettes']} palettes, {counts['padding']} padding)"
+        f"{counts['palettes']} palettes, {counts['padding']} padding, "
+        f"{counts['unknown']} unknown)"
     )
 
 

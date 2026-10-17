@@ -33,7 +33,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
 | Graphics | 61 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three orientation sets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Establish the remaining mixed graphics/data formats in banks `$27-$29` and identify remaining layouts |
-| Maps | Eleven fixed backgrounds, 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers with checked dimensions, indices, attributes, flips, and palettes; 30 scrolling scenes in banks `$2F/$34-$3A` now have explicit row and palette source | Convert the remaining scene banks and name individual scenes and levels |
+| Maps | Eleven fixed backgrounds, 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers with checked dimensions, indices, attributes, flips, and palettes; 32 scrolling scenes in banks `$2F/$34-$3B` now have explicit row and palette source | Convert bank `$30`, resolve the bank `$3B` prefix, and name individual scenes and levels |
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see `BANKS_2A_2E_RESEARCH.md` | Trace the caller-less bank-`$2E` routines, `$C6B5`, and picture meanings |
@@ -239,13 +239,14 @@ row-data pointer, and every resulting range is an exact multiple of the
 16-byte native 2bpp tile size. Layout-only padding lets non-rectangular tile
 counts use readable 16-tile-wide previews without changing the round trip.
 
-Banks `$2F` and `$34-$3A` contain thirty of the scrolling scenes. Their 16-bit row
+Banks `$2F` and `$34-$3B` contain thirty-two of the scrolling scenes. Their 16-bit row
 indices and four-color palettes are now explicit assembly, their graphics are
 narrowly typed tracked 2bpp assets, and their zero-filled tails and one-byte
-bank markers are explicit source. Together these eight banks account for all
-131,072 bytes without whole-bank inclusions. The remaining scrolling scenes in
-banks `$30` and `$3B` will be converted alongside the fixed-scene layouts that
-share banks `$30-$33`.
+bank markers are explicit source. Bank `$3B:$4000-$508F` remains a narrowly
+bounded unresolved range because no reader or reliable internal boundary has
+been found; its final bytes resemble a palette, but that is not yet proven.
+The remaining four scrolling scenes in bank `$30` will be converted alongside
+the fixed-scene layouts that share banks `$30-$33`.
 
 
 ## Banks `$2A-$2E`
