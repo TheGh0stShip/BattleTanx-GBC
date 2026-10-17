@@ -11173,7 +11173,7 @@ Jump_3B28:
 	ldh [$FF82], a
 	ldh [$FF81], a
 	call Func_01_609A
-	call Func_3C08
+	call RunScreenMode12SetupFar
 	jr Jump_3B59
 
 Jump_3B38:
@@ -11213,7 +11213,7 @@ Func_3B5A:
 	cp $0E
 	jp z, Jump_3B9A
 	call Func_01_6BBC
-	call Func_3BC4
+	call RunScreenMode6SetupFar
 Jump_3B80:
 	xor a
 	ld [wVBlankPending], a
@@ -11264,7 +11264,9 @@ Func_3BB0: ; legacy alias
 	ret
 
 
-Func_3BC4:
+; Run the bank-$01 setup flow for screen-table mode 6.
+RunScreenMode6SetupFar:
+Func_3BC4: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -11286,7 +11288,9 @@ Func_3BD5:
 	ret
 
 
-Func_3BE6:
+; Return the current 32-bit score divided by 1000 in BC.
+GetScoreThousandsFar:
+Func_3BE6: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
@@ -11297,7 +11301,9 @@ Func_3BE6:
 	ret
 
 
-Func_3BF7:
+; Replace the 32-bit score with BC multiplied by 1000.
+SetScoreFromThousandsFar:
+Func_3BF7: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
@@ -11308,7 +11314,9 @@ Func_3BF7:
 	ret
 
 
-Func_3C08:
+; Run the bank-$01 setup flow for screen-table mode $0C.
+RunScreenMode12SetupFar:
+Func_3C08: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
