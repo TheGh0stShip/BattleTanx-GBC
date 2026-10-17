@@ -284,6 +284,8 @@ NAMES = {
     0x0F91: "SelectObjectOrientationPalette",
     0x0DB6: "RenderObjectOrientationGraphic",
     0x164F: "TestLevelCellBits2And3AtPixel",
+    0x3823: "UpdateLevelObjectAuxStateFar",
+    0x3845: "ActivateMatchingLevelObjectAuxStateFar",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",

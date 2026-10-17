@@ -370,7 +370,7 @@ Jump_0261:
 	call UpdateScreenEffect
 Jump_02E9:
 	call UpdateAllObjects
-	call Func_3823
+	call UpdateLevelObjectAuxStateFar
 	call ClearUnusedShadowOamEntries
 	call UpdatePlayerHealthRecovery
 	ldh a, [rLY]
@@ -10577,7 +10577,9 @@ Func_3812:
 	ret
 
 
-Func_3823:
+; Update pending level-object spawns and all eight runtime auxiliary records.
+UpdateLevelObjectAuxStateFar:
+Func_3823: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03
@@ -10600,7 +10602,10 @@ Func_3834: ; legacy alias
 	ret
 
 
-Func_3845:
+; Activate a state-3 auxiliary record whose stored coordinate matches the
+; supplied object's next position.
+ActivateMatchingLevelObjectAuxStateFar:
+Func_3845: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03
