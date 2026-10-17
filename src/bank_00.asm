@@ -6513,7 +6513,7 @@ TestLevelCellBit0Footprint:
 	ld d, a
 	call TestLevelCellBit0AtPixel
 	or a
-	jp z, Jump_2438
+	jp z, .return
 	ld a, c
 	add a, $0A
 	ld c, a
@@ -6522,7 +6522,7 @@ TestLevelCellBit0Footprint:
 	ld b, a
 	call TestLevelCellBit0AtPixel
 	or a
-	jp z, Jump_2438
+	jp z, .return
 	ld a, c
 	add a, $0A
 	ld c, a
@@ -6531,7 +6531,7 @@ TestLevelCellBit0Footprint:
 	ld b, a
 	call TestLevelCellBit0AtPixel
 	or a
-	jp z, Jump_2438
+	jp z, .return
 	ld a, e
 	add a, $0A
 	ld e, a
@@ -6540,7 +6540,7 @@ TestLevelCellBit0Footprint:
 	ld d, a
 	call TestLevelCellBit0AtPixel
 	or a
-	jp z, Jump_2438
+	jp z, .return
 	ld a, e
 	add a, $0A
 	ld e, a
@@ -6549,7 +6549,7 @@ TestLevelCellBit0Footprint:
 	ld d, a
 	call TestLevelCellBit0AtPixel
 	or a
-	jp z, Jump_2438
+	jp z, .return
 	ld a, c
 	sub $0A
 	ld c, a
@@ -6558,7 +6558,7 @@ TestLevelCellBit0Footprint:
 	ld b, a
 	call TestLevelCellBit0AtPixel
 	or a
-	jp z, Jump_2438
+	jp z, .return
 	ld a, c
 	sub $0A
 	ld c, a
@@ -6567,7 +6567,7 @@ TestLevelCellBit0Footprint:
 	ld b, a
 	call TestLevelCellBit0AtPixel
 	or a
-	jp z, Jump_2438
+	jp z, .return
 	ld a, e
 	sub $0A
 	ld e, a
@@ -6576,8 +6576,8 @@ TestLevelCellBit0Footprint:
 	ld d, a
 	call TestLevelCellBit0AtPixel
 	or a
-	jp z, Jump_2438
-Jump_2438:
+	jp z, .return
+.return:
 	pop de
 	pop bc
 	ret
@@ -6591,36 +6591,36 @@ ClassifyLevelXBoundary:
 	ld a, b
 	add a, $80
 	cp $80
-	jr nz, Jump_2447
+	jr nz, .checkBelowZero
 	ld a, c
 	cp $00
-Jump_2447:
-	jr nc, Jump_244E
+.checkBelowZero:
+	jr nc, .checkUpperBound
 	ld a, $01
 	pop de
 	pop bc
 	ret
 
-Jump_244E:
+.checkUpperBound:
 	ld a, [wLevelPixelWidth + 1]
 	add a, $80
 	ld e, a
 	ld a, b
 	add a, $80
 	cp e
-	jr nz, Jump_2460
+	jr nz, .compareUpperBound
 	ld a, [wLevelPixelWidth]
 	ld e, a
 	ld a, c
 	cp e
-Jump_2460:
-	jp nc, Jump_2467
+.compareUpperBound:
+	jp nc, .outsideUpperBound
 	xor a
 	pop de
 	pop bc
 	ret
 
-Jump_2467:
+.outsideUpperBound:
 	ld a, $02
 	pop de
 	pop bc
@@ -6635,36 +6635,36 @@ ClassifyLevelYBoundary:
 	ld a, d
 	add a, $80
 	cp $80
-	jr nz, Jump_2478
+	jr nz, .checkAboveZero
 	ld a, e
 	cp $00
-Jump_2478:
-	jp nc, Jump_2480
+.checkAboveZero:
+	jp nc, .checkLowerBound
 	ld a, $04
 	pop de
 	pop bc
 	ret
 
-Jump_2480:
+.checkLowerBound:
 	ld a, [wLevelPixelHeight + 1]
 	add a, $80
 	ld c, a
 	ld a, d
 	add a, $80
 	cp c
-	jr nz, Jump_2492
+	jr nz, .compareLowerBound
 	ld a, [wLevelPixelHeight]
 	ld c, a
 	ld a, e
 	cp c
-Jump_2492:
-	jp nc, Jump_2499
+.compareLowerBound:
+	jp nc, .outsideLowerBound
 	xor a
 	pop de
 	pop bc
 	ret
 
-Jump_2499:
+.outsideLowerBound:
 	ld a, $02
 	pop de
 	pop bc
@@ -6727,28 +6727,28 @@ DispatchNearbyType4Entity:
 	ld l, a
 	ld a, [hl]
 	and $08
-	jr z, Jump_250C
+	jr z, .return
 	ld d, $40
 	ld bc, $D000
-Jump_24E3:
+.scanNextObject:
 	ld a, c
 	and $C0
 	add a, $1D
 	ld c, a
 	ld a, [bc]
 	cp $04
-	jr nz, Jump_24FF
+	jr nz, .advanceObject
 	ld a, c
 	and $C0
 	add a, $08
 	ld c, a
 	ld a, [bc]
 	and $08
-	jr z, Jump_24FF
+	jr z, .advanceObject
 	call ObjectsWithin12Pixels
 	or a
-	jr nz, Jump_2510
-Jump_24FF:
+	jr nz, .dispatchHandler
+.advanceObject:
 	ld a, c
 	and $C0
 	add a, $40
@@ -6757,14 +6757,14 @@ Jump_24FF:
 	adc a, b
 	ld b, a
 	dec d
-	jr nz, Jump_24E3
-Jump_250C:
+	jr nz, .scanNextObject
+.return:
 	pop hl
 	pop bc
 	pop de
 	ret
 
-Jump_2510:
+.dispatchHandler:
 	ld e, l
 	ld d, h
 	ld l, c
@@ -6807,7 +6807,7 @@ ObjectsWithin12Pixels:
 	sbc a, d
 	ld d, a
 	and $80
-	jr z, Jump_2548
+	jr z, .checkXDistance
 	ld a, e
 	cpl
 	add a, $01
@@ -6816,13 +6816,13 @@ ObjectsWithin12Pixels:
 	cpl
 	adc a, $00
 	ld d, a
-Jump_2548:
+.checkXDistance:
 	xor a
 	cp d
-	jr nz, Jump_2584
+	jr nz, .notClose
 	ld a, $0C
 	cp e
-	jr c, Jump_2584
+	jr c, .notClose
 	ld a, l
 	and $C0
 	add a, OBJECT_Y_OFFSET
@@ -6842,7 +6842,7 @@ Jump_2548:
 	sbc a, d
 	ld d, a
 	and $80
-	jr z, Jump_2575
+	jr z, .checkYDistance
 	ld a, e
 	cpl
 	add a, $01
@@ -6851,13 +6851,13 @@ Jump_2548:
 	cpl
 	adc a, $00
 	ld d, a
-Jump_2575:
+.checkYDistance:
 	xor a
 	cp d
-	jr nz, Jump_2584
+	jr nz, .notClose
 	ld a, $0C
 	cp e
-	jr c, Jump_2584
+	jr c, .notClose
 	pop de
 	pop bc
 	pop hl
@@ -6865,7 +6865,7 @@ Jump_2575:
 	inc a
 	ret
 
-Jump_2584:
+.notClose:
 	pop de
 	pop bc
 	pop hl
@@ -6884,7 +6884,7 @@ ResolveObjectLevelBit0Movement:
 	ld l, a
 	ld a, [hl]
 	or a
-	jp z, Jump_2642
+	jp z, .return
 	push bc
 	push de
 	ld a, l
@@ -6910,24 +6910,24 @@ ResolveObjectLevelBit0Movement:
 	ld d, [hl]
 	call ClassifyLevelXBoundary
 	or a
-	jr nz, Jump_25D2
+	jr nz, .rejectX
 	ld a, l
 	and $C0
 	add a, $08
 	ld l, a
 	ld a, [hl]
 	and $08
-	jr z, Jump_25CC
+	jr z, .testSingleX
 	call TestLevelCellBit0Footprint
 	or a
-	jr nz, Jump_25F0
-	jr Jump_25D2
+	jr nz, .checkY
+	jr .rejectX
 
-Jump_25CC:
+.testSingleX:
 	call TestLevelCellBit0AtPixel
 	or a
-	jr nz, Jump_25F0
-Jump_25D2:
+	jr nz, .checkY
+.rejectX:
 	ld a, l
 	and $C0
 	ld l, a
@@ -6952,7 +6952,7 @@ Jump_25D2:
 	ld a, [hl]
 	or $04
 	ld [hl], a
-Jump_25F0:
+.checkY:
 	ld a, l
 	and $C0
 	inc a
@@ -6969,24 +6969,24 @@ Jump_25F0:
 	ld d, [hl]
 	call ClassifyLevelYBoundary
 	or a
-	jr nz, Jump_2620
+	jr nz, .rejectY
 	ld a, l
 	and $C0
 	add a, $08
 	ld l, a
 	ld a, [hl]
 	and $08
-	jr z, Jump_261A
+	jr z, .testSingleY
 	call TestLevelCellBit0Footprint
 	or a
-	jr nz, Jump_2640
-	jr Jump_2620
+	jr nz, .finishAxes
+	jr .rejectY
 
-Jump_261A:
+.testSingleY:
 	call TestLevelCellBit0AtPixel
 	or a
-	jr nz, Jump_2640
-Jump_2620:
+	jr nz, .finishAxes
+.rejectY:
 	ld a, l
 	and $C0
 	add a, $03
@@ -7012,10 +7012,10 @@ Jump_2620:
 	ld a, [hl]
 	or $04
 	ld [hl], a
-Jump_2640:
+.finishAxes:
 	pop de
 	pop bc
-Jump_2642:
+.return:
 	pop hl
 	ret
 
@@ -7030,14 +7030,14 @@ HandleObjectLevelBit3Cell:
 	ld l, a
 	ld a, [hl]
 	and $08
-	jr z, Jump_267D
+	jr z, .return
 	ld a, l
 	and $C0
 	add a, $1A
 	ld l, a
 	ld a, [hl]
 	or a
-	jr z, Jump_267D
+	jr z, .return
 	push de
 	push bc
 	ld a, l
@@ -7056,14 +7056,14 @@ HandleObjectLevelBit3Cell:
 	ld d, [hl]
 	call TestLevelCellBit3AtPixel
 	or a
-	jr z, Jump_267B
+	jr z, .restoreRegisters
 	call ConvertLevelCellBit3RegionAtPixel
 	ld a, $02
 	call SpawnTimedObjectEffect
-Jump_267B:
+.restoreRegisters:
 	pop bc
 	pop de
-Jump_267D:
+.return:
 	pop hl
 	ret
 
@@ -7083,21 +7083,21 @@ HandleObjectLevelBit1And2Cells:
 	ld l, a
 	ld a, [hl]
 	and $08
-	jp z, Jump_27AE
+	jp z, .freeDisabledObject
 	ld a, l
 	and $C0
 	add a, OBJECT_TYPE2_STATE_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $02
-	jp z, Jump_27E3
+	jp z, .state2Return
 	cp $00
-	jp z, Jump_277C
+	jp z, .handleState0
 	cp $01
-	jp z, Jump_26A8
-	jp Jump_277C
+	jp z, .handleState1
+	jp .handleState0
 
-Jump_26A8:
+.handleState1:
 	xor a
 	ldh [$FF80], a
 	ld a, l
@@ -7115,9 +7115,9 @@ Jump_26A8:
 	inc l
 	ld d, [hl]
 	call TestLevelCellBit1AtPixel
-	jr z, Jump_26F6
+	jr z, .checkState1Y
 	call TestLevelCellBit2AtPixel
-	jp nz, Jump_27BA
+	jp nz, .startRegionTransition
 	ld a, l
 	and $C0
 	ld l, a
@@ -7153,7 +7153,7 @@ Jump_26A8:
 	ld a, [hl]
 	ld a, $01
 	ldh [$FF80], a
-Jump_26F6:
+.checkState1Y:
 	ld a, l
 	and $C0
 	inc a
@@ -7169,9 +7169,9 @@ Jump_26F6:
 	inc l
 	ld d, [hl]
 	call TestLevelCellBit1AtPixel
-	jr z, Jump_2744
+	jr z, .finishState1Axes
 	call TestLevelCellBit2AtPixel
-	jp nz, Jump_27BA
+	jp nz, .startRegionTransition
 	ld a, l
 	and $C0
 	add a, $03
@@ -7209,10 +7209,10 @@ Jump_26F6:
 	ld [hl], a
 	ld a, $01
 	ldh [$FF80], a
-Jump_2744:
+.finishState1Axes:
 	ldh a, [$FF80]
 	or a
-	jr z, Jump_2777
+	jr z, .return
 	ld a, l
 	and $C0
 	inc a
@@ -7237,20 +7237,20 @@ Jump_2744:
 	ld l, a
 	ld a, [hl]
 	cp $B3
-	jr c, Jump_2777
+	jr c, .return
 	ld a, l
 	and $C0
 	ld l, a
 	call FreeObjectRecord
 	xor a
-Jump_2777:
+.return:
 	pop hl
 	pop de
 	pop bc
 	pop af
 	ret
 
-Jump_277C:
+.handleState0:
 	ld a, l
 	and $C0
 	add a, $14
@@ -7266,7 +7266,7 @@ Jump_277C:
 	inc l
 	ld d, [hl]
 	call TestLevelCellBit1AtPixel
-	jr nz, Jump_27BA
+	jr nz, .startRegionTransition
 	ld a, l
 	and $C0
 	inc a
@@ -7282,14 +7282,14 @@ Jump_277C:
 	inc l
 	ld d, [hl]
 	call TestLevelCellBit1AtPixel
-	jr nz, Jump_27BA
+	jr nz, .startRegionTransition
 	pop hl
 	pop de
 	pop bc
 	pop af
 	ret
 
-Jump_27AE:
+.freeDisabledObject:
 	ld a, l
 	and $C0
 	ld l, a
@@ -7300,7 +7300,7 @@ Jump_27AE:
 	pop af
 	ret
 
-Jump_27BA:
+.startRegionTransition:
 	ld a, l
 	and $C0
 	ld l, a
@@ -7331,13 +7331,12 @@ Jump_27BA:
 	pop af
 	ret
 
-Jump_27E3:
+.state2Return:
 	pop hl
 	pop de
 	pop bc
 	pop af
 	ret
-
 
 ; Reject candidate movement when an active object comes within 20 pixels on
 ; both axes of another type-1 entity. The first match restores both axes from
@@ -7353,32 +7352,32 @@ ResolveObjectType1ProximityMovement:
 	ld l, a
 	ld a, [hl]
 	or a
-	jp z, Jump_2856
+	jp z, .return
 	ld a, l
 	and $C0
 	ld l, a
 	ld e, $40
 	ld bc, $D000
-Jump_2800:
+.scanNextObject:
 	ld a, c
 	and $C0
 	add a, $1D
 	ld c, a
 	ld a, [bc]
 	cp $01
-	jr nz, Jump_2848
+	jr nz, .advanceObject
 	ld a, c
 	and $C0
 	ld c, a
 	ld a, l
 	cp c
-	jr nz, Jump_2817
+	jr nz, .testCandidate
 	ld a, h
 	cp b
-	jr z, Jump_2848
-Jump_2817:
+	jr z, .advanceObject
+.testCandidate:
 	call ObjectCandidatesWithin20Pixels
-	jr z, Jump_2848
+	jr z, .advanceObject
 	ld a, l
 	and $C0
 	ld l, a
@@ -7414,9 +7413,9 @@ Jump_2817:
 	ld [hl], b
 	inc l
 	ld [hl], e
-	jr Jump_2856
+	jr .return
 
-Jump_2848:
+.advanceObject:
 	ld a, c
 	and $C0
 	add a, $40
@@ -7425,8 +7424,8 @@ Jump_2848:
 	adc a, b
 	ld b, a
 	dec e
-	jp nz, Jump_2800
-Jump_2856:
+	jp nz, .scanNextObject
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -7459,7 +7458,7 @@ ObjectCandidatesWithin20Pixels:
 	sbc a, d
 	ld d, a
 	and $80
-	jr z, Jump_2882
+	jr z, .checkXDistance
 	ld a, e
 	cpl
 	add a, $01
@@ -7468,13 +7467,13 @@ ObjectCandidatesWithin20Pixels:
 	cpl
 	adc a, $00
 	ld d, a
-Jump_2882:
+.checkXDistance:
 	ld a, $00
 	cp d
-	jr nz, Jump_28C0
+	jr nz, .notClose
 	ld a, $14
 	cp e
-	jr c, Jump_28C0
+	jr c, .notClose
 	ld a, l
 	and $C0
 	add a, $17
@@ -7494,7 +7493,7 @@ Jump_2882:
 	sbc a, d
 	ld d, a
 	and $80
-	jr z, Jump_28B0
+	jr z, .checkYDistance
 	ld a, e
 	cpl
 	add a, $01
@@ -7503,13 +7502,13 @@ Jump_2882:
 	cpl
 	adc a, $00
 	ld d, a
-Jump_28B0:
+.checkYDistance:
 	ld a, $00
 	cp d
-	jr nz, Jump_28C0
+	jr nz, .notClose
 	ld a, $14
 	cp e
-	jr c, Jump_28C0
+	jr c, .notClose
 	pop hl
 	pop bc
 	pop de
@@ -7517,7 +7516,7 @@ Jump_28B0:
 	inc a
 	ret
 
-Jump_28C0:
+.notClose:
 	pop hl
 	pop bc
 	pop de
@@ -7554,36 +7553,36 @@ Func_28C5: ; legacy alias
 	ld a, $40
 	ldh [$FFA0], a
 	ld bc, $D000
-Jump_28E6:
+.scanNextObject:
 	ld a, c
 	and $C0
 	add a, OBJECT_STATUS_OFFSET
 	ld c, a
 	ld a, [bc]
 	cp $01
-	jr nz, Jump_2911
+	jr nz, .advanceObject
 	ld a, c
 	and $C0
 	add a, OBJECT_FLAGS_OFFSET
 	ld c, a
 	ld a, [bc]
 	and OBJECT_VISIBLE_FLAG
-	jr z, Jump_2911
+	jr z, .advanceObject
 	ldh a, [$FFA1]
 	or a
-	jr nz, Jump_290B
+	jr nz, .testHit
 	ld a, c
 	and $C0
 	cp e
-	jr nz, Jump_290B
+	jr nz, .testHit
 	ld a, b
 	cp d
-	jr z, Jump_2911
-Jump_290B:
+	jr z, .advanceObject
+.testHit:
 	call TestObjectScreenProximity12
 	or a
-	jr nz, Jump_2927
-Jump_2911:
+	jr nz, .applyHit
+.advanceObject:
 	ld a, c
 	and $C0
 	add a, $40
@@ -7594,14 +7593,14 @@ Jump_2911:
 	ldh a, [$FFA0]
 	dec a
 	ldh [$FFA0], a
-	jr nz, Jump_28E6
+	jr nz, .scanNextObject
 	pop hl
 	pop de
 	pop bc
 	pop af
 	ret
 
-Jump_2927:
+.applyHit:
 	ld a, c
 	and $C0
 	add a, OBJECT_LAST_ATTACKER_OFFSET
@@ -7628,9 +7627,9 @@ Jump_2927:
 	ld b, d
 	ldh a, [$FFA1]
 	or a
-	jr z, Jump_294C
+	jr z, .subtractHealth
 	sla b
-Jump_294C:
+.subtractHealth:
 	call SubtractObjectHealth
 	pop hl
 	ld a, l
