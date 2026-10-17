@@ -697,8 +697,8 @@ AUDIO_SYMBOLS = {
     "Music_HandleEvent": (0x06, 0x7D11),
     "Audio_PlaySound": (0x06, 0x7E41),
     "SfxSequence_Update": (0x06, 0x7EFD),
-    "Bank07UnknownPrefix": (0x07, 0x4000),
-    "Bank07AudioBuildResidue": (0x07, 0x4007),
+    "Bank07MalformedSoundPatch00": (0x07, 0x4000),
+    "Bank07AudioBuildResidue": (0x07, 0x4008),
 }
 
 
@@ -787,11 +787,14 @@ def check_audio() -> None:
     if music[0][0] != au.MUSIC_DATA:
         fail("audio: first music sequence does not follow the instrument table")
 
-    # Bank $07 duplicates bank $06 $4007-$4BFB (see AUDIO_RESEARCH.md).
+    # Bank $07 has one malformed 8-byte patch slot, then duplicates bank $06
+    # from sound-patch slot 1 through $4BFB (see AUDIO_RESEARCH.md).
     bank7 = rom[0x1C000:0x20000]
-    if bank7[:7] != bytes.fromhex("0c006500446265"):
-        fail("audio: bank $07 unknown prefix changed")
-    if bank7[7:0xBFC] != rom[0x18007:0x18BFC] or any(bank7[0xBFC:0x3FFF]):
+    if bank7[:8] != bytes.fromhex("0c00650044626500"):
+        fail("audio: bank $07 malformed patch slot changed")
+    if 1 <= bank7[0] <= 4:
+        fail("audio: bank $07 patch slot is no longer malformed")
+    if bank7[8:0xBFC] != rom[0x18008:0x18BFC] or any(bank7[0xBFC:0x3FFF]):
         fail("audio: bank $07 is no longer a partial copy of bank $06")
     if bank7[0x3FFF] != 7:
         fail("audio: bank $07 marker changed")
@@ -812,7 +815,7 @@ def check_audio() -> None:
     bank7_source = (ROOT / "src/bank_07.asm").read_text()
     if "assets/bank_07/4000.bin" in bank7_source:
         fail("audio: bank $07 returned to a whole-bank blob")
-    if "Bank07UnknownPrefix" not in bank7_source or "Bank07AudioBuildResidue" not in bank7_source:
+    if "Bank07MalformedSoundPatch00" not in bank7_source or "Bank07AudioBuildResidue" not in bank7_source:
         fail("audio: bank $07 structured source labels are missing")
 
     # Every immediate sound id passed to Audio_QueueSound must be playable.

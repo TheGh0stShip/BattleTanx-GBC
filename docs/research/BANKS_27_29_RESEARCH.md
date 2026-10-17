@@ -27,7 +27,8 @@ palette. The residue and fill are identical in all three.
 **`$4518-$4BFF` is not sprite data.** It is a byte-for-byte copy of
 `$26:$4518-$4BFB`, the middle of level 14's tile map. The same build
 residue appears elsewhere:
-- bank `$07` repeats bank `$06` at `$4007-$4BFB`;
+- bank `$07` repeats bank `$06` at `$4008-$4BFB` after one malformed
+  sound-patch slot;
 - bank `$28` repeats `$27`, and `$29` repeats `$28`, over the same range.
 
 Every copy ends exactly at `$4BFB`. The validator checks the equality against

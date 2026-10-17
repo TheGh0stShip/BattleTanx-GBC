@@ -21,9 +21,9 @@ claim.
 - Copied RAM images detected: 38 (31 executable, 7 data-only)
 - Banks `$3C-$3F` are confirmed unused cartridge capacity: all 65,536 bytes
   are explicit `$FF` padding rather than opaque assets.
-- Bank `$07` is explicit as a seven-byte unknown prefix, an unread `$0BF5`-byte
-  copy of bank `$06`, zero fill, and its marker; its former whole-bank asset is
-  removed.
+- Bank `$07` is explicit as one malformed eight-byte sound-patch slot, an
+  unread copy of bank `$06` beginning at patch slot 1, zero fill, and its
+  marker; its former whole-bank asset is removed.
 
 This is complete binary reconstruction. It is not complete semantic recovery.
 
@@ -558,7 +558,8 @@ Semantic understanding:
   bytes 6-7, music-pointer byte 3, the bytes after each sequence
   terminator; raw sfx op bytes; musical meaning of notes and tracks.
 - Not audio: bank `$05` (sprite layouts and level parameters).
-- Bank `$07`: `$4007-$4BFB` duplicates bank `$06`; no traced path maps it.
+- Bank `$07`: after one malformed sound-patch slot, `$4008-$4BFB` duplicates
+  bank `$06`; no traced path maps it.
   Not proven unused, because some computed bank indexes are unbounded.
 - Not checked on hardware.
 
