@@ -190,7 +190,7 @@ loop. Each sequence is followed by `FE FF` (`$07`: `00 FF FF`), never read.
 | `06:7CAE-7FD1` | audio code | traced from Audio_InitFar / Audio_Update |
 | ROM0 `$2EB8-$2F92` | audio code | as above |
 | `$05` | not audio | starts with sprite-layout records (`Y, X, tile, attr`); `05:4088` loads level parameters from `$5120`/`$513E` into `$C8CE-$C8D2`; no audio routine selects bank `$05` |
-| `$07` | partial copy of bank `$06` data, no audio reference | `07:4007-4BFB` equals `06:4007-4BFB`; `07:4000-4006` differ (`0C 00 65 00 44 62 65` vs `02 86 F0 00 03 22 22`); the rest is zero up to the marker `$07`. No `$07` immediate reaches `rROMB0`, and `wMusicBank` is always `$06`. Computed bank selections elsewhere are listed in section 7. |
+| `$07` | explicit unused partial copy of bank `$06` data, no audio reference | `07:4007-4BFB` equals `06:4007-4BFB`; the seven-byte prefix is explicit but remains semantically unknown (`0C 00 65 00 44 62 65`); the rest is explicit zero fill up to marker `$07`. Only the copied `$0BF5`-byte residue remains a narrowly typed binary source asset. No `$07` immediate reaches `rROMB0`, and `wMusicBank` is always `$06`. Computed bank selections elsewhere are listed in section 7. |
 
 ## 7. Unresolved
 

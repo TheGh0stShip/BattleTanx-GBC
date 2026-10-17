@@ -21,6 +21,9 @@ claim.
 - Copied RAM images detected: 38 (31 executable, 7 data-only)
 - Banks `$3C-$3F` are confirmed unused cartridge capacity: all 65,536 bytes
   are explicit `$FF` padding rather than opaque assets.
+- Bank `$07` is explicit as a seven-byte unknown prefix, an unread `$0BF5`-byte
+  copy of bank `$06`, zero fill, and its marker; its former whole-bank asset is
+  removed.
 
 This is complete binary reconstruction. It is not complete semantic recovery.
 

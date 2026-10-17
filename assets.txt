@@ -13,7 +13,7 @@ assets/bank_05/40B1.bin 0x140b1 0x24f
 assets/bank_05/431E.bin 0x1431e 0xe2
 assets/bank_05/452C.bin 0x1452c 0x974
 assets/bank_05/59E0.bin 0x159e0 0x2620
-assets/bank_07/4000.bin 0x1c000 0x4000
+assets/bank_07/audio_build_residue.bin 0x1c007 0xbf5
 assets/bank_08/ui_font_tiles.bin 0x20000 0x4a0
 assets/bank_08/unknown_44A8.bin 0x204a8 0x242
 assets/bank_08/unknown_46F0.bin 0x206f0 0x1a08
