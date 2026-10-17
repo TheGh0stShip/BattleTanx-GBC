@@ -1,114 +1,124 @@
-# BattleTanx (Game Boy Color) disassembly
+# BattleTanx — Game Boy Color matching disassembly
 
-A matching disassembly of **BattleTanx** for Game Boy Color (USA). The source in
-`src/` assembles with RGBDS into a ROM that is byte-for-byte identical to the
-retail cartridge.
+[![Reconstruction](https://img.shields.io/badge/reconstruction-100%25-brightgreen)](docs/VERIFICATION.md)
+[![Functions](https://img.shields.io/badge/functions-288%2F288-brightgreen)](docs/VERIFICATION.md)
+[![Code](https://img.shields.io/badge/code-39359%2F39359-brightgreen)](docs/VERIFICATION.md)
+[![Data](https://img.shields.io/badge/data-1009217%2F1009217-brightgreen)](docs/VERIFICATION.md)
+[![Verify](https://github.com/TheGh0stShip/BattleTanx-GBC/actions/workflows/verify.yml/badge.svg)](https://github.com/TheGh0stShip/BattleTanx-GBC/actions/workflows/verify.yml)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
-All data required to assemble the cartridge, including graphics, maps, and other
-binary resources that have not yet been promoted to explicit assembly, is kept
-in the repository. A verified retail dump is still required for the comparison
-and structural-validation gates.
+This repository contains a byte-exact RGBDS disassembly of **BattleTanx** for
+Game Boy Color (USA). All 1,048,576 cartridge bytes are reconstructed from the
+committed source tree and assets. All 288 catalogued function entries have
+reviewed names, every ROM byte belongs to a checked range, and generated gap
+decoding contributes zero bytes.
+
+Binary reconstruction is complete; semantic recovery is still active. A
+matching cartridge proves that the source preserves the original bytes, not
+that every table, variable, routine, timing dependency, or original defect is
+fully understood.
+
+## Supported cartridge
+
+- Title: `BATTLETANX`
+- Game code: `AVNE`
+- Region: USA
+- Hardware: Game Boy Color only, MBC5
+- Size: 1 MiB, 64 banks (60 populated and four `$FF` banks)
+- SHA-1: `5078584e86c0b6f4687c424cc00bbd762ba6573a`
+- SHA-256: `b449bab1b0a422fdb462d0dc5c55fbc8e50d8c18a5e2fd836e7db016ee63aa62`
+- MD5: `4ca71b12d89a5bcfcc52095081ae9f51`
+
+## Quick start
+
+Requires Python 3 and RGBDS 1.0.4.
+
+```sh
+make battletanx.gbc  # builds entirely from committed source and assets
+make verify-source  # no retail cartridge required
+
+cp /path/to/BattleTanx.gbc baserom.gbc
+make check          # complete comparison, structure and round-trip suite
+```
+
+`make compare` verifies that the output is identical to the supported retail
+cartridge. `make check` additionally validates every asset slice, range map,
+control-flow invariant, relocation case, and lossless graphics/map export.
+
+## Current status
+
+```text
+cartridge   [████████████████████] 100.00%  1,048,576 / 1,048,576 bytes
+code        [████████████████████] 100.00%     39,359 /    39,359 bytes
+data        [████████████████████] 100.00%  1,009,217 / 1,009,217 bytes
+functions   [████████████████████] 100.00%        288 /       288 named
+```
+
+The code total is the byte-match report's program and RAM-executed-code scope.
+The trace separately reports 35,303 bytes reached from architectural roots and
+recovered tables, 3,265 reviewed standalone bytes, 206 callerless bytes, and
+zero heuristic bytes. These measurements answer different questions and are
+deliberately not merged.
+
+The whole-ROM range map currently contains 2,411 non-overlapping ranges:
+892,257 bytes under reviewed names, 156,307 bytes of padding or bank markers,
+and 12 neutral bytes whose purpose remains unknown. See
+[`docs/STATUS.md`](docs/STATUS.md) for the live recovery ledger and open work.
 
 ## Source strategy
 
-Human-readable RGBDS assembly is the authoritative decompilation target. The
-original program depends on SM83 register behavior, MBC5 banking, interrupt
-entry, code copied into WRAM/HRAM, and timing-sensitive display transfers;
-keeping those operations explicit also preserves the byte-identical build.
+Human-readable SM83 assembly is the authoritative target. The game depends on
+SM83 register behavior, MBC5 banking, interrupt timing, CGB VRAM/WRAM banks,
+and routines copied from ROM into WRAM or HRAM. Keeping those operations
+explicit preserves both meaning and the exact cartridge image.
 
-Routines are promoted from generated listings to reviewed source by recovering
-their control flow, names, RAM state, tables, and data formats. C-like
-descriptions may accompany algorithms when they improve understanding, but a
-forced C rewrite is not treated as recovered source and is not allowed to
-replace exact target semantics. A future portable implementation can use this
-tree as its verified behavioral reference.
+Large graphics and data ranges remain committed as typed binary source assets
+when that is the clearest lossless representation. Their ROM ranges, sizes,
+hashes, consumers, and round trips are checked. An opaque inclusion is never
+presented as fully understood merely because it rebuilds correctly.
 
-## Supported ROM
+See the [architecture contract](docs/ARCHITECTURE.md),
+[source-maturity policy](docs/SOURCE_MATURITY.md), and
+[research provenance](docs/PROVENANCE.md) before changing source labels or
+formats.
 
-- Title: `BATTLETANX`, game code `AVNE`, CGB-only, MBC5, 1 MiB (60 used banks)
-- SHA-1: `5078584e86c0b6f4687c424cc00bbd762ba6573a`
-- MD5: `4ca71b12d89a5bcfcc52095081ae9f51`
+## Repository map
 
-## Building
+- `src/` — authoritative RGBDS source, one file per ROM bank plus recovered
+  shared data modules.
+- `include/` — hardware constants, memory symbols, record layouts and macros.
+- `assets/` — committed typed source assets used by the exact build.
+- `assets.txt` and `asset_slices.txt` — extraction origins and placed-slice
+  ledger.
+- `reports/` — deterministic range, operand, asset and semantic inventories.
+- `tools/` — tracing, assembly emission, extraction, validation and reporting.
+- `docs/STATUS.md` — concise progress and unresolved-work ledger.
+- `docs/research/` — detailed evidence for each recovered subsystem.
+- `.recomp.json` — public project metadata for compatible catalogs.
 
-Requires RGBDS 1.0.4 and Python 3. The project checker rejects other RGBDS
-versions so instruction encoding cannot drift silently.
+The [tool and target reference](docs/TOOLS.md) explains the major commands and
+which outputs are authoritative, generated, diagnostic, or one-time-only.
 
-```sh
-cp /path/to/BattleTanx.gbc baserom.gbc
-make            # builds from committed sources/assets and compares with baserom
-make check      # runs the complete structural and lossless round-trip suite
-```
+## Progress reporting
 
-`make compare` fails unless `battletanx.gbc` hashes identically to the retail ROM.
+`make report` writes an objdiff v2 report with separate code and data totals.
+The default-branch workflow publishes it as `USA_report` for compatible
+trackers. The report measures exact reconstruction only; it does not turn
+unknown data into understood source.
 
-## Layout
+The exact hashes, category definitions, latest gate expectations, and report
+contract are recorded in [the verification guide](docs/VERIFICATION.md).
 
-- `src/main.asm` - includes every bank; `src/bank_XX.asm` - one file per ROM bank
-- `include/hardware.inc` - hardware register and joypad-bit names
-- `include/memory.inc` - evidence-backed WRAM/HRAM symbols
-- `include/object.inc` - checked 64-byte runtime object-record layout
-- `assets/` - committed source assets for graphics, maps, and data ranges that
-  have not yet been expressed directly as assembly
-- `graphics.txt` - confirmed native 2bpp ranges rendered losslessly by
-  `make graphics`; generated PNG previews are under `build/graphics/`
-- `make maps` - renders all descriptor-driven fixed and scrolling scenes and
-  writes tile-index/attribute CSV plus decoded palette values under `build/maps/`
-- `make objects` - renders the three object-orientation banks and round-trips
-  their frames, assembled orientations, layouts, and palettes under `build/objects/`
-- `make levels` - exports and round-trips all fifteen two-bank level packages
-- `make screens` - exports and round-trips all seventeen full-screen pictures
-- `make bank08` - validates and renders the interleaved interface, font,
-  metatile, object-animation, and effect ranges in bank `$08`
-- `make banks0105` - validates recovered banks `$01-$05` structures and runs
-  their relocation and fail-safe shift cases
-- `tools/` - tracer/disassembler used to generate the initial source
-- `make progress` - reports evidence-based names attached to the original
-  automatic function entries, per bank and in total
-- `make report` - writes an objdiff v2 byte-match report for the USA cartridge;
-  it measures exact reconstruction only, while semantic recovery remains in
-  `docs/STATUS.md`
-- `docs/STATUS.md` - concise recovery status and remaining work
-- `docs/research/` - indexed evidence reports for recovered subsystems and bank
-  formats; start with [`docs/research/README.md`](docs/research/README.md)
+## Important editing rule
 
-## Method
-
-1. `tools/verify_rom.py` verifies the base ROM used by the comparison and
-   structural-validation gates.
-2. `tools/trace.py` does recursive-descent tracing from the reset/interrupt vectors,
-   tracking MBC5 bank writes (`ld a, n` / `ld [$2000], a`), the bank-1 screen table at
-   `$47EC`, stored code pointers, and regions copied into WRAM/HRAM by `CopyBytes`
-   (`$0A8F`) / `CopyBytesShort` (`$0AA4`). A conservative gap-fill pass picks up
-   functions reached only indirectly.
-3. `tools/disasm.py` emits RGBDS source. RAM-resident code is emitted inside
-   `LOAD UNION` blocks so its labels carry the run-time addresses. A label replaces an
-   address operand only when it resolves to exactly the same value, so every
-   generated file assembles to the original bytes.
-4. `make compare` is the gate: every change must still produce the identical ROM.
-
-`make disasm` regenerates `src/` from scratch and **overwrites hand edits**. Use it
-only to bootstrap; from then on `src/` is the source of truth.
-
-## Status
-
-All 1,048,576 bytes reconstruct exactly. That establishes a complete binary
-rebuild, not a complete understanding of the source. The tracer decodes 38,774
-instruction bytes: 35,303 from architectural roots and recovered tables, 3,265
-from reviewed standalone entries, and 206 callerless bytes: two copied RAM
-no-op stubs plus the template-identical bank `$2E` screen pair. The optional gap
-pass currently adds zero bytes; confirmed data ranges are explicitly excluded
-from instruction tracing.
-
-Detailed recovery status, control-flow gaps, and the current roadmap are tracked
-in [`docs/STATUS.md`](docs/STATUS.md). Run `make check` before committing; it pins
-RGBDS 1.0.4, validates every committed asset against its ROM range, checks tracing
-invariants, rebuilds the cartridge, round-trips confirmed graphics through PNG,
-and renders and validates every recovered scene, level, object-orientation, and
-full-screen picture package before verifying the retail hashes.
+`make disasm` regenerates `src/` from the supported cartridge and overwrites
+reviewed edits. It is a bootstrap and generator-development command, not part
+of ordinary source maintenance. The checked-in `src/` tree is authoritative.
 
 ## License
 
-Everything in this repository is distributed under the GNU General Public
-License version 3. See [`LICENSE`](LICENSE). BattleTanx and the original game's
-copyrights and trademarks remain the property of their respective owners.
+Project-authored material is licensed under GNU GPL version 3; see
+[`LICENSE`](LICENSE). Committed extracted game resources are included for
+reconstruction and research and remain subject to the rights of their original
+owners. BattleTanx and its copyrights and trademarks remain the property of
+their respective holders.

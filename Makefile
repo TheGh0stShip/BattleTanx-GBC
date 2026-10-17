@@ -4,11 +4,17 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion progress report diag disasm clean tidy
+.PHONY: all check verify-source check-repository compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion progress report diag disasm clean tidy
 
 all: compare
 
-check: compare check-project graphics maps levels screens objects bank08 relocation banks0105 completion progress
+check: compare check-project graphics maps levels screens objects bank08 relocation banks0105 completion progress check-repository
+
+# ROM-independent gate used by pull requests and ordinary source review.
+verify-source: $(ROM) progress report check-repository
+
+check-repository:
+	$(PYTHON) tools/check_repository.py
 
 check-project:
 	$(PYTHON) tools/check_project.py

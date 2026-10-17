@@ -1,0 +1,30 @@
+name: Verify
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-and-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install RGBDS 1.0.4
+        run: |
+          curl --fail --location --silent --show-error \
+            https://github.com/gbdev/rgbds/releases/download/v1.0.4/rgbds-linux-x86_64.tar.xz \
+            --output rgbds.tar.xz
+          mkdir rgbds-1.0.4
+          tar -xJf rgbds.tar.xz -C rgbds-1.0.4
+          echo "$PWD/rgbds-1.0.4" >> "$GITHUB_PATH"
+      - name: Verify committed source and metadata
+        run: make verify-source
+      - name: Confirm clean generated report
+        run: git diff --exit-code

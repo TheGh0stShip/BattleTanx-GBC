@@ -21,9 +21,20 @@
     }
   ],
   "help": [
-    "Routine and RAM symbol identification",
-    "Graphics, map, text, and audio format recovery",
-    "Hardware behavior verification"
+    "Hardware behavior verification",
+    "Resolve the final neutral data bytes",
+    "Confirm remaining gameplay identities"
   ],
-  "notes": "The complete cartridge rebuilds byte-for-byte. Semantic recovery is ongoing; reconstruction completeness is not treated as source-understanding completeness."
+  "links": [
+    {
+      "label": "Repository",
+      "url": "https://github.com/TheGh0stShip/BattleTanx-GBC"
+    },
+    {
+      "label": "Recovery status",
+      "url": "https://github.com/TheGh0stShip/BattleTanx-GBC/blob/main/docs/STATUS.md"
+    }
+  ],
+  "tags": ["matching", "RGBDS", "SM83"],
+  "notes": "The entire USA cartridge rebuilds byte-for-byte from committed RGBDS source and assets. All 288 catalogued function entries have reviewed names; semantic and hardware verification continues."
 }
