@@ -9,8 +9,10 @@ VBlankInterrupt:
 	jp $C7F1
 
 
-Func_0043:
-	call Func_3812
+; Update the current object's bank-$03 sequence interpreter.
+UpdateCurrentObjectSequence:
+Func_0043: ; legacy alias
+	call UpdateCurrentObjectSequenceFar
 	ret
 
 	db $C9
@@ -20,7 +22,9 @@ LCDInterrupt:
 
 	db $C9, $C9, $C9
 
-Func_004E:
+; Deliberate no-op hook called while bank $02 builds its runtime records.
+NoOpHook:
+Func_004E: ; legacy alias
 	ret
 
 	db $00
@@ -392,7 +396,7 @@ Jump_02E9:
 	jr nz, Jump_0320
 	call ProcessGameplayInput
 Jump_0320:
-	call Func_2A88
+	call DispatchEntityUpdateFar
 	call DispatchLevelStateCheckFar
 	ld a, [wVBlankPending]
 	or a
@@ -7893,7 +7897,9 @@ Jump_2A7B:
 	ret
 
 
-Func_2A88:
+; Dispatch the bank-$02 gameplay entity updater selected in its WRAM jump stub.
+DispatchEntityUpdateFar:
+Func_2A88: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
@@ -10148,7 +10154,9 @@ Jump_35B6:
 	ret
 
 
-Func_35C6:
+; Bank-preserving wrapper around the bank-$01 no-op entry at $42EE.
+Bank1NoOpFar:
+Func_35C6: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -10570,7 +10578,9 @@ InitializeObjectSequenceStateFar:
 	ret
 
 
-Func_3812:
+; Run the bank-$03 sequence interpreter for the current object in HL.
+UpdateCurrentObjectSequenceFar:
+Func_3812: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03

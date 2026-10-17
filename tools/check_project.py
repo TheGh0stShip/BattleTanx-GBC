@@ -138,6 +138,8 @@ def check_sprite_bank_palettes(entries: list[tuple[pathlib.Path, int, int]]) -> 
     sym = ROOT / "battletanx.sym"
     if sym.exists():
         expected_symbols = {
+            "UpdateCurrentObjectSequence": (0x00, 0x0043),
+            "NoOpHook": (0x00, 0x004E),
             "Bank27OrientationTiles": (0x27, 0x4000),
             "Bank28OrientationTiles": (0x28, 0x4000),
             "Bank29OrientationTiles": (0x29, 0x4000),
@@ -1108,6 +1110,9 @@ def check_level_banks() -> None:
             "UpdateLevelObjectAuxStateFar": (0x00, 0x3823),
             "ActivateMatchingLevelObjectAuxStateFar": (0x00, 0x3845),
             "RenderProjectile": (0x00, 0x2D4C),
+            "DispatchEntityUpdateFar": (0x00, 0x2A88),
+            "Bank1NoOpFar": (0x00, 0x35C6),
+            "UpdateCurrentObjectSequenceFar": (0x00, 0x3812),
             "StepBackgroundPaletteColors": (0x00, 0x389A),
             "StepRgb555TowardTarget": (0x00, 0x38E2),
             "ScreenTableInitReturn": (0x00, 0x39C4),

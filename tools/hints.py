@@ -112,6 +112,8 @@ CODE_BANKS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e]
 
 # Hand-assigned names: rom offset -> label
 NAMES = {
+    0x0043: "UpdateCurrentObjectSequence",
+    0x004E: "NoOpHook",
     0x0040: "VBlankInterrupt",
     0x0048: "LCDInterrupt",
     0x0050: "TimerInterrupt",
@@ -287,6 +289,9 @@ NAMES = {
     0x3823: "UpdateLevelObjectAuxStateFar",
     0x3845: "ActivateMatchingLevelObjectAuxStateFar",
     0x2D4C: "RenderProjectile",
+    0x2A88: "DispatchEntityUpdateFar",
+    0x35C6: "Bank1NoOpFar",
+    0x3812: "UpdateCurrentObjectSequenceFar",
     0x389A: "StepBackgroundPaletteColors",
     0x38E2: "StepRgb555TowardTarget",
     0x39C4: "ScreenTableInitReturn",
