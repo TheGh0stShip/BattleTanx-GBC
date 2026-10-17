@@ -1,9 +1,9 @@
 ; BattleTanx (USA) - ROM bank $04
 
 SECTION "ROM Bank $04", ROMX[$4000], BANK[$04]
-	INCBIN "assets/bank_04/4000.bin" ; $201C bytes
+	INCLUDE "src/level_objects.asm"
 
-Func_04_601C:
+InitializeLevelObjects:
 	xor a
 	ld [$CD10], a
 	ld [$C6EF], a
@@ -32,7 +32,7 @@ Func_04_601C:
 	ld l, a
 	add hl, hl
 	add hl, hl
-	ld bc, $5FE0
+	ld bc, LevelObjectDataPointers
 	add hl, bc
 	ld a, [hli]
 	ld [$CD1E], a

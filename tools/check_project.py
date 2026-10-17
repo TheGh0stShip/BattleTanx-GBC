@@ -1426,6 +1426,17 @@ def check_object_sequences() -> None:
         fail(f"object sequences: {exc}")
 
 
+def check_level_objects() -> None:
+    """Bank $04 level object initialization and auxiliary records."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import level_objects  # pylint: disable=import-outside-toplevel
+
+    try:
+        print(level_objects.validate_project(ROOT))
+    except level_objects.LevelObjectError as exc:
+        fail(f"level objects: {exc}")
+
+
 def main() -> None:
     check_toolchain()
     entries = read_manifest()
@@ -1441,6 +1452,7 @@ def main() -> None:
     check_menu_memory_symbols()
     check_text(rom)
     check_object_sequences()
+    check_level_objects()
     check_executable_ram_source()
     check_tracing()
     check_audio()

@@ -10201,7 +10201,7 @@ Func_37CE:
 	push af
 	ld a, $04
 	ld [rROMB0], a
-	call Func_04_601C
+	call InitializeLevelObjects
 	pop af
 	ld [rROMB0], a
 	ret
