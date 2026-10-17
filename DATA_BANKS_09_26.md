@@ -102,6 +102,7 @@ of a contiguous run where bits 2-3 are nonzero. Their gameplay meanings are
 not established. Three traced writers change the WRAM copy: an unconverted
 bit-2 cell gains bit 6 when bit 3 is clear or bit 7 when bit 3 is set; two
 completion routines clear bits 1-3, set bits 0 and 7, and redraw the cell.
+The bit-2 rectangle pass awards five points for every cell it changes.
 
 ### 4.2 Tiles (odd bank, `16 * (record+7 + 1)` bytes)
 

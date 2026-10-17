@@ -2938,13 +2938,13 @@ Func_10E6:
 	pop de
 	pop bc
 	call FindLevelCellRunLeftEdge
-	ldh [$FF90], a
+	ldh [hLevelRegionLeft], a
 	call FindLevelCellRunRightEdge
-	ldh [$FF91], a
+	ldh [hLevelRegionRight], a
 	call FindLevelCellRunTopEdge
-	ldh [$FF92], a
+	ldh [hLevelRegionTop], a
 	call FindLevelCellRunBottomEdge
-	ldh [$FF93], a
+	ldh [hLevelRegionBottom], a
 	call Func_1425
 	pop hl
 	pop de
@@ -3077,14 +3077,14 @@ Func_11BB:
 	pop bc
 	jr z, Jump_1214
 	call FindLevelCellRunLeftEdge
-	ldh [$FF90], a
+	ldh [hLevelRegionLeft], a
 	call FindLevelCellRunRightEdge
-	ldh [$FF91], a
+	ldh [hLevelRegionRight], a
 	call FindLevelCellRunTopEdge
-	ldh [$FF92], a
+	ldh [hLevelRegionTop], a
 	call FindLevelCellRunBottomEdge
-	ldh [$FF93], a
-	call Func_12D8
+	ldh [hLevelRegionBottom], a
+	call ConvertLevelCellBit2Region
 Jump_1214:
 	pop hl
 	pop de
@@ -3157,14 +3157,14 @@ Func_1219:
 	pop de
 	pop bc
 	call FindLevelCellRunLeftEdge
-	ldh [$FF90], a
+	ldh [hLevelRegionLeft], a
 	call FindLevelCellRunRightEdge
-	ldh [$FF91], a
+	ldh [hLevelRegionRight], a
 	call FindLevelCellRunTopEdge
-	ldh [$FF92], a
+	ldh [hLevelRegionTop], a
 	call FindLevelCellRunBottomEdge
-	ldh [$FF93], a
-	call Func_12A1
+	ldh [hLevelRegionBottom], a
+	call ConvertLevelCellBit3Region
 	ld e, $21
 	call Audio_QueueSound
 	ld bc, $0014
@@ -3185,39 +3185,40 @@ Jump_129A:
 	ret
 
 
-Func_12A1:
+; Convert every bit-3 cell in the inclusive HRAM region and redraw changes.
+ConvertLevelCellBit3Region:
 	push af
 	push bc
 	push de
 	push hl
-	ldh a, [$FF92]
-	ldh [$FF94], a
+	ldh a, [hLevelRegionTop]
+	ldh [hLevelRegionY], a
 Jump_12A9:
-	ldh a, [$FF90]
-	ldh [$FF95], a
+	ldh a, [hLevelRegionLeft]
+	ldh [hLevelRegionX], a
 Jump_12AD:
-	ldh a, [$FF95]
+	ldh a, [hLevelRegionX]
 	ld c, a
-	ldh a, [$FF94]
+	ldh a, [hLevelRegionY]
 	ld e, a
 	call ConvertLevelCellBit3ToLookupState
 	jr z, Jump_12BB
 	call DrawLevelCellIfVisible
 Jump_12BB:
-	ldh a, [$FF91]
+	ldh a, [hLevelRegionRight]
 	inc a
 	ld b, a
-	ldh a, [$FF95]
+	ldh a, [hLevelRegionX]
 	inc a
-	ldh [$FF95], a
+	ldh [hLevelRegionX], a
 	cp b
 	jr c, Jump_12AD
-	ldh a, [$FF93]
+	ldh a, [hLevelRegionBottom]
 	inc a
 	ld b, a
-	ldh a, [$FF94]
+	ldh a, [hLevelRegionY]
 	inc a
-	ldh [$FF94], a
+	ldh [hLevelRegionY], a
 	cp b
 	jr c, Jump_12A9
 	pop hl
@@ -3227,55 +3228,57 @@ Jump_12BB:
 	ret
 
 
-Func_12D8:
+; Convert every bit-2 cell in the inclusive HRAM region, redraw it, and award
+; five points per changed cell.
+ConvertLevelCellBit2Region:
 	push af
 	push bc
 	push de
 	push hl
 	xor a
-	ldh [$FF9E], a
-	ldh [$FF9F], a
+	ldh [hLevelRegionScore], a
+	ldh [hLevelRegionScore + 1], a
 	ld e, $45
 	call Audio_QueueSound
-	ldh a, [$FF92]
-	ldh [$FF94], a
+	ldh a, [hLevelRegionTop]
+	ldh [hLevelRegionY], a
 Jump_12EA:
-	ldh a, [$FF90]
-	ldh [$FF95], a
+	ldh a, [hLevelRegionLeft]
+	ldh [hLevelRegionX], a
 Jump_12EE:
-	ldh a, [$FF95]
+	ldh a, [hLevelRegionX]
 	ld c, a
-	ldh a, [$FF94]
+	ldh a, [hLevelRegionY]
 	ld e, a
 	call ConvertLevelCellBit2ToLookupState
 	jr z, Jump_1308
-	ldh a, [$FF9E]
+	ldh a, [hLevelRegionScore]
 	add a, $05
-	ldh [$FF9E], a
-	ldh a, [$FF9F]
+	ldh [hLevelRegionScore], a
+	ldh a, [hLevelRegionScore + 1]
 	adc a, $00
-	ldh [$FF9F], a
+	ldh [hLevelRegionScore + 1], a
 	call DrawLevelCellIfVisible
 Jump_1308:
-	ldh a, [$FF91]
+	ldh a, [hLevelRegionRight]
 	inc a
 	ld b, a
-	ldh a, [$FF95]
+	ldh a, [hLevelRegionX]
 	inc a
-	ldh [$FF95], a
+	ldh [hLevelRegionX], a
 	cp b
 	jr c, Jump_12EE
-	ldh a, [$FF93]
+	ldh a, [hLevelRegionBottom]
 	inc a
 	ld b, a
-	ldh a, [$FF94]
+	ldh a, [hLevelRegionY]
 	inc a
-	ldh [$FF94], a
+	ldh [hLevelRegionY], a
 	cp b
 	jr c, Jump_12EA
-	ldh a, [$FF9E]
+	ldh a, [hLevelRegionScore]
 	ld c, a
-	ldh a, [$FF9F]
+	ldh a, [hLevelRegionScore + 1]
 	ld b, a
 	call AddToScore
 	pop hl
@@ -3462,26 +3465,26 @@ Jump_13FF:
 
 
 Func_1404:
-	ldh a, [$FF92]
+	ldh a, [hLevelRegionTop]
 	ld b, a
-	ldh a, [$FF93]
+	ldh a, [hLevelRegionBottom]
 	sub b
 	inc a
 	ld b, a
 	call Func_043C
 	ld b, a
-	ldh a, [$FF92]
+	ldh a, [hLevelRegionTop]
 	add a, b
 	ld e, a
-	ldh a, [$FF90]
+	ldh a, [hLevelRegionLeft]
 	ld b, a
-	ldh a, [$FF91]
+	ldh a, [hLevelRegionRight]
 	sub b
 	inc a
 	ld b, a
 	call Func_043C
 	ld b, a
-	ldh a, [$FF90]
+	ldh a, [hLevelRegionLeft]
 	add a, b
 	ld c, a
 	ret
@@ -3495,33 +3498,33 @@ Func_1425:
 	ld e, $44
 	call Audio_QueueSound
 	xor a
-	ldh [$FF9D], a
-	ldh [$FF9C], a
-	ldh a, [$FF92]
-	ldh [$FF94], a
+	ldh [hLevelRegionChangedCount], a
+	ldh [hLevelRegionRetryCount], a
+	ldh a, [hLevelRegionTop]
+	ldh [hLevelRegionY], a
 Jump_1437:
-	ldh a, [$FF90]
-	ldh [$FF95], a
+	ldh a, [hLevelRegionLeft]
+	ldh [hLevelRegionX], a
 Jump_143B:
 	call Func_1404
 	call StartLevelCellLookupTransition
 	jr nz, Jump_1457
-	ldh a, [$FF95]
+	ldh a, [hLevelRegionX]
 	ld c, a
-	ldh a, [$FF94]
+	ldh a, [hLevelRegionY]
 	ld e, a
 	call StartLevelCellLookupTransition
-	ldh a, [$FF9C]
+	ldh a, [hLevelRegionRetryCount]
 	inc a
-	ldh [$FF9C], a
+	ldh [hLevelRegionRetryCount], a
 	cp $06
 	jr z, Jump_14AB
 	jr z, Jump_148D
 Jump_1457:
 	call DrawLevelCellIfVisible
-	ldh a, [$FF9D]
+	ldh a, [hLevelRegionChangedCount]
 	inc a
-	ldh [$FF9D], a
+	ldh [hLevelRegionChangedCount], a
 	push af
 	call Func_0421
 	and $03
@@ -3547,27 +3550,27 @@ Jump_1488:
 	cp $09
 	jr z, Jump_14AE
 Jump_148D:
-	ldh a, [$FF91]
+	ldh a, [hLevelRegionRight]
 	inc a
 	ld b, a
-	ldh a, [$FF95]
+	ldh a, [hLevelRegionX]
 	inc a
-	ldh [$FF95], a
+	ldh [hLevelRegionX], a
 	cp b
 	jr c, Jump_143B
-	ldh a, [$FF93]
+	ldh a, [hLevelRegionBottom]
 	inc a
 	ld b, a
-	ldh a, [$FF94]
+	ldh a, [hLevelRegionY]
 	inc a
-	ldh [$FF94], a
+	ldh [hLevelRegionY], a
 	cp b
 	jr c, Jump_1437
-	ldh a, [$FF9D]
+	ldh a, [hLevelRegionChangedCount]
 	cp $05
 	jr nc, Jump_14AE
 Jump_14AB:
-	call Func_12D8
+	call ConvertLevelCellBit2Region
 Jump_14AE:
 	pop hl
 	pop de

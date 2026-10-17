@@ -83,6 +83,17 @@ DEF wLevelRingX                EQU $CA14
 DEF wLevelRingRowOffset        EQU $CA15 ; 2-byte ring Y multiplied by 32
 DEF wLevelRowOffsets           EQU $CA17 ; little-endian offset per row
 
+; Shared HRAM scratch while processing a rectangular cell-map region.
+DEF hLevelRegionLeft           EQU $FF90
+DEF hLevelRegionRight          EQU $FF91
+DEF hLevelRegionTop            EQU $FF92
+DEF hLevelRegionBottom         EQU $FF93
+DEF hLevelRegionY              EQU $FF94
+DEF hLevelRegionX              EQU $FF95
+DEF hLevelRegionRetryCount     EQU $FF9C
+DEF hLevelRegionChangedCount   EQU $FF9D
+DEF hLevelRegionScore          EQU $FF9E ; 2-byte little-endian accumulator
+
 
 ; Sound driver state (see AUDIO_RESEARCH.md). Written by Audio_Init
 ; ($06:$7CAE) and used by the driver in bank $06 and ROM0:$2ED5-$2F92.

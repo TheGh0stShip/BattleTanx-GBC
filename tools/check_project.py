@@ -810,6 +810,8 @@ def check_level_banks() -> None:
             "ConvertLevelCellBit2ToLookupState": (0x00, 0x132E),
             "ConvertLevelCellBit3ToLookupState": (0x00, 0x1399),
             "StartLevelCellLookupTransition": (0x00, 0x14B3),
+            "ConvertLevelCellBit3Region": (0x00, 0x12A1),
+            "ConvertLevelCellBit2Region": (0x00, 0x12D8),
             "GetObjectScoreValue": (0x00, 0x0C1A),
             "AddToScore": (0x00, 0x3019),
             "LoadLevelLookupPointers": (0x05, 0x4088),
@@ -855,6 +857,23 @@ def check_level_banks() -> None:
     }
     if memory_symbols != expected_memory:
         fail(f"levels: WRAM symbols differ: {memory_symbols.items() ^ expected_memory.items()}")
+
+    hram_symbols = {
+        name: int(address, 16)
+        for name, address in re.findall(
+            r"DEF (hLevelRegion\w+)\s+EQU \$([0-9A-Fa-f]+)", memory_source
+        )
+    }
+    expected_hram = {
+        "hLevelRegionLeft": 0xFF90, "hLevelRegionRight": 0xFF91,
+        "hLevelRegionTop": 0xFF92, "hLevelRegionBottom": 0xFF93,
+        "hLevelRegionY": 0xFF94, "hLevelRegionX": 0xFF95,
+        "hLevelRegionRetryCount": 0xFF9C,
+        "hLevelRegionChangedCount": 0xFF9D,
+        "hLevelRegionScore": 0xFF9E,
+    }
+    if hram_symbols != expected_hram:
+        fail(f"levels: HRAM symbols differ: {hram_symbols.items() ^ expected_hram.items()}")
 
     print(
         f"levels: {len(levels)} levels in banks $09-$26, every byte in one range, "
