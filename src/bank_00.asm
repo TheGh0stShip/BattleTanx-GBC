@@ -9233,11 +9233,11 @@ Func_3104:
 	ldh [$FF8A], a
 	call AllocateDynamicSpriteTiles
 	cp $FF
-	jr z, Jump_3157
+	jr z, .restoreBank
 	ldh [$FF84], a
 	call LoadObjectAnimationTiles
 	call BuildObjectOamEntries
-Jump_3157:
+.restoreBank:
 	pop af
 	ld [rROMB0], a
 	pop hl
@@ -9258,7 +9258,7 @@ Func_315F:
 	ld h, a
 	ldh a, [$FF8A]
 	ld c, a
-Jump_316D:
+.buildEntry:
 	call AllocateShadowOamFront
 	ldh a, [$FF82]
 	ld b, a
@@ -9285,7 +9285,7 @@ Jump_316D:
 	ld [de], a
 	inc e
 	dec c
-	jr nz, Jump_316D
+	jr nz, .buildEntry
 	ret
 
 
@@ -9313,7 +9313,7 @@ Func_3190:
 	ld [rROMB0], a
 	ldh a, [$FF8A]
 	ld b, a
-Jump_31AF:
+.copyTile:
 	ld a, [hli]
 	ld [de], a
 	inc e
@@ -9363,7 +9363,7 @@ Jump_31AF:
 	ld [de], a
 	inc de
 	dec b
-	jr nz, Jump_31AF
+	jr nz, .copyTile
 	ret
 
 
@@ -9387,12 +9387,12 @@ Func_31E3:
 	inc a
 	ld [hl], a
 	cp d
-	jr c, Jump_31FF
+	jr c, .return
 	ld a, l
 	and $C0
 	ld l, a
 	call FreeObjectRecord
-Jump_31FF:
+.return:
 	pop hl
 	pop de
 	ret
@@ -9406,14 +9406,14 @@ Func_3202: ; legacy alias
 	push bc
 	push de
 	push hl
-Jump_3206:
+.copyRow:
 	ld e, $14
-Jump_3208:
+.copyByte:
 	ld a, [bc]
 	ld [hli], a
 	inc bc
 	dec e
-	jr nz, Jump_3208
+	jr nz, .copyByte
 	ld a, $0C
 	add a, l
 	ld l, a
@@ -9421,7 +9421,7 @@ Jump_3208:
 	adc a, h
 	ld h, a
 	dec d
-	jr nz, Jump_3206
+	jr nz, .copyRow
 	pop hl
 	pop de
 	pop bc
@@ -9493,13 +9493,13 @@ Func_325B:
 	call DrawEmptyHudHealthBar
 	xor a
 	ld [wVBlankPending], a
-Jump_3268:
+.waitForVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_3268
+	jr z, .waitForVBlank
 	xor a
 	ld [wVBlankPending], a
 	ld a, $01
@@ -9629,52 +9629,52 @@ Func_330F:
 	ld h, b
 	ld l, b
 	add a, a
-	jr nc, Jump_3319
+	jr nc, .bit6
 	add hl, de
 	adc a, b
-Jump_3319:
+.bit6:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_331F
+	jr nc, .bit5
 	add hl, de
 	adc a, b
-Jump_331F:
+.bit5:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_3325
+	jr nc, .bit4
 	add hl, de
 	adc a, b
-Jump_3325:
+.bit4:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_332B
+	jr nc, .bit3
 	add hl, de
 	adc a, b
-Jump_332B:
+.bit3:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_3331
+	jr nc, .bit2
 	add hl, de
 	adc a, b
-Jump_3331:
+.bit2:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_3337
+	jr nc, .bit1
 	add hl, de
 	adc a, b
-Jump_3337:
+.bit1:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_333D
+	jr nc, .bit0
 	add hl, de
 	adc a, b
-Jump_333D:
+.bit0:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_3343
+	jr nc, .return
 	add hl, de
 	adc a, b
-Jump_3343:
+.return:
 	ret
 
 HudHealthScaleByType:
@@ -9704,9 +9704,9 @@ Func_334A:
 	ld l, a
 	ld a, [wPlayerAlive]
 	and a
-	jr nz, Jump_336C
+	jr nz, .selectScale
 	ld c, a
-Jump_336C:
+.selectScale:
 	ld a, [hl]
 	add a, a
 	add a, LOW(HudHealthScaleByType)
@@ -9722,15 +9722,15 @@ Jump_336C:
 	ld hl, $C421
 	ld a, d
 	sub $07
-	jr nc, Jump_338A
+	jr nc, .firstCellFull
 	ld a, d
 	ld d, $00
-	jr Jump_338D
+	jr .drawFirstCell
 
-Jump_338A:
+.firstCellFull:
 	ld d, a
 	ld a, $07
-Jump_338D:
+.drawFirstCell:
 	add a, $16
 	ld e, a
 	ld [hl], $87
@@ -9746,15 +9746,15 @@ Jump_338D:
 	inc hl
 	ld a, d
 	sub $08
-	jr nc, Jump_33A8
+	jr nc, .secondCellFull
 	ld a, d
 	ld d, $00
-	jr Jump_33AB
+	jr .drawSecondCell
 
-Jump_33A8:
+.secondCellFull:
 	ld d, a
 	ld a, $08
-Jump_33AB:
+.drawSecondCell:
 	add a, $1E
 	ld e, a
 	ld [hl], $87
@@ -9770,15 +9770,15 @@ Jump_33AB:
 	inc hl
 	ld a, d
 	sub $08
-	jr nc, Jump_33C6
+	jr nc, .thirdCellFull
 	ld a, d
 	ld d, $00
-	jr Jump_33C9
+	jr .drawThirdCell
 
-Jump_33C6:
+.thirdCellFull:
 	ld d, a
 	ld a, $08
-Jump_33C9:
+.drawThirdCell:
 	add a, $1E
 	ld e, a
 	ld [hl], $87
@@ -9794,15 +9794,15 @@ Jump_33C9:
 	inc hl
 	ld a, d
 	sub $08
-	jr nc, Jump_33E4
+	jr nc, .fourthCellFull
 	ld a, d
 	ld d, $00
-	jr Jump_33E7
+	jr .drawFourthCell
 
-Jump_33E4:
+.fourthCellFull:
 	ld d, a
 	ld a, $08
-Jump_33E7:
+.drawFourthCell:
 	add a, $1E
 	ld e, a
 	ld [hl], $87
@@ -9818,15 +9818,15 @@ Jump_33E7:
 	inc hl
 	ld a, d
 	sub $08
-	jr nc, Jump_3402
+	jr nc, .fifthCellFull
 	ld a, d
 	ld d, $00
-	jr Jump_3405
+	jr .drawFifthCell
 
-Jump_3402:
+.fifthCellFull:
 	ld d, a
 	ld a, $08
-Jump_3405:
+.drawFifthCell:
 	add a, $1E
 	ld e, a
 	ld [hl], $87
@@ -9842,15 +9842,15 @@ Jump_3405:
 	inc hl
 	ld a, d
 	sub $07
-	jr nc, Jump_3420
+	jr nc, .lastCellFull
 	ld a, d
 	ld d, $00
-	jr Jump_3423
+	jr .drawLastCell
 
-Jump_3420:
+.lastCellFull:
 	ld d, a
 	ld a, $07
-Jump_3423:
+.drawLastCell:
 	add a, $27
 	ld e, a
 	ld [hl], $87
