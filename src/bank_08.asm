@@ -554,16 +554,14 @@ PaletteRecord69F5: ; palette-shaped record, no reader found
 Bank08InterfaceTiles69FD:
 	INCBIN "assets/bank_08/interface_tiles_69FD.bin" ; 8 tiles
 
-Bank08Unknown6A7D: ; 136 bytes, no reader found; meaning unknown
-	db $E9, $1F, $EE, $FE, $AE, $92, $F5, $99, $E7, $A8, $DE, $3D, $E6, $4D, $E7, $EC
-	db $23, $DB, $BE, $DA, $78, $DE, $3E, $DC, $6A, $DC, $93, $ED, $BD, $E1, $35, $EF
-	db $8F, $81, $D9, $D7, $FC, $87, $D7, $9F, $F7, $F6, $00, $70, $37, $7C, $19, $3F
-	db $D5, $FD, $D0, $3C, $0C, $DE, $00, $1E, $33, $57, $25, $5E, $A5, $4E, $E0, $08
-	db $CA, $7D, $BF, $76, $29, $F6, $3F, $80, $9B, $F3, $9F, $F7, $D0, $AC, $C4, $BF
-	db $03, $F3, $F4, $FB, $7D, $75, $1A, $7C, $4C, $DD, $2C, $BD, $11, $2D, $5F, $E3
-	db $FC, $63, $B2, $3C, $3A, $33, $BB, $C3, $D3, $F8, $78, $BF, $1C, $C1, $F9, $C8
-	db $B3, $C7, $B5, $CF, $B4, $D6, $2E, $F6, $AE, $36, $6E, $54, $78, $0E, $01, $F0
-	db $40, $18, $89, $39, $0E, $56, $15, $73
+; Eight native 2bpp tiles followed by a dark-to-light RGB555 palette. No ROM
+; pointer or traced reader reaches either range, so their gameplay role remains
+; unknown and they are deliberately named only by format and address.
+Bank08UnreferencedTiles6A7D:
+	INCBIN "assets/bank_08/unreferenced_tiles_6A7D.bin" ; 8 tiles
+
+Bank08UnreferencedPalette6AFD:
+	dw $1840, $3989, $560E, $7315
 
 ; DrawEncodedGlyph: tile = [EncodedGlyphTable + char] + $80 (VRAM1, attribute $0F).
 ; ASCII '0'-'9' -> 1-10, 'A'-'Z' -> 11-36, every other code -> 0 (blank).

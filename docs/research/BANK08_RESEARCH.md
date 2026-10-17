@@ -20,18 +20,19 @@ corrected here:
    8-byte records that start 2 bytes earlier.
 6. ROM0 reads BG palette 7 from `$44A2`, 8 bytes, so the read runs 2 bytes
    into the first sprite tile.
-7. Unknown bytes dropped from 7,309 to **147**.
+7. Unknown bytes dropped from 7,309 to **11**.
 
 | Class | Bytes |
 | --- | ---: |
 | code | 27 |
 | graphics, reader-proven | 9824 |
 | graphics, referenced only by unreachable effect steps | 992 |
-| graphics, never loaded (blank font tile and duplicated interface tile) | 32 |
+| graphics, never loaded (blank font tile, duplicate, and `$6A7D` tiles) | 160 |
 | palettes read by code | 64 |
 | palette-shaped records (12 bytes read; 8-byte unused record at `$6112`) | 344 |
+| palette, never loaded (`$6AFD`) | 8 |
 | tables (metatiles 192, palette-index 10, glyph 128) | 330 |
-| unknown | 147 |
+| unknown | 11 |
 | fill + marker | 4624 |
 | **total** | **16384** |
 
@@ -44,9 +45,10 @@ corrected here:
 
 **Bounded only**: 1,503 bytes.
 - 992 graphics reached only by unreachable table entries;
-- 32 bytes of unloaded graphics;
+- 160 bytes of unloaded graphics;
 - 332 bytes of unread palette-shaped records;
-- 147 unknown bytes.
+- 8 bytes of unloaded palette;
+- 11 unknown bytes.
 
 The two totals sum to 16,384.
 
@@ -106,6 +108,11 @@ caller's bank.
 - **Palette-shaped record**: 4 RGB555 words, colour 0 = `$0000`, bit 15 clear.
   Each one immediately precedes a tile block. Only `$46EA` and `$5502` (colours
   1-3) are read; the others' meaning is unproven.
+- **Unreferenced `$6A7D` resource**: eight native 2bpp tiles followed by the
+  four RGB555 words `$1840,$3989,$560E,$7315`. All three color channels rise
+  strictly from the first word to the fourth. No literal pointer to either
+  boundary exists anywhere in the ROM, no traced reader reaches the range,
+  and the rendered tiles are not used as evidence for a gameplay name.
 
 ## 4. Source and assets
 
@@ -126,7 +133,7 @@ derives and checks them.
 ## 5. Validation
 
 `tools/bank08.py` runs from `check_bank08_graphics_assets` in
-`tools/check_project.py`. Its 27 negative tests are each rejected for the
+`tools/check_project.py`. Its 28 negative tests are each rejected for the
 intended reason:
 - tile load count;
 - glyph table entry;
@@ -146,6 +153,7 @@ intended reason:
 - palette-index value;
 - status-4 type bound;
 - interrupt-time audio bank save/restore;
+- unreferenced palette format;
 - fill byte;
 - bank marker;
 - coverage gap;
@@ -157,7 +165,7 @@ intended reason:
 - symbol address.
 
 `make bank08` (`tools/extract_bank08.py`) writes `build/bank08/`:
-- 84 graphics sheets;
+- 85 graphics sheets;
 - glyph CSV/JSON;
 - strings CSV;
 - metatiles PNG/CSV;
@@ -179,9 +187,9 @@ All of them round-trip to the original bytes.
 
 ## 7. Unresolved
 
-1. 147 unknown bytes: `$6108-$6109` (`81 00`), `$624A-$624F` (6 bytes),
-   `$6260-$6262` (3 bytes), and `$6A7D-$6B04` (136 high-entropy bytes).
-   `$6250-$625F` is an unread exact duplicate of tile 47 at `$655B`.
+1. 11 unknown bytes: `$6108-$6109` (`81 00`), `$624A-$624F` (6 bytes), and
+   `$6260-$6262` (3 bytes). `$6250-$625F` is an unread exact duplicate of tile
+   47 at `$655B`.
 2. The purpose of the 40 unread palette-shaped records (42 in total).
 3. Why effect steps 19-71 exist but cannot be reached.
 4. Gameplay identities of the sprites and metatiles. The renders suggest
@@ -336,7 +344,8 @@ All of them round-trip to the original bytes.
 | `69B5-69F4` | 64 | graphics | Bank08InterfaceTiles69B5 |
 | `69F5-69FC` | 8 | palette record | PaletteRecord69F5 |
 | `69FD-6A7C` | 128 | graphics | Bank08InterfaceTiles69FD |
-| `6A7D-6B04` | 136 | unknown | Bank08Unknown6A7D |
+| `6A7D-6AFC` | 128 | graphics (not loaded) | Bank08UnreferencedTiles6A7D |
+| `6AFD-6B04` | 8 | palette (not loaded) | Bank08UnreferencedPalette6AFD |
 | `6B05-6B84` | 128 | table | EncodedGlyphTable |
 | `6B85-6DD4` | 592 | graphics | EncodedFontTiles |
 | `6DD5-6DEF` | 27 | code | SelectObjectSpritePalette |

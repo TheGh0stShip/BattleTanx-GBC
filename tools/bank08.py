@@ -264,7 +264,8 @@ def parse(rom: bytes):
         (0x69B5, 0x69F5, "graphics", "Bank08InterfaceTiles69B5"),
         (0x69F5, 0x69FD, "palette record", "PaletteRecord69F5"),
         (0x69FD, 0x6A7D, "graphics", "Bank08InterfaceTiles69FD"),
-        (0x6A7D, 0x6B05, "unknown", "Bank08Unknown6A7D"),
+        (0x6A7D, 0x6AFD, "graphics (not loaded)", "Bank08UnreferencedTiles6A7D"),
+        (0x6AFD, 0x6B05, "palette (not loaded)", "Bank08UnreferencedPalette6AFD"),
         (GLYPH_TABLE, ENCODED_FONT, "table", "EncodedGlyphTable"),
         (ENCODED_FONT, ENCODED_FONT + 16 * ENCODED_FONT_TILES, "graphics", "EncodedFontTiles"),
         (CODE[0], CODE[1], "code", "SelectObjectSpritePalette"),
@@ -275,6 +276,13 @@ def parse(rom: bytes):
           "unused palette record $6112 changed")
     check(r(0x6250, 16) == r(0x626B + 47 * 16, 16),
           "duplicate interface tile $6250 no longer matches tile 47 at $655B")
+    unused_palette = [word(rom, 8, 0x6AFD + 2 * i) for i in range(4)]
+    check(not any(value & 0x8000 for value in unused_palette),
+          "unreferenced palette $6AFD has bit 15 set")
+    channels = [[(value >> shift) & 0x1F for value in unused_palette]
+                for shift in (0, 5, 10)]
+    check(all(all(a < b for a, b in zip(channel, channel[1:])) for channel in channels),
+          "unreferenced palette $6AFD is not dark-to-light in every channel")
     # loaded tile blocks must match the static graphics ranges they claim
     for src, n, *_ in TILE_LOADS:
         hit = [s for s, e, c, _ in static if s <= src and src + 16 * n <= e and c.startswith("graphics")]
@@ -311,6 +319,7 @@ ASSETS = {
     "assets/bank_08/arrow_down_tiles.bin": (0x696D, 0x69AD),
     "assets/bank_08/interface_tiles_69B5.bin": (0x69B5, 0x69F5),
     "assets/bank_08/interface_tiles_69FD.bin": (0x69FD, 0x6A7D),
+    "assets/bank_08/unreferenced_tiles_6A7D.bin": (0x6A7D, 0x6AFD),
     "assets/bank_08/encoded_font_tiles.bin": (0x6B85, 0x6DD5),
 }
 SUPERSEDED = ["unknown_44A8.bin", "unknown_46F0.bin", "unknown_6108.bin", "unknown_621A.bin",
@@ -343,6 +352,8 @@ SYMBOLS = {
     "Bank08ArrowDownPalette": (0x08, 0x6965), "Bank08ArrowDownTiles": (0x08, 0x696D),
     "Bank08AlphanumericFontPalette": (0x08, 0x69AD), "Bank08AlphanumericFontTiles": (0x08, 0x69B5),
     "Bank08InterfaceTiles69B5": (0x08, 0x69B5), "Bank08InterfaceTiles69FD": (0x08, 0x69FD),
+    "Bank08UnreferencedTiles6A7D": (0x08, 0x6A7D),
+    "Bank08UnreferencedPalette6AFD": (0x08, 0x6AFD),
     "EncodedGlyphTable": (0x08, 0x6B05), "EncodedFontTiles": (0x08, 0x6B85),
     "SelectObjectSpritePalette": (0x08, 0x6DD5),
     "wUiFontPalette": (0x00, 0xC721), "wHudIconPalette": (0x00, 0xC6F9),
@@ -408,6 +419,7 @@ def negative_tests(rom: bytes, root: pathlib.Path) -> int:
         "palette index value": ({(8, 0x67F3): 0x04}, "palette index table"),
         "status-4 type bound": ({(4, 0x4043): 0x0A}, "status-4 level-record types"),
         "interrupt-time audio bank save": ({(0, 0x2F2F): 0x00}, "Audio_Update no longer saves"),
+        "unreferenced palette": ({(8, 0x6AFE): 0x98}, "unreferenced palette $6AFD has bit 15 set"),
         "fill byte": ({(8, 0x7000): 0x01}, "non-zero byte in fill"),
         "bank marker": ({(8, 0x7FFF): 0x07}, "bank marker"),
     }
@@ -421,7 +433,7 @@ def negative_tests(rom: bytes, root: pathlib.Path) -> int:
             continue
         raise Bank08Error(f"negative test not rejected: {name}")
     good = parse(rom)
-    for name, bad, expect in (("uncovered range", [x for x in good if x[3] != "Bank08Unknown6A7D"], "gap"),
+    for name, bad, expect in (("uncovered range", [x for x in good if x[3] != "Bank08UnreferencedTiles6A7D"], "gap"),
                               ("overlapping range", good + [(0x6A00, 0x6A10, "x", "x")], "overlap")):
         try:
             check_coverage(bad)

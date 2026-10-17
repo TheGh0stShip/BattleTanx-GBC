@@ -11,6 +11,7 @@ bank_08/arrow_up_tiles.png            0x22925     0x40       2
 bank_08/arrow_down_tiles.png          0x2296d     0x40       2
 bank_08/interface_tiles_69B5.png      0x229b5     0x40       2
 bank_08/interface_tiles_69FD.png      0x229fd     0x80       8
+bank_08/unreferenced_tiles_6A7D.png   0x22a7d     0x80       2
 bank_08/encoded_font_tiles.png        0x22b85     0x250      37
 # Three variants share the bank-$05 orientation table: nine frames of nine tiles.
 bank_27/orientation_tiles.png          0x9c000     0x510      9

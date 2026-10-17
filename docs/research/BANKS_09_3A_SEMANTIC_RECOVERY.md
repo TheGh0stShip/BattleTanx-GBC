@@ -189,7 +189,7 @@ raw pointer.
 make clean
 make check
 battletanx.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
-bank 08: every byte classified (code 27, fill 4623, graphics 9824, graphics (duplicate, not loaded) 16, graphics (not loaded) 16, graphics (unreachable table entries only) 992, marker 1, palette 64, palette record 336, palette record (unused) 8, table 330, unknown 147), 26 negative tests rejected
+bank 08: every byte classified (code 27, fill 4623, graphics 9824, graphics (duplicate, not loaded) 16, graphics (not loaded) 144, graphics (unreachable table entries only) 992, marker 1, palette 64, palette (not loaded) 8, palette record 336, palette record (unused) 8, table 330, unknown 11), 28 negative tests rejected
 object banks: $27-$29 fully accounted (fill 39945, graphics 3888, marker 3, palette 24, residue 5292), 20 negative tests rejected
 unused banks: $3C-$3F are 65536 checked $FF padding bytes
 code-bank tails: banks $03/$04 explicit through their bank markers
@@ -202,14 +202,14 @@ trace: 38772 direct bytes, 0 heuristic bytes, 31 RAM code images, 7 RAM data ima
 audio: 37 patches, 25 sfx sequences, 10 music sequences, 32 queued ids checked
 screens: banks $2A-$2E fully classified (code 2803, data 13694, graphics 51792, padding 13631), 13 screen packages, 18 negative tests rejected
 levels: 15 levels in banks $09-$26, every byte in one range, 11 negative tests rejected
-project: OK (157 assets, baserom sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
+project: OK (158 assets, baserom sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 baserom.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
-graphics: 64 sheets extracted and round-trip verified
+graphics: 65 sheets extracted and round-trip verified
 scene maps: 11 fixed scenes (2640 cells) plus the referenced bank-$3B compatibility warning, 36 scrolling scenes (709 rows, 14180 cells) rendered and verified
 levels: 15 levels, 112000 cells; CSV, palette and PNG outputs round-trip verified
 screens: 17 pictures; CSV, palette and PNG outputs round-trip verified
 objects: 3 banks; frame, orientation, layout and palette outputs round-trip verified
-bank08: 84 graphics ranges, glyph map, 11 strings, 16 metatiles; all outputs round-trip verified
+bank08: 85 graphics ranges, glyph map, 11 strings, 16 metatiles; all outputs round-trip verified
 relocation: 152 raw pointers and 80 raw bank bytes pinned; 384 ranges cover banks $09-$3A; 126 assets; 5 negative tests rejected
 level comparison: report matches all 15 levels
 shift: PASS [relocate] level 0 odd bank (cell map, tiles, lookup table, palettes): 4 labels moved by 16; 4 pointer words relocated; no other byte changed
@@ -217,7 +217,7 @@ shift: PASS [relocate] level 0 even bank (tile map, attribute map): 2 labels mov
 shift: PASS [fail-safe] level 0 attribute map inside its bank: assembly stopped as required: Assembly aborted with 1 error
 shift: PASS [relocate] level 14 even bank (source of the $27-$29 residue slices): 2 labels moved by 16; 2 pointer words relocated; no other byte changed
 shift: PASS [fail-safe] object orientation frames bank $27: assembly stopped as required: Assembly aborted with 11 errors
-shift: PASS [fail-safe] object palette bank $28: assembly stopped as required: Assembly aborted with 1 error
+shift: PASS [fail-safe] object palette bank $28: assembly stopped as required: Assembly aborted with 2 errors
 shift: PASS [relocate] screen package mode 7 (code, descriptor, tiles, maps, palettes): 38 labels moved by 16; 44 pointer words relocated; no other byte changed
 shift: PASS [fail-safe] screen package mode 3 alternate maps: assembly stopped as required: Assembly aborted with 3 errors
 shift: PASS [relocate] fixed scenes 06-07 (bank $30, HDMA tile windows, maps, attributes, palettes): 8 labels moved by 16; 8 pointer words relocated; no other byte changed
