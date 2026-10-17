@@ -70,7 +70,9 @@
      (10, 17). The complete spawn-to-sequence cross-check is enforced by
      `tools/object_sequence_fields.py`.
 5. **Unread bytes**:
-   - `Bank02Unread5E80`;
+   - `Bank02Unknown5E80` (one byte); the following eight bytes form the
+     bounded `Bank02UnusedPaletteRecord5E81`, but that record's purpose is
+     unknown and it has no reader;
    - `$D7CA`/`$D260` single-`ret` data images.
 6. **RAM**:
    - Bank `$01` writes `hLevelRegionTop` (`$FF92`) to `rROMB0` and clears

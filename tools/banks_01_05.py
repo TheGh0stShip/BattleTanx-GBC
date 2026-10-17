@@ -219,10 +219,15 @@ def check_palettes(rom, sym):
         b, a = sym[label]
         for i in range(n):
             check(not word(rom, b, a + 2 * i) & 0x8000, f"palette: {label} word {i} bit 15 set")
-    for label, n in (("UnusedPasswordBgPalette", 4), ("UnusedPasswordObjPaletteColours", 3)):
+    for label, n in (("UnusedPasswordBgPalette", 4), ("UnusedPasswordObjPaletteColours", 3),
+                     ("Bank02UnusedPaletteRecord5E81", 4)):
         b, a = sym[label]
         for i in range(n):
             check(not word(rom, b, a + 2 * i) & 0x8000, f"palette: {label} word {i} bit 15 set")
+    check(sym["Bank02Unknown5E80"] == (2, 0x5E80), "palette residue: leading byte symbol moved")
+    check(rd(rom, 2, 0x5E80, 1) == b"\x08", "palette residue: leading byte changed")
+    check(sym["Bank02UnusedPaletteRecord5E81"] == (2, 0x5E81),
+          "palette residue: record symbol moved")
 
 
 # ------------------------------------------------------------------ assets
@@ -422,6 +427,8 @@ def negative_tests(root, rom, sym):
         ("picture descriptor bank", {(1, sym["MenuState05PictureDescriptors"][1]): 0x2D}, "descriptor 0 bank"),
         ("picture descriptor padding", {(1, sym["MenuState05PictureDescriptors"][1] + 12): 0x01}, "descriptor 0 tail"),
         ("palette bit 15", {(2, sym["BurstObjPalettes"][1] + 1): 0x80}, "BurstObjPalettes word 0"),
+        ("unused palette record bit 15", {(2, 0x5E82): 0x80},
+         "Bank02UnusedPaletteRecord5E81 word 0"),
     ]
     for name, chg, expect in extra:
         try:

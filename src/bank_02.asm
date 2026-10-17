@@ -2114,10 +2114,13 @@ BurstBlockTileGrids:
 	db $64, $7F, $80, $64
 	db $81, $65, $64, $82
 
-; no reader
-Bank02Unread5E80:
-	db $08, $00, $00, $00, $00, $00, $00, $FF
-	db $7F
+; No reader; purpose unknown.
+Bank02Unknown5E80:
+	db $08
+
+; Complete RGB555-shaped four-colour record; no reader was found.
+Bank02UnusedPaletteRecord5E81:
+	dw $0000, $0000, $0000, $7FFF
 
 ; 33 tiles; Bank02LoadObjTiles -> VRAM $8000
 BurstTiles:
