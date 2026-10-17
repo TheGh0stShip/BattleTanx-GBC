@@ -49,10 +49,10 @@ SerialInterrupt:
 ClearBytes:
 Func_0059:
 	xor a
-Jump_005A:
+.loop:
 	ld [hli], a
 	dec b
-	jr nz, Jump_005A
+	jr nz, .loop
 	ret
 
 	db $00
@@ -60,61 +60,61 @@ Jump_005A:
 JoypadInterrupt:
 	reti
 
-Jump_0061:
+HandleLevelEnd:
 	ld a, [wLevelComplete]
 	or a
-	jp nz, Jump_0076
+	jp nz, RunLevelCompleteFlow
 	ld a, [wPlayerAlive]
 	or a
-	jr nz, Jump_0074
+	jr nz, .spinForever
 	call HandlePlayerLifeLossFar
-	jp Jump_01B4
+	jp RespawnPlayer
 
-Jump_0074:
-	jr Jump_0074
+.spinForever:
+	jr .spinForever
 
-Jump_0076:
+RunLevelCompleteFlow:
 	call RunLevelCompletionScreenFlow
 	ld a, [$C6CD]
 	cp $01
-	jp z, Jump_0090
+	jp z, ReturnToMenuAfterLevel
 	ld a, [wLevelNumber]
 	cp $0E
-	jp z, Jump_0090
+	jp z, ReturnToMenuAfterLevel
 	inc a
 	ld [wLevelNumber], a
 	jp RunLevel
 
-Jump_0090:
+ReturnToMenuAfterLevel:
 	call PrepareDisplayForScreenTransition
 	ld e, $88
 	call Audio_QueueSound
 	call RunLevelExitScreenFlow
 	xor a
 	ld [wJoypadHeld], a
-Jump_009F:
+.waitForInput:
 	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
-Jump_00A6:
+.waitForVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_00A6
+	jr z, .waitForVBlank
 	xor a
 	ld [wVBlankPending], a
 	nop
 	ld a, [wJoypadHeld]
 	or a
-	jr z, Jump_009F
+	jr z, .waitForInput
 	call FadePalettesToBlackWithSound
 	call InstallBasicInterruptHandlersFar
 	jp RunMenuAndLevelLoop
 
 	db $C3, $C3, $00, $C9
-Jump_00C7:
+RunNoLivesFlow:
 	ld e, $83
 	call Audio_QueueSound
 	call PrepareDisplayForScreenTransition
@@ -220,7 +220,7 @@ Func_0192: ; legacy alias
 	call LoadLevelLookupPointersFar
 	ld hl, $D000
 	call FreeObjectRecord
-Jump_01B4:
+RespawnPlayer:
 	call ClearCgbPalettes
 	xor a
 	ldh [rSCX], a
@@ -234,7 +234,7 @@ Jump_01B4:
 	call SpawnPlayerObject
 	ld a, [wPlayerLives]
 	or a
-	jp z, Jump_00C7
+	jp z, RunNoLivesFlow
 	call ResetBgMapWriteQueue
 	ld a, [wPlayerObject]
 	ld l, a
@@ -261,57 +261,57 @@ Jump_01B4:
 	call LoadObjectPalettes
 	call InstallGameplayInterruptHandlersFar
 	ld d, $08
-Jump_0214:
+.revealHudRow:
 	xor a
 	ld [wVBlankPending], a
-Jump_0218:
+.waitHudVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_0218
+	jr z, .waitHudVBlank
 	xor a
 	ld [wVBlankPending], a
 	ld b, $FE
 	call MoveHudWindow
 	dec d
-	jr nz, Jump_0214
+	jr nz, .revealHudRow
 	call AnimatePlayerHealthBarFillFar
 	ld a, [wMusicPtr]
 	and a
-	jr nz, Jump_0245
-Jump_0236:
+	jr nz, .beginGameplay
+.chooseMusic:
 	call RandomByte
 	and $07
 	cp $06
-	jr nc, Jump_0236
+	jr nc, .chooseMusic
 	add a, $81
 	ld e, a
 	call Audio_QueueSound
-Jump_0245:
+.beginGameplay:
 	ld e, $58
 	call Audio_QueueSound
 	call InitializeLevelEntityDispatcherFar
 	call ResetGameplayFrameState
-Jump_0250:
+.beginFrame:
 	xor a
 	ld [wVBlankPending], a
-Jump_0254:
+.waitFrameVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_0254
+	jr z, .waitFrameVBlank
 	xor a
 	ld [wVBlankPending], a
-Jump_0261:
+.waitForHdmaWindow:
 	ldh a, [rLY]
 	cp $90
-	jr c, Jump_0261
+	jr c, .waitForHdmaWindow
 	cp $97
-	jr nc, Jump_0261
+	jr nc, .waitForHdmaWindow
 	ld a, $01
 	ldh [rVBK], a
 	ld a, HIGH(wDynamicSpriteTiles)
@@ -388,7 +388,7 @@ Jump_0261:
 	ld h, a
 	call UpdateLevelCamera
 	call UpdateLevelEndCountdown
-	jp c, Jump_0061
+	jp c, HandleLevelEnd
 	ld a, [wPauseActive]
 	or a
 	call nz, RunPauseLoopFar
@@ -401,14 +401,14 @@ Jump_0261:
 	call DispatchLevelStateCheckFar
 	ld a, [wVBlankPending]
 	or a
-	jp nz, Jump_0250
+	jp nz, .beginFrame
 	xor a
 	ld [wVBlankPending], a
 .waitForVBlank:
 	ld a, [wVBlankPending]
 	or a
 	jr z, .waitForVBlank
-	jp Jump_0250
+	jp .beginFrame
 
 
 RunPauseLoopFar:
@@ -3093,7 +3093,7 @@ StartLevelCellRegionTransitionAtPixel:
 	pop hl
 	ld a, c
 	and $0C
-	jr z, Jump_115C
+	jr z, .noRegion
 	pop de
 	pop bc
 	call FindLevelCellRunLeftEdge
@@ -3111,7 +3111,7 @@ StartLevelCellRegionTransitionAtPixel:
 	pop af
 	ret
 
-Jump_115C:
+.noRegion:
 	pop de
 	pop bc
 	pop hl
@@ -3134,9 +3134,9 @@ ConvertVisibleLevelCellBit2Regions:
 	ld a, [wLevelHeight]
 	dec a
 	cp c
-	jr nc, Jump_1177
+	jr nc, .storeBottom
 	ld c, a
-Jump_1177:
+.storeBottom:
 	ld a, c
 	ldh [$FF99], a
 	ld a, [wLevelViewX]
@@ -3146,17 +3146,17 @@ Jump_1177:
 	ld a, [wLevelWidth]
 	dec a
 	cp c
-	jr nc, Jump_118A
+	jr nc, .storeRight
 	ld c, a
-Jump_118A:
+.storeRight:
 	ld a, c
 	ldh [$FF97], a
 	ldh a, [$FF98]
 	ldh [$FF9A], a
-Jump_1191:
+.nextRow:
 	ldh a, [$FF96]
 	ldh [$FF9B], a
-Jump_1195:
+.nextColumn:
 	ldh a, [$FF9B]
 	ld c, a
 	ldh a, [$FF9A]
@@ -3169,7 +3169,7 @@ Jump_1195:
 	inc a
 	ldh [$FF9B], a
 	cp b
-	jr c, Jump_1195
+	jr c, .nextColumn
 	ldh a, [$FF99]
 	inc a
 	ld b, a
@@ -3177,7 +3177,7 @@ Jump_1195:
 	inc a
 	ldh [$FF9A], a
 	cp b
-	jr c, Jump_1191
+	jr c, .nextRow
 	pop hl
 	pop de
 	pop bc
@@ -3237,7 +3237,7 @@ ConvertLevelCellBit2RegionAtCell:
 	and $0C
 	pop de
 	pop bc
-	jr z, Jump_1214
+	jr z, .return
 	call FindLevelCellRunLeftEdge
 	ldh [hLevelRegionLeft], a
 	call FindLevelCellRunRightEdge
@@ -3247,7 +3247,7 @@ ConvertLevelCellBit2RegionAtCell:
 	call FindLevelCellRunBottomEdge
 	ldh [hLevelRegionBottom], a
 	call ConvertLevelCellBit2Region
-Jump_1214:
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -3317,7 +3317,7 @@ ConvertLevelCellBit3RegionAtPixel:
 	pop hl
 	ld a, c
 	and $08
-	jr z, Jump_129A
+	jr z, .noRegion
 	pop de
 	pop bc
 	call FindLevelCellRunLeftEdge
@@ -3339,7 +3339,7 @@ ConvertLevelCellBit3RegionAtPixel:
 	pop af
 	ret
 
-Jump_129A:
+.noRegion:
 	pop de
 	pop bc
 	pop hl
@@ -3357,18 +3357,18 @@ ConvertLevelCellBit3Region:
 	push hl
 	ldh a, [hLevelRegionTop]
 	ldh [hLevelRegionY], a
-Jump_12A9:
+.nextRow:
 	ldh a, [hLevelRegionLeft]
 	ldh [hLevelRegionX], a
-Jump_12AD:
+.nextColumn:
 	ldh a, [hLevelRegionX]
 	ld c, a
 	ldh a, [hLevelRegionY]
 	ld e, a
 	call ConvertLevelCellBit3ToLookupState
-	jr z, Jump_12BB
+	jr z, .advanceColumn
 	call DrawLevelCellIfVisible
-Jump_12BB:
+.advanceColumn:
 	ldh a, [hLevelRegionRight]
 	inc a
 	ld b, a
@@ -3376,7 +3376,7 @@ Jump_12BB:
 	inc a
 	ldh [hLevelRegionX], a
 	cp b
-	jr c, Jump_12AD
+	jr c, .nextColumn
 	ldh a, [hLevelRegionBottom]
 	inc a
 	ld b, a
@@ -3384,7 +3384,7 @@ Jump_12BB:
 	inc a
 	ldh [hLevelRegionY], a
 	cp b
-	jr c, Jump_12A9
+	jr c, .nextRow
 	pop hl
 	pop de
 	pop bc
@@ -3406,16 +3406,16 @@ ConvertLevelCellBit2Region:
 	call Audio_QueueSound
 	ldh a, [hLevelRegionTop]
 	ldh [hLevelRegionY], a
-Jump_12EA:
+.nextRow:
 	ldh a, [hLevelRegionLeft]
 	ldh [hLevelRegionX], a
-Jump_12EE:
+.nextColumn:
 	ldh a, [hLevelRegionX]
 	ld c, a
 	ldh a, [hLevelRegionY]
 	ld e, a
 	call ConvertLevelCellBit2ToLookupState
-	jr z, Jump_1308
+	jr z, .advanceColumn
 	ldh a, [hLevelRegionScore]
 	add a, $05
 	ldh [hLevelRegionScore], a
@@ -3423,7 +3423,7 @@ Jump_12EE:
 	adc a, $00
 	ldh [hLevelRegionScore + 1], a
 	call DrawLevelCellIfVisible
-Jump_1308:
+.advanceColumn:
 	ldh a, [hLevelRegionRight]
 	inc a
 	ld b, a
@@ -3431,7 +3431,7 @@ Jump_1308:
 	inc a
 	ldh [hLevelRegionX], a
 	cp b
-	jr c, Jump_12EE
+	jr c, .nextColumn
 	ldh a, [hLevelRegionBottom]
 	inc a
 	ld b, a
@@ -3439,7 +3439,7 @@ Jump_1308:
 	inc a
 	ldh [hLevelRegionY], a
 	cp b
-	jr c, Jump_12EA
+	jr c, .nextRow
 	ldh a, [hLevelRegionScore]
 	ld c, a
 	ldh a, [hLevelRegionScore + 1]
@@ -3499,7 +3499,7 @@ ConvertLevelCellBit2ToLookupState:
 	pop hl
 	ld a, c
 	and $04
-	jr z, Jump_1394
+	jr z, .notSet
 	ld a, c
 	and $B1
 	or $81
@@ -3532,7 +3532,7 @@ ConvertLevelCellBit2ToLookupState:
 	pop de
 	ret
 
-Jump_1394:
+.notSet:
 	xor a
 	pop hl
 	pop bc
@@ -3587,7 +3587,7 @@ ConvertLevelCellBit3ToLookupState:
 	pop hl
 	ld a, c
 	and $08
-	jr z, Jump_13FF
+	jr z, .notSet
 	ld a, c
 	and $F1
 	or $81
@@ -3620,7 +3620,7 @@ ConvertLevelCellBit3ToLookupState:
 	pop de
 	ret
 
-Jump_13FF:
+.notSet:
 	xor a
 	pop hl
 	pop bc
@@ -3669,13 +3669,13 @@ StartLevelCellRegionTransitions:
 	ldh [hLevelRegionRetryCount], a
 	ldh a, [hLevelRegionTop]
 	ldh [hLevelRegionY], a
-Jump_1437:
+.nextRow:
 	ldh a, [hLevelRegionLeft]
 	ldh [hLevelRegionX], a
-Jump_143B:
+.tryCell:
 	call ChooseRandomLevelRegionCell
 	call StartLevelCellLookupTransition
-	jr nz, Jump_1457
+	jr nz, .cellChanged
 	ldh a, [hLevelRegionX]
 	ld c, a
 	ldh a, [hLevelRegionY]
@@ -3685,9 +3685,9 @@ Jump_143B:
 	inc a
 	ldh [hLevelRegionRetryCount], a
 	cp $06
-	jr z, Jump_14AB
-	jr z, Jump_148D
-Jump_1457:
+	jr z, .completeRegion
+	jr z, .advanceCell
+.cellChanged:
 	call DrawLevelCellIfVisible
 	ldh a, [hLevelRegionChangedCount]
 	inc a
@@ -3695,7 +3695,7 @@ Jump_1457:
 	push af
 	call RandomByte
 	and $03
-	jr nz, Jump_1488
+	jr nz, .checkChangedCount
 	ld b, $00
 	sla c
 	rl b
@@ -3712,11 +3712,11 @@ Jump_1457:
 	rl d
 	ld a, $02
 	call SpawnTimedObjectEffect
-Jump_1488:
+.checkChangedCount:
 	pop af
 	cp $09
-	jr z, Jump_14AE
-Jump_148D:
+	jr z, .return
+.advanceCell:
 	ldh a, [hLevelRegionRight]
 	inc a
 	ld b, a
@@ -3724,7 +3724,7 @@ Jump_148D:
 	inc a
 	ldh [hLevelRegionX], a
 	cp b
-	jr c, Jump_143B
+	jr c, .tryCell
 	ldh a, [hLevelRegionBottom]
 	inc a
 	ld b, a
@@ -3732,13 +3732,13 @@ Jump_148D:
 	inc a
 	ldh [hLevelRegionY], a
 	cp b
-	jr c, Jump_1437
+	jr c, .nextRow
 	ldh a, [hLevelRegionChangedCount]
 	cp $05
-	jr nc, Jump_14AE
-Jump_14AB:
+	jr nc, .return
+.completeRegion:
 	call ConvertLevelCellBit2Region
-Jump_14AE:
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -3793,25 +3793,25 @@ StartLevelCellLookupTransition:
 	pop hl
 	ld a, c
 	and $04
-	jr z, Jump_152C
+	jr z, .failed
 	ld a, c
 	and $C0
-	jr nz, Jump_152C
+	jr nz, .failed
 	ld a, c
 	and $0C
 	cp $04
-	jr z, Jump_1500
+	jr z, .setBit6
 	cp $0C
-	jr z, Jump_1505
-Jump_1500:
+	jr z, .setBit7
+.setBit6:
 	ld a, c
 	or $40
-	jr Jump_1508
+	jr .storeState
 
-Jump_1505:
+.setBit7:
 	ld a, c
 	or $80
-Jump_1508:
+.storeState:
 	ld c, a
 	push hl
 	ldh a, [rSVBK]
@@ -3841,7 +3841,7 @@ Jump_1508:
 	pop de
 	ret
 
-Jump_152C:
+.failed:
 	xor a
 	pop hl
 	pop bc
@@ -3853,7 +3853,7 @@ Jump_152C:
 ; its contiguous horizontal run. C and E are cell coordinates.
 FindLevelCellRunLeftEdge:
 	push bc
-Jump_1532:
+.scan:
 	push bc
 	push bc
 	push de
@@ -3897,12 +3897,12 @@ Jump_1532:
 	ld a, c
 	pop bc
 	and $0C
-	jr z, Jump_1574
+	jr z, .foundEdge
 	dec c
 	ld a, $FF
 	cp c
-	jr nz, Jump_1532
-Jump_1574:
+	jr nz, .scan
+.foundEdge:
 	inc c
 	ld a, c
 	pop bc
@@ -3912,7 +3912,7 @@ Jump_1574:
 ; Return the right edge of the same bits-2/3 horizontal run.
 FindLevelCellRunRightEdge:
 	push bc
-Jump_1579:
+.scan:
 	push bc
 	push bc
 	push de
@@ -3956,12 +3956,12 @@ Jump_1579:
 	ld a, c
 	pop bc
 	and $0C
-	jr z, Jump_15BC
+	jr z, .foundEdge
 	inc c
 	ld a, [wLevelWidth]
 	cp c
-	jr nz, Jump_1579
-Jump_15BC:
+	jr nz, .scan
+.foundEdge:
 	dec c
 	ld a, c
 	pop bc
@@ -3971,7 +3971,7 @@ Jump_15BC:
 ; Return the top edge of the same bits-2/3 vertical run.
 FindLevelCellRunTopEdge:
 	push de
-Jump_15C1:
+.scan:
 	push bc
 	push bc
 	push de
@@ -4015,12 +4015,12 @@ Jump_15C1:
 	ld a, c
 	pop bc
 	and $0C
-	jr z, Jump_1603
+	jr z, .foundEdge
 	dec e
 	ld a, $FF
 	cp e
-	jr nz, Jump_15C1
-Jump_1603:
+	jr nz, .scan
+.foundEdge:
 	inc e
 	ld a, e
 	pop de
@@ -4030,7 +4030,7 @@ Jump_1603:
 ; Return the bottom edge of the same bits-2/3 vertical run.
 FindLevelCellRunBottomEdge:
 	push de
-Jump_1608:
+.scan:
 	push bc
 	push bc
 	push de
@@ -4074,12 +4074,12 @@ Jump_1608:
 	ld a, c
 	pop bc
 	and $0C
-	jr z, Jump_164B
+	jr z, .foundEdge
 	inc e
 	ld a, [wLevelHeight]
 	cp e
-	jr nz, Jump_1608
-Jump_164B:
+	jr nz, .scan
+.foundEdge:
 	dec e
 	ld a, e
 	pop de
