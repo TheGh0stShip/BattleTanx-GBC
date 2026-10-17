@@ -399,7 +399,9 @@ labelled and address-checked.
 Bank `$08` is fully classified; see [`research/BANK08_RESEARCH.md`](research/BANK08_RESEARCH.md). Every boundary is
 derived from loader operands, palette loads, the bank-`$02` object animation
 frame tables, the bank-`$05` effect step table, the glyph table and the
-metatile table, and checked by `tools/bank08.py` (25 negative tests).
+metatile table, and checked by `tools/bank08.py` (26 negative tests). The
+ten-entry status-4 palette-index table is bounded by level-record values 0-8
+and the one-way handler transition from 8 to 9.
 Corrections to the earlier description: the UI font is 62 tiles (`$4000`;
 tile 0 is never loaded) followed by a 16-record metatile table at `$43E0`;
 `$69B5` holds 4 tiles, not a 66-tile font; the encoded-text font is 37 tiles

@@ -74,9 +74,11 @@ decrements it and advances `wScreenEffectStepTable` by 6 at each non-zero multip
 reachable. Steps 19-71 are well-formed but unreachable by traced code, and
 they are the only references to 992 bytes of tiles (section 9).
 
-The palette-index table index (`obj+$1E`, 10 entries) is bounded only by the
-layout. Whether interrupts read `$7FFF` while bank `$08` is mapped was not
-checked.
+The palette-index table index is the status-4 object type and is bounded to
+0-9. Type-6 level records create these objects from record byte +7; all 241
+records use 0-8. Handler 8 increments once to 9, and handler 9 is a no-op.
+Object removal also creates type 0. Whether interrupts read `$7FFF` while bank
+`$08` is mapped was not checked.
 
 ## 3. Formats
 
@@ -116,7 +118,7 @@ derives and checks them.
 ## 5. Validation
 
 `tools/bank08.py` runs from `check_bank08_graphics_assets` in
-`tools/check_project.py`. Its 25 negative tests are each rejected for the
+`tools/check_project.py`. Its 26 negative tests are each rejected for the
 intended reason:
 - tile load count;
 - glyph table entry;
@@ -134,6 +136,7 @@ intended reason:
 - effect table end;
 - effect countdown immediate;
 - palette-index value;
+- status-4 type bound;
 - fill byte;
 - bank marker;
 - coverage gap;
@@ -172,10 +175,9 @@ All of them round-trip to the original bytes.
    `$6250-$625F` is an unread exact duplicate of tile 47 at `$655B`.
 2. The purpose of the 40 unread palette-shaped records (42 in total).
 3. Why effect steps 19-71 exist but cannot be reached.
-4. The bound on `obj+$1E` for `SelectObjectSpritePalette`.
-5. Gameplay identities of the sprites and metatiles. The renders suggest
+4. Gameplay identities of the sprites and metatiles. The renders suggest
    effects and a rotating BG object, which is not evidence.
-6. Interrupt reads of `$7FFF`.
+5. Interrupt reads of `$7FFF`.
 
 ## 8. Integration order
 

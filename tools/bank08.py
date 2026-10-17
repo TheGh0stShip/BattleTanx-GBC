@@ -175,6 +175,19 @@ def parse(rom: bytes):
     check(r(CODE[0] + 9, 1)[0] == 0xC6 and r(CODE[0] + 10, 1)[0] == INDEX_TABLE[0] & 0xFF,
           "SelectObjectSpritePalette table operand")
     check(all(v < 4 for v in r(INDEX_TABLE[0], INDEX_TABLE[1])), "palette index table value >= 4")
+    # Status-4 objects are created from type-6 level records using byte +7
+    # (0-8), while handler 8 increments once to 9 and handler 9 is a no-op.
+    status4_types = []
+    for i in range(15 * 40):
+        record = rom[off(4, 0x4000 + 12 * i):off(4, 0x4000 + 12 * (i + 1))]
+        if record[0] == 6:
+            status4_types.append(record[7])
+    check(status4_types and set(status4_types) == set(range(9)),
+          "status-4 level-record types are not exactly 0-8")
+    check([word(rom, 1, 0x44E0 + 2 * i) for i in range(10)][8:] == [0x4648, 0x467B],
+          "status-4 handlers 8/9 changed")
+    check(rom[off(1, 0x467B):off(1, 0x467F)] == bytes.fromhex("e1c31645"),
+          "status-4 handler 9 is no longer a no-op")
     check(not any(r(CODE[1], 0x7FFF - CODE[1])), "non-zero byte in fill")
     check(r(0x7FFF)[0] == BANK, "bank marker")
 
@@ -354,6 +367,7 @@ def negative_tests(rom: bytes, root: pathlib.Path) -> int:
         "effect table end": ({(5, 0x6358 + 6 * 72): 0x01}, "does not end after 72"),
         "effect countdown": ({(0, rom.find(bytes.fromhex("3e4bea59c9"), 0, 0x4000) + 1): 0x4C}, "$C959 = $4B"),
         "palette index value": ({(8, 0x67F3): 0x04}, "palette index table"),
+        "status-4 type bound": ({(4, 0x4043): 0x0A}, "status-4 level-record types"),
         "fill byte": ({(8, 0x7000): 0x01}, "non-zero byte in fill"),
         "bank marker": ({(8, 0x7FFF): 0x07}, "bank marker"),
     }

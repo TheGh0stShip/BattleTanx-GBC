@@ -483,9 +483,20 @@ wHudIconPalette:
 Bank08HudIconTiles:
 	INCBIN "assets/bank_08/hud_icon_tiles.bin" ; 10 tiles
 
-; Indexed by object +$1E in SelectObjectSpritePalette (palette = value + 4).
+; Indexed by status-4 object type 0-9 in SelectObjectSpritePalette
+; (palette = value + 4, masked to 0-3 by the routine).
 ObjectSpritePaletteIndexTable:
-	db 0, 1, 0, 2, 3, 1, 2, 0, 3, 0
+	db 0 ; type 0
+	db 1 ; type 1
+	db 0 ; type 2
+	db 2 ; type 3
+	db 3 ; type 4
+	db 1 ; type 5
+	db 2 ; type 6
+	db 0 ; type 7
+	db 3 ; type 8
+	db 0 ; type 9
+ASSERT @ - ObjectSpritePaletteIndexTable == 10
 
 ; OBJ palettes 4-7, colours 1-3 each (Func_057D supplies colour 0).
 Bank08ObjectPalettes67FD:
