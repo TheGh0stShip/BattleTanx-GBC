@@ -249,3 +249,7 @@ DEF BG_MAP_WRITE_RECORD_SIZE EQU 4
 ; Encoded text cursor used by the options menu text renderer.
 DEF wTextColumn EQU $C8DF
 DEF wTextRow    EQU $C8E0
+
+; ROM0-only state.
+DEF wScoreAtLeast50000   EQU $CD0A ; boolean, written during level initialization
+DEF wReturnToMenuCounter EQU $CD0F ; dormant gameplay return-to-menu counter

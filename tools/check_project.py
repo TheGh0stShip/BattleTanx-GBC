@@ -1392,6 +1392,7 @@ def check_level_banks() -> None:
     expected_core = {
         "wScore": 0xCD04,
         "wScoreThresholdIndex": 0xC6D0,
+        "wScoreAtLeast50000": 0xCD0A,
         "wPlayerObject": 0xCD00,
         "wPlayerLives": 0xCD02,
         "wPlayerHealthRecoveryTicks": 0xCD03,

@@ -75,7 +75,7 @@ HandleLevelEnd:
 
 RunLevelCompleteFlow:
 	call RunLevelCompletionScreenFlow
-	ld a, [$C6CD]
+	ld a, [wGameStartMode]
 	cp $01
 	jp z, ReturnToMenuAfterLevel
 	ld a, [wLevelNumber]
@@ -227,7 +227,7 @@ RespawnPlayer:
 	ldh [rSCY], a
 	ld [wPendingScrollX], a
 	ld [wPendingScrollY], a
-	ld [$C8D9], a
+	ld [wNearestTargetDistance + 1], a
 	ldh a, [rLCDC]
 	res 4, a
 	ldh [rLCDC], a
@@ -360,7 +360,7 @@ RespawnPlayer:
 	call FlushBgMapWriteQueue
 	call ResetSpriteAllocators
 	xor a
-	ld [$CD2A], a
+	ld [wSequenceObjectsInState2Count], a
 	ld hl, wFrameCounter
 	ld a, [hl]
 	add a, $01
@@ -1497,7 +1497,7 @@ Func_08C6:
 	xor a
 	ld [wPlayerObjectType], a
 	ld a, $00
-	ld [$C6CF], a
+	ld [wActiveSkillLevel], a
 	call SeedRandomNumberGenerator
 	ei
 	nop
@@ -1638,21 +1638,21 @@ Func_09AB: ; legacy alias
 	jr c, .scoreBelow50000
 .scoreAtLeast50000:
 	ld a, $01
-	ld [$CD0A], a
+	ld [wScoreAtLeast50000], a
 	jr .resetTransientState
 
 .scoreBelow50000:
 	xor a
-	ld [$CD0A], a
+	ld [wScoreAtLeast50000], a
 .resetTransientState:
 	xor a
 	ld [wScreenEffectActive], a
 	ld [wHudAlertActive], a
-	ld [$C91E], a
-	ld [$C91F], a
+	ld [wAlertObjectTypePtr], a
+	ld [wAlertObjectTypePtr + 1], a
 	xor a
-	ld [$C8D8], a
-	ld [$C8D9], a
+	ld [wNearestTargetDistance], a
+	ld [wNearestTargetDistance + 1], a
 	ld b, $00
 	ld a, [wLevelNumber]
 	ld c, a
@@ -1667,28 +1667,29 @@ Func_09AB: ; legacy alias
 LevelAnimatedCellAttributes:
 	db $0A, $0A, $0A, $09, $09, $0A, $0B, $0B, $0B, $0A, $0A, $0A, $0A, $0A, $0A
 
-; Reset HUD alert, entity-iteration, and frame-counter state. If $C91E/$C91F
-; holds a pending byte pointer, decrement that byte once and clear the pointer.
+; Reset HUD alert, entity-iteration, and frame-counter state. If
+; wAlertObjectTypePtr holds a pending byte pointer, decrement that byte once
+; and clear the pointer.
 ResetGameplayFrameState:
 Func_0A23: ; legacy alias
 	xor a
 	ld [wHudAlertActive], a
-	ld [$C8D7], a
-	ld [$C8D6], a
+	ld [wNearestTargetPtr + 1], a
+	ld [wNearestTargetPtr], a
 	ld [wFrameCounter], a
 	ld [wFrameCounter + 1], a
-	ld a, [$C91F]
+	ld a, [wAlertObjectTypePtr + 1]
 	and a
 	ret z
 	ld h, a
-	ld a, [$C91E]
+	ld a, [wAlertObjectTypePtr]
 	ld l, a
 	ld a, [hl]
 	dec a
 	ld [hl], a
 	xor a
-	ld [$C91E], a
-	ld [$C91F], a
+	ld [wAlertObjectTypePtr], a
+	ld [wAlertObjectTypePtr + 1], a
 	ret
 
 
@@ -6378,8 +6379,8 @@ Func_22ED: ; legacy alias
 	ld a, $01
 	ld [rROMB0], a
 	xor a
-	ld [$CA07], a
-	ld [$CA08], a
+	ld [wActiveFlag26ObjectCount], a
+	ld [wVisibleStatus1ObjectCount], a
 	ld d, $40
 	ld hl, $D000
 .processObject:
@@ -6431,9 +6432,9 @@ Func_22ED: ; legacy alias
 	or b
 	jr z, .advanceVehicle
 	call RenderObjectOrientationGraphic
-	ld a, [$CA08]
+	ld a, [wVisibleStatus1ObjectCount]
 	inc a
-	ld [$CA08], a
+	ld [wVisibleStatus1ObjectCount], a
 .advanceVehicle:
 	call CalculateVehicleNextPosition
 	call UpdateVehicleTimersAndRemoveDestroyed
@@ -6446,9 +6447,9 @@ Func_22ED: ; legacy alias
 	or a
 	jr z, .resolveVehicleMovement
 	call Func_0043
-	ld a, [$CA07]
+	ld a, [wActiveFlag26ObjectCount]
 	inc a
-	ld [$CA07], a
+	ld [wActiveFlag26ObjectCount], a
 .resolveVehicleMovement:
 	call ResolveObjectType1ProximityMovement
 	call ResolveObjectLevelBit0Movement
@@ -8744,11 +8745,11 @@ Audio_InitFar:
 	ld a, $06
 	ld [rROMB0], a
 	call Audio_Init
-	ld a, [$C8E6]
+	ld a, [wC8E6]
 	cp $00
 	jr nz, .RestoreBank
 	ld a, $01
-	ld [$C8E6], a
+	ld [wC8E6], a
 .RestoreBank:
 	pop af
 	ld [rROMB0], a
@@ -10231,16 +10232,16 @@ Func_3608: ; legacy alias
 ; flow; otherwise continue through the normal runtime callback dispatch.
 AdvanceReturnToMenuCounter:
 Func_362D: ; legacy alias
-	ld a, [$CD0F]
+	ld a, [wReturnToMenuCounter]
 	inc a
-	ld [$CD0F], a
+	ld [wReturnToMenuCounter], a
 	cp $14
 	jr nz, DispatchRuntimeCallbackUnlessPaused
 	jp RunMenuAndLevelLoop
 
 ResetReturnToMenuCounter:
 	xor a
-	ld [$CD0F], a
+	ld [wReturnToMenuCounter], a
 DispatchRuntimeCallbackUnlessPaused:
 	ld a, [wPauseActive]
 	or a
