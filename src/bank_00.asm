@@ -179,7 +179,7 @@ Init:
 	ld a, $01
 	ld [wMusicEnabled], a
 	ld [$C6E2], a
-	call Func_3B9F
+	call RunBootScreenSequenceFar
 Jump_016C:
 	ld a, [$C6E2]
 	or a
@@ -11194,7 +11194,9 @@ Jump_3B9A:
 	ret
 
 
-Func_3B9F:
+; Run the bank-$02 startup sequence of screen modes $0A, 2, 5, and 7.
+RunBootScreenSequenceFar:
+Func_3B9F: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02

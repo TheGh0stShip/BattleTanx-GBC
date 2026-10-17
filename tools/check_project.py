@@ -1093,6 +1093,7 @@ def check_level_banks() -> None:
             "InitializeTimedEffectSubtype0Far": (0x00, 0x30E2),
             "InitializeTimedEffectSubtype2Far": (0x00, 0x30F3),
             "RunLevel": (0x00, 0x0192),
+            "RunBootScreenSequenceFar": (0x00, 0x3B9F),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),
