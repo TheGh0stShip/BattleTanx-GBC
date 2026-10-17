@@ -25,6 +25,7 @@ Usage: object_sequence_fields.py
 from __future__ import annotations
 
 import pathlib
+import re
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
@@ -161,15 +162,42 @@ def negative_tests(rom: bytes) -> int:
     return n
 
 
+def validate_source(root: pathlib.Path) -> int:
+    inc = (root / "include/object.inc").read_text()
+    definitions = {name: int(value, 16) for name, value in re.findall(
+        r"^DEF (OBJECT_(?:SEQUENCE_\w+|RESPAWNS_LEFT|LEVEL_SPAWN_INDEX_FLAGS)_OFFSET)\s+EQU \$([0-9A-F]+)",
+        inc, re.MULTILINE)}
+    expected = {
+        "OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET": 0x2D,
+        "OBJECT_SEQUENCE_RECORD_INDEX_OFFSET": 0x2E,
+        "OBJECT_SEQUENCE_TARGET_HEADING_OFFSET": 0x2F,
+        "OBJECT_SEQUENCE_TURN_DELAY_OFFSET": 0x30,
+        "OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET": 0x31,
+        "OBJECT_SEQUENCE_TURN_STEP_OFFSET": 0x32,
+        "OBJECT_SEQUENCE_PROXIMITY_DELAY_OFFSET": 0x33,
+        "OBJECT_SEQUENCE_TARGET_X_OFFSET": 0x34,
+        "OBJECT_SEQUENCE_TARGET_Y_OFFSET": 0x36,
+        "OBJECT_RESPAWNS_LEFT_OFFSET": 0x3A,
+        "OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET": 0x3B,
+    }
+    check(definitions == expected, f"source: object sequence field constants changed: {definitions}")
+    source = (root / "src/bank_03.asm").read_text() + (root / "src/bank_04.asm").read_text()
+    for value in expected.values():
+        check(f"add a, ${value:02X}" not in source,
+              f"source: raw object sequence offset ${value:02X} remains")
+    return len(expected)
+
+
 def main():
     root = pathlib.Path(__file__).resolve().parent.parent
     rom = (root / "baserom.gbc").read_bytes()
     seqs, recs = validate(rom)
+    fields = validate_source(root)
     neg = negative_tests(rom)
     print(f"object sequence fields: {seqs} sequences, {recs} records, 199 spawn-selected, "
           f"{len(UNUSED_SEQUENCES)} unused, "
           f"{len(TERMINAL_EXCEPTIONS) + len(UNREACHABLE) + len(DISTANCE_EXCEPTIONS) + len(HEADING_EXCEPTIONS)} pinned exceptions; "
-          f"{neg} negative tests rejected")
+          f"{fields} field constants, {neg} negative tests rejected")
 
 
 if __name__ == "__main__":

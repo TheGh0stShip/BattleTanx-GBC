@@ -45,32 +45,32 @@ InitializeObjectSequenceState:
 	pop hl
 	ld a, l
 	and $C0
-	add a, $2D
+	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld l, a
 	pop af
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $32
+	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
 	ld l, a
 	ld a, $01
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld l, a
 	xor a
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld l, a
 	xor a
 	ld [hl], a
 	pop de
 	ld a, e
 	and $C0
-	add a, $2D
+	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld e, a
 	ld a, [de]
 	ld l, a
@@ -90,7 +90,7 @@ InitializeObjectSequenceState:
 	push hl
 	ld a, e
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld e, a
 	ld a, [de]
 	ld h, $00
@@ -104,7 +104,7 @@ InitializeObjectSequenceState:
 	add hl, bc
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, [hli]
 	ld [de], a
@@ -157,14 +157,14 @@ InitializeObjectSequenceState:
 	pop hl
 	ld a, l
 	and $C0
-	add a, $34
+	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
 	ld l, a
 	ld [hl], c
 	inc hl
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $36
+	add a, OBJECT_SEQUENCE_TARGET_Y_OFFSET
 	ld l, a
 	ld [hl], e
 	inc hl
@@ -228,14 +228,14 @@ Jump_03_5D1A:
 	call CheckObjectAuxRegionTriggers
 	ld a, e
 	and $C0
-	add a, $2D
+	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld e, a
 	ld a, [de]
 	bit 6, a
 	jp nz, Jump_03_661F
 	ld a, e
 	and $C0
-	add a, $33
+	add a, OBJECT_SEQUENCE_PROXIMITY_DELAY_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -284,7 +284,7 @@ Jump_03_5D65:
 	ld b, a
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, [de]
 	cp b
@@ -297,7 +297,7 @@ Jump_03_5D65:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $30
+	add a, OBJECT_SEQUENCE_TURN_DELAY_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -317,7 +317,7 @@ Jump_03_5D8E:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $32
+	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
 	ld e, a
 	ld a, [de]
 	ld c, a
@@ -361,7 +361,7 @@ Jump_03_5DD1:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, [de]
 	inc a
@@ -385,14 +385,14 @@ Jump_03_5DE2:
 Jump_03_5DF5:
 	ld a, e
 	and $C0
-	add a, $2D
+	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld e, a
 	ld a, [de]
 	bit 7, a
 	jp nz, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, [de]
 	ld b, a
@@ -417,7 +417,7 @@ Jump_03_5DF5:
 	push bc
 	ld a, l
 	and $C0
-	add a, $36
+	add a, OBJECT_SEQUENCE_TARGET_Y_OFFSET
 	ld l, a
 	ld a, [hli]
 	ld e, a
@@ -434,7 +434,7 @@ Jump_03_5DF5:
 	push de
 	ld a, l
 	and $C0
-	add a, $34
+	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
 	ld l, a
 	ld a, [hli]
 	ld e, a
@@ -451,7 +451,7 @@ Jump_03_5DF5:
 	push de
 	ld a, l
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld l, a
 	ld a, [hl]
 	ld h, a
@@ -464,7 +464,7 @@ HandleSequenceWaypointArrival:
 	jr z, Jump_03_5E91
 	ld a, e
 	and $C0
-	add a, $34
+	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
 	ld e, a
 	ld a, [de]
 	ld c, a
@@ -483,7 +483,7 @@ HandleSequenceWaypointArrival:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $36
+	add a, OBJECT_SEQUENCE_TARGET_Y_OFFSET
 	ld e, a
 	ld a, [de]
 	ld c, a
@@ -527,13 +527,13 @@ Jump_03_5E91:
 AdvanceObjectSequenceRecord:
 	ld a, e
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld e, a
 	ld a, [de]
 	ld b, a
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -544,7 +544,7 @@ AdvanceObjectSequenceRecord:
 	jr nz, Jump_03_5ED2
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	cpl
@@ -555,7 +555,7 @@ Jump_03_5ED2:
 Jump_03_5ED3:
 	ld a, e
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld e, a
 	inc b
 	ld a, b
@@ -568,7 +568,7 @@ Jump_03_5ED3:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $2D
+	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld e, a
 	ld a, [de]
 	ld h, $00
@@ -591,7 +591,7 @@ Jump_03_5ED3:
 	push hl
 	ld a, e
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld e, a
 	ld a, [de]
 	ld h, $00
@@ -607,7 +607,7 @@ Jump_03_5ED3:
 	ld b, a
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -630,7 +630,7 @@ Jump_03_5ED3:
 Jump_03_5F30:
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, b
 	ld [de], a
@@ -646,13 +646,13 @@ Jump_03_5F30:
 Jump_03_5F46:
 	ld a, e
 	and $C0
-	add a, $32
+	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
 	ld e, a
 	ld a, c
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -712,7 +712,7 @@ Jump_03_5F8F:
 Jump_03_5F9A:
 	ld a, e
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld e, a
 	ld a, $FF
 	ld [de], a
@@ -723,7 +723,7 @@ Jump_03_5FA5:
 	jr nz, ObjectSequenceUpdateExit
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	cpl
@@ -775,7 +775,7 @@ Jump_03_5FC8:
 	pop hl
 	ld a, l
 	and $C0
-	add a, $34
+	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
 	ld l, a
 	ld a, c
 	ld [hli], a
@@ -803,7 +803,7 @@ LoadObjectSequenceTargetPosition:
 	jr nz, Jump_03_6021
 	ld a, e
 	and $C0
-	add a, $2D
+	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld e, a
 	ld a, [de]
 	ld l, a
@@ -836,7 +836,7 @@ Jump_03_6025:
 	dec hl
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -876,7 +876,7 @@ Jump_03_603F:
 	pop hl
 	ld a, l
 	and $C0
-	add a, $34
+	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
 	ld l, a
 	ld a, c
 	ld [hli], a
@@ -1040,7 +1040,7 @@ Func_03_611C: ; legacy alias (automatic entry label)
 	jr nz, AimObjectAtPlayer_SetLatch
 	ld a, e
 	and $C0
-	add a, $3B
+	add a, OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET
 	ld e, a
 	ld a, [de]
 	bit 7, a
@@ -1065,7 +1065,7 @@ Func_03_611C: ; legacy alias (automatic entry label)
 	ret z
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, b
 	ld [de], a
@@ -1076,7 +1076,7 @@ AimObjectAtPlayer_SetLatch:
 	cp $55
 	ld a, e
 	and $C0
-	add a, $3B
+	add a, OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET
 	ld e, a
 	ld a, [de]
 	or $80
@@ -1132,13 +1132,13 @@ AimObjectAtPlayer_ComputeDirection:
 AimObjectAtPlayer_StoreTurnSign:
 	ld a, e
 	and $C0
-	add a, $32
+	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
 	ld e, a
 	ld a, c
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, [de]
 	ld c, a
@@ -1158,7 +1158,7 @@ AimObjectAtPlayer_StoreTurnSign:
 AimObjectAtPlayer_CheckFacing:
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, [de]
 	ld b, a
@@ -1171,7 +1171,7 @@ AimObjectAtPlayer_CheckFacing:
 	ret nz
 	ld a, e
 	and $C0
-	add a, $33
+	add a, OBJECT_SEQUENCE_PROXIMITY_DELAY_OFFSET
 	ld e, a
 	ld a, $28
 	ld [de], a
@@ -1183,7 +1183,7 @@ AimObjectAtPlayer_CheckFacing:
 	jp z, Jump_03_62E5
 	ld a, l
 	and $C0
-	add a, $3B
+	add a, OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
 	and $7F
@@ -1202,7 +1202,7 @@ Func_03_61FC: ; legacy alias (automatic entry label)
 	jp z, Jump_03_62A5
 	ld a, l
 	and $C0
-	add a, $2D
+	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
 	bit 6, a
@@ -1259,7 +1259,7 @@ Func_03_61FC: ; legacy alias (automatic entry label)
 	ld b, a
 	ld a, l
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld l, a
 	ld [hl], b
 	pop hl
@@ -1268,7 +1268,7 @@ Func_03_61FC: ; legacy alias (automatic entry label)
 	push hl
 	ld a, l
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld l, a
 	ld a, [wRecordedPathWriteIndex]
 	ld [hl], a
@@ -1276,7 +1276,7 @@ Func_03_61FC: ; legacy alias (automatic entry label)
 	push hl
 	ld a, l
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld l, a
 	ld a, [hl]
 	ld l, a
@@ -1298,14 +1298,14 @@ Func_03_61FC: ; legacy alias (automatic entry label)
 	pop hl
 	ld a, l
 	and $C0
-	add a, $34
+	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
 	ld l, a
 	ld [hl], c
 	inc hl
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $36
+	add a, OBJECT_SEQUENCE_TARGET_Y_OFFSET
 	ld l, a
 	ld [hl], e
 	inc hl
@@ -2013,7 +2013,7 @@ Jump_03_65FB:
 Jump_03_661F:
 	ld a, e
 	and $C0
-	add a, $33
+	add a, OBJECT_SEQUENCE_PROXIMITY_DELAY_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -2042,7 +2042,7 @@ Jump_03_663C:
 	ld b, a
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, [de]
 	cp b
@@ -2055,7 +2055,7 @@ Jump_03_663C:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $30
+	add a, OBJECT_SEQUENCE_TURN_DELAY_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -2075,7 +2075,7 @@ Jump_03_6665:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $32
+	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
 	ld e, a
 	ld a, [de]
 	ld c, a
@@ -2097,7 +2097,7 @@ Jump_03_6685:
 	push bc
 	ld a, l
 	and $C0
-	add a, $36
+	add a, OBJECT_SEQUENCE_TARGET_Y_OFFSET
 	ld l, a
 	ld a, [hli]
 	ld e, a
@@ -2114,7 +2114,7 @@ Jump_03_6685:
 	push de
 	ld a, l
 	and $C0
-	add a, $34
+	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
 	ld l, a
 	ld a, [hli]
 	ld e, a
@@ -2142,7 +2142,7 @@ Func_03_66BB: ; legacy alias (automatic entry label)
 	jr z, PathSnap_CheckYAxis
 	ld a, e
 	and $C0
-	add a, $34
+	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
 	ld e, a
 	ld a, [de]
 	ld c, a
@@ -2165,7 +2165,7 @@ PathSnap_CheckYAxis:
 	jr z, PathSnap_NotArrived
 	ld a, e
 	and $C0
-	add a, $36
+	add a, OBJECT_SEQUENCE_TARGET_Y_OFFSET
 	ld e, a
 	ld a, [de]
 	ld c, a
@@ -2205,13 +2205,13 @@ PathSnap_NotArrived:
 PathSnap_AdvanceIndex:
 	ld a, e
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld e, a
 	ld a, [de]
 	ld b, a
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -2222,7 +2222,7 @@ PathSnap_AdvanceIndex:
 	jr nz, Jump_03_6733
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	cpl
@@ -2233,7 +2233,7 @@ Jump_03_6733:
 Jump_03_6734:
 	ld a, e
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld e, a
 	inc b
 	ld a, b
@@ -2257,7 +2257,7 @@ Jump_03_674B:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $2E
+	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
 	ld e, a
 	ld a, [de]
 	ld h, $00
@@ -2275,7 +2275,7 @@ Jump_03_674B:
 	ld b, a
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -2298,7 +2298,7 @@ Jump_03_674B:
 PathSnap_SetDesiredHeading:
 	ld a, e
 	and $C0
-	add a, $2F
+	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
 	ld e, a
 	ld a, b
 	ld [de], a
@@ -2314,13 +2314,13 @@ PathSnap_SetDesiredHeading:
 Jump_03_679B:
 	ld a, e
 	and $C0
-	add a, $32
+	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
 	ld e, a
 	ld a, c
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -2352,7 +2352,7 @@ Func_03_67BF: ; legacy alias (automatic entry label)
 	push de
 	ld a, e
 	and $C0
-	add a, $31
+	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
@@ -2382,7 +2382,7 @@ Jump_03_67DA:
 	pop hl
 	ld a, l
 	and $C0
-	add a, $34
+	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
 	ld l, a
 	ld a, c
 	ld [hli], a
@@ -2390,7 +2390,7 @@ Jump_03_67DA:
 	ld [hli], a
 	ld a, l
 	and $C0
-	add a, $36
+	add a, OBJECT_SEQUENCE_TARGET_Y_OFFSET
 	ld l, a
 	ld a, e
 	ld [hli], a

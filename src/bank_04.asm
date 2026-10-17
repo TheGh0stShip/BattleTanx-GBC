@@ -250,7 +250,7 @@ InitializeLevelObjects:
 	call SetObjectPosition
 	ld a, l
 	and $C0
-	add a, $2D
+	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld l, a
 	ld a, $80
 	ld [hl], a
@@ -275,7 +275,7 @@ InitializeLevelObjects:
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $33
+	add a, OBJECT_SEQUENCE_PROXIMITY_DELAY_OFFSET
 	ld l, a
 	ld a, $28
 	ld [hl], a
@@ -287,14 +287,14 @@ InitializeLevelObjects:
 	add hl, bc
 	ld a, e
 	and $C0
-	add a, $3A
+	add a, OBJECT_RESPAWNS_LEFT_OFFSET
 	ld e, a
 	ld a, [hli]
 	ld [de], a
 	inc hl
 	ld a, e
 	and $C0
-	add a, $3B
+	add a, OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET
 	ld e, a
 	ld a, [wLevelObjectRecordIndex]
 	ld [de], a
@@ -327,7 +327,7 @@ InitializeLevelObjects:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $32
+	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
 	ld e, a
 	ld a, $01
 	ld [de], a
@@ -515,7 +515,7 @@ GetLevelObjectHealthPenaltyNoLoad:
 QueuePendingLevelObject:
 	ld a, l
 	and $C0
-	add a, $3A
+	add a, OBJECT_RESPAWNS_LEFT_OFFSET
 	ld l, a
 	ld a, [hl]
 	and a
@@ -531,7 +531,7 @@ QueuePendingLevelObject:
 	jr z, .advanceEntry
 	ld a, e
 	and $C0
-	add a, $3B
+	add a, OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET
 	ld e, a
 	ld a, [de]
 	and $7F
@@ -539,7 +539,7 @@ QueuePendingLevelObject:
 	ld b, a
 	ld a, e
 	and $C0
-	add a, $3A
+	add a, OBJECT_RESPAWNS_LEFT_OFFSET
 	ld e, a
 	ld a, [de]
 	dec a
@@ -814,7 +814,7 @@ TrySpawnPendingLevelObject:
 	call SetObjectPosition
 	ld a, l
 	and $C0
-	add a, $2D
+	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld l, a
 	ld a, $80
 	ld [hl], a
@@ -850,7 +850,7 @@ TrySpawnPendingLevelObject:
 	add hl, bc
 	ld a, e
 	and $C0
-	add a, $3A
+	add a, OBJECT_RESPAWNS_LEFT_OFFSET
 	ld e, a
 	ld a, [wLevelObjectRespawnsLeft]
 	ld [de], a
@@ -858,7 +858,7 @@ TrySpawnPendingLevelObject:
 	inc hl
 	ld a, e
 	and $C0
-	add a, $3B
+	add a, OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET
 	ld e, a
 	ld a, [wLevelObjectRecordIndex]
 	ld [de], a
@@ -885,7 +885,7 @@ TrySpawnPendingLevelObject:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $32
+	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
 	ld e, a
 	ld a, $01
 	ld [de], a

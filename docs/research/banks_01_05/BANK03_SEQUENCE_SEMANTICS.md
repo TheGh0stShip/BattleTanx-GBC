@@ -59,3 +59,11 @@ The `$60AF-$67F9` routines are named in FINAL_FUNCTIONS.md.
 - A follower snaps an object to the reached entry and moves forward or backward
   (`+$31`).
 - Nothing reachable starts recording, so this feature is probably unused.
+
+## Runtime object fields
+
+`include/object.inc` now defines the proven sequence fields at `+$2D-$37`:
+slot/flags, record index, target heading, turn delay, reverse flag, signed turn
+step, proximity delay, and 16-bit target X/Y. It also defines respawns-left at
+`+$3A` and the spawn-index/aim-latch byte at `+$3B`. Bank `$03` and bank `$04`
+use these symbols instead of raw offsets; the validator pins all eleven values.
