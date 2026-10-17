@@ -2783,14 +2783,14 @@ Func_0F98: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	or a
-	jr nz, Jump_101F
+	jr nz, .failed
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_ACTIVE_SHOTS_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $03
-	jr z, Jump_101F
+	jr z, .failed
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_ACTION_INTERVAL_OFFSET
@@ -2808,11 +2808,11 @@ Func_0F98: ; legacy alias
 	ld e, [hl]
 	ld a, $03
 	cp e
-	jr nz, Jump_0FCE
+	jr nz, .fireProjectile
 	call StartScreenEffect
-	jr Jump_0FFA
+	jr .consumePowerupCharge
 
-Jump_0FCE:
+.fireProjectile:
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_ACTIVE_SHOTS_OFFSET
@@ -2825,7 +2825,7 @@ Jump_0FCE:
 	ld l, a
 	ld b, e
 	call SpawnVehicleProjectile
-	jr z, Jump_101F
+	jr z, .failed
 	call SpawnVehicleMuzzleEffectFar
 	push bc
 	ld a, l
@@ -2843,10 +2843,10 @@ Jump_0FCE:
 	ld [hl], a
 	pop bc
 	call QueueVehicleActionSound
-Jump_0FFA:
+.consumePowerupCharge:
 	ld a, e
 	cp $00
-	jr z, Jump_1012
+	jr z, .finishSuccess
 	ld a, l
 	and $C0
 	add a, $2A
@@ -2854,13 +2854,13 @@ Jump_0FFA:
 	ld a, [hl]
 	dec a
 	ld [hl], a
-	jr nz, Jump_1012
+	jr nz, .finishSuccess
 	ld a, l
 	and $C0
 	add a, $29
 	ld l, a
 	ld [hl], $00
-Jump_1012:
+.finishSuccess:
 	ld a, l
 	and $C0
 	add a, $28
@@ -2872,7 +2872,7 @@ Jump_1012:
 	pop de
 	ret
 
-Jump_101F:
+.failed:
 	xor a
 	pop hl
 	pop de
@@ -2892,22 +2892,22 @@ Func_1023: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	and a
-	jr nz, Jump_1046
+	jr nz, .return
 	ld a, e
 	ld b, $04
 	cp $01
-	jr nz, Jump_103C
+	jr nz, .checkSubtype2
 	ld b, $05
-	jr Jump_1042
+	jr .queueSound
 
-Jump_103C:
+.checkSubtype2:
 	cp $02
-	jr nz, Jump_1042
+	jr nz, .queueSound
 	ld b, $1B
-Jump_1042:
+.queueSound:
 	ld e, b
 	call Audio_QueueSound
-Jump_1046:
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -2926,30 +2926,30 @@ Func_104B: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	or a
-	jr z, Jump_105A
+	jr z, .updateTurnTimer
 	dec a
 	ld [hl], a
-Jump_105A:
+.updateTurnTimer:
 	ld a, l
 	and $C0
 	add a, OBJECT_VEHICLE_TURN_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
-	jr z, Jump_1066
+	jr z, .updateRenderTimers
 	dec a
 	ld [hl], a
-Jump_1066:
+.updateRenderTimers:
 	ld a, [wFrameCounter]
 	and $0F
-	jr nz, Jump_1085
+	jr nz, .checkHealth
 	ld a, l
 	and $C0
 	add a, $27
 	ld l, a
 	ld a, [hl]
 	or a
-	jr z, Jump_1085
+	jr z, .checkHealth
 	dec a
 	ld [hl], a
 	ld a, l
@@ -2958,27 +2958,27 @@ Jump_1066:
 	ld l, a
 	ld a, [hl]
 	or a
-	jr z, Jump_1085
+	jr z, .checkHealth
 	dec a
 	ld [hl], a
-Jump_1085:
+.checkHealth:
 	ld a, l
 	and $C0
 	add a, $1F
 	ld l, a
 	ld a, [hl]
 	or a
-	jr nz, Jump_10E0
+	jr nz, .alive
 	ld a, l
 	and $C0
 	ld l, a
 	ld a, [wPlayerObject]
 	cp l
-	jr nz, Jump_109F
+	jr nz, .checkLastAttacker
 	ld a, [wPlayerObject + 1]
 	cp h
-	jr z, Jump_10CA
-Jump_109F:
+	jr z, .removePlayer
+.checkLastAttacker:
 	ld a, l
 	and $C0
 	add a, $2B
@@ -2987,14 +2987,14 @@ Jump_109F:
 	inc l
 	ld a, [wPlayerObject]
 	cp b
-	jr nz, Jump_10BA
+	jr nz, .removeObject
 	ld b, [hl]
 	ld a, [wPlayerObject + 1]
 	cp b
-	jr nz, Jump_10BA
+	jr nz, .removeObject
 	call GetObjectScoreValue
 	call AddToScore
-Jump_10BA:
+.removeObject:
 	ld a, l
 	and $C0
 	ld l, a
@@ -3007,7 +3007,7 @@ Jump_10BA:
 	pop de
 	ret
 
-Jump_10CA:
+.removePlayer:
 	ld a, l
 	and $C0
 	ld l, a
@@ -3022,7 +3022,7 @@ Jump_10CA:
 	pop de
 	ret
 
-Jump_10E0:
+.alive:
 	xor a
 	inc a
 	pop hl
