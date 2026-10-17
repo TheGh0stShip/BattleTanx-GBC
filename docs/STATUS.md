@@ -135,6 +135,9 @@ The adjacent object update path now names frame-displacement calculation, a
 checked 12-pixel two-axis proximity predicate, independent axis rejection
 against level bounds and cell bit 0, and the flag-bit-3 object region trigger.
 The larger state-dependent bit-1/2 response remains unnamed.
+The same update chain names the 64-record proximity scan that selects the
+first active type-4 entity within 12 pixels on both axes, plus the banked
+entity-handler dispatcher it invokes.
 
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have

@@ -6257,7 +6257,7 @@ Jump_236E:
 	call Func_27E8
 	call ResolveObjectLevelBit0Movement
 	call HandleObjectLevelBit3Cell
-	call Func_24D0
+	call DispatchNearbyType4Entity
 	jr Jump_232B
 
 Jump_237C:
@@ -6519,7 +6519,9 @@ UpdateObjectFrameDisplacement:
 	ret
 
 
-Func_24D0:
+; For an entity with flag bit 3, scan the 64 records for the first flag-bit-3
+; type-4 entity within 12 pixels on both axes and dispatch its handler.
+DispatchNearbyType4Entity:
 	push de
 	push bc
 	push hl
@@ -6577,7 +6579,7 @@ Jump_2510:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_3764
+	call DispatchEntityHandlerFar
 	pop hl
 	pop bc
 	pop de
@@ -10103,7 +10105,7 @@ Jump_3761:
 	ret
 
 
-Func_3764:
+DispatchEntityHandlerFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01

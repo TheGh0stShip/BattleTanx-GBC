@@ -822,6 +822,8 @@ def check_level_banks() -> None:
             "ObjectsWithin12Pixels": (0x00, 0x2523),
             "ResolveObjectLevelBit0Movement": (0x00, 0x2589),
             "HandleObjectLevelBit3Cell": (0x00, 0x2644),
+            "DispatchNearbyType4Entity": (0x00, 0x24D0),
+            "DispatchEntityHandlerFar": (0x00, 0x3764),
             "GetObjectScoreValue": (0x00, 0x0C1A),
             "AddToScore": (0x00, 0x3019),
             "LoadLevelLookupPointers": (0x05, 0x4088),
