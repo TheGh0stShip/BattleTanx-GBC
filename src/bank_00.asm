@@ -1527,7 +1527,7 @@ Func_09AB:
 	call Func_00F9
 	call Func_0781
 	call Func_0903
-	call Func_2A99
+	call LoadEncodedFontTiles
 	ld a, [$CD06]
 	ld b, a
 	ld a, [$CD07]
@@ -7702,7 +7702,7 @@ Func_2A88:
 	ret
 
 
-Func_2A99:
+LoadEncodedFontTiles:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
@@ -7714,31 +7714,31 @@ Func_2A99:
 	ld a, $80
 	ld bc, $6B85
 	call Func_0622
-	call Func_2AB9
+	call ClearTextCursor
 	pop af
 	ld [rROMB0], a
 	ret
 
 
-Func_2AB9:
+ClearTextCursor:
 	push af
 	ld a, $00
-	ld [$C8DF], a
-	ld [$C8E0], a
+	ld [wTextColumn], a
+	ld [wTextRow], a
 	pop af
 	ret
 
 
-Func_2AC4:
+AdvanceTextColumn:
 	push af
-	ld a, [$C8DF]
+	ld a, [wTextColumn]
 	inc a
-	ld [$C8DF], a
+	ld [wTextColumn], a
 	pop af
 	ret
 
 
-Func_2ACE:
+DrawEncodedText:
 	push hl
 	push af
 Jump_2AD0:
@@ -7747,23 +7747,23 @@ Jump_2AD0:
 	jr z, Jump_2AF4
 	cp $0D
 	jr nz, Jump_2ADD
-	call Func_2B67
+	call StartTextRow
 	jr Jump_2AD0
 
 Jump_2ADD:
 	cp $0C
 	jr nz, Jump_2AE6
-	call Func_2AB9
+	call ClearTextCursor
 	jr Jump_2AD0
 
 Jump_2AE6:
 	cp $01
 	jr nz, Jump_2AEF
-	call Func_2AC4
+	call AdvanceTextColumn
 	jr Jump_2AD0
 
 Jump_2AEF:
-	call Func_2AF7
+	call DrawEncodedGlyph
 	jr Jump_2AD0
 
 Jump_2AF4:
@@ -7772,7 +7772,7 @@ Jump_2AF4:
 	ret
 
 
-Func_2AF7:
+DrawEncodedGlyph:
 	push af
 	push bc
 	push de
@@ -7786,7 +7786,7 @@ Func_2AF7:
 	ld hl, $6B05
 	add hl, bc
 	ld c, [hl]
-	ld a, [$C8E0]
+	ld a, [wTextRow]
 	ld e, a
 	ld d, $00
 	sla e
@@ -7799,7 +7799,7 @@ Func_2AF7:
 	rl d
 	sla e
 	rl d
-	ld a, [$C8DF]
+	ld a, [wTextColumn]
 	add a, e
 	ld e, a
 	ld a, $00
@@ -7823,7 +7823,7 @@ Jump_2B42:
 	ld a, c
 	add a, $80
 	ld [hl], a
-	call Func_2AC4
+	call AdvanceTextColumn
 	pop af
 	ld [rROMB0], a
 	pop hl
@@ -7833,42 +7833,42 @@ Jump_2B42:
 	ret
 
 
-Func_2B58:
+SetTextCursor:
 	push af
 	ld a, b
 	and $1F
-	ld [$C8DF], a
+	ld [wTextColumn], a
 	ld a, c
 	and $1F
-	ld [$C8E0], a
+	ld [wTextRow], a
 	pop af
 	ret
 
 
-Func_2B67:
+StartTextRow:
 	push af
 	xor a
-	ld [$C8DF], a
-	ld a, [$C8E0]
+	ld [wTextColumn], a
+	ld a, [wTextRow]
 	inc a
-	ld [$C8E0], a
+	ld [wTextRow], a
 	pop af
 	ret
 
 
-Func_2B75:
+AdvanceTextRow:
 	push af
-	ld a, [$C8E0]
+	ld a, [wTextRow]
 	inc a
-	ld [$C8E0], a
+	ld [wTextRow], a
 	pop af
 	ret
 
 
-Func_2B7F:
+ClearTextColumn:
 	push af
 	xor a
-	ld [$C8DF], a
+	ld [wTextColumn], a
 	pop af
 	ret
 

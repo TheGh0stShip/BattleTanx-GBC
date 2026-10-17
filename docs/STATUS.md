@@ -35,7 +35,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see `BANKS_2A_2E_RESEARCH.md` | Trace the caller-less bank-`$2E` routines, `$C6B5`, and picture meanings |
-| Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
+| Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see `TEXT_RESEARCH.md` | Reconcile the bank `$08` glyph map/artwork and rule out indirect or constructed strings |
 
 ## Known control-flow gaps
 

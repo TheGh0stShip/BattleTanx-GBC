@@ -1017,6 +1017,128 @@ def check_screen_banks(entries: list[tuple[pathlib.Path, int, int]]) -> None:
     )
 
 
+TEXT_SYMBOLS = {
+    "LoadEncodedFontTiles": (0x00, 0x2A99),
+    "ClearTextCursor": (0x00, 0x2AB9),
+    "AdvanceTextColumn": (0x00, 0x2AC4),
+    "DrawEncodedText": (0x00, 0x2ACE),
+    "DrawEncodedGlyph": (0x00, 0x2AF7),
+    "SetTextCursor": (0x00, 0x2B58),
+    "StartTextRow": (0x00, 0x2B67),
+    "AdvanceTextRow": (0x00, 0x2B75),
+    "ClearTextColumn": (0x00, 0x2B7F),
+    "OptionsMenuEntries": (0x01, 0x48C0),
+    "ControlTypeTexts": (0x01, 0x499B),
+    "SkillTexts": (0x01, 0x49B3),
+    "DrawOptionsEntryLabel": (0x01, 0x4FE0),
+    "DrawOptionsEntryValue": (0x01, 0x5013),
+}
+
+
+def check_text(rom: bytes) -> None:
+    """Validate the presently referenced encoded strings and their renderers."""
+    option_expected = [
+        (1, 2, 0xD55B, 0, 4, b"MUSIC"),
+        (2, 3, 0xD55C, 3, 8, b"CONTROL"),
+        (3, 4, 0xD55D, 3, 12, b"SKILL"),
+    ]
+
+    def option_problem(data: bytes):
+        for index, expected in enumerate(option_expected):
+            record = data[index * 16:(index + 1) * 16]
+            if len(record) != 16:
+                return f"option record {index} is truncated"
+            ident, kind = record[:2]
+            pointer = int.from_bytes(record[2:4], "little")
+            column, row = record[4:6]
+            text = record[6:]
+            actual = (ident, kind, pointer, column, row)
+            if actual != expected[:5]:
+                return f"option record {index} fields are {actual}, expected {expected[:5]}"
+            terminator = text.find(0)
+            if terminator < 0:
+                return f"option record {index} has no terminator"
+            if text[:terminator] != expected[5] or any(text[terminator:]):
+                return f"option record {index} text or padding differs"
+            if any(not (byte == 0x20 or 0x30 <= byte <= 0x39 or 0x41 <= byte <= 0x5A)
+                   for byte in text[:terminator]):
+                return f"option record {index} has an unsupported character"
+        return None
+
+    def fixed_problem(data: bytes, address: int, width: int, expected: list[bytes]):
+        for index, value in enumerate(expected):
+            record = data[address + index * width:address + (index + 1) * width]
+            if record != value + bytes(width - len(value)):
+                return f"text record at ${address + index * width:04X} differs"
+        return None
+
+    options = rom[0x48C0:0x48F0]
+    problems = [
+        option_problem(options),
+        fixed_problem(rom, 0x4993, 4, [b"ON ", b"OFF"]),
+        fixed_problem(rom, 0x499B, 8, [b"1", b"2", b"3"]),
+        fixed_problem(rom, 0x49B3, 8, [b"EASY", b"MED ", b"HARD"]),
+    ]
+    for problem in problems:
+        if problem:
+            fail(f"text: {problem}")
+
+    # Only the two options-menu routines call the zero-terminated interpreter.
+    if rom.count(b"\xCD\xCE\x2A") != 2:
+        fail("text: expected exactly two direct calls to DrawEncodedText")
+
+    bank0_source = (ROOT / "src" / "bank_00.asm").read_text()
+    bank1_source = (ROOT / "src" / "bank_01.asm").read_text()
+    if bank1_source.count("call DrawEncodedText") != 2:
+        fail("text: source must contain exactly two DrawEncodedText calls")
+    for raw in ("$C8DF", "$C8E0"):
+        if raw in bank0_source or raw in bank1_source:
+            fail(f"text: source returned to raw cursor address {raw}")
+    for raw in ("$4993", "$4997", "$499B", "$49B3"):
+        if raw in bank1_source:
+            fail(f"text: bank $01 returned to raw address {raw}")
+
+    memory_source = (ROOT / "include" / "memory.inc").read_text()
+    for name, address in (("wTextColumn", 0xC8DF), ("wTextRow", 0xC8E0)):
+        match = re.search(rf"DEF {name}\s+EQU \$([0-9A-Fa-f]+)", memory_source)
+        actual = int(match.group(1), 16) if match else None
+        if actual != address:
+            fail(f"text: {name} is at {actual}, expected {address:#06x}")
+
+    sym = ROOT / "battletanx.sym"
+    if sym.exists():
+        symbols = {}
+        for line in sym.read_text().splitlines():
+            match = re.fullmatch(
+                r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip()
+            )
+            if match:
+                symbols[match.group(3)] = (
+                    int(match.group(1), 16), int(match.group(2), 16)
+                )
+        for name, where in TEXT_SYMBOLS.items():
+            if symbols.get(name) != where:
+                fail(f"text: symbol {name} is at {symbols.get(name)}, expected {where}")
+
+    corruptions = []
+    mutated = bytearray(options)
+    mutated[11:16] = b"XXXXX"
+    corruptions.append(option_problem(mutated))
+    mutated = bytearray(options)
+    mutated[2] ^= 1
+    corruptions.append(option_problem(mutated))
+    mutated = bytearray(options)
+    mutated[6] = ord("a")
+    corruptions.append(option_problem(mutated))
+    mutated = bytearray(rom)
+    mutated[0x499B] = ord("4")
+    corruptions.append(fixed_problem(mutated, 0x499B, 8, [b"1", b"2", b"3"]))
+    if not all(corruptions):
+        fail("text: a controlled corruption was not rejected")
+
+    print("text: 3 option entries, 11 strings, 2 renderer calls, 4 negative tests rejected")
+
+
 def main() -> None:
     check_toolchain()
     entries = read_manifest()
@@ -1027,6 +1149,7 @@ def main() -> None:
     check_scene_descriptors(rom)
     check_menu_states(rom)
     check_menu_memory_symbols()
+    check_text(rom)
     check_executable_ram_source()
     check_tracing()
     check_audio()

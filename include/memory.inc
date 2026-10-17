@@ -120,3 +120,7 @@ DEF wPaletteFadeFromWhite EQU $C6D1 ; 0: fade steps darken (fade from black); el
 DEF wScreenDescriptor     EQU $C6D2 ; 14-byte copy of the current screen descriptor
 DEF wScreenWidth          EQU $C6DC ; descriptor +10, BG map width read by ROM0 $05C5
 DEF wScreenHeight         EQU $C6DD ; descriptor +11, BG map height read by ROM0 $05C5
+
+; Encoded text cursor used by the options menu text renderer.
+DEF wTextColumn EQU $C8DF
+DEF wTextRow    EQU $C8E0

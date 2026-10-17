@@ -1302,18 +1302,22 @@ OptionsMenuEntries:
 OptionsMusicText:
 	db "MUSIC"
 	ds 5, 0
+ASSERT @ - OptionsMenuEntries == 16
 	db $02, $03
 	dw wControlSetting
 	db $03, $08
 OptionsControlText:
 	db "CONTROL"
 	ds 3, 0
+ASSERT @ - OptionsMenuEntries == 32
 	db $03, $04
 	dw wSkillSetting
 	db $03, $0C
 OptionsSkillText:
 	db "SKILL"
 	ds 5, 0
+OptionsMenuEntriesEnd:
+ASSERT OptionsMenuEntriesEnd - OptionsMenuEntries == 3 * 16
 
 	db $FF
 
@@ -1341,24 +1345,36 @@ OptionsOnText:
 	db "ON ", 0
 OptionsOffText:
 	db "OFF", 0
+ControlTypeTexts:
 ControlType1Text:
 	db "1"
 	ds 7, 0
+ASSERT @ - ControlType1Text == 8
 ControlType2Text:
 	db "2"
 	ds 7, 0
+ASSERT @ - ControlType2Text == 8
 ControlType3Text:
 	db "3"
 	ds 7, 0
+ASSERT @ - ControlType3Text == 8
+ControlTypeTextsEnd:
+ASSERT ControlTypeTextsEnd - ControlTypeTexts == 3 * 8
+SkillTexts:
 SkillEasyText:
 	db "EASY"
 	ds 4, 0
+ASSERT @ - SkillEasyText == 8
 SkillMediumText:
 	db "MED "
 	ds 4, 0
+ASSERT @ - SkillMediumText == 8
 SkillHardText:
 	db "HARD"
 	ds 4, 0
+ASSERT @ - SkillHardText == 8
+SkillTextsEnd:
+ASSERT SkillTextsEnd - SkillTexts == 3 * 8
 
 	LOAD UNION "RAM code $D56A", WRAMX[$D56A] ; copied from $01:49CB
 
@@ -1513,7 +1529,7 @@ RAM_D664:
 	call Func_01_5448
 	ld a, $01
 RAM_D6B4:
-	call Func_01_4FE0
+	call DrawOptionsEntryLabel
 	cp $FF
 	jr nz, RAM_D6B4
 	ld a, [wMenuState]
@@ -1973,7 +1989,7 @@ Jump_01_4DB4:
 	call Func_01_4E35
 	ld a, $01
 Jump_01_4DB9:
-	call Func_01_5013
+	call DrawOptionsEntryValue
 	cp $FF
 	jr nz, Jump_01_4DB9
 	ret
@@ -2224,7 +2240,7 @@ Func_01_4EEC:
 	db $33, $00, $64, $88, $10, $67, $00, $28, $77, $21, $34, $01, $56, $54, $43, $68
 	db $02, $12, $09, $87, $36, $05, $24, $18, $74, $73, $10, $48, $36, $48, $47, $21
 
-Func_01_4FE0:
+DrawOptionsEntryLabel:
 	call Func_01_4C81
 	push af
 	cp $FF
@@ -2242,9 +2258,9 @@ Jump_01_4FEA:
 	ld h, a
 	ld a, [hl]
 	inc a
-	ld [$C8E0], a
+	ld [wTextRow], a
 	ld a, $04
-	ld [$C8DF], a
+	ld [wTextColumn], a
 	pop hl
 	ld a, $06
 	add a, l
@@ -2256,14 +2272,14 @@ Jump_01_4FEA:
 	or a
 	jr z, Jump_01_5010
 	call Func_01_4ECF
-	call Func_2ACE
+	call DrawEncodedText
 Jump_01_5010:
 	pop af
 	inc a
 	ret
 
 
-Func_01_5013:
+DrawOptionsEntryValue:
 	call Func_01_4C81
 	push af
 	cp $FF
@@ -2281,9 +2297,9 @@ Jump_01_501D:
 	ld h, a
 	ld a, [hl]
 	inc a
-	ld [$C8E0], a
+	ld [wTextRow], a
 	ld a, $0C
-	ld [$C8DF], a
+	ld [wTextColumn], a
 	pop hl
 	ld a, $01
 	add a, l
@@ -2302,11 +2318,11 @@ Jump_01_501D:
 	ld a, [hl]
 	or a
 	jr nz, Jump_01_504C
-	ld hl, $4997
+	ld hl, OptionsOffText
 	jr Jump_01_5079
 
 Jump_01_504C:
-	ld hl, $4993
+	ld hl, OptionsOnText
 	jr Jump_01_5079
 
 Jump_01_5051:
@@ -2317,7 +2333,7 @@ Jump_01_5051:
 	add a, a
 	add a, a
 	add a, a
-	ld hl, $499B
+	ld hl, ControlTypeTexts
 	ld a, a
 	add a, l
 	ld l, a
@@ -2334,7 +2350,7 @@ Jump_01_5066:
 	add a, a
 	add a, a
 	add a, a
-	ld hl, $49B3
+	ld hl, SkillTexts
 	ld a, a
 	add a, l
 	ld l, a
@@ -2342,7 +2358,7 @@ Jump_01_5066:
 	adc a, h
 	ld h, a
 Jump_01_5079:
-	call Func_2ACE
+	call DrawEncodedText
 Jump_01_507C:
 	pop af
 	inc a
@@ -3432,7 +3448,7 @@ RAM_D9CB:
 	ld a, $88
 	ld bc, $6B85
 	call Func_0622
-	call Func_2AB9
+	call ClearTextCursor
 	pop af
 	ld [rROMB0], a
 	ret
