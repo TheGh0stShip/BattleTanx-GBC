@@ -11408,21 +11408,21 @@ Func_3C56: ; legacy alias
 	push hl
 	ld a, [wBgMapWriteCount]
 	or a
-	jr z, Jump_3C76
+	jr z, .return
 	ld b, a
 	ldh a, [rSVBK]
 	push af
 	ld a, $04
 	ldh [rSVBK], a
 	ld hl, wBgMapWriteQueue
-Jump_3C6A:
+.applyNextRecord:
 	call ApplyBgMapWrite
 	dec b
-	jr nz, Jump_3C6A
+	jr nz, .applyNextRecord
 	pop af
 	ldh [rSVBK], a
 	call ResetBgMapWriteQueue
-Jump_3C76:
+.return:
 	pop hl
 	pop bc
 	pop af
@@ -11438,10 +11438,10 @@ Func_3C7A:
 	ld d, a
 	ld a, $01
 	ldh [rVBK], a
-Jump_3C82:
+.waitForAccessibleVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_3C82
+	jr nz, .waitForAccessibleVram
 	ld a, [hli]
 	ld [de], a
 	xor a
@@ -11451,33 +11451,33 @@ Jump_3C82:
 	ret
 
 
-; Load cell 360 from the banked tile-map and attribute-map pointers at
-; $C94F/$C951, caching the pair at $C955/$C956 for screen-scroll fills.
+; Load cell 360 from the banked tile-map and attribute-map pointers, caching
+; the pair in wBgFillTileAttr for screen-scroll fills.
 LoadScrollingScreenFillCell:
 Func_3C90: ; legacy alias
-	ld hl, $C943
+	ld hl, wBankedBgSourceBank
 	ld a, [hli]
 	ld b, a
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, b
 	ld [rROMB0], a
-	ld a, [$C94F]
+	ld a, [wSceneTileAttrPtrs]
 	ld l, a
-	ld a, [$C950]
+	ld a, [wSceneTileAttrPtrs + 1]
 	ld h, a
 	ld bc, $0168
 	add hl, bc
 	ld a, [hl]
-	ld [$C955], a
-	ld a, [$C951]
+	ld [wBgFillTileAttr], a
+	ld a, [wSceneTileAttrPtrs + 2]
 	ld e, a
-	ld a, [$C952]
+	ld a, [wSceneTileAttrPtrs + 3]
 	ld d, a
 	ld hl, $0168
 	add hl, de
 	ld a, [hl]
-	ld [$C956], a
+	ld [wBgFillTileAttr + 1], a
 	pop af
 	ld [rROMB0], a
 	ret
