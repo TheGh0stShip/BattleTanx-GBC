@@ -1498,9 +1498,9 @@ LoadOAMDMARoutine:
 	push bc
 	push de
 	push hl
-	ld hl, $0925
-	ld bc, $FFF0
-	ld e, $0A
+	ld hl, OAMDMARoutineSource
+	ld bc, OAMDMARoutine
+	ld e, OAMDMARoutineSourceEnd - OAMDMARoutineSource
 	call CopyBytesShort
 	pop hl
 	pop de
@@ -1509,7 +1509,8 @@ LoadOAMDMARoutine:
 	ret
 
 
-	LOAD UNION "RAM code $FFF0", HRAM[$FFF0] ; copied from $00:0925
+OAMDMARoutineSource:
+	LOAD UNION "RAM code $FFF0", HRAM[$FFF0] ; copied from OAMDMARoutineSource
 
 OAMDMARoutine:
 	ld a, HIGH(wShadowOam)
@@ -1521,6 +1522,8 @@ RAM_FFF6:
 	ret
 
 	ENDL
+OAMDMARoutineSourceEnd:
+	ASSERT OAMDMARoutineSourceEnd - OAMDMARoutineSource == 10
 
 LoadInterfacePalettes:
 	push af

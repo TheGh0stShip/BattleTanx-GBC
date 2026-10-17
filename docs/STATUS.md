@@ -106,6 +106,11 @@ and the paired tile/attribute writer. Hardware initialization and OAM reset
 retain compatibility aliases at their original addresses so banked callers do
 not need coordinated edits.
 
+The ten-byte OAM DMA helper has separate `OAMDMARoutineSource` and
+`OAMDMARoutine` labels for its ROM0 `$0925` storage and HRAM `$FFF0` execution
+addresses. Its loader derives the copy length from the ROM boundaries, and an
+assertion prevents the source image from drifting silently.
+
 Boot register A is preserved as `wBootHardwareMode` before the memory clear;
 the compatibility guard accepts only the CGB value `$11`. The main loop stages
 SCX and SCY through `wPendingScrollX` and `wPendingScrollY`, then increments the
