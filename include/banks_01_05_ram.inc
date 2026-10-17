@@ -54,7 +54,9 @@ DEF wLevelObjectSkillScratch         EQU $CD22 ; 1 byte(s)
 DEF wLevelObjectRecordIndex          EQU $CD23 ; 1 byte(s)
 DEF wLevelObjectRespawnsLeft         EQU $CD24 ; 1 byte(s)
 DEF wPendingSpawnOutsideView         EQU $CD25 ; 1 byte(s)
+DEF wObjectProximityThreshold        EQU $CD26 ; 1 byte(s); distance-box threshold, always $55
 DEF wObjectSequenceThrottleCounter   EQU $CD28 ; 1 byte(s)
+DEF wForceRecordedPathAppend         EQU $CD29 ; 1 byte(s); bypasses duplicate-waypoint check
 DEF wSequenceObjectsInState2Count    EQU $CD2A ; 1 byte(s)
 DEF wBurstShadowOam                  EQU $D000 ; 160 byte(s) ; WRAM bank 2 (SVBK=2)
 DEF wBurstObjects                    EQU $D0A0 ; 320 byte(s) ; WRAM bank 2 (SVBK=2); overlaps wObjectPool in bank 1

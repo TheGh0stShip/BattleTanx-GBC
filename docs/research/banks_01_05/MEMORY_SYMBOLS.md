@@ -64,7 +64,9 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$CD23` | `wLevelObjectRecordIndex` | 1 | Only bank_03/04 level-object code uses it. |
 | `$CD24` | `wLevelObjectRespawnsLeft` | 1 | Consistent. |
 | `$CD25` | `wPendingSpawnOutsideView` | 1 | Same meaning in both proposals; only TrySpawnPendingLevelObject uses it. |
+| `$CD26` | `wObjectProximityThreshold` | 1 | `CheckObjectNearPlayerBox` stores `$55`, passes it to the two-axis distance test, and checks it again before setting the proximity latch. |
 | `$CD28` | `wObjectSequenceThrottleCounter` | 1 | Address was given without '$' in the input. Uses: Jump_03_5CED and InitializeLevelObjects. |
+| `$CD29` | `wForceRecordedPathAppend` | 1 | Normally zero. `UnusedStartRecordedPathFollow` temporarily makes it nonzero so `AppendRecordedPathWaypoint` bypasses its duplicate-waypoint check. |
 | `$CD2A` | `wSequenceObjectsInState2Count` | 1 | Address was given without '$' in the input. Counted in Func_03_5CD0 and read in the level checks. |
 | `$D0A0` | `wBurstObjects` | 320 | Only bank_02 burst code refs it, with rSVBK=2 (Func_02_626D). Caveat: in WRAM bank 1 this address lies inside wObjectPool, so the comment must state WRAM bank 2 |
 | `$D3F8` | `wScenePaletteFadeTable` | 32 | Only bank_01 scene code uses it (RAM_D273, RAM_D2C0, 6180, 61F9). No overlap with wScrollingScenePalette at $D3F6 if that field is 2 bytes. |
@@ -91,7 +93,7 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$FFB5` | `hSceneTileSlot` | 1 | Only bank_01 scene code uses it. Flagged as HRAM: no reuse found. |
 | `$FFB6` | `hSceneRowHdmaPending` | 1 | Only bank_01 scene code and its VBlank RAM code use it. |
 
-## Final bank $01/$03 pass (14 symbols, 85 raw operands)
+## Final bank $01/$03 follow-up (16 symbols, 95 raw operands)
 
 | Symbol | Address | Evidence |
 | --- | --- | --- |
@@ -113,6 +115,5 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 - HRAM reused by other banks (`$FF80-$FF8E`, `$FF96-$FFA7`, `$FFB0-$FFB2`);
 - written but never read (`$FFAB`, `$CD2B-$CD32`, `$D561-$D565`);
 - a role that differs by routine (`$C94B`);
-- an unclear role (`$CD26`, `$CD29`);
 - no writer found (`$C6ED`/`$C6EE`);
 - a time-shared or bank-dependent region (`$DBFB-$DC40`, `$D7FF`).

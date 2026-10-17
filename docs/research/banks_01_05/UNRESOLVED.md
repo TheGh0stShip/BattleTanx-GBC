@@ -67,8 +67,6 @@
 6. **RAM**:
    - `wC8E6` is written, but its purpose is unknown.
    - `wCommittedMusicSetting` and `wCommittedControlSetting` are write-only.
-   - `$CD26` only ever holds `$55`.
-   - `$CD29` is a short-lived flag.
    - No writer was found for `$C6ED`/`$C6EE`.
    - Bank `$01` writes `hLevelRegionTop` (`$FF92`) to `rROMB0` and clears
      `hLevelRegionX` (`$FF95`), which looks like reuse of HRAM.

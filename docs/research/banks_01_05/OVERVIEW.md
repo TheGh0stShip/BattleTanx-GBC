@@ -39,7 +39,7 @@ address print before every statement in a scratch assembly.
 - The last 27 automatic entries (17 in bank `$01`, 10 in bank `$03`) got companion
   names; `make progress` reports 288/288.
 - 49 branch labels were renamed.
-- 14 more RAM symbols replace 85 raw operands.
+- 16 more RAM symbols replace 95 raw operands.
 - New checks: the scene-interrupt bank-`$01` call set (`tools/banks_01_05.py`)
   and the sequence field invariants (`tools/object_sequence_fields.py`).
 
@@ -47,7 +47,7 @@ address print before every statement in a scratch assembly.
 
 - 178 routine and table renames (aliases kept where other files use the old
   name), plus 13 table names.
-- 77 RAM symbols (`include/banks_01_05_ram.inc`), replacing 455 raw operands.
+- 77 RAM symbols (`include/banks_01_05_ram.inc`), replacing 455 raw operands in the initial pass.
 - **Every raw own-bank ROM pointer in banks `$01`-`$05` is now a label.** The one
   remaining raw `$4E91` operand is an RGB555 colour value.
 - **Bank `$01` descriptor tables are symbolic**: scrolling scenes (bank bytes

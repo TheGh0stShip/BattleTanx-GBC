@@ -22,11 +22,11 @@ InitializeLevelObjects:
 	ld [wLevelObjectSpawnTable], a
 	ld [wLevelObjectAuxTable], a
 	ld [wLevelObjectRecordIndex], a
-	ld [$CD26], a
+	ld [wObjectProximityThreshold], a
 	ld [wLevelObjectRespawnsLeft], a
 	ld [wObjectSlowTickCounter], a
 	ld [wObjectSequenceThrottleCounter], a
-	ld [$CD29], a
+	ld [wForceRecordedPathAppend], a
 	ld a, [$CA06]
 	ld h, $00
 	ld l, a

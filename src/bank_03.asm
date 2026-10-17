@@ -185,7 +185,7 @@ Func_03_5CD0: ; legacy alias, used by src/bank_00.asm
 	ld e, l
 	ld d, h
 	xor a
-	ld [$CD29], a
+	ld [wForceRecordedPathAppend], a
 	ld a, e
 	and $C0
 	add a, $1E
@@ -979,7 +979,7 @@ Func_03_60AF: ; legacy alias (automatic entry label)
 	ld b, $55
 CheckObjectNearPlayerBox_StoreThreshold:
 	ld a, b
-	ld [$CD26], a
+	ld [wObjectProximityThreshold], a
 	ld a, l
 	and $C0
 	add a, $16
@@ -1028,7 +1028,7 @@ CheckObjectNearPlayerBox_StoreThreshold:
 	pop hl
 	push bc
 	push de
-	ld a, [$CD26]
+	ld a, [wObjectProximityThreshold]
 	ld h, a
 	jp Jump_03_6065
 
@@ -1072,7 +1072,7 @@ Func_03_611C: ; legacy alias (automatic entry label)
 	ret
 
 AimObjectAtPlayer_SetLatch:
-	ld a, [$CD26]
+	ld a, [wObjectProximityThreshold]
 	cp $55
 	ld a, e
 	and $C0
@@ -1209,12 +1209,12 @@ Func_03_61FC: ; legacy alias (automatic entry label)
 	jp nz, Jump_03_62A5
 	or $40
 	ld [hl], a
-	ld [$CD29], a
+	ld [wForceRecordedPathAppend], a
 	xor a
 	ld [wRecordedPathStarted], a
 	call AppendRecordedPathWaypoint
 	xor a
-	ld [$CD29], a
+	ld [wForceRecordedPathAppend], a
 	push bc
 	push hl
 	ld a, [wPlayerObject]
@@ -1899,7 +1899,7 @@ Func_03_6575: ; legacy alias (automatic entry label)
 	ld b, a
 	push bc
 	push hl
-	ld a, [$CD29]
+	ld a, [wForceRecordedPathAppend]
 	and a
 	jr nz, AppendRecordedPathWaypoint_LoadSecondWord
 	ld a, [hli]
