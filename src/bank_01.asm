@@ -1834,7 +1834,7 @@ Func_01_4CAA:
 	ld a, [wMenuGridColumn]
 	add a, b
 	ld [$CA06], a
-	call Func_300A
+	call ResetScore
 	call Func_3004
 	pop hl
 	jr Jump_01_4D14
@@ -1849,7 +1849,7 @@ Jump_01_4CDD:
 	ld [$C6CD], a
 	xor a
 	ld [$CA06], a
-	call Func_300A
+	call ResetScore
 	call Func_3004
 Jump_01_4CF7:
 	xor a
@@ -2522,7 +2522,7 @@ Jump_01_5164:
 
 Func_01_518D:
 	ld hl, $418F
-	ld a, [$C6D0]
+	ld a, [wScoreThresholdIndex]
 	inc a
 	ld c, a
 	add a, a
@@ -2536,30 +2536,30 @@ Func_01_518D:
 	ld h, a
 	ld a, [hld]
 	ld b, a
-	ld a, [$CD07]
+	ld a, [wScore + 3]
 	cp b
 	jr c, Jump_01_51CB
 	jr nz, Jump_01_51C5
 	ld a, [hld]
 	ld b, a
-	ld a, [$CD06]
+	ld a, [wScore + 2]
 	cp b
 	jr c, Jump_01_51CB
 	jr nz, Jump_01_51C5
 	ld a, [hld]
 	ld b, a
-	ld a, [$CD05]
+	ld a, [wScore + 1]
 	cp b
 	jr c, Jump_01_51CB
 	jr nz, Jump_01_51C5
 	ld a, [hld]
 	ld b, a
-	ld a, [$CD04]
+	ld a, [wScore]
 	cp b
 	jr c, Jump_01_51CB
 Jump_01_51C5:
 	ld a, c
-	ld [$C6D0], a
+	ld [wScoreThresholdIndex], a
 	jr Func_01_518D
 
 Jump_01_51CB:
@@ -6059,13 +6059,13 @@ Jump_01_6879:
 
 Func_01_68AB:
 	ld [$DF06], a
-	ld a, [$CD04]
+	ld a, [wScore]
 	ld c, a
-	ld a, [$CD05]
+	ld a, [wScore + 1]
 	ld b, a
-	ld a, [$CD06]
+	ld a, [wScore + 2]
 	ld e, a
-	ld a, [$CD07]
+	ld a, [wScore + 3]
 	ld d, a
 	ld hl, $FFB0
 	call Func_06E7
@@ -6957,19 +6957,19 @@ Jump_01_6DF0:
 
 Func_01_6E01:
 	xor a
-	ld [$CD04], a
-	ld [$CD05], a
-	ld [$CD06], a
-	ld [$CD07], a
+	ld [wScore], a
+	ld [wScore + 1], a
+	ld [wScore + 2], a
+	ld [wScore + 3], a
 Jump_01_6E0E:
 	call Func_3BE6
-	ld a, [$CD04]
+	ld a, [wScore]
 	ld e, a
-	ld a, [$CD05]
+	ld a, [wScore + 1]
 	ld d, a
-	ld a, [$CD06]
+	ld a, [wScore + 2]
 	ld c, a
-	ld a, [$CD07]
+	ld a, [wScore + 3]
 	ld b, a
 	ld a, $01
 	add a, e
@@ -6984,13 +6984,13 @@ Jump_01_6E0E:
 	adc a, b
 	ld b, a
 	ld a, e
-	ld [$CD04], a
+	ld [wScore], a
 	ld a, d
-	ld [$CD05], a
+	ld [wScore + 1], a
 	ld a, c
-	ld [$CD06], a
+	ld [wScore + 2], a
 	ld a, b
-	ld [$CD07], a
+	ld [wScore + 3], a
 	jr Jump_01_6E0E
 
 	db $C9

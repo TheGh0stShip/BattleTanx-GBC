@@ -821,13 +821,13 @@ Jump_02_478D:
 
 
 Func_02_47AF:
-	ld a, [$CD04]
+	ld a, [wScore]
 	ldh [$FFC2], a
-	ld a, [$CD05]
+	ld a, [wScore + 1]
 	ldh [$FFC3], a
-	ld a, [$CD06]
+	ld a, [wScore + 2]
 	ldh [$FFC4], a
-	ld a, [$CD07]
+	ld a, [wScore + 3]
 	ldh [$FFC5], a
 	xor a
 	ldh [$FFC0], a
@@ -1570,10 +1570,10 @@ Jump_02_5D06:
 
 Func_02_5D33:
 	xor a
-	ld [$CD04], a
-	ld [$CD05], a
-	ld [$CD06], a
-	ld [$CD07], a
+	ld [wScore], a
+	ld [wScore + 1], a
+	ld [wScore + 2], a
+	ld [wScore + 3], a
 Jump_02_5D40:
 	xor a
 	or b
@@ -1583,18 +1583,18 @@ Jump_02_5D40:
 	jr Jump_02_5D6C
 
 Jump_02_5D49:
-	ld a, [$CD04]
+	ld a, [wScore]
 	add a, $E8
-	ld [$CD04], a
-	ld a, [$CD05]
+	ld [wScore], a
+	ld a, [wScore + 1]
 	adc a, $03
-	ld [$CD05], a
-	ld a, [$CD06]
+	ld [wScore + 1], a
+	ld a, [wScore + 2]
 	adc a, $00
-	ld [$CD06], a
-	ld a, [$CD07]
+	ld [wScore + 2], a
+	ld a, [wScore + 3]
 	adc a, $00
-	ld [$CD07], a
+	ld [wScore + 3], a
 	dec bc
 	jr Jump_02_5D40
 

@@ -160,6 +160,8 @@ NAMES = {
     0x2ED5: "Music_Update",
     0x2F21: "Audio_Update",
     0x2F73: "Audio_QueueSound",
+    0x300A: "ResetScore",
+    0x302D: "CheckNextScoreThreshold",
     0x37AC: "SelectObjectSpritePaletteFar",
     0x37DF: "QueuePendingLevelObjectFar",
     0x37F0: "UpdatePendingLevelObjectsFar",

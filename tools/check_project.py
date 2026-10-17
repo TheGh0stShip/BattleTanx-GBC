@@ -1006,6 +1006,8 @@ def check_level_banks() -> None:
             "ObjectCandidatesWithin20Pixels": (0x00, 0x285B),
             "GetObjectScoreValue": (0x00, 0x0C1A),
             "AddToScore": (0x00, 0x3019),
+            "ResetScore": (0x00, 0x300A),
+            "CheckNextScoreThreshold": (0x00, 0x302D),
             "LoadLevelLookupPointers": (0x05, 0x4088),
             "ObjectScoreValues": (0x05, 0x4EA0),
             "ObjectTypeParameterTable": (0x05, 0x5100),
@@ -1055,6 +1057,16 @@ def check_level_banks() -> None:
     }
     if memory_symbols != expected_memory:
         fail(f"levels: WRAM symbols differ: {memory_symbols.items() ^ expected_memory.items()}")
+
+    score_symbols = {
+        name: int(address, 16)
+        for name, address in re.findall(
+            r"DEF (wScore\w*)\s+EQU \$([0-9A-Fa-f]+)", memory_source
+        )
+    }
+    expected_score = {"wScore": 0xCD04, "wScoreThresholdIndex": 0xC6D0}
+    if score_symbols != expected_score:
+        fail(f"score: WRAM symbols differ: {score_symbols.items() ^ expected_score.items()}")
 
     hram_symbols = {
         name: int(address, 16)

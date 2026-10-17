@@ -116,6 +116,11 @@ completion path sets `wLevelComplete`; the destruction path clears
 `wPlayerAlive`. `UpdateLevelEndCountdown` distinguishes those states and
 returns carry only when an active countdown expires.
 
+The score is a 32-bit little-endian accumulator at `wScore`. `AddToScore`
+adds a 16-bit `BC` value with carry propagation through all four bytes;
+`CheckNextScoreThreshold` compares it to the next four-byte bank-$01 table
+entry and advances `wScoreThresholdIndex` after awarding that threshold.
+
 ## Level banks `$09-$26`
 
 The 30 banks are structured as 15 two-bank levels through the record table at

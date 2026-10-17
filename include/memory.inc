@@ -23,6 +23,11 @@ DEF wLevelEndCountdown EQU $C6EB ; 2-byte little-endian frame count
 DEF wLevelComplete     EQU $C6CE
 DEF wPlayerAlive       EQU $CD09
 
+; Four-byte little-endian score and the index of the last reached entry in
+; the bank-$01 threshold table.
+DEF wScore               EQU $CD04 ; 32-bit little-endian accumulator
+DEF wScoreThresholdIndex EQU $C6D0
+
 ; Little-endian callback selected from RuntimeCallbackTable and dispatched by
 ; the indirect jump at ROM0:$364D.
 DEF wRuntimeCallback EQU $C6BE

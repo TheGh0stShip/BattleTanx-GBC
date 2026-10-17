@@ -373,7 +373,7 @@ Jump_02E9:
 	ldh a, [rLY]
 	call Func_3302
 	ldh a, [rLY]
-	call Func_302D
+	call CheckNextScoreThreshold
 	ld a, [$CD00]
 	ld l, a
 	ld a, [$CD01]
@@ -1585,16 +1585,16 @@ Func_09AB:
 	call ResetOamState
 	call LoadCurrentLevel
 	call LoadEncodedFontTiles
-	ld a, [$CD06]
+	ld a, [wScore + 2]
 	ld b, a
-	ld a, [$CD07]
+	ld a, [wScore + 3]
 	or b
 	jr nz, Jump_09E6
-	ld a, [$CD05]
+	ld a, [wScore + 1]
 	cp $C3
 	jr c, Jump_09ED
 	jr nz, Jump_09E6
-	ld a, [$CD04]
+	ld a, [wScore]
 	cp $50
 	jr c, Jump_09ED
 Jump_09E6:
@@ -8801,11 +8801,12 @@ Func_3004:
 	ret
 
 
+ResetScore:
 Func_300A:
 	push hl
 	xor a
-	ld [$C6D0], a
-	ld hl, $CD04
+	ld [wScoreThresholdIndex], a
+	ld hl, wScore
 	xor a
 	ld [hli], a
 	ld [hli], a
@@ -8817,7 +8818,7 @@ Func_300A:
 
 AddToScore:
 	push hl
-	ld hl, $CD04
+	ld hl, wScore
 	ld a, [hl]
 	add a, c
 	ld [hli], a
@@ -8834,13 +8835,14 @@ AddToScore:
 	ret
 
 
+CheckNextScoreThreshold:
 Func_302D:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
 	ld [rROMB0], a
 	ld hl, $418F
-	ld a, [$C6D0]
+	ld a, [wScoreThresholdIndex]
 	inc a
 	ld c, a
 	add a, a
@@ -8854,25 +8856,25 @@ Func_302D:
 	ld h, a
 	ld a, [hld]
 	ld b, a
-	ld a, [$CD07]
+	ld a, [wScore + 3]
 	cp b
 	jr c, Jump_307A
 	jr nz, Jump_306E
 	ld a, [hld]
 	ld b, a
-	ld a, [$CD06]
+	ld a, [wScore + 2]
 	cp b
 	jr c, Jump_307A
 	jr nz, Jump_306E
 	ld a, [hld]
 	ld b, a
-	ld a, [$CD05]
+	ld a, [wScore + 1]
 	cp b
 	jr c, Jump_307A
 	jr nz, Jump_306E
 	ld a, [hld]
 	ld b, a
-	ld a, [$CD04]
+	ld a, [wScore]
 	cp b
 	jr c, Jump_307A
 Jump_306E:
@@ -8880,7 +8882,7 @@ Jump_306E:
 	ld e, $52
 	call Audio_QueueSound
 	ld a, c
-	ld [$C6D0], a
+	ld [wScoreThresholdIndex], a
 Jump_307A:
 	pop af
 	ld [rROMB0], a
@@ -9833,13 +9835,13 @@ Func_356B:
 	push bc
 	push de
 	push hl
-	ld a, [$CD04]
+	ld a, [wScore]
 	ld c, a
-	ld a, [$CD05]
+	ld a, [wScore + 1]
 	ld b, a
-	ld a, [$CD06]
+	ld a, [wScore + 2]
 	ld e, a
-	ld a, [$CD07]
+	ld a, [wScore + 3]
 	ld d, a
 	ld hl, $FF90
 	call Func_06E7
