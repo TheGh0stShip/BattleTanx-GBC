@@ -143,6 +143,9 @@ Audio_InitFar).
 
 Channel 4 patches also set `wNoiseLockTimer = $37`; channel 1 patches
 write 1 to `wUnusedChannel1PatchFlag`, which nothing reads.
+The source uses channel-specific macros for all 36 ordinary records, exposing
+their NR10-NR14 or NR41-NR44 fields. Patch 0 remains split at byte 6 so its
+two unread tail bytes retain their own label.
 
 ### 5.2 Sound-effect sequence
 

@@ -12,6 +12,19 @@ DEF INSTRUMENT_NOISE_1         EQU 8
 DEF INSTRUMENT_NOISE_2         EQU 9
 DEF INSTRUMENT_NOISE_3         EQU 10
 
+; Fixed 8-byte SoundPatches records. Odd channels carry five consecutive
+; register values; even channels carry four. The driver forces trigger bit 7
+; in the last channel register, then ORs the NR51 routing byte into NR51.
+MACRO sound_patch_ch1 ; NR10, NR11, NR12, NR13, NR14, NR51, unread
+	db 1, \1, \2, \3, \4, \5, \6, \7
+ENDM
+MACRO sound_patch_ch2 ; NR21, NR22, NR23, NR24, NR51, unread x2
+	db 2, \1, \2, \3, \4, \5, \6, \7
+ENDM
+MACRO sound_patch_ch4 ; NR41, NR42, NR43, NR44, NR51, unread x2
+	db 4, \1, \2, \3, \4, \5, \6, \7
+ENDM
+
 ; Sound-effect sequence events -------------------------------------------
 ; op has bit 0 set and (op & $F0) != $20: start sound patch, then wait.
 MACRO sfx_patch ; op, patch id, delay frames

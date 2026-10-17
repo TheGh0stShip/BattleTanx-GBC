@@ -838,6 +838,16 @@ def check_audio() -> None:
         fail("audio: bank $06 data is back in the asset manifest")
     if "INCBIN" in (ROOT / "src" / "audio_data.asm").read_text():
         fail("audio: src/audio_data.asm must stay explicit source")
+    audio_data_source = (ROOT / "src" / "audio_data.asm").read_text()
+    patch_source = audio_data_source.split("SoundPatches:", 1)[1].split(
+        "; Indexed by (sound id & $3F)", 1
+    )[0]
+    if len(re.findall(r"^\s*sound_patch_ch1\b", patch_source, re.MULTILINE)) != 17:
+        fail("audio: channel-1 patch source is not 17 typed records")
+    if len(re.findall(r"^\s*sound_patch_ch4\b", patch_source, re.MULTILINE)) != 19:
+        fail("audio: channel-4 patch source is not 19 typed records")
+    if len(re.findall(r"^\s*db\s+2,", patch_source, re.MULTILINE)) != 1:
+        fail("audio: channel-2 patch 0 representation changed")
     audio_driver_source = (ROOT / "src" / "bank_06.asm").read_text()
     if re.search(r"^Jump_06_[0-9A-F]{4}:", audio_driver_source, re.MULTILINE):
         fail("audio: an automatic internal driver label returned")
