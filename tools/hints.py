@@ -286,6 +286,7 @@ NAMES = {
     0x164F: "TestLevelCellBits2And3AtPixel",
     0x3823: "UpdateLevelObjectAuxStateFar",
     0x3845: "ActivateMatchingLevelObjectAuxStateFar",
+    0x2D4C: "RenderProjectile",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",

@@ -1107,6 +1107,7 @@ def check_level_banks() -> None:
             "TestLevelCellBits2And3AtPixel": (0x00, 0x164F),
             "UpdateLevelObjectAuxStateFar": (0x00, 0x3823),
             "ActivateMatchingLevelObjectAuxStateFar": (0x00, 0x3845),
+            "RenderProjectile": (0x00, 0x2D4C),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),

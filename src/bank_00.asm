@@ -6455,7 +6455,7 @@ Jump_237C:
 	xor a
 	or b
 	jr z, Jump_2383
-	call Func_2D4C
+	call RenderProjectile
 Jump_2383:
 	call CalculateProjectileNextPosition
 	call UpdateProjectileLifetimeAndHoming
@@ -8450,13 +8450,17 @@ Jump_2D47:
 	ret
 
 
-Func_2D4C:
+; Render one status-2 projectile as a single shadow-OAM entry. Subtype 0 uses
+; tile $40, subtype 1 blinks between $41/$42, and subtype 2 uses direction-
+; indexed tiles beginning at $43; all use OBJ palette 3 in VRAM bank 1.
+RenderProjectile:
+Func_2D4C: ; legacy alias
 	push de
 	push bc
 	push hl
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_PROJECTILE_SUBTYPE_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $01
@@ -8466,7 +8470,7 @@ Func_2D4C:
 	call AllocateShadowOamFront
 	ld a, l
 	and $C0
-	add a, $07
+	add a, OBJECT_SCREEN_Y_OFFSET
 	ld l, a
 	ld a, [hld]
 	sub $04
@@ -8490,7 +8494,7 @@ Jump_2D7C:
 	call AllocateShadowOamFront
 	ld a, l
 	and $C0
-	add a, $07
+	add a, OBJECT_SCREEN_Y_OFFSET
 	ld l, a
 	ld a, [hld]
 	sub $04
@@ -8521,7 +8525,7 @@ Jump_2DA6:
 	call AllocateShadowOamFront
 	ld a, l
 	and $C0
-	add a, $07
+	add a, OBJECT_SCREEN_Y_OFFSET
 	ld l, a
 	ld a, [hld]
 	sub $04
@@ -8533,7 +8537,7 @@ Jump_2DA6:
 	inc e
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
 	add a, $43
