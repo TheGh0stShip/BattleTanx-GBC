@@ -107,6 +107,10 @@ The bit-3 entry awards a fixed 20-point bonus. A separate transition pass
 chooses random cells within the recovered bounds, stops after nine reported
 changes, and falls back to completing all bit-2 cells after six retries or a
 full pass with fewer than five reported changes.
+Object movement consumes bit 0 as an acceptance test: candidate axes are
+rejected when outside the level or when the tested cell has bit 0 clear.
+Objects with flag bit 3 use an eight-point footprint instead of one coordinate;
+the same flag selects a separate bit-3 region-conversion path.
 
 ### 4.2 Tiles (odd bank, `16 * (record+7 + 1)` bytes)
 

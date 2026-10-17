@@ -6216,7 +6216,7 @@ Jump_232B:
 	ld l, e
 	call Func_21F7
 	call Func_221F
-	call Func_249E
+	call UpdateObjectFrameDisplacement
 Jump_2335:
 	ld a, e
 	add a, $40
@@ -6255,8 +6255,8 @@ Jump_2353:
 	ld [$CA07], a
 Jump_236E:
 	call Func_27E8
-	call Func_2589
-	call Func_2644
+	call ResolveObjectLevelBit0Movement
+	call HandleObjectLevelBit3Cell
 	call Func_24D0
 	jr Jump_232B
 
@@ -6475,7 +6475,9 @@ Jump_2499:
 	ret
 
 
-Func_249E:
+; Store current-minus-previous X and Y low-byte displacement in object fields
+; $1B and $1C. HL addresses one 64-byte object record.
+UpdateObjectFrameDisplacement:
 	push de
 	ld e, l
 	ld a, l
@@ -6545,7 +6547,7 @@ Jump_24E3:
 	ld a, [bc]
 	and $08
 	jr z, Jump_24FF
-	call Func_2523
+	call ObjectsWithin12Pixels
 	or a
 	jr nz, Jump_2510
 Jump_24FF:
@@ -6582,7 +6584,9 @@ Jump_2510:
 	ret
 
 
-Func_2523:
+; Return 1 when the objects at HL and BC differ by at most 12 pixels on both
+; 16-bit position axes, otherwise return 0.
+ObjectsWithin12Pixels:
 	push hl
 	push bc
 	push de
@@ -6671,7 +6675,10 @@ Jump_2584:
 	ret
 
 
-Func_2589:
+; Reject each movement axis independently when its candidate coordinate is
+; outside the level or reaches a cell whose bit 0 is clear. Objects with flag
+; bit 3 test an eight-point footprint; other objects test one coordinate.
+ResolveObjectLevelBit0Movement:
 	push hl
 	ld a, l
 	and $C0
@@ -6815,7 +6822,9 @@ Jump_2642:
 	ret
 
 
-Func_2644:
+; Active objects with flag bit 3 complete a bit-3 cell region at their current
+; position.
+HandleObjectLevelBit3Cell:
 	push hl
 	ld a, l
 	and $C0

@@ -131,6 +131,11 @@ Named entry points cover pixel-to-region lookup, visible-area bit-2 cleanup,
 the fixed 20-point bit-3 conversion, random transition selection, and its
 bounded retry/fallback behavior.
 
+The adjacent object update path now names frame-displacement calculation, a
+checked 12-pixel two-axis proximity predicate, independent axis rejection
+against level bounds and cell bit 0, and the flag-bit-3 object region trigger.
+The larger state-dependent bit-1/2 response remains unnamed.
+
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have
 behavioral names. Four eight-byte object-type parameter records at `$5100`
