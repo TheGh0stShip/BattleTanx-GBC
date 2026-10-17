@@ -694,7 +694,7 @@ Jump_01_4486:
 	and $C0
 	ld l, a
 	ld b, $01
-	call Func_2FA3
+	call AddObjectHealth
 	call Func_334A
 	ld a, l
 	and $C0
@@ -760,7 +760,7 @@ Func_01_4516:
 
 Func_01_451A:
 	pop hl
-	call Func_0C41
+	call GetObjectMaxHealth
 	ld b, a
 	ld a, l
 	and $C0
@@ -776,7 +776,7 @@ Jump_01_452C:
 	sra a
 	sra a
 	ld b, a
-	call Func_2FA3
+	call AddObjectHealth
 	ld e, $4A
 	call Audio_QueueSound
 	jp Func_01_450F
@@ -784,7 +784,7 @@ Jump_01_452C:
 
 Func_01_453D:
 	pop hl
-	call Func_0C41
+	call GetObjectMaxHealth
 	ld b, a
 	ld a, l
 	and $C0
@@ -799,7 +799,7 @@ Jump_01_454F:
 	ld a, b
 	sra a
 	ld b, a
-	call Func_2FA3
+	call AddObjectHealth
 	ld e, $4B
 	call Audio_QueueSound
 	jp Func_01_450F

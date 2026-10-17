@@ -133,6 +133,11 @@ are held in `wPlayerLives`, initialized to three, clamped to nine by
 `GainPlayerLife`, decremented on the destruction flow, and rendered as one HUD
 digit by `DrawPlayerLivesDigit`.
 
+Object-record byte `+$1F` is health. `ObjectMaxHealthByType` supplies maxima
+35, 50, 65, and 40 for the four object types; the set/add/subtract helpers all
+clamp against those bounds. `wPlayerHealthRecoveryTicks` restores one health
+point every other VBlank while nonzero. Its direct producer remains unknown.
+
 ## Level banks `$09-$26`
 
 The 30 banks are structured as 15 two-bank levels through the record table at

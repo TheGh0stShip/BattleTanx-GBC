@@ -35,6 +35,7 @@ DEF wScoreThresholdIndex EQU $C6D0
 ; its 64-byte object-record pointer here. Lives are clamped to 0..9.
 DEF wPlayerObject     EQU $CD00 ; 2-byte pointer
 DEF wPlayerLives      EQU $CD02
+DEF wPlayerHealthRecoveryTicks EQU $CD03 ; decremented every other VBlank
 DEF wPlayerObjectType EQU $CD08
 
 ; Little-endian callback selected from RuntimeCallbackTable and dispatched by

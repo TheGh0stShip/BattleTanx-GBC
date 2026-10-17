@@ -232,7 +232,7 @@ Jump_01B4:
 	ld l, a
 	ld a, [wPlayerObject + 1]
 	ld h, a
-	call Func_2F93
+	call SetObjectHealthToMax
 	ld a, l
 	and $C0
 	add a, $19
@@ -369,7 +369,7 @@ Jump_02E9:
 	call Func_22ED
 	call Func_3823
 	call Func_20FE
-	call Func_2FCE
+	call UpdatePlayerHealthRecovery
 	ldh a, [rLY]
 	call Func_3302
 	ldh a, [rLY]
@@ -2022,8 +2022,10 @@ GetObjectScoreValue:
 	pop af
 	ret
 
+ObjectMaxHealthByType:
 	db $23, $32, $41, $28
 
+GetObjectMaxHealth:
 Func_0C41:
 	push hl
 	ld a, l
@@ -2031,7 +2033,7 @@ Func_0C41:
 	add a, $1E
 	ld l, a
 	ld a, [hl]
-	ld hl, $0C3D
+	ld hl, ObjectMaxHealthByType
 	add a, l
 	ld l, a
 	ld a, [hl]
@@ -2327,7 +2329,7 @@ Jump_0D4B:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_2F93
+	call SetObjectHealthToMax
 	pop bc
 	pop de
 	pop hl
@@ -7494,7 +7496,7 @@ Jump_2927:
 	jr z, Jump_294C
 	sla b
 Jump_294C:
-	call Func_2FBB
+	call SubtractObjectHealth
 	pop hl
 	ld a, l
 	and $C0
@@ -8702,10 +8704,11 @@ Jump_2F83:
 	ret
 
 
+SetObjectHealthToMax:
 Func_2F93:
 	push bc
 	push hl
-	call Func_0C41
+	call GetObjectMaxHealth
 	ld b, a
 	ld a, l
 	and $C0
@@ -8717,10 +8720,11 @@ Func_2F93:
 	ret
 
 
+AddObjectHealth:
 Func_2FA3:
 	push bc
 	push hl
-	call Func_0C41
+	call GetObjectMaxHealth
 	ld c, a
 	ld a, l
 	and $C0
@@ -8739,6 +8743,7 @@ Jump_2FB7:
 	ret
 
 
+SubtractObjectHealth:
 Func_2FBB:
 	push hl
 	ld a, b
@@ -8758,8 +8763,9 @@ Jump_2FCB:
 	ret
 
 
+UpdatePlayerHealthRecovery:
 Func_2FCE:
-	ld a, [$CD03]
+	ld a, [wPlayerHealthRecoveryTicks]
 	or a
 	ret z
 	ld b, a
@@ -8768,13 +8774,13 @@ Func_2FCE:
 	ret z
 	ld a, b
 	dec a
-	ld [$CD03], a
+	ld [wPlayerHealthRecoveryTicks], a
 	ld a, [wPlayerObject]
 	ld l, a
 	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld b, $01
-	call Func_2FA3
+	call AddObjectHealth
 	ret
 
 
