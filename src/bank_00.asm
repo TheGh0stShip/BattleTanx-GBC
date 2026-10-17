@@ -370,10 +370,10 @@ Jump_0261:
 	ld [hl], a
 	ld a, [wScreenEffectActive]
 	or a
-	jr z, Jump_02E9
+	jr z, .updateObjects
 	call RenderScreenEffect
 	call UpdateScreenEffect
-Jump_02E9:
+.updateObjects:
 	call UpdateAllObjects
 	call UpdateLevelObjectAuxStateFar
 	call ClearUnusedShadowOamEntries
@@ -394,9 +394,9 @@ Jump_02E9:
 	call nz, RunPauseLoopFar
 	ld a, [wScreenEffectActive]
 	or a
-	jr nz, Jump_0320
+	jr nz, .dispatchCallbacks
 	call ProcessGameplayInput
-Jump_0320:
+.dispatchCallbacks:
 	call DispatchEntityUpdateFar
 	call DispatchLevelStateCheckFar
 	ld a, [wVBlankPending]
@@ -404,10 +404,10 @@ Jump_0320:
 	jp nz, Jump_0250
 	xor a
 	ld [wVBlankPending], a
-Jump_0331:
+.waitForVBlank:
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_0331
+	jr z, .waitForVBlank
 	jp Jump_0250
 
 
@@ -441,13 +441,13 @@ PrepareDisplayForScreenTransition:
 Func_035C: ; legacy alias
 	xor a
 	ld [wVBlankPending], a
-Jump_0360:
+.waitForVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_0360
+	jr z, .waitForVBlank
 	xor a
 	ld [wVBlankPending], a
 	call DisableHudWindow
@@ -520,30 +520,30 @@ UpdateLevelEndCountdown:
 Func_03DB:
 	ld a, [wPlayerAlive]
 	or a
-	jr z, Jump_03EA
+	jr z, .countDown
 	ld a, [wLevelComplete]
 	or a
-	jr nz, Jump_03EA
-Jump_03E7:
+	jr nz, .countDown
+.notExpired:
 	scf
 	ccf
 	ret
 
-Jump_03EA:
+.countDown:
 	ld a, [wLevelEndCountdown]
 	ld c, a
 	ld a, [wLevelEndCountdown + 1]
 	ld b, a
 	or c
-	jr z, Jump_0400
+	jr z, .expired
 	dec bc
 	ld a, c
 	ld [wLevelEndCountdown], a
 	ld a, b
 	ld [wLevelEndCountdown + 1], a
-	jr Jump_03E7
+	jr .notExpired
 
-Jump_0400:
+.expired:
 	scf
 	ret
 
@@ -610,52 +610,52 @@ Func_043C:
 	ld h, b
 	ld l, b
 	add a, a
-	jr nc, Jump_044D
+	jr nc, .bit6
 	add hl, de
 	adc a, b
-Jump_044D:
+.bit6:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_0453
+	jr nc, .bit5
 	add hl, de
 	adc a, b
-Jump_0453:
+.bit5:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_0459
+	jr nc, .bit4
 	add hl, de
 	adc a, b
-Jump_0459:
+.bit4:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_045F
+	jr nc, .bit3
 	add hl, de
 	adc a, b
-Jump_045F:
+.bit3:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_0465
+	jr nc, .bit2
 	add hl, de
 	adc a, b
-Jump_0465:
+.bit2:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_046B
+	jr nc, .bit1
 	add hl, de
 	adc a, b
-Jump_046B:
+.bit1:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_0471
+	jr nc, .bit0
 	add hl, de
 	adc a, b
-Jump_0471:
+.bit0:
 	add hl, hl
 	adc a, a
-	jr nc, Jump_0477
+	jr nc, .returnHighByte
 	add hl, de
 	adc a, b
-Jump_0477:
+.returnHighByte:
 	ld a, h
 	pop hl
 	pop bc
@@ -671,17 +671,17 @@ Func_047C:
 	push bc
 	push de
 	push hl
-Jump_0480:
+.copyRow:
 	ld e, $14
-Jump_0482:
+.copyByte:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_0482
+	jr nz, .copyByte
 	ld a, [bc]
 	ld [hli], a
 	inc bc
 	dec e
-	jr nz, Jump_0482
+	jr nz, .copyByte
 	ld a, $0C
 	add a, l
 	ld l, a
@@ -689,7 +689,7 @@ Jump_0482:
 	adc a, h
 	ld h, a
 	dec d
-	jr nz, Jump_0480
+	jr nz, .copyRow
 	pop hl
 	pop de
 	pop bc
@@ -703,17 +703,17 @@ Func_049E:
 	push af
 	ld a, $01
 	ldh [rVBK], a
-Jump_04A3:
+.waitForAttributeVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_04A3
+	jr nz, .waitForAttributeVram
 	ld [hl], b
 	xor a
 	ldh [rVBK], a
-Jump_04AD:
+.waitForTileVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_04AD
+	jr nz, .waitForTileVram
 	ld [hl], c
 	pop af
 	ret
@@ -726,14 +726,14 @@ Func_04B6:
 	ldh a, [rLCDC]
 	add a, a
 	ret nc
-Jump_04BA:
+.waitUntilBeforeLine145:
 	ldh a, [rLY]
 	cp $92
-	jr nc, Jump_04BA
-Jump_04C0:
+	jr nc, .waitUntilBeforeLine145
+.waitForLine145:
 	ldh a, [rLY]
 	cp $91
-	jr c, Jump_04C0
+	jr c, .waitForLine145
 	ldh a, [rLCDC]
 	and $7F
 	ldh [rLCDC], a
@@ -747,27 +747,27 @@ Func_04CD:
 	push af
 	push de
 	ld d, $40
-Jump_04D1:
+.clearBackgroundColor:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_04D1
+	jr nz, .clearBackgroundColor
 	ld a, d
 	ldh [rBCPS], a
 	xor a
 	ldh [rBCPD], a
 	dec d
-	jr nz, Jump_04D1
+	jr nz, .clearBackgroundColor
 	ld d, $40
-Jump_04E2:
+.clearObjectColor:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_04E2
+	jr nz, .clearObjectColor
 	ld a, d
 	ldh [rOCPS], a
 	xor a
 	ldh [rOCPD], a
 	dec d
-	jr nz, Jump_04E2
+	jr nz, .clearObjectColor
 	pop de
 	pop af
 	ret
@@ -780,14 +780,14 @@ Func_04F4:
 	push hl
 	ld d, $A0
 	ld hl, $FE00
-Jump_04FC:
+.clearByte:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_04FC
+	jr nz, .clearByte
 	xor a
 	ld [hli], a
 	dec d
-	jr nz, Jump_04FC
+	jr nz, .clearByte
 	pop hl
 	pop de
 	pop af
@@ -799,12 +799,12 @@ Jump_04FC:
 ClearMemory:
 Func_050B:
 	xor a
-Jump_050C:
+.clearByte:
 	ld [hli], a
 	dec c
-	jr nz, Jump_050C
+	jr nz, .clearByte
 	dec b
-	jr nz, Jump_050C
+	jr nz, .clearByte
 	ret
 
 
@@ -818,10 +818,10 @@ Func_0514:
 	add a, e
 	add a, e
 	ld e, a
-Jump_051B:
+.waitForVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_051B
+	jr nz, .waitForVram
 	ld a, e
 	ldh [rBCPS], a
 	ld a, c
@@ -848,21 +848,21 @@ Func_052F:
 	add a, a
 	add a, a
 	ld c, a
-Jump_053B:
+.waitForIndexWrite:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_053B
+	jr nz, .waitForIndexWrite
 	ld a, b
 	ldh [rBCPS], a
 	ld de, $FF69
-Jump_0547:
+.copyByte:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_0547
+	jr nz, .copyByte
 	ld a, [hli]
 	ld [de], a
 	dec c
-	jr nz, Jump_0547
+	jr nz, .copyByte
 	ret
 
 
@@ -876,29 +876,29 @@ Func_0553:
 	add a, a
 	or $80
 	ld b, a
-Jump_055A:
+.waitForIndexWrite:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_055A
+	jr nz, .waitForIndexWrite
 	ld a, b
 	ldh [rOCPS], a
 	ld de, $FF6B
-Jump_0566:
+.waitForColorZeroWrite:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_0566
+	jr nz, .waitForColorZeroWrite
 	xor a
 	ld [de], a
 	ld [de], a
 	ld c, $06
-Jump_0571:
+.copyColorByte:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_0571
+	jr nz, .copyColorByte
 	ld a, [hli]
 	ld [de], a
 	dec c
-	jr nz, Jump_0571
+	jr nz, .copyColorByte
 	ret
 
 
@@ -912,17 +912,17 @@ Func_057D:
 	add a, a
 	or $80
 	ld b, a
-Jump_0584:
+.waitForIndexWrite:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_0584
+	jr nz, .waitForIndexWrite
 	ld a, b
 	ldh [rOCPS], a
 	ld de, $FF6B
-Jump_0590:
+.copyPalette:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_0590
+	jr nz, .copyPalette
 	xor a
 	ld [de], a
 	ld [de], a
@@ -941,7 +941,7 @@ Jump_0590:
 	dec c
 	xor a
 	cp c
-	jr nz, Jump_0590
+	jr nz, .copyPalette
 	ret
 
 
@@ -951,15 +951,15 @@ FillBytes:
 Func_05AB:
 	inc b
 	inc c
-	jr Jump_05B0
+	jr .decrementCount
 
-Jump_05AF:
+.storeByte:
 	ld [hli], a
-Jump_05B0:
+.decrementCount:
 	dec c
-	jr nz, Jump_05AF
+	jr nz, .storeByte
 	dec b
-	jr nz, Jump_05AF
+	jr nz, .storeByte
 	ret
 
 
@@ -968,17 +968,17 @@ CopyBytesBC:
 Func_05B7:
 	inc b
 	inc c
-	jr Jump_05BE
+	jr .decrementCount
 
-Jump_05BB:
+.copyByte:
 	ld a, [hli]
 	ld [de], a
 	inc de
-Jump_05BE:
+.decrementCount:
 	dec c
-	jr nz, Jump_05BB
+	jr nz, .copyByte
 	dec b
-	jr nz, Jump_05BB
+	jr nz, .copyByte
 	ret
 
 
@@ -995,7 +995,7 @@ Func_05C5: ; legacy alias
 	push de
 	push hl
 	push bc
-	ld a, [$C6DC]
+	ld a, [wScreenWidth]
 	ld b, a
 	ld a, $20
 	sub b
@@ -1003,20 +1003,20 @@ Func_05C5: ; legacy alias
 	pop bc
 	ld a, $01
 	ldh [rVBK], a
-	ld a, [$C6DD]
+	ld a, [wScreenHeight]
 	ld d, a
-Jump_05DE:
-	ld a, [$C6DC]
+.copyAttributeRow:
+	ld a, [wScreenWidth]
 	ld e, a
-Jump_05E2:
+.copyAttributeByte:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_05E2
+	jr nz, .copyAttributeByte
 	ld a, [bc]
 	ld [hli], a
 	inc bc
 	dec e
-	jr nz, Jump_05E2
+	jr nz, .copyAttributeByte
 	ldh a, [$FFC0]
 	add a, l
 	ld l, a
@@ -1024,25 +1024,25 @@ Jump_05E2:
 	adc a, h
 	ld h, a
 	dec d
-	jr nz, Jump_05DE
+	jr nz, .copyAttributeRow
 	pop hl
 	pop bc
 	xor a
 	ldh [rVBK], a
-	ld a, [$C6DD]
+	ld a, [wScreenHeight]
 	ld d, a
-Jump_0602:
-	ld a, [$C6DC]
+.copyTileRow:
+	ld a, [wScreenWidth]
 	ld e, a
-Jump_0606:
+.copyTileByte:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_0606
+	jr nz, .copyTileByte
 	ld a, [bc]
 	ld [hli], a
 	inc bc
 	dec e
-	jr nz, Jump_0606
+	jr nz, .copyTileByte
 	ldh a, [$FFC0]
 	add a, l
 	ld l, a
@@ -1050,7 +1050,7 @@ Jump_0606:
 	adc a, h
 	ld h, a
 	dec d
-	jr nz, Jump_0602
+	jr nz, .copyTileRow
 	pop hl
 	pop de
 	pop bc
@@ -1078,19 +1078,19 @@ Func_0622:
 	rl h
 	add a, h
 	ld h, a
-Jump_063B:
+.copyTile:
 	ld e, $10
-Jump_063D:
+.copyByte:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_063D
+	jr nz, .copyByte
 	ld a, [bc]
 	ld [hli], a
 	inc bc
 	dec e
-	jr nz, Jump_063D
+	jr nz, .copyByte
 	dec d
-	jr nz, Jump_063B
+	jr nz, .copyTile
 	pop hl
 	pop de
 	pop bc
@@ -1105,10 +1105,10 @@ RequireCgbHardware:
 	ld a, $C1
 	ldh [rLCDC], a
 	ld b, $3B
-Jump_065D:
+.waitForVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_065D
+	jr nz, .waitForVram
 	ld a, $1B
 	ldh [rBGP], a
 	ld a, [ROM_BANK_MARKER]
@@ -1123,21 +1123,21 @@ Jump_065D:
 	ld bc, Bank3BGbcWarningTileMap
 	ld hl, $9800
 	ld d, $11
-Jump_0683:
+.copyRow:
 	ld e, $14
-Jump_0685:
+.waitForRestrictedPeriod:
 	ldh a, [rSTAT]
 	and $02
-	jr z, Jump_0685
-Jump_068B:
+	jr z, .waitForRestrictedPeriod
+.waitForWritableVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_068B
+	jr nz, .waitForWritableVram
 	ld a, [bc]
 	ld [hli], a
 	inc bc
 	dec e
-	jr nz, Jump_0685
+	jr nz, .waitForRestrictedPeriod
 	ld a, $0C
 	add a, l
 	ld l, a
@@ -1145,12 +1145,12 @@ Jump_068B:
 	adc a, h
 	ld h, a
 	dec d
-	jr nz, Jump_0683
+	jr nz, .copyRow
 	call EnableLCD
 	pop af
 	ld [rROMB0], a
-Jump_06A9:
-	jr Jump_06A9
+.haltForever:
+	jr .haltForever
 
 
 EnableDoubleSpeed:
@@ -1223,23 +1223,23 @@ Func_06F8: ; legacy alias
 	call Audio_QueueSound
 	ld d, $20
 	ld e, $01
-Jump_0701:
+.nextFrame:
 	call Audio_Update
 	xor a
 	ld [wVBlankPending], a
-Jump_0708:
+.waitForVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_0708
+	jr z, .waitForVBlank
 	xor a
 	ld [wVBlankPending], a
 	call DarkenBackgroundPalettes
 	call DarkenObjectPalettes
 	dec d
-	jr nz, Jump_0701
+	jr nz, .nextFrame
 	ret
 
 
@@ -1273,7 +1273,7 @@ Func_072C:
 	ld b, $7F
 	call ClearBytes
 	ld a, $07
-Jump_074B:
+.clearWramBank:
 	ldh [rSVBK], a
 	ld hl, $D000
 	ld bc, $1000
@@ -1281,7 +1281,7 @@ Jump_074B:
 	call ClearMemory
 	pop af
 	dec a
-	jr nz, Jump_074B
+	jr nz, .clearWramBank
 	ld a, $01
 	ldh [rSVBK], a
 	pop hl
@@ -1320,11 +1320,11 @@ Func_0781:
 	ld hl, $FE00
 	ld b, $A0
 	xor a
-Jump_078D:
+.clearOamByte:
 	ld [hl], a
 	inc l
 	dec b
-	jr nz, Jump_078D
+	jr nz, .clearOamByte
 	ld hl, wShadowOam
 	ld b, $A0
 	call ClearBytes
