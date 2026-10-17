@@ -1165,7 +1165,9 @@ EnableDoubleSpeed:
 	ret
 
 
-Func_06C5:
+; Convert unsigned B to two bytes of packed BCD at HL.
+ConvertU8ToPackedBcdFar:
+Func_06C5: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -1176,7 +1178,10 @@ Func_06C5:
 	ret
 
 
-Func_06D6:
+; Convert unsigned BC to three bytes of packed BCD at DE (C is the least-
+; significant input byte).
+ConvertU16ToPackedBcdFar:
+Func_06D6: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -1187,7 +1192,10 @@ Func_06D6:
 	ret
 
 
-Func_06E7:
+; Convert unsigned DEBC to five bytes of packed BCD at HL, with C as the
+; least-significant input byte and D as the most significant.
+ConvertU32ToPackedBcdFar:
+Func_06E7: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -10009,7 +10017,7 @@ Func_356B:
 	ld a, [wScore + 3]
 	ld d, a
 	ld hl, $FF90
-	call Func_06E7
+	call ConvertU32ToPackedBcdFar
 	ld hl, $C40D
 	xor a
 	ldh [$FF98], a
