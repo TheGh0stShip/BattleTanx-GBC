@@ -34,7 +34,7 @@ CASES = [
      "per-level spawn pointers are symbolic"),
     ("bank $05 screen-effect step table", "src/screen_effect_tables.asm", "ScreenEffectSteps", "fail-safe", 0,
      "ROM0 StartScreenEffect loads $6358 as two raw immediates; pinned"),
-    ("RAM-code source image (bank $02 interrupt handler image)", "src/bank_02.asm", "Bank02RomImage_40EC", "relocate", 1,
+    ("RAM-code source image (bank $02 interrupt handler image)", "src/bank_02.asm", "PaletteStatHandlerImage", "relocate", 1,
      "CopyBytes source operands use the ROM-side label; RAM labels keep their run-time addresses"),
     ("RAM-code source image in bank $01", "src/bank_01.asm", "Bank01RomImage_49CB", "fail-safe", 0,
      "shifts the ROM0-pinned tables at $6609"),

@@ -23,7 +23,7 @@ ResetNearestObjectTrackerState:
 	ld [wNearestTargetDistance], a
 	ld [wNearestTargetDistance + 1], a
 	ld a, [$CA06]
-	ld hl, Bank02Data_40DD
+	ld hl, NearestTargetScanModesByLevel
 	ld c, a
 	ld b, $00
 	add hl, bc
@@ -74,10 +74,10 @@ ResetNearestObjectTrackerState:
 	ld [hli], a
 	ret
 
-Bank02Data_40DD:
+NearestTargetScanModesByLevel:
 	db $00, $01, $00, $01, $01, $03, $01, $02, $01, $01, $00, $01, $00, $02, $00
 
-Bank02RomImage_40EC:
+PaletteStatHandlerImage:
 	LOAD UNION "RAM code $C729", WRAM0[$C729] ; copied from $02:40EC
 
 PaletteStatHandler:
@@ -114,7 +114,7 @@ RAM_C770:
 	reti
 	ENDL
 
-Bank02RomImage_4138:
+PaletteVBlankHandlerImage:
 	LOAD UNION "RAM code $C7F1", WRAM0[$C7F1] ; copied from $02:4138
 
 PaletteVBlankHandler:
@@ -190,11 +190,11 @@ Func_02_418A: ; legacy alias, used by src/bank_00.asm
 	push de
 	push hl
 	di
-	ld hl, Bank02RomImage_40EC
+	ld hl, PaletteStatHandlerImage
 	ld de, $004C
 	ld bc, $C729
 	call CopyBytes
-	ld hl, Bank02RomImage_4138
+	ld hl, PaletteVBlankHandlerImage
 	ld de, $0052
 	ld bc, $C7F1
 	call CopyBytes
@@ -218,7 +218,7 @@ Func_02_418A: ; legacy alias, used by src/bank_00.asm
 	ret
 
 
-Bank02RomImage_41C2:
+StatHandlerRetiImage:
 	LOAD UNION "RAM code $C729", WRAM0[$C729] ; copied from $02:41C2
 
 StatHandlerReti:
@@ -227,7 +227,7 @@ StatHandlerReti:
 	ENDL
 	db $D9
 
-Bank02RomImage_41C4:
+VBlankHandlerWithSoftResetImage:
 	LOAD UNION "RAM code $C7F1", WRAM0[$C7F1] ; copied from $02:41C4
 
 VBlankHandlerWithSoftReset:
@@ -261,14 +261,14 @@ RAM_C80B:
 	reti
 
 	ENDL
-Bank02Data_41F7:
+IndexedSpriteGridDescriptors:
 	db $D0, $4A, $30, $20, $30, $48, $20, $40, $87
-Bank02Data_4200:
+EffectSpriteLayout1x1:
 	db $FC, $FC, $00, $00
-Bank02Data_4204:
+EffectSpriteLayout2x2:
 	db $F8, $F8, $00
 	db $00, $F8, $00, $01, $00, $00, $F8, $02, $00, $00, $00, $03, $00
-Bank02Data_4214:
+EffectSpriteLayout3x3:
 	db $F4, $F4, $00
 	db $00, $F4, $FC, $01, $00, $F4, $04, $02, $00, $FC, $F4, $03, $00, $FC, $FC, $04
 	db $00, $FC, $04, $05, $00, $04, $F4, $06, $00, $04, $FC, $07, $00, $04, $04, $08
@@ -281,11 +281,11 @@ Func_02_4238: ; legacy alias, used by src/bank_00.asm
 	push de
 	push hl
 	di
-	ld hl, Bank02RomImage_41C2
+	ld hl, StatHandlerRetiImage
 	ld de, $0001
 	ld bc, $C729
 	call CopyBytes
-	ld hl, Bank02RomImage_41C4
+	ld hl, VBlankHandlerWithSoftResetImage
 	ld de, $0033
 	ld bc, $C7F1
 	call CopyBytes
@@ -441,7 +441,7 @@ Func_02_43EC: ; legacy alias
 	pop af
 	ret
 
-Bank02Data_4448:
+SignedDirectionDifferenceTable:
 	db $00, $01, $02, $03, $04, $05, $06, $07, $08, $F9, $FA, $FB, $FC, $FD, $FE, $FF
 	db $FF, $00, $01, $02, $03, $04, $05, $06, $07, $08, $F9, $FA, $FB, $FC, $FD, $FE
 	db $FE, $FF, $00, $01, $02, $03, $04, $05, $06, $07, $08, $F9, $FA, $FB, $FC, $FD
@@ -463,7 +463,7 @@ GetSignedDirectionDifference:
 Func_02_4548: ; legacy alias
 	push af
 	push hl
-	ld hl, Bank02Data_4448
+	ld hl, SignedDirectionDifferenceTable
 	ld a, b
 	swap a
 	and $F0
@@ -544,7 +544,7 @@ Func_02_45C1: ; legacy alias
 	and $C0
 	add a, $23
 	ld l, a
-	ld bc, Bank02Data_4200
+	ld bc, EffectSpriteLayout1x1
 	ld [hl], c
 	inc l
 	ld [hl], b
@@ -581,7 +581,7 @@ Func_02_4611: ; legacy alias
 	and $C0
 	add a, $23
 	ld l, a
-	ld bc, Bank02Data_4200
+	ld bc, EffectSpriteLayout1x1
 	ld [hl], c
 	inc l
 	ld [hl], b
@@ -636,7 +636,7 @@ Func_02_463D: ; legacy alias
 	and $C0
 	add a, $23
 	ld l, a
-	ld bc, Bank02Data_4214
+	ld bc, EffectSpriteLayout3x3
 	ld [hl], c
 	inc l
 	ld [hl], b
@@ -696,7 +696,7 @@ Func_02_4688: ; legacy alias
 	and $C0
 	add a, $23
 	ld l, a
-	ld bc, Bank02Data_4204
+	ld bc, EffectSpriteLayout2x2
 	ld [hl], c
 	inc l
 	ld [hl], b
@@ -1985,7 +1985,7 @@ Func_02_5D6D: ; legacy alias, used by src/bank_00.asm
 	ld a, e
 	add a, a
 	add a, a
-	ld hl, Bank02Data_41F7
+	ld hl, IndexedSpriteGridDescriptors
 	ld a, a
 	add a, l
 	ld l, a
