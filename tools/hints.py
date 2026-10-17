@@ -56,6 +56,11 @@ MANUAL_ENTRIES = (
     (0x04, 0x62F7),
 )
 
+# Template-identical screen routines with no recovered caller. They are kept
+# separate from the reviewed standalone entries so progress accounting does
+# not imply that tracing reached them through a program reference.
+CALLERLESS_ENTRIES = ((0x2E, 0x4000), (0x2E, 0x4058))
+
 # Literal options-menu strings. Other visible game text is stored as graphics
 # or encoded data rather than plain ASCII.
 TEXT_STRINGS = {
@@ -93,8 +98,8 @@ def pointer_table_entries(rom, table):
     ]
 
 
-def extra_entries(rom):
-    # banks $2B-$2E share an init/update stub layout at $4000/$4058
+def automatic_entries(rom):
+    """Entries derived from architectural roots and recovered pointer tables."""
     return (
         screen_entries(rom)
         + pointer_table_entries(rom, STATE_CHECK_TABLE)
@@ -104,9 +109,17 @@ def extra_entries(rom):
             (0 if (ptr := rom[a + 3] | rom[a + 4] << 8) >= 0x8000 else 1, ptr)
             for a in MENU_STATE_HEADERS
         ]
-        + list(MANUAL_ENTRIES)
-        + [(0x2e, 0x4000), (0x2e, 0x4058)]
     )
+
+
+def reviewed_entries():
+    """Coherently decoded entries that are not derived by automatic_entries."""
+    return list(MANUAL_ENTRIES) + list(CALLERLESS_ENTRIES)
+
+
+def extra_entries(rom):
+    """All reviewed tracing seeds; retained as the generator-facing API."""
+    return automatic_entries(rom) + reviewed_entries()
 
 CODE_BANKS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e]
 

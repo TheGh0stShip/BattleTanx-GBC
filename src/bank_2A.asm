@@ -261,7 +261,7 @@ FixedScreen2A_Draw:
 
 Func_2A_7774: ; address-based alias kept for ROM0 $3F28
 ; Draws the fixed screen, then shows frames 0-3 for 10 frames each
-; (Func_3971) until $C6B5 becomes non-zero.
+; (WaitForButtonOrTimeout) until wJoypadHeld becomes non-zero.
 FixedScreen2A_Run:
 	call FixedScreen2A_LoadTiles
 	call FixedScreen2A_Draw

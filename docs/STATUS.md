@@ -29,15 +29,14 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, all 190 surviving automatic function-entry labels in ROM0
-have reviewed companion names. Across the project, 261 of 288 entries are
-named and 27 remain. `make progress` recomputes the per-bank
+At this revision, all 288 automatic function-entry labels across the project
+have reviewed companion names. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
 | Area | Current state | Next gate |
 | --- | --- | --- |
-| Reviewed code | 38,772 bytes traced from known entries, pointers, executable RAM images, and reviewed standalone entries | Name and document routines from behavior |
+| Reviewed code | 38,772 decoded bytes: 35,303 from roots/tables, 3,265 from reviewed standalone seeds, and 204 in the callerless bank `$2E` template pair | Resolve remaining semantics without describing seeded code as caller-reached |
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | `make progress` reports reviewed companion names for automatic function entries per bank, separately from traced-byte coverage; interrupts, startup, copy helpers, screen dispatch, OAM DMA, rendering state, and scene descriptors are among the recovered groups | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |

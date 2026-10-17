@@ -6,8 +6,10 @@
 - Immutable baseline: commit `42b4125d1c11b96ddc99383009bd9c24924d72dc`,
   exported with `git archive` into `BattleTanx-GBC-banks2A-2E-baseline`.
 - Baseline `make clean && make check`: SHA-1
-  `5078584e86c0b6f4687c424cc00bbd762ba6573a`; trace 38,772 direct bytes,
-  0 heuristic, 31 RAM code images, 7 RAM data images. At the baseline,
+  `5078584e86c0b6f4687c424cc00bbd762ba6573a`; 38,772 decoded instruction
+  bytes and 0 heuristic bytes. Current accounting separates 35,303 root/table
+  bytes, 3,265 reviewed standalone bytes, and the 204 callerless bank-`$2E`
+  template bytes. At the baseline,
   banks `$2A`-`$2E` had 59 address-based labels and 13 opaque INCBIN ranges
   (63,613 bytes).
 - After this pass the SHA-1 and trace counts are unchanged.
@@ -109,9 +111,12 @@ One assumption remains: `wMenuState` always points at a `menu_state` record.
 | `wPaletteFadeFromWhite` | `$C6D1` | read by `$02:474B`: 0 selects `$01:46B1` (subtract per channel), non-zero `$01:4703` (add) while building the 32 steps backward from the target |
 | `wScreenDescriptor` | `$C6D2` | 14-byte copy by Func_05B7 in every draw routine |
 | `wScreenWidth` / `wScreenHeight` | `$C6DC` / `$C6DD` | descriptor +10/+11, read by `CopyScreenMaps`; FixedScreen2A_Draw stores 20/18 |
+| `wJoypadHeld` | `$C6B5` | `ReadJoypad` stores the held P1 bits; `WaitForButtonOrTimeout` clears and polls it, and `FixedScreen2A_Run` exits when any bit becomes nonzero |
 
-Not named: `$C6B5`, the stop signal for FixedScreen2A_Run. It is cleared by
-`Func_3971` and set elsewhere for reasons not traced.
+`wMenuState05Selection` is bounded to 0-2 by the next/previous handlers, which
+wrap at both ends before indexing the three `$01:$596D` picture records.
+Screen mode 9 has no selector; mode `$0A` uses the same table entry and is the
+first screen in the traced boot sequence.
 
 ## 9. Data formats
 
@@ -249,13 +254,12 @@ local labels.
 ## 14. Unresolved
 
 1. `Screen2E_LoadTiles`/`_Draw` (`2E:4000-40CB`): no caller found.
-2. `$C6B5`: what sets it (FixedScreen2A_Run's exit condition).
-3. Descriptor +8, and +12/+13 in fade packages, are never read.
-4. The `$01:$596D` index bound (entries 0-2 valid).
-5. ScreenModeTable entry 9 is never selected.
-6. The `wMenuState` record assumption (section 7).
-7. Picture meanings and screen names are not assigned.
-8. Nothing was checked on hardware.
+   These 204 bytes are now reported separately as callerless template code,
+   rather than as root/table-traced code.
+2. Descriptor +8, and +12/+13 in fade packages, are never read.
+3. The `wMenuState` record assumption (section 7).
+4. Picture meanings and screen names are not assigned.
+5. Nothing was checked on hardware.
 
 ## 15. Validation and negative tests
 
@@ -306,7 +310,7 @@ make clean
 make check
 baserom.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
 battletanx.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
-trace: 38772 direct bytes, 0 heuristic bytes, 31 RAM code images, 7 RAM data images
+trace: 35303 root/table bytes, 3265 reviewed standalone bytes, 204 callerless template bytes, 0 heuristic bytes, 31 RAM code images, 7 RAM data images
 audio: 37 patches, 25 sfx sequences, 10 music sequences, 32 queued ids and 57 call sites checked
 screens: banks $2A-$2E fully classified (code 2803, data 13694, graphics 51792, padding 13631), 13 screen packages, 18 negative tests rejected
 project: OK (98 assets, baserom sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)

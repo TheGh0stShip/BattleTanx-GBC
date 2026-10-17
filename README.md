@@ -90,10 +90,11 @@ only to bootstrap; from then on `src/` is the source of truth.
 ## Status
 
 All 1,048,576 bytes reconstruct exactly. That establishes a complete binary
-rebuild, not a complete understanding of the source. The tracer currently reaches
-38,772 instruction bytes from known entry points, pointers, executable RAM images, and
-reviewed standalone routine entries. The optional gap pass currently adds zero
-bytes; confirmed data ranges are explicitly excluded from instruction tracing.
+rebuild, not a complete understanding of the source. The tracer decodes 38,772
+instruction bytes: 35,303 from architectural roots and recovered tables, 3,265
+from reviewed standalone entries, and 204 from the template-identical bank `$2E`
+screen pair that has no recovered caller. The optional gap pass currently adds
+zero bytes; confirmed data ranges are explicitly excluded from instruction tracing.
 
 Detailed recovery status, control-flow gaps, and the current roadmap are tracked
 in [`docs/STATUS.md`](docs/STATUS.md). Run `make check` before committing; it pins

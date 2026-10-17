@@ -210,9 +210,10 @@ bytes are zero; `$7FFF` holds the bank number.
 | Attribute lookup tables | 2,400 | boundaries and indexing checked; the reading path is never triggered by ROM cell data |
 | Zero byte before each table | 15 | never read; role unknown |
 
-Direct traced code bytes: 38,772 in the integrated project, unchanged by this
-work because none are in these banks. Heuristic
-decoding: none. Two facts are layout inferences rather than direct reads:
+Reviewed code bytes: 38,772 in the integrated project, unchanged by this work
+because none are in these banks. Of those, 35,303 come from roots/tables,
+3,265 from reviewed standalone seeds, and 204 from the callerless bank-`$2E`
+template pair. Heuristic decoding: none. Two facts are layout inferences rather than direct reads:
 record +7 as tile count - 1, and the unread byte. Both are enforced by the
 validator. Visual renders were only used as a sanity check, not as evidence.
 
@@ -253,7 +254,7 @@ Result (clean tree, no stale assets):
 
 ```
 battletanx.gbc: OK (sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)
-trace: 38772 direct bytes, 0 heuristic bytes, 31 RAM code images, 7 RAM data images
+trace: 35303 root/table bytes, 3265 reviewed standalone bytes, 204 callerless template bytes, 0 heuristic bytes, 31 RAM code images, 7 RAM data images
 audio: 37 patches, 25 sfx sequences, 10 music sequences, 32 queued ids and 57 call sites checked
 levels: 15 levels in banks $09-$26, every byte in one range, 11 negative tests rejected
 project: OK (129 assets, baserom sha1 5078584e86c0b6f4687c424cc00bbd762ba6573a)

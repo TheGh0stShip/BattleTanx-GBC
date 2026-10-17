@@ -654,12 +654,25 @@ def check_tracing() -> None:
     for offset, value in hints.TEXT_STRINGS.items():
         if rom[offset : offset + len(value)] != value:
             fail(f"text manifest mismatch at ROM offset {offset:#x}")
+    automatic = trace.run(rom, hints.automatic_entries(rom), hints.DATA_RANGES)
+    with_standalone = trace.run(
+        rom, hints.automatic_entries(rom) + list(hints.MANUAL_ENTRIES), hints.DATA_RANGES
+    )
     traced = trace.run(rom, hints.extra_entries(rom), hints.DATA_RANGES)
-    direct_bytes = sum(traced.code.values())
-    if direct_bytes != 38772 or len(traced.loads) != 38:
+    automatic_bytes = sum(automatic.code.values())
+    standalone_bytes = sum(
+        length for offset, length in with_standalone.code.items() if offset not in automatic.code
+    )
+    callerless_bytes = sum(
+        length for offset, length in traced.code.items() if offset not in with_standalone.code
+    )
+    reviewed_bytes = sum(traced.code.values())
+    if ((automatic_bytes, standalone_bytes, callerless_bytes, reviewed_bytes) !=
+            (35303, 3265, 204, 38772) or len(traced.loads) != 38):
         fail(
             "tracing baseline changed; review it and update docs deliberately "
-            f"(bytes={direct_bytes}, loads={len(traced.loads)})"
+            f"(automatic={automatic_bytes}, standalone={standalone_bytes}, "
+            f"callerless={callerless_bytes}, total={reviewed_bytes}, loads={len(traced.loads)})"
         )
     executable_loads = sum(
         any(load.src <= off < load.src + load.len for off in traced.code)
@@ -672,11 +685,12 @@ def check_tracing() -> None:
         )
     trace.gap_fill(traced, hints.CODE_BANKS, hints.DATA_RANGES)
     total_bytes = sum(traced.code.values())
-    if total_bytes != 38772:
+    if total_bytes != reviewed_bytes:
         fail(f"gap-fill baseline changed; review it deliberately (bytes={total_bytes})")
     print(
         "trace: "
-        f"{direct_bytes} direct bytes, {total_bytes - direct_bytes} heuristic bytes, "
+        f"{automatic_bytes} root/table bytes, {standalone_bytes} reviewed standalone bytes, "
+        f"{callerless_bytes} callerless template bytes, {total_bytes - reviewed_bytes} heuristic bytes, "
         f"{executable_loads} RAM code images, "
         f"{len(traced.loads) - executable_loads} RAM data images"
     )
