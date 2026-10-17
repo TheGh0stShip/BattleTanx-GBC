@@ -55,8 +55,13 @@ Interrupt handlers (`Audio_Update` from the LCD handler) read `$7FFF`
 (`ROM_BANK_MARKER`) to save the mapped bank. Each of these banks holds its
 own number there, so the save and restore is correct.
 
-Not checked: the bank-`$01` LCD handler's `call $5EE0` (a ROMX address
-in whatever bank is mapped) while `$27-$29` is mapped.
+The potentially unsafe bank-`$01` scene LCD handler is not installed during
+this path. `RunLevel` installs the bank-`$02` gameplay images before entering
+the frame loop that renders these objects. Its LCD handler calls the ROM0
+audio updater described above, its VBlank handler does not change the ROM
+bank, and the pause path does not replace them. The handler copy sites,
+interrupt mask, audio save/restore sequence, and bank markers are checked by
+`tools/bank08.py` and `tools/object_banks.py`.
 
 ## Relocation
 

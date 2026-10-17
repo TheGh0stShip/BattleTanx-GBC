@@ -100,6 +100,44 @@ def effect_reads(rom):
     return out
 
 
+def check_gameplay_interrupt_bank_safety(rom: bytes) -> None:
+    """Check the interrupt path that can pre-empt banked object rendering."""
+    # RunLevel installs the bank-$02 gameplay images before its frame loop.
+    check(rom[0x020F:0x0214] == bytes.fromhex("cdb30a1608"),
+          "gameplay interrupt installation no longer precedes the frame loop")
+    # The ROM0 wrapper preserves the current bank while selecting bank $02.
+    check(rom[0x0AB3:0x0AC4] == bytes.fromhex("faff7ff53e02ea0020cd8a41f1ea0020c9"),
+          "gameplay interrupt installer wrapper changed")
+    # The installer copies both complete handlers and enables VBlank + LCD STAT.
+    installer = rom[off(2, 0x418A):off(2, 0x41C2)]
+    check(bytes.fromhex("21ec40114c000129c7cd8f0a") in installer,
+          "gameplay LCD handler copy changed")
+    check(bytes.fromhex("21384111520001f1c7cd8f0a") in installer,
+          "gameplay VBlank handler copy changed")
+    check(bytes.fromhex("3e03e0fffb") in installer,
+          "gameplay interrupt enable mask changed")
+
+    lcd = rom[off(2, 0x40EC):off(2, 0x4138)]
+    vblank = rom[off(2, 0x4138):off(2, 0x418A)]
+    check(bytes.fromhex("cd212f") in lcd,
+          "gameplay LCD handler no longer calls Audio_Update")
+    check(bytes.fromhex("ea0020") not in vblank,
+          "gameplay VBlank handler unexpectedly changes the ROM bank")
+
+    # Audio_Update saves the transient marker before selecting bank $06 and
+    # restores it on return. Interrupt entry clears IME, so this cannot nest.
+    audio = rom[0x2F21:0x2F73]
+    check(bytes.fromhex("faff7ff53e06ea0020") in audio,
+          "Audio_Update no longer saves the mapped bank before selecting bank $06")
+    check(audio.endswith(bytes.fromhex("f1ea0020e1d1c1f1c9")),
+          "Audio_Update no longer restores the interrupted ROM bank")
+
+    # The bank-$08 wrapper leaves interrupts enabled, making the marker part
+    # of its correctness contract rather than dead metadata.
+    check(rom[0x37AC:0x37BD] == bytes.fromhex("faff7ff53e08ea0020cdd56df1ea0020c9"),
+          "bank-$08 palette wrapper changed")
+
+
 def parse(rom: bytes):
     """Validate all facts; return list of (start, end, class, label)."""
     r = lambda a, n=1: rom[B + a:B + a + n]
@@ -188,6 +226,7 @@ def parse(rom: bytes):
           "status-4 handlers 8/9 changed")
     check(rom[off(1, 0x467B):off(1, 0x467F)] == bytes.fromhex("e1c31645"),
           "status-4 handler 9 is no longer a no-op")
+    check_gameplay_interrupt_bank_safety(rom)
     check(not any(r(CODE[1], 0x7FFF - CODE[1])), "non-zero byte in fill")
     check(r(0x7FFF)[0] == BANK, "bank marker")
 
@@ -368,6 +407,7 @@ def negative_tests(rom: bytes, root: pathlib.Path) -> int:
         "effect countdown": ({(0, rom.find(bytes.fromhex("3e4bea59c9"), 0, 0x4000) + 1): 0x4C}, "$C959 = $4B"),
         "palette index value": ({(8, 0x67F3): 0x04}, "palette index table"),
         "status-4 type bound": ({(4, 0x4043): 0x0A}, "status-4 level-record types"),
+        "interrupt-time audio bank save": ({(0, 0x2F2F): 0x00}, "Audio_Update no longer saves"),
         "fill byte": ({(8, 0x7000): 0x01}, "non-zero byte in fill"),
         "bank marker": ({(8, 0x7FFF): 0x07}, "bank marker"),
     }

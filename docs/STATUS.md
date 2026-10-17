@@ -447,7 +447,11 @@ black, then copies colours 1-3 from `$4512-$4517`. Bytes `$4518-$4BFB` are an un
 same offsets in bank `$26` (part of level 14's tile map), not sprite data.
 Zero fill begins at `$4BFC` and continues to the bank marker at `$7FFF`.
 Every byte in banks `$27-$29` is now classified with no unknown bytes; the
-run-time bound of one bank selector remains an open question. `make objects`
+type-1 object field and skip condition prove their arithmetic selector is
+bounded to those three banks. During gameplay, the LCD interrupt's audio call
+saves and restores a transient bank through its `$7FFF` marker, while the
+VBlank handler does not change the ROM bank; these invariants are
+corruption-tested. `make objects`
 emits frame, assembled-orientation, layout, and
 palette inspection files and verifies their round trips.
 

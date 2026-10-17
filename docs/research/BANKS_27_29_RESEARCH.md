@@ -53,11 +53,14 @@ and 23 in bank `$01`, including the RAM `LOAD` images. Only two places can map
     path) or copied from another object. So 0-15, the exact table size.
 - **Field +`$1E`** is set through `Func_0AD5` from immediates 0-2 or `[$CD08]`
   (0, the menu selection 0-2, or a level byte).
-- **Exception:** `$01` code increments +`$1E` on a destruction path. Repeated
-  increments are not excluded, so the `+$27` selector is **not proven bounded**.
-  Even so, any reachable value only reads `$4000-$450F` of the selected bank.
-- The interrupt handlers may read `$7FFF` (bank marker) while these banks are
-  mapped; this was not checked.
+- **Exception resolved:** `$01` code increments +`$1E` only in type-4 handler
+  8. Handler 9 is a no-op, so that path cannot increment repeatedly. The draw
+  path is restricted to type-1 objects, whose field is 0-3; value 3 skips the
+  copy. The arithmetic selector therefore maps only banks `$27-$29`.
+- The gameplay LCD handler may read `$7FFF` through ROM0 `Audio_Update` while
+  these banks are mapped. Each bank retains its own marker at `$7FFF`, so the
+  updater restores the interrupted bank after its temporary bank-$06 calls.
+  The gameplay VBlank handler does not change the ROM bank.
 
 No routine reads palette colour 0 at `$4510-$4511` or `$4518-$4BFF`. The highest orientation
 pointer is `$4480`, and `$4480 + 144 = $4510`. The palette loader starts at
@@ -173,8 +176,5 @@ Recommended routine names: `CopyObjectOrientationTiles` (`Func_0F43`),
 
 1. What the three banks represent in gameplay; the renders suggest vehicle
    variants, which is not evidence.
-2. Whether the destruction-path increment of object field +$1E can push
-   `$FF80` past 2 (it would select bank `$2B`+ in `Func_0F43`).
-3. Whether interrupt code reads `$7FFF` while these banks are mapped.
-4. Why the build left bank-`$26` residue here (the same pattern appears in
+2. Why the build left bank-`$26` residue here (the same pattern appears in
    bank `$07`); only the byte equality is proven.
