@@ -29,6 +29,7 @@ TimerInterrupt:
 	reti
 
 
+EnableLCD:
 Func_0051:
 	ldh a, [rLCDC]
 	or $80
@@ -685,6 +686,9 @@ Jump_04AD:
 	ret
 
 
+; Wait for VBlank line 145 before disabling the LCD.  Turning the display off
+; outside VBlank is unsafe on real hardware.
+DisableLCDSafely:
 Func_04B6:
 	ldh a, [rLCDC]
 	add a, a
@@ -994,6 +998,9 @@ Jump_0606:
 	ret
 
 
+; Copy D 16-byte tiles from BC to VRAM.  A is the high byte of the VRAM
+; destination and E is its first tile number.
+CopyTilesToVRAM:
 Func_0622:
 	push af
 	push bc
@@ -1052,7 +1059,7 @@ Jump_065D:
 	ld d, $DD
 	ld e, $00
 	ld bc, Bank3BGbcWarningTiles
-	call Func_0622
+	call CopyTilesToVRAM
 	ld bc, Bank3BGbcWarningTileMap
 	ld hl, $9800
 	ld d, $11
@@ -1079,7 +1086,7 @@ Jump_068B:
 	ld h, a
 	dec d
 	jr nz, Jump_0683
-	call Func_0051
+	call EnableLCD
 	pop af
 	ld [rROMB0], a
 Jump_06A9:
@@ -1174,6 +1181,9 @@ Func_071F:
 	ret
 
 
+; Clear the game-owned WRAM area, OAM, HRAM, and all seven switchable WRAM
+; banks.  The fixed-bank stack and boot-state bytes at $C000-$C0FE survive.
+ClearGameMemory:
 Func_072C:
 	push af
 	push bc
@@ -1207,8 +1217,9 @@ Jump_074B:
 	ret
 
 
+ResetDisplayState:
 Func_0764:
-	call Func_04B6
+	call DisableLCDSafely
 	xor a
 	ldh [rSCX], a
 	ldh [rSCY], a
@@ -1302,45 +1313,45 @@ LoadInterfaceTilesVRAM1:
 	ld d, $01
 	ld a, $80
 	ld bc, Bank08InterfaceTiles60F8
-	call Func_0622
+	call CopyTilesToVRAM
 	ld e, $41
 	ld d, $02
 	ld a, $80
 	ld bc, Bank08InterfaceTiles6222
-	call Func_0622
+	call CopyTilesToVRAM
 	ld e, $43
 	ld d, $10
 	ld a, $80
 	ld bc, Bank08InterfaceTiles611A
-	call Func_0622
+	call CopyTilesToVRAM
 	ld a, $08
 	ld [rROMB0], a
 	ld e, $53
 	ld d, $0A
 	ld a, $80
 	ld bc, Bank08HudIconTiles
-	call Func_0622
+	call CopyTilesToVRAM
 	ld a, $08
 	ld [rROMB0], a
 	ld e, $5D
 	ld d, $0C
 	ld a, $80
 	ld bc, Bank08InterfaceTiles6815
-	call Func_0622
+	call CopyTilesToVRAM
 	ld a, $08
 	ld [rROMB0], a
 	ld e, $43
 	ld d, $3D
 	ld a, $88
 	ld bc, Bank08UiFontTiles + $10
-	call Func_0622
+	call CopyTilesToVRAM
 	ld a, $08
 	ld [rROMB0], a
 	ld e, $3B
 	ld d, $08
 	ld a, $88
 	ld bc, Bank08InterfaceTiles69FD
-	call Func_0622
+	call CopyTilesToVRAM
 	ret
 
 
@@ -1357,27 +1368,27 @@ LoadInterfaceTilesVRAM0:
 	ld d, $4E
 	ld a, $80
 	ld bc, Bank08InterfaceTiles626B
-	call Func_0622
+	call CopyTilesToVRAM
 	ld e, $4E
 	ld d, $04
 	ld a, $80
 	ld bc, Bank08InterfaceTiles68DD
-	call Func_0622
+	call CopyTilesToVRAM
 	ld e, $52
 	ld d, $04
 	ld a, $80
 	ld bc, Bank08ArrowUpTiles
-	call Func_0622
+	call CopyTilesToVRAM
 	ld e, $56
 	ld d, $04
 	ld a, $80
 	ld bc, Bank08ArrowDownTiles
-	call Func_0622
+	call CopyTilesToVRAM
 	ld e, $5A
 	ld d, $04
 	ld a, $80
 	ld bc, Bank08InterfaceTiles69B5
-	call Func_0622
+	call CopyTilesToVRAM
 	pop af
 	ld [rROMB0], a
 	ret
@@ -1389,15 +1400,15 @@ Func_08C6:
 	xor a
 	ldh [rIE], a
 	ldh [rIF], a
-	call Func_04B6
-	call Func_072C
+	call DisableLCDSafely
+	call ClearGameMemory
 	ld a, d
 	ld [$C000], a
 	call RequireCgbHardware
-	call Func_0764
+	call ResetDisplayState
 	call LoadOAMDMARoutine
 	call Func_0AC4
-	call Func_0051
+	call EnableLCD
 	ld hl, Func_367F
 	ld a, l
 	ld [wRuntimeCallback], a
@@ -2415,7 +2426,7 @@ Jump_0E39:
 	add a, a
 	add a, c
 	add a, a
-	ld bc, $43E0
+	ld bc, InterfaceMetatiles
 	add a, c
 	ld c, a
 	ld a, $00
@@ -4650,7 +4661,7 @@ LoadLevelTiles:
 	ld d, $80
 	ld e, $00
 	ld a, $88
-	call Func_0622
+	call CopyTilesToVRAM
 	ld a, $00
 	add a, c
 	ld c, a
@@ -4660,7 +4671,7 @@ LoadLevelTiles:
 	ld d, $80
 	ld e, $00
 	ld a, $90
-	call Func_0622
+	call CopyTilesToVRAM
 	ld a, $01
 	ldh [rVBK], a
 	ld a, $00
@@ -4672,7 +4683,7 @@ LoadLevelTiles:
 	ld d, $80
 	ld e, $00
 	ld a, $90
-	call Func_0622
+	call CopyTilesToVRAM
 	ld a, $00
 	add a, c
 	ld c, a
@@ -4682,7 +4693,7 @@ LoadLevelTiles:
 	ld d, $38
 	ld e, $00
 	ld a, $88
-	call Func_0622
+	call CopyTilesToVRAM
 	ret
 
 
@@ -7713,7 +7724,7 @@ LoadEncodedFontTiles:
 	ld d, $25
 	ld a, $80
 	ld bc, EncodedFontTiles
-	call Func_0622
+	call CopyTilesToVRAM
 	call ClearTextCursor
 	pop af
 	ld [rROMB0], a
@@ -11394,7 +11405,7 @@ Func_3EB9:
 	call Func_0421
 	and $03
 	ret z
-	call Func_04B6
+	call DisableLCDSafely
 	ld b, $64
 Jump_3EC4:
 	ld c, $FF
@@ -11404,7 +11415,7 @@ Jump_3EC6:
 	jr nz, Jump_3EC6
 	dec b
 	jr nz, Jump_3EC4
-	call Func_0051
+	call EnableLCD
 	ret
 
 

@@ -35,7 +35,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
-| Graphics | 62 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three fully classified orientation sets, twelve fixed-background packages, and 36 scrolling-scene sheets | Resolve the remaining mixed ranges in bank `$08` and identify individual layouts |
+| Graphics | 64 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly; bank `$08` additionally has a lossless 83-range inspection export for its interleaved interface/object graphics | Identify gameplay roles for the remaining neutral graphics labels |
 | Maps | All eleven descriptor-driven fixed backgrounds, the referenced Game Boy Color warning in bank `$3B`, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions and indices | Name individual scenes and levels |
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Object sequences | Bank `$03:$4000-$5C10` is explicit source: two signed-vector tables, fifteen 64-slot per-level pointer tables, 203 counted sequences, and 626 eight-byte records; the vector-direction quantizer and all 15 level-state checks are named | Determine the remaining record-field meanings and name individual sequences |
@@ -82,6 +82,19 @@ interrupt routine. Fields whose behavior is not yet established remain raw.
 3. Add lossless graphics, map, and text extraction/rebuild paths.
 4. Run relocation/shift tests before declaring source freely editable.
 5. Validate timing-sensitive and RAM-executed behavior on physical hardware.
+
+## ROM0 hardware helpers
+
+The shared display primitives now have behavioral names while retaining their
+original `Func_XXXX` aliases for compatibility with work in other banks.
+`DisableLCDSafely` waits for VBlank line 145 before clearing LCDC bit 7;
+`EnableLCD` sets that bit again. `CopyTilesToVRAM` copies `D` complete
+16-byte tiles from `BC`, using `A` as the destination page and `E` as the first
+tile number while avoiding VRAM mode 3. `ClearGameMemory` preserves
+`$C000-$C0FE` but clears the remaining fixed WRAM, OAM, HRAM, and every
+switchable WRAM bank. `ResetDisplayState` uses the safe LCD-off helper before
+resetting scroll/window registers, DMG palettes, and the tile-data selection
+bit. These names describe proven mechanics, not higher-level gameplay roles.
 
 ## Level banks `$09-$26`
 
