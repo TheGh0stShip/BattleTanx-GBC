@@ -53,7 +53,7 @@ inc = f"""; Full-screen picture support for ROM banks $2A-$2E. Evidence and layo
 ; that every copy in the ROM still matches its template.
 
 ; 14-byte screen descriptor, copied to wScreenDescriptor by the draw routines.
-; Only width and height are read back (ROM0 $05C5); the tile count is never
+; Only width and height are read back by CopyScreenMaps; the tile count is never
 ; read but equals the highest tile used + 1 in every picture.
 MACRO screen_descriptor ; tiles, tilemap, attrmap, palettes, tile count, width, height, palette count, first palette
 	dw \\1, \\2, \\3, \\4, \\5
@@ -69,7 +69,7 @@ ENDM
 
 ; Draw routine with fade-in (ScreenTable_CallUpdate target). Stack argument:
 ; the BG map offset pushed by ScreenTable_CallUpdate (read at sp+4). Writes
-; the maps through ROM0 $05C5, seeds 8 palettes (always $40 bytes, whatever
+; the maps through CopyScreenMaps, seeds 8 palettes (always $40 bytes, whatever
 ; the palette count) into ROM0 $3A88's fade buffer, builds 32 fade steps
 ; (darkening when \\2 is 0, brightening otherwise) and shows one per frame.
 MACRO screen_draw_fade ; descriptor, wPaletteFadeFromWhite value

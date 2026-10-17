@@ -252,7 +252,7 @@ FixedScreen2A_Draw:
 	ld hl, $9800
 	ld bc, FixedScreen2A_AttrMap
 	ld de, FixedScreen2A_TileMap
-	call Func_05C5
+	call CopyScreenMaps
 	ld hl, FixedScreen2A_Palettes
 	ld bc, $0008
 	call Func_052F

@@ -309,6 +309,12 @@ can briefly blank the display, gated by a random two-bit value. Expiry converts
 visible cell-bit-2 regions, restores OBJ palette 3, and clears the active flag.
 The trigger's gameplay identity is not yet proven, so its names remain neutral.
 
+The shared full-screen map copier at ROM0 `$05C5` is now `CopyScreenMaps`.
+It copies a packed width-by-height attribute rectangle to VRAM bank 1 and the
+matching tile rectangle to bank 0, applying the 32-byte BG-map row stride and
+preserving all input registers. The paired 32-frame black and white palette
+transitions and the far level-lookup initializer also have behavioral names.
+
 Banks `$27`, `$28`, and `$29` each start with nine orientation frames of nine
 native 2bpp tiles. Bank `$05:$4020` contains the 16-entry orientation lookup:
 the first nine entries select the nine consecutive `$90`-byte frames and the

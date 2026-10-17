@@ -105,7 +105,7 @@ Jump_00A6:
 	ld a, [wJoypadHeld]
 	or a
 	jr z, Jump_009F
-	call Func_06F8
+	call FadePalettesToBlackWithSound
 	call Func_0AC4
 	jp Jump_016C
 
@@ -115,7 +115,7 @@ Jump_00C7:
 	call Audio_QueueSound
 	call Func_035C
 	call Func_3F28
-	call Func_06F8
+	call FadePalettesToBlackWithSound
 	jp Jump_016C
 
 	db $18, $FE
@@ -209,7 +209,7 @@ Func_0192:
 	call LoadInterfaceTilesVRAM0
 	call SpawnPlayerObject
 	call Func_37CE
-	call Func_0402
+	call LoadLevelLookupPointersFar
 	ld hl, $D000
 	call FreeObjectRecord
 Jump_01B4:
@@ -535,7 +535,8 @@ Jump_0400:
 	ret
 
 
-Func_0402:
+LoadLevelLookupPointersFar:
+Func_0402: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $05
@@ -968,7 +969,12 @@ Jump_05BE:
 	ret
 
 
-Func_05C5:
+; Copy the wScreenWidth x wScreenHeight rectangle at BC to VRAM bank 1 and
+; the matching rectangle at DE to VRAM bank 0. HL is the BG-map destination;
+; each source row is tightly packed while each destination row is 32 bytes.
+; All input registers are preserved.
+CopyScreenMaps:
+Func_05C5: ; legacy alias
 	push af
 	push bc
 	push de
@@ -1188,7 +1194,10 @@ Func_06E7:
 	ret
 
 
-Func_06F8:
+; Over 32 VBlanks, darken both CGB palette memories toward black while sound
+; continues to update. Sound sequence $57 is queued before the first frame.
+FadePalettesToBlackWithSound:
+Func_06F8: ; legacy alias
 	ld e, $57
 	call Audio_QueueSound
 	ld d, $20
@@ -1213,7 +1222,10 @@ Jump_0708:
 	ret
 
 
-Func_071F:
+; Queue sound sequence $57 and run the 32-frame background-palette fade toward
+; white. The bank-$01 implementation performs its own frame waits.
+FadeBackgroundPalettesToWhiteWithSound:
+Func_071F: ; legacy alias
 	ld e, $57
 	call Audio_QueueSound
 	ld d, $20

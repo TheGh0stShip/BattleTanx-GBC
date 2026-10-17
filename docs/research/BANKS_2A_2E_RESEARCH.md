@@ -61,10 +61,10 @@ template routines, but no caller is known.
 ROM0 ScreenTable_CallInit  (a = mode, jp hl at $39C3) -> ScreenModeNN_LoadTiles
 ROM0 ScreenTable_CallUpdate (a = mode, bc = BG offset pushed, jp hl at $39F0) -> ScreenModeNN_Draw
 ScreenModeNN_LoadTiles -> Func_0622 (VRAM tile copy) x3
-ScreenModeNN_Draw (fade)  -> Func_05B7 (copy descriptor to wScreenDescriptor), Func_05C5 (maps),
+ScreenModeNN_Draw (fade)  -> Func_05B7 (copy descriptor to wScreenDescriptor), CopyScreenMaps,
                              Func_3A88 (fade buffer, 8 palettes), Func_3A2F -> $02:474B (32 steps),
                              Func_3A52 + Audio_Update per frame (32 frames)
-ScreenModeNN_Draw (plain) -> Func_05B7, Func_05C5, Func_052F (palettes), one VBlank wait
+ScreenModeNN_Draw (plain) -> Func_05B7, CopyScreenMaps, Func_052F (palettes), one VBlank wait
 ROM0 $3F28 -> FixedScreen2A_Run -> FixedScreen2A_LoadTiles, FixedScreen2A_Draw,
                                    Func_3971 (wait), FixedScreen2A_DrawFrame
 ```
@@ -108,7 +108,7 @@ One assumption remains: `wMenuState` always points at a `menu_state` record.
 | --- | --- | --- |
 | `wPaletteFadeFromWhite` | `$C6D1` | read by `$02:474B`: 0 selects `$01:46B1` (subtract per channel), non-zero `$01:4703` (add) while building the 32 steps backward from the target |
 | `wScreenDescriptor` | `$C6D2` | 14-byte copy by Func_05B7 in every draw routine |
-| `wScreenWidth` / `wScreenHeight` | `$C6DC` / `$C6DD` | descriptor +10/+11, read by ROM0 `$05C5`; FixedScreen2A_Draw stores 20/18 |
+| `wScreenWidth` / `wScreenHeight` | `$C6DC` / `$C6DD` | descriptor +10/+11, read by `CopyScreenMaps`; FixedScreen2A_Draw stores 20/18 |
 
 Not named: `$C6B5`, the stop signal for FixedScreen2A_Run. It is cleared by
 `Func_3971` and set elsewhere for reasons not traced.
