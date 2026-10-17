@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 163 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 218 remain. `make progress` recomputes the per-bank
+At this revision, 165 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 216 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -210,6 +210,9 @@ After player destruction, `HandlePlayerLifeLossFar` clears active sound,
 decrements lives, and waits for the current music sequence to finish.
 `AnimatePlayerHealthBarFillFar` exposes the bank-`$01` VBlank-paced health-bar
 animation that restores the saved health one point at a time.
+`CopyMapRows20Wide` exposes the shared 20-byte-row copier with its 32-byte
+destination stride. `LoadHudBaseMapsFar` uses it through bank `$01` to seed the
+HUD attribute and tile staging maps before dynamic status fields are drawn.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 

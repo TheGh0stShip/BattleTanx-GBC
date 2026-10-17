@@ -1073,6 +1073,8 @@ def check_level_banks() -> None:
             "ConvertU32ToPackedBcdFar": (0x00, 0x06E7),
             "HandlePlayerLifeLossFar": (0x00, 0x034B),
             "AnimatePlayerHealthBarFillFar": (0x00, 0x35F7),
+            "CopyMapRows20Wide": (0x00, 0x3202),
+            "LoadHudBaseMapsFar": (0x00, 0x32A3),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),

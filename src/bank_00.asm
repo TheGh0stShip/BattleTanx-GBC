@@ -9324,7 +9324,10 @@ Jump_31FF:
 	ret
 
 
-Func_3202:
+; Copy D rows of 20 bytes from BC to HL, advancing the destination by its
+; 32-byte tilemap stride after each row.
+CopyMapRows20Wide:
+Func_3202: ; legacy alias
 	push af
 	push bc
 	push de
@@ -9411,7 +9414,7 @@ Func_3252:
 ; them to VRAM bank 1 and bank 0 at $9C00.
 RefreshHud:
 Func_325B:
-	call Func_32A3
+	call LoadHudBaseMapsFar
 	call DrawHudStatus
 	call Func_32B4
 	xor a
@@ -9452,7 +9455,10 @@ Jump_3268:
 	ret
 
 
-Func_32A3:
+; Copy the fixed bank-$01 HUD attribute and tile templates into the staging
+; maps at $C400 and $C440.
+LoadHudBaseMapsFar:
+Func_32A3: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01

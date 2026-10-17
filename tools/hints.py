@@ -252,6 +252,8 @@ NAMES = {
     0x06E7: "ConvertU32ToPackedBcdFar",
     0x034B: "HandlePlayerLifeLossFar",
     0x35F7: "AnimatePlayerHealthBarFillFar",
+    0x3202: "CopyMapRows20Wide",
+    0x32A3: "LoadHudBaseMapsFar",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",
