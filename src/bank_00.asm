@@ -130,7 +130,7 @@ Jump_00DA:
 	ldh [rNR51], a
 	ei
 	call EnableDoubleSpeed
-	call Func_04CD
+	call ClearCgbPalettes
 	ld a, $91
 	ldh [rLCDC], a
 	ld a, [wBootHardwareMode]
@@ -203,7 +203,7 @@ Func_0192:
 	call Func_3ABF
 	xor a
 	ld [$C6C1], a
-	call Func_04CD
+	call ClearCgbPalettes
 	call Func_09AB
 	call LoadInterfaceTilesVRAM1
 	call LoadInterfaceTilesVRAM0
@@ -213,7 +213,7 @@ Func_0192:
 	ld hl, $D000
 	call Func_2044
 Jump_01B4:
-	call Func_04CD
+	call ClearCgbPalettes
 	xor a
 	ldh [rSCX], a
 	ldh [rSCY], a
@@ -246,7 +246,7 @@ Jump_01B4:
 	call Func_1927
 	call Func_194B
 	call RefreshLevelViewport
-	call Func_0781
+	call ResetOamState
 	call Func_322D
 	call LoadLevelPalettes
 	call LoadInterfacePalettes
@@ -274,7 +274,7 @@ Jump_0218:
 	and a
 	jr nz, Jump_0245
 Jump_0236:
-	call Func_0421
+	call RandomByte
 	and $07
 	cp $06
 	jr nc, Jump_0236
@@ -438,9 +438,9 @@ Jump_0360:
 	xor a
 	ld [wVBlankPending], a
 	call Func_32EF
-	call Func_04CD
+	call ClearCgbPalettes
 	call Func_0AC4
-	call Func_0781
+	call ResetOamState
 	call Func_3CD9
 	xor a
 	ldh [rSCY], a
@@ -476,14 +476,14 @@ Func_0396:
 	ld c, $01
 	ld b, $87
 	ld hl, $9C0A
-	call Func_049E
+	call WriteBgMapTileAndAttribute
 	inc hl
-	call Func_049E
+	call WriteBgMapTileAndAttribute
 	ld c, $04
 	ld hl, $9C2A
-	call Func_049E
+	call WriteBgMapTileAndAttribute
 	inc hl
-	call Func_049E
+	call WriteBgMapTileAndAttribute
 	xor a
 	ld [$C91D], a
 	ret
@@ -1227,7 +1227,7 @@ Func_072C:
 	push hl
 	ld hl, $C0FF
 	ld bc, $0F01
-	call Func_050B
+	call ClearMemory
 	ld hl, $FE00
 	ld b, $A0
 	call ClearBytes
@@ -1240,7 +1240,7 @@ Jump_074B:
 	ld hl, $D000
 	ld bc, $1000
 	push af
-	call Func_050B
+	call ClearMemory
 	pop af
 	dec a
 	jr nz, Jump_074B
@@ -1278,7 +1278,7 @@ ResetOamState:
 Func_0781:
 	ldh a, [rLY]
 	cp $90
-	jr nz, Func_0781
+	jr nz, ResetOamState
 	ld hl, $FE00
 	ld b, $A0
 	xor a
@@ -1307,37 +1307,37 @@ LoadObjectPalettes:
 	ld hl, Bank27ObjectPalette
 	ld b, $00
 	ld c, $01
-	call Func_057D
+	call LoadObjectPaletteRange
 	ld a, $28
 	ld [rROMB0], a
 	ld hl, Bank28ObjectPalette
 	ld b, $01
 	ld c, $01
-	call Func_057D
+	call LoadObjectPaletteRange
 	ld a, $29
 	ld [rROMB0], a
 	ld hl, Bank29ObjectPalette
 	ld b, $02
 	ld c, $01
-	call Func_057D
+	call LoadObjectPaletteRange
 	ld a, $08
 	ld [rROMB0], a
 	ld hl, Bank08ObjectPalette46EA
 	ld b, $03
 	ld c, $01
-	call Func_057D
+	call LoadObjectPaletteRange
 	ld a, $08
 	ld [rROMB0], a
 	ld hl, Bank08ObjectPalettes67FD
 	ld b, $04
 	ld c, $04
-	call Func_057D
+	call LoadObjectPaletteRange
 	ld a, $08
 	ld [rROMB0], a
 	ld hl, Bank08UiFontPalette + 2 ; colours 1-3 + 2 bytes of SpriteTiles44A8
 	ld b, $07
 	ld c, $01
-	call Func_052F
+	call LoadBackgroundPaletteRange
 	ret
 
 
@@ -1570,15 +1570,15 @@ Jump_0996:
 
 Func_09AB:
 	call Func_0AC4
-	call Func_04CD
+	call ClearCgbPalettes
 	ld hl, $D000
 	ld bc, $1000
-	call Func_050B
+	call ClearMemory
 	call Func_2028
 	call Func_2058
-	call Func_00F9
-	call Func_0781
-	call Func_0903
+	call EnableBackground
+	call ResetOamState
+	call LoadCurrentLevel
 	call LoadEncodedFontTiles
 	ld a, [$CD06]
 	ld b, a
@@ -3534,7 +3534,7 @@ ChooseRandomLevelRegionCell:
 	sub b
 	inc a
 	ld b, a
-	call Func_043C
+	call RandomBelowB
 	ld b, a
 	ldh a, [hLevelRegionTop]
 	add a, b
@@ -3545,7 +3545,7 @@ ChooseRandomLevelRegionCell:
 	sub b
 	inc a
 	ld b, a
-	call Func_043C
+	call RandomBelowB
 	ld b, a
 	ldh a, [hLevelRegionLeft]
 	add a, b
@@ -3592,7 +3592,7 @@ Jump_1457:
 	inc a
 	ldh [hLevelRegionChangedCount], a
 	push af
-	call Func_0421
+	call RandomByte
 	and $03
 	jr nz, Jump_1488
 	ld b, $00
@@ -4751,7 +4751,7 @@ LoadLevelPalettes:
 	ld b, $00
 	ld a, [wLevelPaletteCount]
 	ld c, a
-	call Func_052F
+	call LoadBackgroundPaletteRange
 	ret
 
 
@@ -10722,7 +10722,7 @@ Func_3A52:
 	ld c, $08
 	ld b, $00
 	push de
-	call Func_052F
+	call LoadBackgroundPaletteRange
 	ld a, $01
 	ldh [rSVBK], a
 	pop de
@@ -10766,7 +10766,7 @@ Func_3A88:
 	push hl
 	ld hl, $D000
 	ld bc, $0800
-	call Func_050B
+	call ClearMemory
 	pop hl
 	ld bc, $D7C0
 	call CopyBytesShort
@@ -10815,7 +10815,7 @@ Jump_3AEE:
 	ld e, $10
 	call Audio_QueueSound
 Jump_3AF3:
-	call Func_0421
+	call RandomByte
 	and $07
 	cp $06
 	jr nc, Jump_3AF3
@@ -11188,7 +11188,7 @@ Func_3CFB:
 	ld hl, EffectPalette5502
 	ld b, $03
 	ld c, $01
-	call Func_057D
+	call LoadObjectPaletteRange
 	pop af
 	ld [rROMB0], a
 	ld a, $01
@@ -11443,7 +11443,7 @@ Jump_3E92:
 
 
 Func_3EB9:
-	call Func_0421
+	call RandomByte
 	and $03
 	ret z
 	call DisableLCDSafely
@@ -11494,7 +11494,7 @@ Jump_3F00:
 	ld hl, Bank08ObjectPalette46EA
 	ld b, $03
 	ld c, $01
-	call Func_057D
+	call LoadObjectPaletteRange
 	pop af
 	ld [rROMB0], a
 	xor a
