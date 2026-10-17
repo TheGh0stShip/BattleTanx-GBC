@@ -63,7 +63,7 @@ Jump_0061:
 	ld a, [wPlayerAlive]
 	or a
 	jr nz, Jump_0074
-	call Func_034B
+	call HandlePlayerLifeLossFar
 	jp Jump_01B4
 
 Jump_0074:
@@ -269,7 +269,7 @@ Jump_0218:
 	call MoveHudWindow
 	dec d
 	jr nz, Jump_0214
-	call Func_35F7
+	call AnimatePlayerHealthBarFillFar
 	ld a, [wMusicPtr]
 	and a
 	jr nz, Jump_0245
@@ -415,7 +415,8 @@ Func_033A: ; legacy alias
 	ret
 
 
-Func_034B:
+HandlePlayerLifeLossFar:
+Func_034B: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -10101,7 +10102,8 @@ Func_35D7:
 	ret
 
 
-Func_35F7:
+AnimatePlayerHealthBarFillFar:
+Func_35F7: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01

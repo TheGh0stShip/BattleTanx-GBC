@@ -250,6 +250,8 @@ NAMES = {
     0x06C5: "ConvertU8ToPackedBcdFar",
     0x06D6: "ConvertU16ToPackedBcdFar",
     0x06E7: "ConvertU32ToPackedBcdFar",
+    0x034B: "HandlePlayerLifeLossFar",
+    0x35F7: "AnimatePlayerHealthBarFillFar",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",

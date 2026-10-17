@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 161 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 220 remain. `make progress` recomputes the per-bank
+At this revision, 163 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 218 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -206,6 +206,10 @@ records from a caller-supplied type and lifetime with motion/state cleared.
 The three ROM0 numeric wrappers now expose their complete contracts: unsigned
 8-, 16-, and 32-bit values are converted through bank `$01` into two, three,
 or five packed-BCD bytes for HUD and menu digit rendering.
+After player destruction, `HandlePlayerLifeLossFar` clears active sound,
+decrements lives, and waits for the current music sequence to finish.
+`AnimatePlayerHealthBarFillFar` exposes the bank-`$01` VBlank-paced health-bar
+animation that restores the saved health one point at a time.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 
