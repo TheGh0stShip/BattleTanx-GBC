@@ -358,6 +358,94 @@ def check_scene_descriptors(rom: bytes) -> None:
             fail(f"scrolling-scene lookup {slot} starts outside its row data")
 
 
+def check_structured_scrolling_scene_banks(
+    rom: bytes, entries: list[tuple[pathlib.Path, int, int]]
+) -> None:
+    """Validate explicit scrolling-scene source in banks $34-$3A."""
+    banks = range(0x34, 0x3B)
+    scenes = {bank: [] for bank in banks}
+    for index in range(36):
+        record = rom[0x5A60 + index * 8:0x5A68 + index * 8]
+        bank = record[0]
+        if bank not in scenes:
+            continue
+        graphics = int.from_bytes(record[1:3], "little")
+        rows = int.from_bytes(record[3:5], "little")
+        row_count = record[5] + 1
+        palette = int.from_bytes(record[6:8], "little")
+        scenes[bank].append((index, graphics, rows, row_count, palette))
+
+    expected_assets = {}
+    expected_symbols = {}
+    counts = {"graphics": 0, "rows": 0, "palettes": 0, "padding": 0}
+    for bank, records in scenes.items():
+        position = 0x4000
+        bank_base = bank * 0x4000 - 0x4000
+        for index, graphics, rows, row_count, palette in sorted(records):
+            if graphics != position or rows + row_count * 40 != palette:
+                fail(f"scrolling source: bank ${bank:02X} scene {index} is not contiguous")
+            path = pathlib.Path(f"assets/scenes/scroll_scene_{index:02}_tiles.2bpp")
+            expected_assets[path] = (bank_base + graphics, rows - graphics)
+            expected_symbols.update({
+                f"ScrollScene{index:02}Tiles": (bank, graphics),
+                f"ScrollScene{index:02}Rows": (bank, rows),
+                f"ScrollScene{index:02}Palette": (bank, palette),
+            })
+            counts["graphics"] += rows - graphics
+            counts["rows"] += row_count * 40
+            counts["palettes"] += 8
+            position = palette + 8
+        tail = rom[bank_base + position:bank_base + 0x8000]
+        if tail[:-1] != bytes(len(tail) - 1) or tail[-1:] != bytes((bank,)):
+            fail(f"scrolling source: bank ${bank:02X} tail or marker changed")
+        counts["padding"] += len(tail)
+
+    manifest = {path: (offset, size) for path, offset, size in entries}
+    for path, where in expected_assets.items():
+        if manifest.get(path) != where:
+            fail(f"scrolling source: asset {path} is {manifest.get(path)}, expected {where}")
+    if any(
+        0x34 * 0x4000 <= offset < 0x3B * 0x4000 and path not in expected_assets
+        for path, offset, _ in entries
+    ):
+        fail("scrolling source: banks $34-$3A contain an unexpected asset")
+    for bank in banks:
+        source = (ROOT / "src" / f"bank_{bank:02X}.asm").read_text()
+        if f'assets/bank_{bank:02X}/4000.bin' in source:
+            fail(f"scrolling source: bank ${bank:02X} returned to a whole-bank blob")
+
+    sym = ROOT / "battletanx.sym"
+    if sym.exists():
+        symbols = {}
+        for line in sym.read_text().splitlines():
+            match = re.fullmatch(
+                r"([0-9a-fA-F]{2}):([0-9a-fA-F]{4}) (\S+)", line.strip()
+            )
+            if match:
+                symbols[match.group(3)] = (
+                    int(match.group(1), 16), int(match.group(2), 16)
+                )
+        for name, where in expected_symbols.items():
+            if symbols.get(name) != where:
+                fail(f"scrolling source: symbol {name} is at {symbols.get(name)}, expected {where}")
+
+    missing = dict(manifest)
+    missing.pop(next(iter(expected_assets)))
+    if all(missing.get(path) == where for path, where in expected_assets.items()):
+        fail("scrolling source: missing-asset negative test was not rejected")
+    if 'assets/bank_34/4000.bin' not in '\tINCBIN "assets/bank_34/4000.bin"':
+        fail("scrolling source: blob-name negative test was not rejected")
+
+    total = sum(counts.values())
+    if total != len(banks) * 0x4000:
+        fail(f"scrolling source: accounted for {total} bytes, expected {len(banks) * 0x4000}")
+    print(
+        f"scrolling source: 19 scenes in banks $34-$3A "
+        f"({counts['graphics']} graphics, {counts['rows']} rows, "
+        f"{counts['palettes']} palettes, {counts['padding']} padding)"
+    )
+
+
 def check_menu_states(rom: bytes) -> None:
     """Validate the five headers and their fixed-size menu choice records."""
     states = (
@@ -1162,6 +1250,7 @@ def main() -> None:
     rom = (ROOT / "baserom.gbc").read_bytes()
     check_unused_banks(rom, entries)
     check_scene_descriptors(rom)
+    check_structured_scrolling_scene_banks(rom, entries)
     check_menu_states(rom)
     check_menu_memory_symbols()
     check_text(rom)
