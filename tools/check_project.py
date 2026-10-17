@@ -1104,6 +1104,7 @@ def check_level_banks() -> None:
             "CopyObjectOrientationTiles": (0x00, 0x0F43),
             "SelectObjectOrientationPalette": (0x00, 0x0F91),
             "RenderObjectOrientationGraphic": (0x00, 0x0DB6),
+            "TestLevelCellBits2And3AtPixel": (0x00, 0x164F),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),

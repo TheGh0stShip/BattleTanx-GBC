@@ -4081,7 +4081,9 @@ Jump_164B:
 	ret
 
 
-Func_164F:
+; Return cell-map bits 2-3 for the cell containing pixel coordinate BC,DE.
+TestLevelCellBits2And3AtPixel:
+Func_164F: ; legacy alias
 	push af
 	push bc
 	push de
