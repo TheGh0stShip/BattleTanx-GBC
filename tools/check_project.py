@@ -1034,6 +1034,7 @@ def check_level_banks() -> None:
             "InstallGameplayInterruptHandlersFar": (0x00, 0x0AB3),
             "InstallBasicInterruptHandlersFar": (0x00, 0x0AC4),
             "RedrawLevelCells2x3AroundPixel": (0x00, 0x0B65),
+            "RemoveObject": (0x00, 0x0AF5),
             "ResetBgMapWriteQueue": (0x00, 0x3C19),
             "QueueBgMapWrite": (0x00, 0x3C28),
             "FlushBgMapWriteQueue": (0x00, 0x3C56),

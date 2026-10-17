@@ -1811,7 +1811,13 @@ Func_0AD5:
 	ret
 
 
-Func_0AF5:
+; Remove the object at HL after recording it in the pending-level-object path.
+; Nonzero A plays sound $46 and invokes the score/effect helper; nonzero B
+; creates a status-4 type-0 object at the old position. Type 3 also redraws its
+; two-by-three-cell map footprint. The higher-level meanings of A and B remain
+; unresolved.
+RemoveObject:
+Func_0AF5: ; legacy alias
 	push de
 	push bc
 	push hl
@@ -2947,7 +2953,7 @@ Jump_10BA:
 	ld l, a
 	ld a, $01
 	ld b, $01
-	call Func_0AF5
+	call RemoveObject
 	xor a
 	pop hl
 	pop bc
@@ -2960,7 +2966,7 @@ Jump_10CA:
 	ld l, a
 	ld a, $01
 	ld b, $00
-	call Func_0AF5
+	call RemoveObject
 	ld bc, $0078
 	call BeginPlayerDestroyedCountdown
 	xor a
@@ -11452,7 +11458,7 @@ Jump_3DBC:
 	ld l, e
 	ld a, $01
 	ld b, $01
-	call Func_0AF5
+	call RemoveObject
 Jump_3DD7:
 	ret
 

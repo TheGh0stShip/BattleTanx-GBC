@@ -213,6 +213,7 @@ NAMES = {
     0x0AB3: "InstallGameplayInterruptHandlersFar",
     0x0AC4: "InstallBasicInterruptHandlersFar",
     0x0B65: "RedrawLevelCells2x3AroundPixel",
+    0x0AF5: "RemoveObject",
     0x3C19: "ResetBgMapWriteQueue",
     0x3C28: "QueueBgMapWrite",
     0x3C56: "FlushBgMapWriteQueue",
