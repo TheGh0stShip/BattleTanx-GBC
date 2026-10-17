@@ -61,6 +61,8 @@ make check      # runs the complete structural and lossless round-trip suite
 - `make bank08` - validates and renders the interleaved interface, font,
   metatile, object-animation, and effect ranges in bank `$08`
 - `tools/` - tracer/disassembler used to generate the initial source
+- `make progress` - reports evidence-based names attached to the original
+  automatic function entries, per bank and in total
 - `docs/STATUS.md` - concise recovery status and remaining work
 - `docs/research/` - indexed evidence reports for recovered subsystems and bank
   formats; start with [`docs/research/README.md`](docs/research/README.md)

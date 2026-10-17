@@ -4,11 +4,11 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation disasm clean tidy
+.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation progress disasm clean tidy
 
 all: compare
 
-check: compare check-project graphics maps levels screens objects bank08 relocation
+check: compare check-project graphics maps levels screens objects bank08 relocation progress
 
 check-project:
 	$(PYTHON) tools/check_project.py
@@ -43,6 +43,10 @@ relocation: compare
 	$(PYTHON) tools/relocation_audit.py
 	$(PYTHON) tools/level_comparison.py --check
 	$(PYTHON) tools/shift_test.py .
+
+# Semantic naming progress, kept separate from traced-byte coverage.
+progress: $(ROM)
+	$(PYTHON) tools/source_progress.py $(ROM:.gbc=.sym)
 
 # Regenerate src/ from the base ROM (overwrites src/!)
 disasm: check-baserom

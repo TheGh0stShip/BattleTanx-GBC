@@ -29,11 +29,16 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
+At this revision, 130 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 251 remain. `make progress` recomputes the per-bank
+breakdown from the linked symbol file. This measures naming progress only: it
+does not substitute for traced-byte coverage or semantic verification.
+
 | Area | Current state | Next gate |
 | --- | --- | --- |
 | Reviewed code | 38,772 bytes traced from known entries, pointers, executable RAM images, and reviewed standalone entries | Name and document routines from behavior |
 | Heuristic decoding | 0 additional bytes accepted by gap fill | Keep this at zero as more data boundaries are recovered |
-| Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
+| Symbols | `make progress` reports reviewed companion names for automatic function entries per bank, separately from traced-byte coverage; interrupts, startup, copy helpers, screen dispatch, OAM DMA, rendering state, and scene descriptors are among the recovered groups | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
 | Graphics | 64 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly; bank `$08` additionally has a lossless 83-range inspection export for its interleaved interface/object graphics | Identify gameplay roles for the remaining neutral graphics labels |
 | Maps | All eleven descriptor-driven fixed backgrounds, the referenced Game Boy Color warning in bank `$3B`, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions and indices | Name individual scenes and levels |
