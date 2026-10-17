@@ -11494,7 +11494,7 @@ Func_3CC2: ; legacy alias
 	push af
 	ld a, $02
 	ld [rROMB0], a
-	call Func_02_5D6D
+	call LoadIndexedSpriteGrid
 	pop af
 	ld [rROMB0], a
 	ret

@@ -934,7 +934,7 @@ Jump_02_4816:
 Bank02Unread481E:
 	INCBIN "assets/bank_02/unread_481E.bin"
 
-; OBJ palette 7 colours 1-3 (Func_02_5D6D via Func_057D)
+; OBJ palette 7 colours 1-3 (LoadIndexedSpriteGrid via LoadObjectPaletteRange)
 Bank02ObjPalette7Colours:
 	dw $0000, $001F, $03DF
 
@@ -1978,7 +1978,10 @@ Jump_02_5D6C:
 	ret
 
 
-Func_02_5D6D:
+; Select a four-byte descriptor with E, transfer 40 tiles to VRAM bank 1,
+; load OBJ palette 7, build a 4-by-10 shadow-OAM grid, and transfer OAM.
+LoadIndexedSpriteGrid:
+Func_02_5D6D: ; legacy alias, used by src/bank_00.asm
 	ld a, e
 	add a, a
 	add a, a
@@ -1999,10 +2002,10 @@ Func_02_5D6D:
 	ldh [$FFB2], a
 	ld h, b
 	ld l, c
-Jump_02_5D86:
+.WaitForVBlankBeforeTileDma:
 	ldh a, [rLY]
 	cp $90
-	jr c, Jump_02_5D86
+	jr c, .WaitForVBlankBeforeTileDma
 	ld a, $01
 	ldh [rVBK], a
 	ld a, h
@@ -2024,9 +2027,9 @@ Jump_02_5D86:
 	ldh a, [rSCY]
 	ld b, a
 	ld c, $80
-Jump_02_5DB6:
+.BuildRows:
 	ld e, $00
-Jump_02_5DB8:
+.BuildColumns:
 	ldh a, [$FFB2]
 	add a, d
 	ld [hli], a
@@ -2042,16 +2045,16 @@ Jump_02_5DB8:
 	add a, $08
 	ld e, a
 	cp $50
-	jr nz, Jump_02_5DB8
+	jr nz, .BuildColumns
 	ld a, d
 	add a, $08
 	ld d, a
 	cp $20
-	jr nz, Jump_02_5DB6
-Jump_02_5DD6:
+	jr nz, .BuildRows
+.WaitForVBlankBeforeOamDma:
 	ldh a, [rLY]
 	cp $90
-	jr c, Jump_02_5DD6
+	jr c, .WaitForVBlankBeforeOamDma
 	call OAMDMARoutine
 	ret
 

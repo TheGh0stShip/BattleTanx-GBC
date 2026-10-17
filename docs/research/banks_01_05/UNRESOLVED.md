@@ -5,11 +5,10 @@
    `$01`. These are safe only if bank `$01` is mapped whenever they fire.
    During `LoadFixedSceneResources` a graphics bank is mapped, and `hFF80 = 1`
    blocks only the STAT path. Not proven either way.
-2. **Address-named routines (28)**, including `Func_01_4ECF`, `Func_01_66F6`,
+2. **Address-named routines (27)**, including `Func_01_4ECF`, `Func_01_66F6`,
    `Func_01_6746`, `Func_01_6751`, `Func_01_6789`, `Func_01_696E`,
-   `Func_01_6A1D`, `Func_01_6E44`, the `$01:7BC5-$7CEF` scroll helpers,
-   `Func_02_4E0E`, `Func_02_4E84` and `Func_02_5D6D`. Their roles are not
-   proven.
+   `Func_01_6A1D`, `Func_01_6E44`, the `$01:7BC5-$7CEF` scroll helpers, and
+   ten bank-`$03` entries. Their roles are not proven.
 3. **Routines with no callers**:
    - `Func_01_42EF` (`DrawObjectStatusCountsToWindow`);
    - `Func_01_543E`;

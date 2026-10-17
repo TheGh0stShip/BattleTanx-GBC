@@ -55,7 +55,7 @@ BLOBS = {
     ],
     ("src/bank_02.asm", "assets/bank_02/481E.bin", 2, 0x481E, 0x4D58): [
         (0x481E, 0x4D52, "bin", "Bank02Unread481E", "no reader found", "assets/bank_02/unread_481E.bin"),
-        (0x4D52, 0x4D58, "dw3", "Bank02ObjPalette7Colours", "OBJ palette 7 colours 1-3 (Func_02_5D6D via Func_057D)", None),
+        (0x4D52, 0x4D58, "dw3", "Bank02ObjPalette7Colours", "OBJ palette 7 colours 1-3 (LoadIndexedSpriteGrid via LoadObjectPaletteRange)", None),
     ],
     ("src/bank_02.asm", "assets/bank_02/5040.bin", 2, 0x5040, 0x5C40): [
         (0x5040, 0x5440, "oam", "TrackerPointerFrames", "64 frames x 4 OAM entries (y, x, tile, attribute); TrackerDrawPointerSprites", None),

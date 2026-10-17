@@ -28,14 +28,14 @@ address print before every statement in a scratch assembly.
 | Category | Bytes | Notes |
 | --- | ---: | --- |
 | Exact reconstruction | 81,920 | all five banks match |
-| Behaviour understood (code with evidence names, tables with traced readers, fill/marker) | most | 250 of 278 routine entries carry behaviour names |
+| Behaviour understood (code with evidence names, tables with traced readers, fill/marker) | most | 251 of 278 routine entries carry behaviour names |
 | Bounded, meaning unknown | 2,423 | `Bank02Unread481E` (1,332), bank `$05` copies of bank `$04` (1,029, no reader), unread gaps (`Bank01Unread77D6/785E/786C` 25, `Bank02Unread5E80` 9, two effect gaps 28) |
 | Unresolved control flow | 0 indirect sites | see INDIRECT_CONTROL_FLOW.md; open interrupt-bank question in UNRESOLVED.md |
 | Speculative visual interpretation | none used for naming | |
 
 ## Source changes in this pass
 
-- 177 routine and table renames (aliases kept where other files use the old
+- 178 routine and table renames (aliases kept where other files use the old
   name), plus 13 table names.
 - 77 RAM symbols (`include/banks_01_05_ram.inc`), replacing 455 raw operands.
 - **Every raw own-bank ROM pointer in banks `$01`-`$05` is now a label.** The one

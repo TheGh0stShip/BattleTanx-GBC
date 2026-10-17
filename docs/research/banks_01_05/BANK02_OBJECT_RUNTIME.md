@@ -15,8 +15,8 @@
 - `$02:4D58` runs every frame and enters the stub. The targets:
   - `TrackerScanStatus1Objects`: 64 object records, status 1 and `+$26` set;
   - `TrackerScanType2Objects`: the same, plus object type `+$1E` = 2;
-  - `Func_02_4E0E`: 8 auxiliary records at `$CD6F`;
-  - `Func_02_4E84`: a fixed target, `$CD79` or `$CD6F`.
+  - `TrackerScanAuxRecords`: 8 auxiliary records at `$CD6F`;
+  - `TrackerSelectAuxRecord`: a fixed target, `$CD79` or `$CD6F`.
 - The best match is stored in `wNearestTargetPtr` and its distance in
   `wNearestTargetDistance`.
 - `TrackerDrawPointerSprites` uses `TrackerDirectionLookup` (dx/dy to
@@ -61,6 +61,6 @@ Reached only through ROM0 `Func_3F1F`.
 ## Unread
 
 - `Bank02Unread481E` (`$481E-$4D51`, 1,332 bytes): no reader.
-- `Bank02ObjPalette7Colours` (`$4D52`): read by `Func_02_5D6D`, whose only
+- `Bank02ObjPalette7Colours` (`$4D52`): read by `LoadIndexedSpriteGrid`, whose only
   caller `Func_3CC2` is itself never called.
 - `Bank02Unread5E80` (9 bytes).
