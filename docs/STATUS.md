@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 146 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 235 remain. `make progress` recomputes the per-bank
+At this revision, 147 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 234 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -183,6 +183,10 @@ the player when its recorded attacker pointer matches the player object.
 The earlier `$20` field description has been corrected: vehicle health is at
 `$1F`, while `$20` is status-dependent—a vehicle action-repeat interval, a
 timed-effect lifetime, or a state byte in the status-2 update path.
+`UsePlayerWeaponOrPowerup` is gated by the vehicle action timer and a maximum
+of three outstanding shots. It reloads that timer from the type-specific `$20`
+interval, then either spawns the selected shot or consumes the screen-effect
+power-up.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 

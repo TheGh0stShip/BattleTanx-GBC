@@ -2358,12 +2358,12 @@ Jump_0D4B:
 	ld [hl], $00
 	ld a, l
 	and $C0
-	add a, $22
+	add a, OBJECT_VEHICLE_ACTIVE_SHOTS_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_VEHICLE_ACTION_TIMER_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
@@ -2738,19 +2738,20 @@ Func_0F91:
 	ret
 
 
-Func_0F98:
+UsePlayerWeaponOrPowerup:
+Func_0F98: ; legacy alias
 	push de
 	push hl
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_VEHICLE_ACTION_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
 	jr nz, Jump_101F
 	ld a, l
 	and $C0
-	add a, $22
+	add a, OBJECT_VEHICLE_ACTIVE_SHOTS_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $03
@@ -2762,7 +2763,7 @@ Func_0F98:
 	ld e, [hl]
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_VEHICLE_ACTION_TIMER_OFFSET
 	ld l, a
 	ld [hl], e
 	ld a, l
@@ -2779,7 +2780,7 @@ Func_0F98:
 Jump_0FCE:
 	ld a, l
 	and $C0
-	add a, $22
+	add a, OBJECT_VEHICLE_ACTIVE_SHOTS_OFFSET
 	ld l, a
 	ld a, [hl]
 	inc a
@@ -2884,7 +2885,7 @@ Func_104B: ; legacy alias
 	push hl
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_VEHICLE_ACTION_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -10175,7 +10176,7 @@ Jump_3676:
 	ld a, e
 	and $10
 	jr z, Jump_367E
-	call Func_0F98
+	call UsePlayerWeaponOrPowerup
 Jump_367E:
 	ret
 
@@ -10211,7 +10212,7 @@ Jump_36A7:
 	ld a, e
 	and $20
 	ret z
-	call Func_0F98
+	call UsePlayerWeaponOrPowerup
 	ret
 
 
@@ -10289,7 +10290,7 @@ Jump_3726:
 	ld a, e
 	and $10
 	ret z
-	call Func_0F98
+	call UsePlayerWeaponOrPowerup
 	ret
 
 
