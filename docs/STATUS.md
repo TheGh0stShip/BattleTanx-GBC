@@ -120,7 +120,9 @@ Horizontal and vertical boundary classifiers now document their signed input
 registers and directional return codes against those pixel dimensions. The
 cell-map accessors for bits 0 through 3 and the eight-point bit-0 footprint
 test are named; their callers establish use by movement logic, but the gameplay
-meaning of each flag remains unknown. ROM cell maps never set bits 4 through 7.
+meaning of each flag remains unknown. Four directional scanners find the
+bounding rectangle of a contiguous run whose bits 2-3 are nonzero. ROM cell
+maps never set bits 4 through 7.
 
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have

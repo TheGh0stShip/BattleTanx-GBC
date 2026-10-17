@@ -2937,13 +2937,13 @@ Func_10E6:
 	jr z, Jump_115C
 	pop de
 	pop bc
-	call Func_1531
+	call FindLevelCellRunLeftEdge
 	ldh [$FF90], a
-	call Func_1578
+	call FindLevelCellRunRightEdge
 	ldh [$FF91], a
-	call Func_15C0
+	call FindLevelCellRunTopEdge
 	ldh [$FF92], a
-	call Func_1607
+	call FindLevelCellRunBottomEdge
 	ldh [$FF93], a
 	call Func_1425
 	pop hl
@@ -3076,13 +3076,13 @@ Func_11BB:
 	pop de
 	pop bc
 	jr z, Jump_1214
-	call Func_1531
+	call FindLevelCellRunLeftEdge
 	ldh [$FF90], a
-	call Func_1578
+	call FindLevelCellRunRightEdge
 	ldh [$FF91], a
-	call Func_15C0
+	call FindLevelCellRunTopEdge
 	ldh [$FF92], a
-	call Func_1607
+	call FindLevelCellRunBottomEdge
 	ldh [$FF93], a
 	call Func_12D8
 Jump_1214:
@@ -3156,13 +3156,13 @@ Func_1219:
 	jr z, Jump_129A
 	pop de
 	pop bc
-	call Func_1531
+	call FindLevelCellRunLeftEdge
 	ldh [$FF90], a
-	call Func_1578
+	call FindLevelCellRunRightEdge
 	ldh [$FF91], a
-	call Func_15C0
+	call FindLevelCellRunTopEdge
 	ldh [$FF92], a
-	call Func_1607
+	call FindLevelCellRunBottomEdge
 	ldh [$FF93], a
 	call Func_12A1
 	ld e, $21
@@ -3673,7 +3673,9 @@ Jump_152C:
 	ret
 
 
-Func_1531:
+; Starting inside a cell whose bits 2-3 are nonzero, return the left edge of
+; its contiguous horizontal run. C and E are cell coordinates.
+FindLevelCellRunLeftEdge:
 	push bc
 Jump_1532:
 	push bc
@@ -3731,7 +3733,8 @@ Jump_1574:
 	ret
 
 
-Func_1578:
+; Return the right edge of the same bits-2/3 horizontal run.
+FindLevelCellRunRightEdge:
 	push bc
 Jump_1579:
 	push bc
@@ -3789,7 +3792,8 @@ Jump_15BC:
 	ret
 
 
-Func_15C0:
+; Return the top edge of the same bits-2/3 vertical run.
+FindLevelCellRunTopEdge:
 	push de
 Jump_15C1:
 	push bc
@@ -3847,7 +3851,8 @@ Jump_1603:
 	ret
 
 
-Func_1607:
+; Return the bottom edge of the same bits-2/3 vertical run.
+FindLevelCellRunBottomEdge:
 	push de
 Jump_1608:
 	push bc

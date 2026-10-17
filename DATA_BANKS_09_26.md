@@ -97,8 +97,10 @@ attribute `[$C8D3]`; `$80` uses the bank-`$05` table at `[$C8CE]` and
 the attribute lookup table. **Every cell byte in ROM has bits 4-7 clear.**
 Values seen are 0, 1, 2, 3, 6, 8, 9, 10, and 15. Dedicated ROM0 routines
 read bits 0, 1, 2, and 3 at a pixel coordinate; another tests bit 0 around
-an eight-point footprint. Their gameplay meanings are not established. The
-WRAM copy may be changed at run time, but no such writer has been established.
+an eight-point footprint. Four scanners find the horizontal and vertical edges
+of a contiguous run where bits 2-3 are nonzero. Their gameplay meanings are
+not established. The WRAM copy may be changed at run time, but no such writer
+has been established.
 
 ### 4.2 Tiles (odd bank, `16 * (record+7 + 1)` bytes)
 
@@ -203,7 +205,8 @@ validator. Visual renders were only used as a sanity check, not as evidence.
 
 1. Gameplay meaning of cell-map bits 0-3. ROM0 has dedicated pixel-coordinate
    readers for each bit and an eight-point bit-0 footprint test; their movement
-   callers are traced, but do not establish names for the four flags.
+   callers are traced. Four more routines find the bounding rectangle of a
+   contiguous bits-2/3 run. These uses do not establish names for the flags.
 2. Whether run-time code sets cell bits 6-7, which would exercise the
    `$40`/`$80` paths and the lookup tables.
 3. Record +6 and +7..+8 are never read.
