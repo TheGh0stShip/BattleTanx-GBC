@@ -41,6 +41,11 @@ DEF wPlayerSpawnX     EQU $CD0B ; 2-byte little-endian pixel coordinate
 DEF wPlayerSpawnY     EQU $CD0D ; 2-byte little-endian pixel coordinate
 DEF wPlayerSpawnDirection EQU $CD1B ; low seven bits from level record
 
+; HUD state. The power-up renderer copies one eight-byte CGB palette here for
+; the scanline palette uploader. The alert flag blinks a four-tile indicator.
+DEF wHudPowerupPalette EQU $C6F1 ; 8-byte CGB palette
+DEF wHudAlertActive    EQU $C91D
+
 ; Sixty-four 64-byte runtime object records.
 DEF wObjectPool EQU $D000
 

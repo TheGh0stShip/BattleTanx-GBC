@@ -371,7 +371,7 @@ Jump_02E9:
 	call Func_20FE
 	call UpdatePlayerHealthRecovery
 	ldh a, [rLY]
-	call Func_3302
+	call DrawHudStatus
 	ldh a, [rLY]
 	call CheckNextScoreThreshold
 	ld a, [wPlayerObject]
@@ -472,7 +472,7 @@ Func_0396:
 	ld [wPlayerAlive], a
 	ld e, $87
 	call Audio_QueueSound
-	ld a, [$C91D]
+	ld a, [wHudAlertActive]
 	and a
 	ret z
 	ld c, $01
@@ -487,7 +487,7 @@ Func_0396:
 	inc hl
 	call WriteBgMapTileAndAttribute
 	xor a
-	ld [$C91D], a
+	ld [wHudAlertActive], a
 	ret
 
 
@@ -1608,7 +1608,7 @@ Jump_09ED:
 Jump_09F1:
 	xor a
 	ld [$C0FF], a
-	ld [$C91D], a
+	ld [wHudAlertActive], a
 	ld [$C91E], a
 	ld [$C91F], a
 	xor a
@@ -1627,7 +1627,7 @@ Jump_09F1:
 
 Func_0A23:
 	xor a
-	ld [$C91D], a
+	ld [wHudAlertActive], a
 	ld [$C8D7], a
 	ld [$C8D6], a
 	ld [wFrameCounter], a
@@ -9260,6 +9260,9 @@ Jump_3208:
 	ret
 
 
+; Write attribute B to the HUD staging cell at HL and tile C to its matching
+; cell $40 bytes later. RefreshHud transfers the two staging maps separately.
+WriteHudTileAndAttribute:
 Func_321E:
 	push af
 	push hl
@@ -9317,7 +9320,7 @@ Func_3252:
 RefreshHud:
 Func_325B:
 	call Func_32A3
-	call Func_3302
+	call DrawHudStatus
 	call Func_32B4
 	xor a
 	ld [wVBlankPending], a
@@ -9431,14 +9434,17 @@ Func_32EF:
 	ret
 
 
+DrawHudStatus:
 Func_3302:
-	call Func_356B
-	call Func_334A
-	call Func_3439
+	call DrawHudScore
+	call DrawPlayerHealthBar
+	call DrawHudPowerupAndAlert
 	call DrawPlayerLivesDigit
 	ret
 
 
+; Multiply unsigned C by unsigned DE. Return the 24-bit product in A:HL.
+MultiplyU8ByU16:
 Func_330F:
 	ld a, c
 	ld b, $00
@@ -9493,8 +9499,12 @@ Jump_333D:
 Jump_3343:
 	ret
 
-	db $50, $01, $EB, $00, $B5, $00
+HudHealthScaleByType:
+	dw $0150, $00EB, $00B5
 
+; Draw the player's health as six horizontal bar cells. Each object type uses
+; a fixed-point scale chosen so its maximum health fills the complete meter.
+DrawPlayerHealthBar:
 Func_334A:
 	push af
 	push bc
@@ -9506,13 +9516,13 @@ Func_334A:
 	ld h, a
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_HEALTH_OFFSET
 	ld l, a
 	ld c, [hl]
 	ld b, $00
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld a, [wPlayerAlive]
 	and a
@@ -9521,15 +9531,15 @@ Func_334A:
 Jump_336C:
 	ld a, [hl]
 	add a, a
-	add a, $44
+	add a, LOW(HudHealthScaleByType)
 	ld l, a
-	ld a, $00
-	adc a, $33
+	ld a, LOW(HudHealthScaleByType) - LOW(HudHealthScaleByType)
+	adc a, HIGH(HudHealthScaleByType)
 	ld h, a
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
-	call Func_330F
+	call MultiplyU8ByU16
 	ld d, h
 	ld hl, $C421
 	ld a, d
@@ -9683,6 +9693,9 @@ Jump_3423:
 	ret
 
 
+; Draw the active power-up icon and charge digit, plus the independent blinking
+; four-tile HUD alert controlled by wHudAlertActive.
+DrawHudPowerupAndAlert:
 Func_3439:
 	push af
 	push bc
@@ -9695,16 +9708,16 @@ Func_3439:
 	ld h, a
 	ld a, l
 	and $C0
-	add a, $29
+	add a, OBJECT_PLAYER_POWERUP_TYPE_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $00
 	jr z, Jump_346E
 	ld d, a
-	call Func_34DF
+	call DrawPlayerPowerupIcon
 	ld a, l
 	and $C0
-	add a, $2A
+	add a, OBJECT_PLAYER_POWERUP_CHARGES_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $0A
@@ -9714,24 +9727,24 @@ Jump_3463:
 	add a, $30
 	ld c, a
 	ld hl, $C407
-	call Func_321E
+	call WriteHudTileAndAttribute
 	jr Jump_348A
 
 Jump_346E:
 	ld c, $01
 	ld hl, $C407
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc hl
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc hl
-	call Func_321E
+	call WriteHudTileAndAttribute
 	ld c, $04
 	ld hl, $C428
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc hl
-	call Func_321E
+	call WriteHudTileAndAttribute
 Jump_348A:
-	ld a, [$C91D]
+	ld a, [wHudAlertActive]
 	and a
 	jr z, Jump_34CE
 	ld a, [wVBlankCounter]
@@ -9740,30 +9753,30 @@ Jump_348A:
 	ld c, $5A
 	ld b, $87
 	ld hl, $C40A
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc hl
 	inc c
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc c
 	ld hl, $C42A
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc hl
 	inc c
-	call Func_321E
+	call WriteHudTileAndAttribute
 	jr Jump_34CE
 
 Jump_34B4:
 	ld c, $01
 	ld b, $87
 	ld hl, $C40A
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc hl
-	call Func_321E
+	call WriteHudTileAndAttribute
 	ld c, $04
 	ld hl, $C42A
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc hl
-	call Func_321E
+	call WriteHudTileAndAttribute
 Jump_34CE:
 	pop hl
 	pop de
@@ -9771,40 +9784,46 @@ Jump_34CE:
 	pop af
 	ret
 
-	db $00, $4E, $52, $56, $00, $00, $01, $C7, $09, $C7, $11, $C7
+HudPowerupFirstTiles:
+	db $00, $4E, $52, $56
+HudPowerupPalettes:
+	dw $0000, $C701, $C709, $C711
 
+; Draw power-up kind D as a 2-by-2 icon and copy its eight-byte CGB palette to
+; the buffer consumed by the installed scanline palette uploader.
+DrawPlayerPowerupIcon:
 Func_34DF:
 	push af
 	push bc
 	push de
 	push hl
 	ld a, d
-	add a, $D3
+	add a, LOW(HudPowerupFirstTiles)
 	ld l, a
-	ld a, $00
-	adc a, $34
+	ld a, LOW(HudPowerupFirstTiles) - LOW(HudPowerupFirstTiles)
+	adc a, HIGH(HudPowerupFirstTiles)
 	ld h, a
 	ld c, [hl]
 	ld b, $86
 	ld hl, $C408
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc hl
 	inc c
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc c
 	ld hl, $C428
-	call Func_321E
+	call WriteHudTileAndAttribute
 	inc hl
 	inc c
-	call Func_321E
+	call WriteHudTileAndAttribute
 	ld a, d
 	add a, a
-	add a, $D7
+	add a, LOW(HudPowerupPalettes)
 	ld l, a
-	ld a, $00
-	adc a, $34
+	ld a, LOW(HudPowerupPalettes) - LOW(HudPowerupPalettes)
+	adc a, HIGH(HudPowerupPalettes)
 	ld h, a
-	ld bc, $C6F1
+	ld bc, wHudPowerupPalette
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -9848,12 +9867,14 @@ Func_3533:
 	add a, $30
 	ld c, a
 	ld hl, $C401
-	call Func_321E
+	call WriteHudTileAndAttribute
 	pop bc
 	pop hl
 	ret
 
 
+; Draw decimal digit D as a two-tile-high glyph at HUD attribute cell HL.
+DrawHudScoreDigit:
 Func_3546:
 	push af
 	push bc
@@ -9888,6 +9909,9 @@ Func_3546:
 	ret
 
 
+; Convert the 32-bit score to packed decimal, suppress leading zeroes, and draw
+; its six least-significant digits into the HUD staging maps.
+DrawHudScore:
 Func_356B:
 	push af
 	push bc
@@ -9937,7 +9961,7 @@ Jump_35A8:
 	jr Jump_35B6
 
 Jump_35B3:
-	call Func_3546
+	call DrawHudScoreDigit
 Jump_35B6:
 	inc hl
 	dec e
@@ -9945,7 +9969,7 @@ Jump_35B6:
 	ld a, [bc]
 	and $0F
 	ld d, a
-	call Func_3546
+	call DrawHudScoreDigit
 	pop hl
 	pop de
 	pop bc

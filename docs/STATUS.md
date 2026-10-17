@@ -169,6 +169,14 @@ confined to the type-3 update path, establishing the age/lifetime reuse above.
 The HUD window setup, signed vertical movement, two-bank tilemap refresh, and
 shutdown paths are now named; the refresh transfers five 16-byte blocks from
 each of `$C400` and `$C440` to VRAM `$9C00` during VBlank.
+The status builder converts the 32-bit score to six decimal digits, scales the
+player's health through one of three fixed-point constants into a six-cell
+meter, renders the lives digit, and draws the active power-up. Player-object
+bytes `+$29` and `+$2A` hold the power-up kind and remaining charges. Its
+2-by-2 icon selects one of three eight-byte CGB palettes copied through
+`wHudPowerupPalette`.
+An independent four-tile indicator blinks while `wHudAlertActive` is nonzero;
+its gameplay meaning is not yet named.
 
 ## Level banks `$09-$26`
 

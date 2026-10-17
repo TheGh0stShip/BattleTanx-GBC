@@ -695,7 +695,7 @@ Jump_01_4486:
 	ld l, a
 	ld b, $01
 	call AddObjectHealth
-	call Func_334A
+	call DrawPlayerHealthBar
 	ld a, l
 	and $C0
 	add a, $1F
@@ -956,7 +956,7 @@ Func_01_4648:
 	and a
 	jp nz, Func_01_4516
 	ld a, $01
-	ld [$C91D], a
+	ld [wHudAlertActive], a
 	ld e, $53
 	call Audio_QueueSound
 	xor a
