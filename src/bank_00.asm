@@ -7770,9 +7770,13 @@ Jump_29FF:
 	pop de
 	ret
 
+OctantDirectionValues:
 	db $0E, $00, $08, $06, $0C, $02, $0A, $04
 
-Func_2A15:
+; Quantize the vector from the object at HL toward the object at DE into one
+; of the eight even values in the game's 16-direction coordinate system.
+GetDirectionTowardObject:
+Func_2A15: ; legacy alias
 	push de
 	push bc
 	push hl
@@ -7854,9 +7858,9 @@ Jump_2A6E:
 	jr nc, Jump_2A7B
 	or $04
 Jump_2A7B:
-	add a, $0D
+	add a, LOW(OctantDirectionValues)
 	ld l, a
-	ld a, $2A
+	ld a, HIGH(OctantDirectionValues)
 	adc a, $00
 	ld h, a
 	ld a, [hl]
@@ -8381,7 +8385,7 @@ Jump_2D22:
 	ld a, e
 	and $C0
 	ld e, a
-	call Func_2A15
+	call GetDirectionTowardObject
 	ld c, a
 	ld a, l
 	and $C0
@@ -8389,7 +8393,7 @@ Jump_2D22:
 	ld l, a
 	ld b, [hl]
 	ld e, b
-	call Func_2EA7
+	call GetDirectionDifferenceFar
 	ld a, c
 	and $80
 	jr z, Jump_2D42
@@ -8508,7 +8512,11 @@ Jump_2DA6:
 	ret
 
 
-Func_2DCB:
+; Find the nearest visible status-1 object other than HL whose direction is
+; within three steps of facing HL. Return nonzero and place its pointer in
+; $FF80-$FF81, or return zero when there is no qualifying object.
+FindNearestVisibleObjectFacingSource:
+Func_2DCB: ; legacy alias
 	push de
 	push bc
 	push hl
@@ -8523,7 +8531,7 @@ Func_2DCB:
 	ld d, h
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
 	ldh [$FF89], a
@@ -8540,17 +8548,17 @@ Jump_2DED:
 Jump_2DF5:
 	ld a, l
 	and $C0
-	add a, $1D
+	add a, OBJECT_STATUS_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $01
 	jr nz, Jump_2E46
 	ld a, l
 	and $C0
-	add a, $08
+	add a, OBJECT_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
-	and $08
+	and OBJECT_VISIBLE_FLAG
 	jr z, Jump_2E46
 	call GetHalfObjectManhattanDistance
 	ldh a, [$FF83]
@@ -8563,11 +8571,11 @@ Jump_2DF5:
 	ldh [$FF87], a
 	ld a, b
 	ldh [$FF88], a
-	call Func_2A15
+	call GetDirectionTowardObject
 	ld b, a
 	ldh a, [$FF89]
 	ld c, a
-	call Func_2EA7
+	call GetDirectionDifferenceFar
 	ld a, $03
 	cp b
 	jr c, Jump_2E46
@@ -8638,7 +8646,7 @@ Func_2E67:
 	ldh [$FF8C], a
 	ld a, b
 	ldh [$FF8D], a
-	call Func_2DCB
+	call FindNearestVisibleObjectFacingSource
 	jr z, Jump_2E98
 	ld a, c
 	and $C0
@@ -8668,7 +8676,10 @@ Jump_2EA2:
 	ret
 
 
-Func_2EA7:
+; Compare directions B and C through bank $02's 16-by-16 wrapped-difference
+; table. Return the signed difference in C and its absolute value in B.
+GetDirectionDifferenceFar:
+Func_2EA7: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
