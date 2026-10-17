@@ -202,7 +202,7 @@ Jump_0175:
 Func_0192:
 	call Func_3ABF
 	xor a
-	ld [$C6C1], a
+	ld [wPauseActive], a
 	call ClearCgbPalettes
 	call InitializeLevelRuntime
 	call LoadInterfaceTilesVRAM1
@@ -381,9 +381,9 @@ Jump_02E9:
 	call UpdateLevelCamera
 	call UpdateLevelEndCountdown
 	jp c, Jump_0061
-	ld a, [$C6C1]
+	ld a, [wPauseActive]
 	or a
-	call nz, Func_033A
+	call nz, RunPauseLoopFar
 	ld a, [wScreenEffectActive]
 	or a
 	jr nz, Jump_0320
@@ -403,7 +403,8 @@ Jump_0331:
 	jp Jump_0250
 
 
-Func_033A:
+RunPauseLoopFar:
+Func_033A: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $01
@@ -10090,9 +10091,9 @@ Func_3608:
 	ld a, e
 	cp $80
 	jr nz, Jump_3621
-	ld a, [$C6C1]
+	ld a, [wPauseActive]
 	cpl
-	ld [$C6C1], a
+	ld [wPauseActive], a
 Jump_3621:
 	ld a, e
 	and $F0
@@ -10116,7 +10117,7 @@ Jump_363B:
 	xor a
 	ld [$CD0F], a
 Jump_363F:
-	ld a, [$C6C1]
+	ld a, [wPauseActive]
 	or a
 	jr z, Jump_3647
 	pop hl

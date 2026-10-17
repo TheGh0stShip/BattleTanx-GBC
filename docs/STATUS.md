@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 130 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 251 remain. `make progress` recomputes the per-bank
+At this revision, 131 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 250 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -161,6 +161,10 @@ entry and advances `wScoreThresholdIndex` after awarding that threshold.
 `ReadJoypad` polls both P1 groups and stores held buttons in `wJoypadHeld` and
 rising edges in `wJoypadPressed`; direction bits are 0-3 and A/B/Select/Start
 are 4-7. `wVBlankCounter` drives the every-other-frame polling cadence.
+Start toggles `wPauseActive`. While it is set, the normal runtime callback is
+suppressed and `RunPauseLoopFar` enters the bank-`$01` pause loop, which hides
+the HUD, waits for Start to clear the flag, refreshes the HUD, and restores its
+position.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 

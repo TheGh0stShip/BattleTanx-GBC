@@ -19,6 +19,9 @@ DEF wFrameCounter   EQU $C6B9 ; 2-byte little-endian counter
 DEF wJoypadHeld     EQU $C6B5
 DEF wJoypadPressed  EQU $C6B6 ; rising edges: (previous XOR held) AND held
 DEF wVBlankCounter  EQU $C6B7 ; 2-byte little-endian interrupt counter
+; Toggled by Start.  While set, the gameplay callback is suppressed and the
+; bank-$01 pause loop hides the HUD, waits for Start, then restores it.
+DEF wPauseActive    EQU $C6C1
 
 ; Level termination state. Completion checks and the player-destruction path
 ; start the shared countdown; UpdateLevelEndCountdown reports expiry in carry.

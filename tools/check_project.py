@@ -1040,6 +1040,7 @@ def check_level_banks() -> None:
             "FlushBgMapWriteQueue": (0x00, 0x3C56),
             "ApplyBgMapWrite": (0x00, 0x3C7A),
             "PrepareDisplayForScreenTransition": (0x00, 0x035C),
+            "RunPauseLoopFar": (0x00, 0x033A),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),
@@ -1168,6 +1169,15 @@ def check_level_banks() -> None:
     }
     if core_symbols != expected_core:
         fail(f"core WRAM symbols differ: {core_symbols.items() ^ expected_core.items()}")
+
+    pause_symbols = {
+        name: int(address, 16)
+        for name, address in re.findall(
+            r"DEF (wPauseActive)\s+EQU \$([0-9A-Fa-f]+)", memory_source
+        )
+    }
+    if pause_symbols != {"wPauseActive": 0xC6C1}:
+        fail(f"pause WRAM symbols differ: {pause_symbols}")
 
     interface_palette_symbols = {
         name: int(address, 16)
