@@ -208,7 +208,7 @@ Func_0192:
 	call LoadInterfaceTilesVRAM1
 	call LoadInterfaceTilesVRAM0
 	call SpawnPlayerObject
-	call Func_37CE
+	call InitializeLevelObjectsFar
 	call LoadLevelLookupPointersFar
 	ld hl, $D000
 	call FreeObjectRecord
@@ -390,7 +390,7 @@ Jump_02E9:
 	call ProcessGameplayInput
 Jump_0320:
 	call Func_2A88
-	call Func_3834
+	call DispatchLevelStateCheckFar
 	ld a, [wVBlankPending]
 	or a
 	jp nz, Jump_0250
@@ -10425,7 +10425,8 @@ Func_37BD:
 	ret
 
 
-Func_37CE:
+InitializeLevelObjectsFar:
+Func_37CE: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $04
@@ -10491,7 +10492,8 @@ Func_3823:
 	ret
 
 
-Func_3834:
+DispatchLevelStateCheckFar:
+Func_3834: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03

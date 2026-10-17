@@ -241,6 +241,8 @@ NAMES = {
     0x2C24: "GetVehicleMuzzlePositionFar",
     0x307F: "SpawnVehicleMuzzleEffectFar",
     0x3090: "SpawnTimedObjectEffect",
+    0x37CE: "InitializeLevelObjectsFar",
+    0x3834: "DispatchLevelStateCheckFar",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",

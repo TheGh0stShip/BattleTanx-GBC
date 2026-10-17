@@ -1062,6 +1062,8 @@ def check_level_banks() -> None:
             "GetVehicleMuzzlePositionFar": (0x00, 0x2C24),
             "SpawnVehicleMuzzleEffectFar": (0x00, 0x307F),
             "SpawnTimedObjectEffect": (0x00, 0x3090),
+            "InitializeLevelObjectsFar": (0x00, 0x37CE),
+            "DispatchLevelStateCheckFar": (0x00, 0x3834),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),

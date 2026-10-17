@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 152 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 229 remain. `make progress` recomputes the per-bank
+At this revision, 154 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 227 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -194,6 +194,10 @@ vehicle byte `$26` suppresses it.
 `SpawnVehicleMuzzleEffectFar` creates its short visual effect. The shared
 `SpawnTimedObjectEffect` allocator creates the status-3 effects also used by
 destruction and level-cell interactions.
+The ROM0 interfaces `InitializeLevelObjectsFar` and
+`DispatchLevelStateCheckFar` now identify the bank-`$04` level-object setup and
+the bank-`$03` per-level state-check table without renaming unresolved adjacent
+banked routines.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 
