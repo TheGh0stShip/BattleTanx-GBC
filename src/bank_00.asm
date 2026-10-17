@@ -11151,7 +11151,7 @@ Jump_3B49:
 	jr z, Jump_3B49
 	xor a
 	ld [wVBlankPending], a
-	call Func_3F1F
+	call RunScreenMode8ActivityFar
 Jump_3B59:
 	ret
 
@@ -11798,7 +11798,9 @@ Jump_3F00:
 	ret
 
 
-Func_3F1F:
+; Run bank $02's screen-mode-8 activity until it accepts joypad input.
+RunScreenMode8ActivityFar:
+Func_3F1F: ; legacy alias
 	ld a, $02
 	ld [rROMB0], a
 	call Func_02_6306
