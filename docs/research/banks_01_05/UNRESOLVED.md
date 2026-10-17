@@ -37,13 +37,17 @@
 
    Also `$02:4000-$406E` and three superseded instruction-shaped `db` blocks at
    `$01:7934`, `$01:79EC` and `$01:7AF0` (see FINAL_FUNCTIONS.md).
-3. **Recorded-path following.** `wRecordedPath` is written only by
-   `AppendRecordedPathWaypoint`, which is reached only from
-   `UnusedStartRecordedPathFollow`. Whether the `+$2D` bit-6 path-follow branch
-   can run at all is unknown.
+3. **Recorded-path following.** The feature cannot start through any recovered
+   route. `wRecordedPath` is written only by `AppendRecordedPathWaypoint`, whose
+   sole caller is `UnusedStartRecordedPathFollow`; that entry has no direct,
+   table, stored-pointer, pushed-return, or resolved indirect caller. It is also
+   the only routine that sets object `+$2D` bit 6. A source validator fails if
+   either caller set changes.
 
-   `LoadAdjacentPathWaypointTarget` reads byte `+5` of a ring entry going
-   backward, and nothing writes that byte.
+   Each ring entry is X word, Y word, heading, then three unused bytes.
+   `LoadAdjacentPathWaypointTarget` moves by exactly one eight-byte entry and
+   reads only X/Y (`+0..+3`); the earlier claim that its reverse path read `+5`
+   was incorrect. Bytes `+5..+7` are never read or written.
 4. **Bank `$03` sequences** (`tools/object_sequence_fields.py`):
    - **Unread fields.** Nothing reads +1, +2, +7 or the count byte. +1/+2 is the
      pixel distance to the next waypoint (one exception: level 3 slot 2

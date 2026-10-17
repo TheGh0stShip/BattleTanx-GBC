@@ -58,10 +58,12 @@ The table is cached at `$CD1C`, and each object stores its sequence slot in
 
 The `$60AF-$67F9` routines are named in FINAL_FUNCTIONS.md.
 - A 64 x 8 ring, `wRecordedPath`, holds X word, Y word and heading entries.
-  The appender skips duplicate points.
+  Bytes +5 through +7 are unused. The appender skips duplicate points.
 - A follower snaps an object to the reached entry and moves forward or backward
-  (`+$31`).
-- Nothing reachable starts recording, so this feature is probably unused.
+  (`+$31`). Its adjacent-target reader steps by a full eight-byte record and
+  reads only X/Y; it does not read byte +5.
+- Nothing reachable starts recording. The only initializer has no direct or
+  resolved indirect route, and a validator pins that caller set.
 
 ## Runtime object fields
 

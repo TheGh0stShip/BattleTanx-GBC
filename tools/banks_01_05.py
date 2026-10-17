@@ -142,6 +142,31 @@ def check_source(root):
           "bank05_bank04_copy_452c" in text, "source: bank $04 residue macros not used")
 
 
+def check_recorded_path_source(root):
+    """Keep the shipped recorded-path feature's unreachable entry explicit.
+
+    The only routine that enables object slot-flag bit 6 and primes the ring is
+    UnusedStartRecordedPathFollow.  Its name must occur only at its definition;
+    adding a source operand creates a real route that needs fresh analysis.
+    The ring appender itself has exactly one caller, inside that unused entry.
+    """
+    sources = {
+        p: p.read_text()
+        for p in sorted((root / "src").glob("*.asm"))
+    }
+    all_text = "".join(sources.values())
+    check(all_text.count("UnusedStartRecordedPathFollow") == 1,
+          "recorded path: unused initializer gained a source reference")
+    check(all_text.count("call AppendRecordedPathWaypoint") == 1,
+          "recorded path: appender caller set changed")
+    bank3 = sources[root / "src" / "bank_03.asm"]
+    initializer = bank3.index("UnusedStartRecordedPathFollow:")
+    appender_call = bank3.index("call AppendRecordedPathWaypoint")
+    next_entry = bank3.index("SetObjectVelocityTowardPoint:")
+    check(initializer < appender_call < next_entry,
+          "recorded path: appender is no longer called only by the unused initializer")
+
+
 # ------------------------------------------------------------------ bank $01 structures
 def check_picture_descriptors(rom, sym):
     b, a = sym["MenuState05PictureDescriptors"]
@@ -325,6 +350,7 @@ def validate(root, rom, sym):
     check_bank01_screen_pointer_residue(rom, sym)
     check_palettes(rom, sym)
     check_source(root)
+    check_recorded_path_source(root)
     check_assets(root, rom)
     check_ram_include(root)
     check_scene_interrupt_calls(root, rom, sym)
@@ -377,6 +403,19 @@ def negative_tests(root, rom, sym):
             n += 1
         else:
             raise Banks0105Error("negative test not rejected: superseded blob")
+    with tempfile.TemporaryDirectory() as tmp:
+        t = pathlib.Path(tmp)
+        shutil.copytree(root / "src", t / "src")
+        p = t / "src" / "bank_01.asm"
+        p.write_text(p.read_text() + "\n\tcall UnusedStartRecordedPathFollow\n")
+        try:
+            check_recorded_path_source(t)
+        except Banks0105Error as exc:
+            check("unused initializer gained a source reference" in str(exc),
+                  f"negative test recorded-path caller: {exc}")
+            n += 1
+        else:
+            raise Banks0105Error("negative test not rejected: recorded-path caller")
     extra = [
         ("scene interrupt call", {(1, 0x5E3B): 0x81}, "bank-$01 ROM calls changed"),
         ("scene interrupt new call", {(1, sym["Bank01RomImage_5D77"][1] + i): v for i, v in enumerate((0xCD, 0x00, 0x50, 0x00))}, "bank-$01 ROM calls changed"),
@@ -446,7 +485,7 @@ def main():
     parts, n, grids = validate(ROOT, rom, sym)
     data = check_reports(ROOT, rom, sym, REPORTS)
     neg = negative_tests(ROOT, rom, sym)
-    print(f"banks 01-05: {parts} effect parts and templates, 16x16 velocity table, {grids} indexed sprite grids, 3 bank-$04 copies, "
+    print(f"banks 01-05: {parts} effect parts and templates, 16x16 velocity table, {grids} indexed sprite grids, 3 bank-$04 copies, recorded-path initializer unreachable, "
           f"{n} dispatch targets labelled, {len(data['pins'])} pins, {len(data['assets'])} assets; "
           f"{neg} negative tests rejected")
 

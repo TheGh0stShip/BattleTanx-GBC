@@ -57,9 +57,11 @@ Ring RAM: `wRecordedPathWriteIndex` (`$CD15`), `wRecordedPathWrapCount` (`$CD16`
 written only), `wRecordedPathStarted` (`$CD17`), `wRecordedPath` (`$CDEF`, `$200`
 bytes; bank `$04` fills it with `$FF` at level start). The only writer of the
 ring, `AppendRecordedPathWaypoint`, is reached only from
-`UnusedStartRecordedPathFollow`, which has no caller. So recorded-path following
-probably cannot start in the shipped game. The branch that tests `+$2D` bit 6 is
-still present.
+`UnusedStartRecordedPathFollow`, which has no direct, table, stored-pointer,
+pushed-return, or resolved indirect caller. Recorded-path following therefore
+cannot start through any recovered route. The branch that tests `+$2D` bit 6 is
+still present. Ring bytes `+5..+7` are never read or written; the adjacent-target
+reader moves by a full eight-byte entry and reads only its four coordinate bytes.
 
 ## Branch labels (separate from `make progress`)
 
