@@ -16,6 +16,9 @@ DEF wBootHardwareMode EQU $C000
 DEF wPendingScrollX EQU $C6B0
 DEF wPendingScrollY EQU $C6B1
 DEF wFrameCounter   EQU $C6B9 ; 2-byte little-endian counter
+DEF wJoypadHeld     EQU $C6B5
+DEF wJoypadPressed  EQU $C6B6 ; rising edges: (previous XOR held) AND held
+DEF wVBlankCounter  EQU $C6B7 ; 2-byte little-endian interrupt counter
 
 ; Level termination state. Completion checks and the player-destruction path
 ; start the shared countdown; UpdateLevelEndCountdown reports expiry in carry.

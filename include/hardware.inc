@@ -58,3 +58,13 @@ DEF rOCPS    EQU $FF6A
 DEF rOCPD    EQU $FF6B
 DEF rSVBK    EQU $FF70
 DEF rIE      EQU $FFFF
+
+; ReadJoypad stores directions in bits 0-3 and buttons in bits 4-7.
+DEF PADF_RIGHT  EQU 1 << 0
+DEF PADF_LEFT   EQU 1 << 1
+DEF PADF_UP     EQU 1 << 2
+DEF PADF_DOWN   EQU 1 << 3
+DEF PADF_A      EQU 1 << 4
+DEF PADF_B      EQU 1 << 5
+DEF PADF_SELECT EQU 1 << 6
+DEF PADF_START  EQU 1 << 7

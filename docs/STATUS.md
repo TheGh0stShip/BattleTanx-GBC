@@ -41,7 +41,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Object sequences | Bank `$03:$4000-$5C10` is explicit source: two signed-vector tables, fifteen 64-slot per-level pointer tables, 203 counted sequences, and 626 eight-byte records; the vector-direction quantizer and all 15 level-state checks are named | Determine the remaining record-field meanings and name individual sequences |
 | Level objects | Bank `$04:$4000-$601B` is explicit source: 600 fixed-size object initialization records, 120 auxiliary records, and the per-level pointer directory; the 20-entry deferred-spawn queue, active-table pointers, slow-tick counter, and camera-window spawn path are named | Determine the remaining field meanings and the role of enabled auxiliary records |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
-| Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see `BANKS_2A_2E_RESEARCH.md` | Trace the caller-less bank-`$2E` routines, `$C6B5`, and picture meanings |
+| Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see `BANKS_2A_2E_RESEARCH.md` | Trace the caller-less bank-`$2E` routines and picture meanings |
 | Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see `TEXT_RESEARCH.md` | Glyph map reconciled (`BANK08_RESEARCH.md`); rule out indirect or constructed strings |
 
 ## Known control-flow gaps
@@ -120,6 +120,12 @@ The score is a 32-bit little-endian accumulator at `wScore`. `AddToScore`
 adds a 16-bit `BC` value with carry propagation through all four bytes;
 `CheckNextScoreThreshold` compares it to the next four-byte bank-$01 table
 entry and advances `wScoreThresholdIndex` after awarding that threshold.
+
+`ReadJoypad` polls both P1 groups and stores held buttons in `wJoypadHeld` and
+rising edges in `wJoypadPressed`; direction bits are 0-3 and A/B/Select/Start
+are 4-7. `wVBlankCounter` drives the every-other-frame polling cadence.
+`WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
+it exits on any held button or after its caller-provided VBlank timeout.
 
 ## Level banks `$09-$26`
 
@@ -307,9 +313,9 @@ Details: `BANKS_2A_2E_RESEARCH.md`.
 - Understood: screen descriptor format, picture layouts, the 13-entry
   screen-mode dispatch and its index bounds, the three routine templates, the
   palette-fade direction flag, and the fixed animated screen in bank `$2A`.
-- Not understood: what sets `$C6B5`, why the bank-`$2E` package routines have
-  no caller, the unread descriptor fields, the bank `$01:$596D` index bound,
-  and what each picture is used for.
+- Not understood: why the bank-`$2E` package routines have no caller, the
+  unread descriptor fields, the bank `$01:$596D` index bound, and what each
+  picture is used for.
 
 ## Audio
 

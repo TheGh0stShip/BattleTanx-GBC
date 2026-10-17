@@ -87,7 +87,7 @@ Jump_0090:
 	call Audio_QueueSound
 	call Func_3B12
 	xor a
-	ld [$C6B5], a
+	ld [wJoypadHeld], a
 Jump_009F:
 	call Audio_Update
 	xor a
@@ -102,7 +102,7 @@ Jump_00A6:
 	xor a
 	ld [wVBlankPending], a
 	nop
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	or a
 	jr z, Jump_009F
 	call Func_06F8
@@ -1658,6 +1658,9 @@ Func_0A48:
 	ret
 
 
+; Poll both P1 key groups. Directions occupy bits 0-3 and A/B/Select/Start
+; occupy bits 4-7; also derive newly pressed edges from the previous sample.
+ReadJoypad:
 Func_0A59:
 	ld a, $20
 	ldh [rP1], a
@@ -1680,12 +1683,12 @@ Func_0A59:
 	or b
 	swap a
 	ld b, a
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	xor b
 	and b
-	ld [$C6B6], a
+	ld [wJoypadPressed], a
 	ld a, b
-	ld [$C6B5], a
+	ld [wJoypadHeld], a
 	ld a, $30
 	ldh [rP1], a
 	ret
@@ -8338,7 +8341,7 @@ Jump_2D7C:
 	ld [de], a
 	inc e
 	ld b, $00
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	bit 4, a
 	jr z, Jump_2D9A
 	ld b, $01
@@ -8760,7 +8763,7 @@ Func_2FCE:
 	or a
 	ret z
 	ld b, a
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	and $01
 	ret z
 	ld a, b
@@ -9677,7 +9680,7 @@ Jump_348A:
 	ld a, [$C91D]
 	and a
 	jr z, Jump_34CE
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	bit 4, a
 	jr z, Jump_34B4
 	ld c, $5A
@@ -9944,7 +9947,7 @@ Func_3608:
 	ld a, [$CD01]
 	ld h, a
 	push hl
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	ld e, a
 	ld a, e
 	cp $80
@@ -10223,7 +10226,7 @@ Func_3793:
 	ld a, [hl]
 	cp $FF
 	jr z, Jump_37A5
-	ld a, [$C6B7]
+	ld a, [wVBlankCounter]
 	and $10
 	jr z, Jump_37AB
 Jump_37A5:
@@ -10549,9 +10552,11 @@ Func_3960:
 	ret
 
 
+; Wait for any held button or for D VBlanks, whichever happens first.
+WaitForButtonOrTimeout:
 Func_3971:
 	xor a
-	ld [$C6B5], a
+	ld [wJoypadHeld], a
 	nop
 	nop
 	nop
@@ -10573,7 +10578,7 @@ Func_3971:
 	nop
 	nop
 Jump_3989:
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	or a
 	jr nz, Jump_39A6
 	call Audio_Update
@@ -10910,7 +10915,7 @@ Jump_3B84:
 	xor a
 	ld [wVBlankPending], a
 	call Audio_Update
-	ld a, [$C6B5]
+	ld a, [wJoypadHeld]
 	or a
 	jr z, Jump_3B80
 Jump_3B9A:
