@@ -1866,7 +1866,7 @@ Func_0AF5: ; legacy alias
 	call Audio_QueueSound
 	pop de
 	ld a, $00
-	call Func_3090
+	call SpawnTimedObjectEffect
 Jump_0B3B:
 	ldh a, [$FF80]
 	or a
@@ -2791,7 +2791,7 @@ Jump_0FCE:
 	ld b, e
 	call SpawnVehicleProjectile
 	jr z, Jump_101F
-	call Func_307F
+	call SpawnVehicleMuzzleEffectFar
 	push bc
 	ld a, l
 	and $C0
@@ -3676,7 +3676,7 @@ Jump_1457:
 	sla e
 	rl d
 	ld a, $02
-	call Func_3090
+	call SpawnTimedObjectEffect
 Jump_1488:
 	pop af
 	cp $09
@@ -7022,7 +7022,7 @@ HandleObjectLevelBit3Cell:
 	jr z, Jump_267B
 	call ConvertLevelCellBit3RegionAtPixel
 	ld a, $02
-	call Func_3090
+	call SpawnTimedObjectEffect
 Jump_267B:
 	pop bc
 	pop de
@@ -7191,7 +7191,7 @@ Jump_2744:
 	inc l
 	ld d, [hl]
 	ld a, $01
-	call Func_3090
+	call SpawnTimedObjectEffect
 	ld e, $1E
 	call Audio_QueueSound
 	ld a, l
@@ -7287,7 +7287,7 @@ Jump_27BA:
 	ld l, a
 	call FreeObjectRecord
 	ld a, $01
-	call Func_3090
+	call SpawnTimedObjectEffect
 	pop hl
 	pop de
 	pop bc
@@ -7610,7 +7610,7 @@ Jump_294C:
 	ld l, a
 	call FreeObjectRecord
 	ld a, $01
-	call Func_3090
+	call SpawnTimedObjectEffect
 	ld e, $14
 	call Audio_QueueSound
 	pop hl
@@ -8037,7 +8037,7 @@ Func_2B86: ; legacy alias
 	push hl
 	push bc
 	push hl
-	call Func_2C24
+	call GetVehicleMuzzlePositionFar
 	ld a, $02
 	call AllocateObjectRecord
 	jp z, Jump_2C1F
@@ -8148,7 +8148,9 @@ Jump_2C1F:
 	ret
 
 
-Func_2C24:
+; Return the vehicle's direction/type-adjusted muzzle coordinate in BC,DE.
+GetVehicleMuzzlePositionFar:
+Func_2C24: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
@@ -8998,7 +9000,9 @@ Jump_307A:
 	ret
 
 
-Func_307F:
+; Create the short status-3 effect at the firing vehicle's muzzle.
+SpawnVehicleMuzzleEffectFar:
+Func_307F: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02
@@ -9009,7 +9013,9 @@ Func_307F:
 	ret
 
 
-Func_3090:
+; Allocate a status-3 timed effect of subtype A at coordinate BC,DE.
+SpawnTimedObjectEffect:
+Func_3090: ; legacy alias
 	push hl
 	push bc
 	push de

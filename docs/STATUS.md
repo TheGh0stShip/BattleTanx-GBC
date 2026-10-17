@@ -29,8 +29,8 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 
 ## Source recovery
 
-At this revision, 149 of 381 surviving automatic function-entry labels have a
-reviewed companion name; 232 remain. `make progress` recomputes the per-bank
+At this revision, 152 of 381 surviving automatic function-entry labels have a
+reviewed companion name; 229 remain. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
@@ -190,6 +190,10 @@ power-up. `SpawnVehicleProjectile` creates the status-2 record, links it to its
 firing vehicle, and applies the selected bank-`$05` subtype parameters;
 `QueueVehicleActionSound` queues its subtype-specific sound unless unresolved
 vehicle byte `$26` suppresses it.
+`GetVehicleMuzzlePositionFar` obtains the direction/type-adjusted firing point;
+`SpawnVehicleMuzzleEffectFar` creates its short visual effect. The shared
+`SpawnTimedObjectEffect` allocator creates the status-3 effects also used by
+destruction and level-cell interactions.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 
