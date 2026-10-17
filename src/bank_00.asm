@@ -2874,7 +2874,9 @@ Jump_10E0:
 	ret
 
 
-Func_10E6:
+; At pixel coordinate BC,DE, find its bits-2/3 region and begin up to nine
+; lookup-state transitions within that rectangle.
+StartLevelCellRegionTransitionAtPixel:
 	push af
 	push bc
 	push de
@@ -2945,7 +2947,7 @@ Func_10E6:
 	ldh [hLevelRegionTop], a
 	call FindLevelCellRunBottomEdge
 	ldh [hLevelRegionBottom], a
-	call Func_1425
+	call StartLevelCellRegionTransitions
 	pop hl
 	pop de
 	pop bc
@@ -2962,7 +2964,8 @@ Jump_115C:
 	ret
 
 
-Func_1163:
+; Visit the visible 21-by-19-cell area and complete every bit-2 region found.
+ConvertVisibleLevelCellBit2Regions:
 	push af
 	push bc
 	push de
@@ -3001,7 +3004,7 @@ Jump_1195:
 	ld c, a
 	ldh a, [$FF9A]
 	ld e, a
-	call Func_11BB
+	call ConvertLevelCellBit2RegionAtCell
 	ldh a, [$FF97]
 	inc a
 	ld b, a
@@ -3025,7 +3028,9 @@ Jump_1195:
 	ret
 
 
-Func_11BB:
+; At cell coordinate C,E, find its bits-2/3 region and complete its bit-2
+; cells, including redraws and per-cell score awards.
+ConvertLevelCellBit2RegionAtCell:
 	push af
 	push bc
 	push de
@@ -3093,7 +3098,9 @@ Jump_1214:
 	ret
 
 
-Func_1219:
+; At pixel coordinate BC,DE, complete the containing bit-3 region, then play
+; its sound and award the fixed 20-point bonus.
+ConvertLevelCellBit3RegionAtPixel:
 	push af
 	push bc
 	push de
@@ -3464,7 +3471,7 @@ Jump_13FF:
 	ret
 
 
-Func_1404:
+ChooseRandomLevelRegionCell:
 	ldh a, [hLevelRegionTop]
 	ld b, a
 	ldh a, [hLevelRegionBottom]
@@ -3490,7 +3497,10 @@ Func_1404:
 	ret
 
 
-Func_1425:
+; Start lookup-state transitions at random cells in the current region. Stop
+; after nine reported changes; fall back to completing all bit-2 cells after
+; six retries or when fewer than five changes were reported in a full pass.
+StartLevelCellRegionTransitions:
 	push af
 	push bc
 	push de
@@ -3506,7 +3516,7 @@ Jump_1437:
 	ldh a, [hLevelRegionLeft]
 	ldh [hLevelRegionX], a
 Jump_143B:
-	call Func_1404
+	call ChooseRandomLevelRegionCell
 	call StartLevelCellLookupTransition
 	jr nz, Jump_1457
 	ldh a, [hLevelRegionX]
@@ -6840,7 +6850,7 @@ Func_2644:
 	call TestLevelCellBit3AtPixel
 	or a
 	jr z, Jump_267B
-	call Func_1219
+	call ConvertLevelCellBit3RegionAtPixel
 	ld a, $02
 	call Func_3090
 Jump_267B:
@@ -7083,7 +7093,7 @@ Jump_27BA:
 	ld a, l
 	and $C0
 	ld l, a
-	call Func_10E6
+	call StartLevelCellRegionTransitionAtPixel
 	ld a, l
 	and $C0
 	inc a
@@ -11400,7 +11410,7 @@ Jump_3EFF:
 	ret
 
 Jump_3F00:
-	call Func_1163
+	call ConvertVisibleLevelCellBit2Regions
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08

@@ -127,6 +127,9 @@ enter bit-6 or bit-7 rendering states depending on bit 3, while two completion
 routines clear bits 1-3 and select the bit-7 lookup path before redrawing.
 The inclusive region bounds and iteration scratch in HRAM are named; the
 bit-2 region pass also accumulates and awards five points per changed cell.
+Named entry points cover pixel-to-region lookup, visible-area bit-2 cleanup,
+the fixed 20-point bit-3 conversion, random transition selection, and its
+bounded retry/fallback behavior.
 
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have
