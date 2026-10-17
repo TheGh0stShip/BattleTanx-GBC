@@ -3,6 +3,7 @@
   "game": "BattleTanx",
   "system": "GBC",
   "type": "decomp",
+  "x-source-form": "byte-exact annotated assembly disassembly",
   "original": {
     "region": "USA",
     "sha1": "5078584e86c0b6f4687c424cc00bbd762ba6573a"
@@ -36,5 +37,5 @@
     }
   ],
   "tags": ["matching", "RGBDS", "SM83"],
-  "notes": "The entire USA cartridge rebuilds byte-for-byte from committed RGBDS source and assets. All 288 catalogued function entries have reviewed names; semantic and hardware verification continues."
+  "notes": "This is an annotated assembly disassembly, not a high-level-language decompilation. The tracker schema uses decomp as its umbrella type for source rebuilt from a binary. The entire USA cartridge rebuilds byte-for-byte from committed RGBDS source and assets. All 288 catalogued function entries have reviewed names; semantic and hardware verification continues."
 }

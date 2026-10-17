@@ -13,6 +13,12 @@ committed source tree and assets. All 288 catalogued function entries have
 reviewed names, every ROM byte belongs to a checked range, and generated gap
 decoding contributes zero bytes.
 
+This is deliberately described as a **disassembly and source
+reconstruction**, not a high-level-language decompilation. Its authoritative
+program source remains human-reviewed SM83 assembly. Catalogs whose schemas
+use `decomp` as an umbrella category may list it there, but that metadata does
+not change the source form.
+
 Binary reconstruction is complete; semantic recovery is still active. A
 matching cartridge proves that the source preserves the original bytes, not
 that every table, variable, routine, timing dependency, or original defect is

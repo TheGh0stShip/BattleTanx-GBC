@@ -1,4 +1,4 @@
-# Decompilation status
+# Disassembly and source-reconstruction status
 
 Last audited: 2026-10-17
 

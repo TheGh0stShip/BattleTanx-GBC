@@ -43,7 +43,9 @@ Use these phrases precisely:
 - **100% reconstructed / byte-matching:** correct.
 - **100% function entries named:** correct for the 288 identified entries.
 - **Every byte accounted for:** correct as a source/range statement.
-- **100% semantically decompiled:** incorrect.
+- **High-level-language decompilation:** not the project output. The
+  authoritative source is reviewed SM83 assembly, so this is a matching
+  disassembly and source reconstruction.
 - **Nothing left to research:** incorrect.
 - **Hardware verified:** incorrect.
 

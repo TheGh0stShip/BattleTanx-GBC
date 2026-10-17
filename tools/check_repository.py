@@ -49,9 +49,15 @@ def main() -> None:
         fail("LICENSE is not GNU GPL version 3")
 
     manifest = json.loads((ROOT / ".recomp.json").read_text(encoding="utf-8"))
+    # The public schema offers only recomp/port/decomp; its "decomp" value is
+    # an umbrella for source rebuilt from a binary, including disassemblies.
     for key, value in {"game": "BattleTanx", "system": "GBC", "type": "decomp"}.items():
         if manifest.get(key) != value:
             fail(f".recomp.json {key!r} must be {value!r}")
+    if manifest.get("x-source-form") != "byte-exact annotated assembly disassembly":
+        fail(".recomp.json must identify the actual assembly source form")
+    if "assembly disassembly" not in manifest.get("approach", "").lower():
+        fail(".recomp.json approach must identify the actual assembly source form")
     if manifest.get("original", {}).get("sha1") != "5078584e86c0b6f4687c424cc00bbd762ba6573a":
         fail(".recomp.json has the wrong supported cartridge hash")
 
