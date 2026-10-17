@@ -244,7 +244,7 @@ Jump_01B4:
 	call ResetLevelEndState
 	call SetLevelScrollPosition
 	call Func_1927
-	call Func_194B
+	call CenterLevelViewOnObject
 	call RefreshLevelViewport
 	call ResetOamState
 	call Func_322D
@@ -4535,6 +4535,8 @@ Func_1927:
 	ret
 
 
+; Center the 21x19-cell viewport on the object at HL, clamped to level bounds.
+CenterLevelViewOnObject:
 Func_194B:
 	push af
 	push bc
@@ -4542,7 +4544,7 @@ Func_194B:
 	push hl
 	ld a, l
 	and $C0
-	inc a
+	inc a ; OBJECT_X_OFFSET
 	ld l, a
 	ld e, [hl]
 	inc l
@@ -4601,7 +4603,7 @@ Jump_19A0:
 Jump_19A8:
 	ld a, l
 	and $C0
-	add a, $04
+	add a, OBJECT_Y_OFFSET
 	ld l, a
 	ld e, [hl]
 	inc l
@@ -6541,43 +6543,43 @@ Jump_2499:
 	ret
 
 
-; Store current-minus-previous X and Y low-byte displacement in object fields
-; $1B and $1C. HL addresses one 64-byte object record.
+; Store current-minus-previous X and Y low-byte displacement in the object's
+; frame-delta fields. HL addresses one 64-byte object record.
 UpdateObjectFrameDisplacement:
 	push de
 	ld e, l
 	ld a, l
 	and $C0
-	add a, $09
+	add a, OBJECT_PREVIOUS_X_OFFSET
 	ld l, a
 	ld d, [hl]
 	ld a, l
 	and $C0
-	inc a
+	inc a ; OBJECT_X_OFFSET
 	ld l, a
 	ld a, [hl]
 	sub d
 	ld d, a
 	ld a, l
 	and $C0
-	add a, $1B
+	add a, OBJECT_FRAME_DX_OFFSET
 	ld l, a
 	ld [hl], d
 	ld a, l
 	and $C0
-	add a, $0B
+	add a, OBJECT_PREVIOUS_Y_OFFSET
 	ld l, a
 	ld d, [hl]
 	ld a, l
 	and $C0
-	add a, $04
+	add a, OBJECT_Y_OFFSET
 	ld l, a
 	ld a, [hl]
 	sub d
 	ld d, a
 	ld a, l
 	and $C0
-	add a, $1C
+	add a, OBJECT_FRAME_DY_OFFSET
 	ld l, a
 	ld [hl], d
 	ld l, e
@@ -6660,11 +6662,11 @@ ObjectsWithin12Pixels:
 	push de
 	ld a, l
 	and $C0
-	inc a
+	inc a ; OBJECT_X_OFFSET
 	ld l, a
 	ld a, c
 	and $C0
-	inc a
+	inc a ; OBJECT_X_OFFSET
 	ld c, a
 	ld a, [bc]
 	ld e, [hl]
@@ -6695,11 +6697,11 @@ Jump_2548:
 	jr c, Jump_2584
 	ld a, l
 	and $C0
-	add a, $04
+	add a, OBJECT_Y_OFFSET
 	ld l, a
 	ld a, c
 	and $C0
-	add a, $04
+	add a, OBJECT_Y_OFFSET
 	ld c, a
 	ld a, [bc]
 	ld e, [hl]

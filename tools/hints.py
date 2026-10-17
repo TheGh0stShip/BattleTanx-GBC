@@ -154,6 +154,7 @@ NAMES = {
     0x0A59: "ReadJoypad",
     0x0C3D: "ObjectMaxHealthByType",
     0x0C41: "GetObjectMaxHealth",
+    0x194B: "CenterLevelViewOnObject",
     0x0A8F: "CopyBytes",
     0x0AA4: "CopyBytesShort",
     0x39A7: "ScreenTable_CallInit",

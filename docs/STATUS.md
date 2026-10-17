@@ -140,6 +140,10 @@ point every other VBlank while nonzero. Its direct producer remains unknown.
 The verified 64-byte record size, alignment mask, type offset, health offset,
 and six-bit health-delta mask are centralized in `include/object.inc` so later
 field recovery does not duplicate numeric layout assumptions.
+The same include now records current and previous 16-bit pixel-coordinate
+offsets and the two per-frame displacement bytes. `CenterLevelViewOnObject`
+converts those coordinates to cells and clamps the 21-by-19 visible region to
+the current level bounds.
 
 ## Level banks `$09-$26`
 

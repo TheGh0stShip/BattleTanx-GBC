@@ -1097,6 +1097,12 @@ def check_level_banks() -> None:
     expected_object_constants = {
         "OBJECT_RECORD_SIZE": 0x40,
         "OBJECT_RECORD_ALIGN_MASK": 0xC0,
+        "OBJECT_X_OFFSET": 0x01,
+        "OBJECT_Y_OFFSET": 0x04,
+        "OBJECT_PREVIOUS_X_OFFSET": 0x09,
+        "OBJECT_PREVIOUS_Y_OFFSET": 0x0B,
+        "OBJECT_FRAME_DX_OFFSET": 0x1B,
+        "OBJECT_FRAME_DY_OFFSET": 0x1C,
         "OBJECT_TYPE_OFFSET": 0x1E,
         "OBJECT_HEALTH_OFFSET": 0x1F,
         "OBJECT_HEALTH_DELTA_MASK": 0x3F,
