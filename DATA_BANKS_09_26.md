@@ -99,8 +99,9 @@ Values seen are 0, 1, 2, 3, 6, 8, 9, 10, and 15. Dedicated ROM0 routines
 read bits 0, 1, 2, and 3 at a pixel coordinate; another tests bit 0 around
 an eight-point footprint. Four scanners find the horizontal and vertical edges
 of a contiguous run where bits 2-3 are nonzero. Their gameplay meanings are
-not established. The WRAM copy may be changed at run time, but no such writer
-has been established.
+not established. Three traced writers change the WRAM copy: an unconverted
+bit-2 cell gains bit 6 when bit 3 is clear or bit 7 when bit 3 is set; two
+completion routines clear bits 1-3, set bits 0 and 7, and redraw the cell.
 
 ### 4.2 Tiles (odd bank, `16 * (record+7 + 1)` bytes)
 
@@ -207,8 +208,9 @@ validator. Visual renders were only used as a sanity check, not as evidence.
    readers for each bit and an eight-point bit-0 footprint test; their movement
    callers are traced. Four more routines find the bounding rectangle of a
    contiguous bits-2/3 run. These uses do not establish names for the flags.
-2. Whether run-time code sets cell bits 6-7, which would exercise the
-   `$40`/`$80` paths and the lookup tables.
+2. The gameplay event represented by the proven bit-6/7 run-time transitions.
+   The writers and redraw paths are known, but their player-facing meaning is
+   not yet named.
 3. Record +6 and +7..+8 are never read.
 4. The level number set in `01:4CAA` (`3*[$D568]+[$D567]`) and `01:5164`
    (`[$C939]`) is not bounded.

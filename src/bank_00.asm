@@ -3200,7 +3200,7 @@ Jump_12AD:
 	ld c, a
 	ldh a, [$FF94]
 	ld e, a
-	call Func_1399
+	call ConvertLevelCellBit3ToLookupState
 	jr z, Jump_12BB
 	call DrawLevelCellIfVisible
 Jump_12BB:
@@ -3247,7 +3247,7 @@ Jump_12EE:
 	ld c, a
 	ldh a, [$FF94]
 	ld e, a
-	call Func_132E
+	call ConvertLevelCellBit2ToLookupState
 	jr z, Jump_1308
 	ldh a, [$FF9E]
 	add a, $05
@@ -3285,7 +3285,9 @@ Jump_1308:
 	ret
 
 
-Func_132E:
+; If cell C,E has bit 2 set, clear bits 1-3 and 6, set bits 0 and 7,
+; preserve bits 4-5, and report success in A.
+ConvertLevelCellBit2ToLookupState:
 	push de
 	push bc
 	push hl
@@ -3371,7 +3373,9 @@ Jump_1394:
 	ret
 
 
-Func_1399:
+; If cell C,E has bit 3 set, clear bits 1-3, set bits 0 and 7, preserve the
+; high nibble, and report success in A.
+ConvertLevelCellBit3ToLookupState:
 	push de
 	push bc
 	push hl
@@ -3500,13 +3504,13 @@ Jump_1437:
 	ldh [$FF95], a
 Jump_143B:
 	call Func_1404
-	call Func_14B3
+	call StartLevelCellLookupTransition
 	jr nz, Jump_1457
 	ldh a, [$FF95]
 	ld c, a
 	ldh a, [$FF94]
 	ld e, a
-	call Func_14B3
+	call StartLevelCellLookupTransition
 	ldh a, [$FF9C]
 	inc a
 	ldh [$FF9C], a
@@ -3572,7 +3576,9 @@ Jump_14AE:
 	ret
 
 
-Func_14B3:
+; For an unconverted bit-2 cell, set bit 6 when bit 3 is clear or bit 7 when
+; bit 3 is set. These states select the alternate rendering paths at $1D93.
+StartLevelCellLookupTransition:
 	push de
 	push bc
 	push hl

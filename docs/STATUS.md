@@ -122,7 +122,9 @@ cell-map accessors for bits 0 through 3 and the eight-point bit-0 footprint
 test are named; their callers establish use by movement logic, but the gameplay
 meaning of each flag remains unknown. Four directional scanners find the
 bounding rectangle of a contiguous run whose bits 2-3 are nonzero. ROM cell
-maps never set bits 4 through 7.
+maps never set bits 4 through 7. Run-time writers are now proven: bit-2 cells
+enter bit-6 or bit-7 rendering states depending on bit 3, while two completion
+routines clear bits 1-3 and select the bit-7 lookup path before redrawing.
 
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have
@@ -133,7 +135,7 @@ explicit source with checked values and addresses.
 The gameplay meanings of cell-map bits 0 through 3, record fields +6 and
 +7/+8, and the role of one unread byte preceding each lookup table remain
 unknown. No ROM cell sets bits 4 through 7, so the bit-6/7 lookup-table paths
-may depend on run-time changes.
+are entered only after the run-time transformations described above.
 
 ## Confirmed graphics boundaries
 
