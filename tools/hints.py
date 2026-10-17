@@ -220,6 +220,7 @@ NAMES = {
     0x3C7A: "ApplyBgMapWrite",
     0x035C: "PrepareDisplayForScreenTransition",
     0x033A: "RunPauseLoopFar",
+    0x3608: "ProcessGameplayInput",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",

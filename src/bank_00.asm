@@ -387,7 +387,7 @@ Jump_02E9:
 	ld a, [wScreenEffectActive]
 	or a
 	jr nz, Jump_0320
-	call Func_3608
+	call ProcessGameplayInput
 Jump_0320:
 	call Func_2A88
 	call Func_3834
@@ -10080,7 +10080,8 @@ Func_35F7:
 	ret
 
 
-Func_3608:
+ProcessGameplayInput:
+Func_3608: ; legacy alias
 	ld a, [wPlayerObject]
 	ld l, a
 	ld a, [wPlayerObject + 1]

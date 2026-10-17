@@ -1041,6 +1041,7 @@ def check_level_banks() -> None:
             "ApplyBgMapWrite": (0x00, 0x3C7A),
             "PrepareDisplayForScreenTransition": (0x00, 0x035C),
             "RunPauseLoopFar": (0x00, 0x033A),
+            "ProcessGameplayInput": (0x00, 0x3608),
             "ClearShadowOamAndTransferFar": (0x00, 0x3CD9),
             "FreeObjectsOutsideStatuses1And4": (0x01, 0x7D3A),
             "InitializeHudWindow": (0x00, 0x322D),
