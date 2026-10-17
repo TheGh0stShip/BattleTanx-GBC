@@ -131,3 +131,7 @@ ScreenMode00_Palettes:
 	ASSERT ScreenMode08_Palettes - ScreenMode08_AttrMap == 20 * 18
 	ASSERT ScreenMode00_TileMap - ScreenMode00_Tiles == 140 * 16
 	ASSERT ScreenMode00_Palettes - ScreenMode00_AttrMap == 20 * 17
+	ASSERT BANK(Func_2D_54FA) == $2D, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2D_5552) == $2D, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2D_4000) == $2D, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2D_4058) == $2D, "raw bank byte in $01:ScreenModeTable"

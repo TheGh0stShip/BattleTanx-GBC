@@ -15,6 +15,7 @@ Screen2E_Draw: ; fades in from black
 Screen2E_Descriptor:
 	screen_descriptor Screen2E_Tiles, Screen2E_TileMap, Screen2E_AttrMap, Screen2E_Palettes, 273, 20, 19, 8, 0
 
+MenuState05Picture2_Tiles: ; wMenuState05Selection = 2 ($01:$596D entry 2)
 Screen2E_Tiles:
 	INCBIN "assets/screens/screen2e_tiles.2bpp"
 
@@ -72,6 +73,7 @@ Screen2E_Palettes:
 
 ; Bank $2E picture 1 of the $01:$596D table (no descriptor; drawn by bank
 ; $01 routines through $C943-$C952). 20x19 maps, 8 palettes.
+MenuState05Picture1_Tiles: ; wMenuState05Selection = 1 (RAM_D7CB, $01:$596D entry 1)
 Picture596D1_Tiles:
 	INCBIN "assets/screens/picture596d1_tiles.2bpp"
 
@@ -129,6 +131,7 @@ Picture596D1_Palettes:
 
 ; Bank $2E picture 0 of the $01:$596D table (no descriptor; drawn by bank
 ; $01 routines through $C943-$C952). 20x19 maps, 8 palettes.
+MenuState05Picture0_Tiles: ; wMenuState05Selection = 0 (RAM_D7CB, $01:$596D entry 0)
 Picture596D0_Tiles:
 	INCBIN "assets/screens/picture596d0_tiles.2bpp"
 
@@ -192,3 +195,19 @@ Picture596D0_Palettes:
 	ASSERT Picture596D1_Palettes - Picture596D1_AttrMap == 20 * 19
 	ASSERT Picture596D0_TileMap - Picture596D0_Tiles == 272 * 16
 	ASSERT Picture596D0_Palettes - Picture596D0_AttrMap == 20 * 19
+
+; Relocation pins (RELOCATION_AUDIT.md): these addresses are stored as raw
+; numbers in banks outside this assignment, so moving them must stop the
+; build until those tables use symbols.
+	ASSERT BANK(Screen2E_Tiles) == $2E && Screen2E_Tiles == $40DA, "raw pointer: $01:$596D entry 2"
+	ASSERT BANK(Screen2E_TileMap) == $2E && Screen2E_TileMap == $51EA, "raw pointer: $01:$596D entry 2"
+	ASSERT BANK(Screen2E_AttrMap) == $2E && Screen2E_AttrMap == $5366, "raw pointer: $01:$596D entry 2"
+	ASSERT BANK(Screen2E_Palettes) == $2E && Screen2E_Palettes == $54E2, "raw pointer: $01:$596D entry 2"
+	ASSERT BANK(Picture596D1_Tiles) == $2E && Picture596D1_Tiles == $5522, "raw pointer: $01:$596D entry 1"
+	ASSERT BANK(Picture596D1_TileMap) == $2E && Picture596D1_TileMap == $6562, "raw pointer: $01:$596D entry 1"
+	ASSERT BANK(Picture596D1_AttrMap) == $2E && Picture596D1_AttrMap == $66DE, "raw pointer: $01:$596D entry 1"
+	ASSERT BANK(Picture596D1_Palettes) == $2E && Picture596D1_Palettes == $685A, "raw pointer: $01:$596D entry 1"
+	ASSERT BANK(Picture596D0_Tiles) == $2E && Picture596D0_Tiles == $689A, "raw pointer: $01:$596D entry 0"
+	ASSERT BANK(Picture596D0_TileMap) == $2E && Picture596D0_TileMap == $799A, "raw pointer: $01:$596D entry 0"
+	ASSERT BANK(Picture596D0_AttrMap) == $2E && Picture596D0_AttrMap == $7B16, "raw pointer: $01:$596D entry 0"
+	ASSERT BANK(Picture596D0_Palettes) == $2E && Picture596D0_Palettes == $7C92, "raw pointer: $01:$596D entry 0"

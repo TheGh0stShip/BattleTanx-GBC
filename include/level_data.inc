@@ -11,6 +11,11 @@ ENDM
 ; Twenty-byte record consumed by ROM0 LoadLevelData/LoadLevelRecord.
 ; Arguments: width, height, tiles, palettes, cell map, tile map, attribute map,
 ; tile count, palette count.
+; +0 width, +1 height, +2 tile bank, +3 palette bank, +4 cell-map bank,
+; +5 map bank, +6 map bank again (copied to $C8BD, never read),
+; +7/+8 tile count - 1 (copied to $C8BE/$C8BF, never read), +9 palette count,
+; +10 tiles, +12 palettes, +14 attribute map, +16 tile map, +18 cell map.
+; LEVEL_SEMANTICS_RESEARCH.md lists every reader.
 MACRO level_record
 	db \1, \2
 	db BANK(\3), BANK(\4), BANK(\5), BANK(\6), BANK(\7)
@@ -18,6 +23,16 @@ MACRO level_record
 	db \9
 	dw \3, \4, \7, \6, \5
 ENDM
+
+; Cell-map byte bits, from the readers in ROM0 (LEVEL_SEMANTICS_RESEARCH.md).
+; Only bits 0-3 occur in ROM; bits 6-7 are set at run time.
+DEF CELLB_PASSABLE    EQU 0 ; clear: movement rejected (TestLevelCellBit0AtPixel)
+DEF CELLB_SOLID       EQU 1 ; set with bit 2 clear: flag-bit-3 objects are rolled back
+DEF CELLB_DESTRUCTIBLE EQU 2 ; region converted by ConvertLevelCellBit2ToLookupState
+DEF CELLB_TOUCH_REGION EQU 3 ; region converted on contact (ConvertLevelCellBit3RegionAtPixel, +20 score)
+DEF CELLB_ANIMATED    EQU 6 ; set by StartLevelCellLookupTransition: tile $BB + frame
+DEF CELLB_LOOKUP      EQU 7 ; set on conversion: tile/attribute via $05 table and AttrLookup
+; Bits 4-5 are never tested and never set.
 
 ; Four-byte entry consumed by bank $05:$4088: address, bank, reserved zero.
 MACRO level_attr_lookup

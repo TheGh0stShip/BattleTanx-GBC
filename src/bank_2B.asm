@@ -5,13 +5,16 @@ SECTION "ROM Bank $2B", ROMX[$4000], BANK[$2B]
 
 ; ScreenModeTable entries 7.
 Func_2B_4000: ; address-based alias kept for other banks
+BootSequenceScreen4_LoadTiles: ; mode 7, last boot-sequence screen
 ScreenMode07_LoadTiles:
 	screen_load_tiles ScreenMode07_Descriptor
 
 Func_2B_4058: ; address-based alias kept for other banks
+BootSequenceScreen4_Draw: ; mode 7, last boot-sequence screen
 ScreenMode07_Draw: ; fades in from white
 	screen_draw_fade ScreenMode07_Descriptor, 1
 
+BootSequenceScreen4_Descriptor: ; mode 7, last boot-sequence screen
 ScreenMode07_Descriptor:
 	screen_descriptor ScreenMode07_Tiles, ScreenMode07_TileMap, ScreenMode07_AttrMap, ScreenMode07_Palettes, 372, 22, 20, 8, 0
 
@@ -75,13 +78,16 @@ ScreenMode07_Palettes:
 
 ; ScreenModeTable entries 9, 10.
 Func_2B_5BDA: ; address-based alias kept for other banks
+BootSequenceScreen1_LoadTiles: ; mode $0A, first screen of the boot sequence ($02:Func_02_5C40 order); mode 9 is an unused alias
 ScreenMode09_LoadTiles:
 	screen_load_tiles ScreenMode09_Descriptor
 
 Func_2B_5C32: ; address-based alias kept for other banks
+BootSequenceScreen1_Draw: ; mode $0A, first screen of the boot sequence ($02:Func_02_5C40 order); mode 9 is an unused alias
 ScreenMode09_Draw: ; fades in from black
 	screen_draw_fade ScreenMode09_Descriptor, 0
 
+BootSequenceScreen1_Descriptor: ; mode $0A, first screen of the boot sequence ($02:Func_02_5C40 order); mode 9 is an unused alias
 ScreenMode09_Descriptor:
 	screen_descriptor ScreenMode09_Tiles, ScreenMode09_TileMap, ScreenMode09_AttrMap, ScreenMode09_Palettes, 237, 20, 18, 1, 0
 
@@ -199,3 +205,9 @@ ScreenMode04_Palettes:
 	ASSERT ScreenMode09_Palettes - ScreenMode09_AttrMap == 20 * 18
 	ASSERT ScreenMode04_TileMap - ScreenMode04_Tiles == 77 * 16
 	ASSERT ScreenMode04_Palettes - ScreenMode04_AttrMap == 20 * 18
+	ASSERT BANK(Func_2B_6E6C) == $2B, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2B_6EC4) == $2B, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2B_4000) == $2B, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2B_4058) == $2B, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2B_5BDA) == $2B, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2B_5C32) == $2B, "raw bank byte in $01:ScreenModeTable"

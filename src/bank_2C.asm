@@ -5,13 +5,16 @@ SECTION "ROM Bank $2C", ROMX[$4000], BANK[$2C]
 
 ; ScreenModeTable entries 2.
 Func_2C_4000: ; address-based alias kept for other banks
+BootSequenceScreen2_LoadTiles: ; mode 2, second boot-sequence screen
 ScreenMode02_LoadTiles:
 	screen_load_tiles ScreenMode02_Descriptor
 
 Func_2C_4058: ; address-based alias kept for other banks
+BootSequenceScreen2_Draw: ; mode 2, second boot-sequence screen
 ScreenMode02_Draw: ; fades in from black
 	screen_draw_fade ScreenMode02_Descriptor, 0
 
+BootSequenceScreen2_Descriptor: ; mode 2, second boot-sequence screen
 ScreenMode02_Descriptor:
 	screen_descriptor ScreenMode02_Tiles, ScreenMode02_TileMap, ScreenMode02_AttrMap, ScreenMode02_Palettes, 118, 20, 18, 6, 0
 
@@ -68,13 +71,16 @@ ScreenMode02_Palettes:
 
 ; ScreenModeTable entries 5.
 Func_2C_4B3A: ; address-based alias kept for other banks
+BootSequenceScreen3_LoadTiles: ; mode 5, third boot-sequence screen
 ScreenMode05_LoadTiles:
 	screen_load_tiles ScreenMode05_Descriptor
 
 Func_2C_4B92: ; address-based alias kept for other banks
+BootSequenceScreen3_Draw: ; mode 5, third boot-sequence screen
 ScreenMode05_Draw: ; fades in from black
 	screen_draw_fade ScreenMode05_Descriptor, 0
 
+BootSequenceScreen3_Descriptor: ; mode 5, third boot-sequence screen
 ScreenMode05_Descriptor:
 	screen_descriptor ScreenMode05_Tiles, ScreenMode05_TileMap, ScreenMode05_AttrMap, ScreenMode05_Palettes, 108, 20, 18, 2, 0
 
@@ -210,6 +216,7 @@ ScreenMode03_Tiles:
 	INCBIN "assets/screens/screenmode03_tiles.2bpp"
 
 ; second 20x18 tile map, drawn by $01:7981 with bank $2C selected via $C943
+CodeRejectedTileMap: ; drawn by $01:7981 when the entered code fails Func_01_6C24
 ScreenMode03_AltTileMap:
 	db $81, $82, $83, $82, $83, $82, $83, $82, $83, $82, $82, $83, $82, $83, $82, $83, $82, $83, $82, $84
 	db $85, $86, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $87, $88, $85
@@ -251,6 +258,7 @@ ScreenMode03_TileMap:
 	db $E1, $82, $83, $82, $83, $82, $83, $82, $83, $82, $82, $83, $82, $83, $82, $83, $82, $83, $82, $E2
 
 ; attributes for the second map ($01:7981, VRAM1)
+CodeRejectedAttrMap:
 ScreenMode03_AltAttrMap:
 	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
@@ -361,3 +369,19 @@ ScreenMode06_Descriptor:
 	ASSERT ScreenMode03_Palettes - ScreenMode03_AttrMap == 20 * 18
 	ASSERT ScreenMode06_TileMap - ScreenMode06_Tiles == 134 * 16
 	ASSERT ScreenMode06_Palettes - ScreenMode06_AttrMap == 20 * 18
+
+; Relocation pins (RELOCATION_AUDIT.md): these addresses are stored as raw
+; numbers in banks outside this assignment, so moving them must stop the
+; build until those tables use symbols.
+	ASSERT BANK(ScreenMode03_AltTileMap) == $2C && ScreenMode03_AltTileMap == $6CE9, "raw pointer: src/bank_01.asm $01:7981 (ld bc, $6CE9)"
+	ASSERT BANK(ScreenMode03_AltAttrMap) == $2C && ScreenMode03_AltAttrMap == $6FB9, "raw pointer: src/bank_01.asm $01:7981 (ld de, $6FB9)"
+	ASSERT BANK(Func_2C_4000) == $2C, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2C_4058) == $2C, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2C_5ED3) == $2C, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2C_5F2B) == $2C, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2C_4B3A) == $2C, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2C_4B92) == $2C, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2C_5F9F) == $2C, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2C_5FF7) == $2C, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2C_55C4) == $2C, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2C_561C) == $2C, "raw bank byte in $01:ScreenModeTable"

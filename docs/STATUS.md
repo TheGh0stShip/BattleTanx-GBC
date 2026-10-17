@@ -196,6 +196,15 @@ attribute lookup table, BG palettes, fill, and its bank marker. Its paired even
 bank contains equally sized tile and attribute maps, followed by fill and its
 marker. All 491,520 bytes are covered exactly once.
 
+The broader banks `$09-$3A` relocation audit accounts for 152 raw pointer
+references to 131 labelled targets and 80 raw bank bytes. Bank-aware assertions
+pin every target that is still stored numerically, and thirteen shift tests
+prove six movable structures relocate correctly while seven hardware- or
+raw-reference-constrained structures stop the build. Cell-map bit semantics,
+all level-index writers, object-bank selectors, screen routes, and scene routes
+are documented in `BANKS_09_3A_SEMANTIC_RECOVERY.md`; five controlled audit
+corruptions must fail for their intended reason.
+
 The source now uses typed assets for the four large ranges in each level,
 explicit lookup tables and palettes, and assembly assertions for every derived
 boundary. Bank `$05` also expresses all 15 record pointers, 20-byte records,

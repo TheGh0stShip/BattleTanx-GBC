@@ -4,11 +4,11 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 disasm clean tidy
+.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation disasm clean tidy
 
 all: compare
 
-check: compare check-project graphics maps levels screens objects bank08
+check: compare check-project graphics maps levels screens objects bank08 relocation
 
 check-project:
 	$(PYTHON) tools/check_project.py
@@ -37,6 +37,12 @@ objects: check-baserom
 
 bank08: check-baserom
 	$(PYTHON) tools/extract_bank08.py $(BASEROM) build/bank08
+
+# Relocation audit (needs the linked symbols) and source shift tests.
+relocation: compare
+	$(PYTHON) tools/relocation_audit.py
+	$(PYTHON) tools/level_comparison.py --check
+	$(PYTHON) tools/shift_test.py .
 
 # Regenerate src/ from the base ROM (overwrites src/!)
 disasm: check-baserom

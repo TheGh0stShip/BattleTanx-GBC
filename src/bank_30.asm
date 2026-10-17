@@ -4,7 +4,6 @@ SECTION "ROM Bank $30", ROMX[$4000], BANK[$30]
 
 ScrollScene32Tiles:
 	INCBIN "assets/scenes/bank_30_tiles_4000_449F.2bpp"
-ASSERT @ == $44A0
 
 ScrollScene32Rows:
 	dw $0001, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0003
@@ -13,15 +12,12 @@ ScrollScene32Rows:
 	dw $0023, $0006, $0024, $0025, $0026, $0027, $0028, $0029, $002A, $002B, $002C, $002D, $002E, $002F, $0030, $0029, $0031, $0032, $0033, $0014
 	dw $0034, $0035, $0036, $0037, $0038, $0039, $003A, $003B, $003C, $003D, $003E, $003F, $0040, $0041, $0042, $0043, $0044, $0045, $0046, $0014
 	dw $0047, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0048, $0049
-ASSERT @ == $4590
 
 ScrollScene32Palette:
 	dw $1120, $0204, $270A, $63D9
-ASSERT @ == $4598
 
 ScrollScene33Tiles:
 	INCBIN "assets/scenes/bank_30_tiles_4598_49F7.2bpp"
-ASSERT @ == $49F8
 
 ScrollScene33Rows:
 	dw $0001, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0003
@@ -30,15 +26,12 @@ ScrollScene33Rows:
 	dw $0004, $002A, $002B, $002C, $002C, $002C, $002D, $002E, $002F, $0030, $0031, $0032, $0033, $0034, $002C, $002C, $002C, $002C, $0035, $0036
 	dw $0004, $0037, $0038, $002C, $002C, $002C, $0039, $003A, $003B, $003C, $003D, $003E, $003F, $0040, $002C, $002C, $002C, $002C, $0041, $0042
 	dw $0043, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0044, $0045
-ASSERT @ == $4AE8
 
 ScrollScene33Palette:
 	dw $1120, $0204, $270A, $63D9
-ASSERT @ == $4AF0
 
 ScrollScene34Tiles:
 	INCBIN "assets/scenes/bank_30_tiles_4AF0_501F.2bpp"
-ASSERT @ == $5020
 
 ScrollScene34Rows:
 	dw $0001, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0003
@@ -47,15 +40,12 @@ ScrollScene34Rows:
 	dw $002A, $002B, $002C, $002D, $002E, $002D, $002F, $0030, $0031, $0032, $0033, $0034, $0035, $0036, $0035, $0037, $0038, $0039, $003A, $003B
 	dw $003C, $003D, $003E, $003F, $0040, $0041, $0042, $0043, $0044, $0045, $0046, $0047, $0048, $0049, $004A, $004B, $004C, $004D, $004E, $004F
 	dw $0050, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0051, $0052
-ASSERT @ == $5110
 
 ScrollScene34Palette:
 	dw $1120, $0204, $270A, $63D9
-ASSERT @ == $5118
 
 ScrollScene35Tiles:
 	INCBIN "assets/scenes/bank_30_tiles_5118_5647.2bpp"
-ASSERT @ == $5648
 
 ScrollScene35Rows:
 	dw $0001, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0002, $0003
@@ -64,17 +54,13 @@ ScrollScene35Rows:
 	dw $002A, $002B, $002C, $002D, $002E, $002F, $0030, $0031, $0032, $0033, $0034, $0035, $0036, $0037, $0038, $0039, $003A, $0038, $003B, $0017
 	dw $003C, $003D, $003E, $003F, $0040, $0041, $0042, $0043, $0044, $0045, $0046, $0047, $0048, $0049, $004A, $004B, $004C, $004D, $004E, $0017
 	dw $004F, $0050, $0050, $0050, $0050, $0050, $0050, $0050, $0050, $0050, $0051, $0050, $0050, $0050, $0050, $0050, $0050, $0050, $0050, $0052
-ASSERT @ == $5738
 
 ScrollScene35Palette:
 	dw $1120, $0204, $270A, $63D9
-ASSERT @ == $5740
 	ds $C0, 0
-ASSERT @ == $5800
 
 FixedScene06Tiles:
 	INCBIN "assets/scenes/bank_30_tiles_5800_66FF.2bpp"
-ASSERT @ == $6700
 
 FixedScene06TileMap:
 	db $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91, $92, $93, $94
@@ -89,7 +75,6 @@ FixedScene06TileMap:
 	db $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $3E, $3F, $40, $41, $42, $43, $44, $45, $46, $47
 	db $48, $49, $4A, $4B, $4C, $4D, $4E, $4F, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $5A, $5B
 	db $5C, $5D, $5E, $5F, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $6A, $6B, $6C, $6D, $6E, $6F
-ASSERT @ == $67F0
 
 FixedScene06Attributes:
 	db $00, $00, $00, $00, $01, $01, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
@@ -104,7 +89,6 @@ FixedScene06Attributes:
 	db $03, $03, $03, $03, $03, $04, $04, $04, $04, $04, $04, $03, $03, $04, $04, $04, $04, $04, $04, $03
 	db $03, $03, $03, $03, $03, $03, $04, $04, $04, $04, $04, $03, $03, $03, $03, $04, $04, $04, $04, $04
 	db $03, $03, $03, $03, $03, $03, $04, $04, $04, $04, $04, $04, $03, $03, $03, $03, $04, $04, $04, $04
-ASSERT @ == $68E0
 
 FixedScene06Palettes:
 	dw $00EA, $011F, $0192, $025F
@@ -115,13 +99,10 @@ FixedScene06Palettes:
 	dw $00EA, $0192, $62B1, $7359
 	dw $00EA, $0192, $2D27, $4A0D
 	dw $0000, $2D27, $025F, $03DE
-ASSERT @ == $6920
 	ds $E0, 0
-ASSERT @ == $6A00
 
 FixedScene07Tiles:
 	INCBIN "assets/scenes/bank_30_tiles_6A00_773F.2bpp"
-ASSERT @ == $7740
 
 FixedScene07TileMap:
 	db $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91, $92, $93, $93
@@ -136,7 +117,6 @@ FixedScene07TileMap:
 	db $26, $27, $28, $29, $2A, $2B, $2C, $2D, $1C, $1D, $2E, $2F, $30, $1C, $1C, $1C, $31, $32, $33, $34
 	db $35, $36, $37, $38, $39, $3A, $3B, $3C, $1C, $3D, $1C, $3E, $3F, $1C, $1C, $1C, $40, $41, $1C, $42
 	db $43, $44, $45, $46, $47, $48, $1C, $1C, $49, $4A, $4B, $4C, $4D, $4E, $4F, $50, $51, $41, $52, $53
-ASSERT @ == $7830
 
 FixedScene07Attributes:
 	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $01, $01, $01
@@ -151,7 +131,6 @@ FixedScene07Attributes:
 	db $04, $04, $04, $04, $07, $07, $07, $07, $06, $01, $06, $06, $06, $06, $06, $06, $01, $06, $06, $06
 	db $07, $07, $07, $07, $07, $07, $07, $07, $06, $01, $06, $06, $06, $06, $06, $06, $01, $01, $06, $06
 	db $07, $07, $07, $07, $07, $07, $06, $06, $06, $06, $06, $06, $06, $06, $06, $06, $01, $01, $06, $06
-ASSERT @ == $7920
 
 FixedScene07Palettes:
 	dw $2D27, $4A0D, $62B1, $7359
@@ -162,11 +141,31 @@ FixedScene07Palettes:
 	dw $1064, $011F, $2D27, $4A0D
 	dw $0011, $1064, $2D27, $4940
 	dw $0000, $00EA, $0192, $4940
-ASSERT @ == $7960
 	INCBIN "assets/scenes/bank_30_tiles_7960_79EF.2bpp"
-ASSERT @ == $79F0
-	ds $60F, 0
-ASSERT @ == $7FFF
+	ds $7FFF - @, 0
 
-	db $30 ; bank marker
-ASSERT @ == $8000
+	db BANK(@) ; bank marker
+
+; Bank $01 descriptors store these banks as raw bytes; addresses are symbolic.
+	ASSERT BANK(ScrollScene32Tiles) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene32Rows) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene32Palette) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene33Tiles) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene33Rows) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene33Palette) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene34Tiles) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene34Rows) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene34Palette) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene35Tiles) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene35Rows) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(ScrollScene35Palette) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene06Tiles) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene06TileMap) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene06Attributes) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene06Palettes) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene07Tiles) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene07TileMap) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene07Attributes) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene07Palettes) == $30, "raw bank byte in a $01 scene descriptor"
+	ASSERT (FixedScene06Tiles & $0F) == 0, "HDMA source must be 16-byte aligned (LoadFixedSceneResources)"
+	ASSERT (FixedScene07Tiles & $0F) == 0, "HDMA source must be 16-byte aligned (LoadFixedSceneResources)"

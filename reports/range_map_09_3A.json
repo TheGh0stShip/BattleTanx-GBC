@@ -1,0 +1,3167 @@
+{
+ "banks": "09-3A",
+ "ranges": [
+  {
+   "bank": "$09",
+   "start": "$4000",
+   "end": "$4FFF",
+   "bytes": 4096,
+   "label": "Level00_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$09",
+   "start": "$5000",
+   "end": "$6910",
+   "bytes": 6417,
+   "label": "Level00_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$09",
+   "start": "$6911",
+   "end": "$69B0",
+   "bytes": 160,
+   "label": "Level00_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$09",
+   "start": "$69B1",
+   "end": "$7FFF",
+   "bytes": 5711,
+   "label": "Level00_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$0A",
+   "start": "$4000",
+   "end": "$4FFF",
+   "bytes": 4096,
+   "label": "Level00_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$0A",
+   "start": "$5000",
+   "end": "$7FFF",
+   "bytes": 12288,
+   "label": "Level00_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$0B",
+   "start": "$4000",
+   "end": "$5E3F",
+   "bytes": 7744,
+   "label": "Level01_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$0B",
+   "start": "$5E40",
+   "end": "$7530",
+   "bytes": 5873,
+   "label": "Level01_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$0B",
+   "start": "$7531",
+   "end": "$75D0",
+   "bytes": 160,
+   "label": "Level01_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$0B",
+   "start": "$75D1",
+   "end": "$7FFF",
+   "bytes": 2607,
+   "label": "Level01_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$0C",
+   "start": "$4000",
+   "end": "$5E3F",
+   "bytes": 7744,
+   "label": "Level01_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$0C",
+   "start": "$5E40",
+   "end": "$7FFF",
+   "bytes": 8640,
+   "label": "Level01_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$0D",
+   "start": "$4000",
+   "end": "$5D3F",
+   "bytes": 7488,
+   "label": "Level02_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$0D",
+   "start": "$5D40",
+   "end": "$7440",
+   "bytes": 5889,
+   "label": "Level02_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$0D",
+   "start": "$7441",
+   "end": "$74E0",
+   "bytes": 160,
+   "label": "Level02_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$0D",
+   "start": "$74E1",
+   "end": "$7FFF",
+   "bytes": 2847,
+   "label": "Level02_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$0E",
+   "start": "$4000",
+   "end": "$5D3F",
+   "bytes": 7488,
+   "label": "Level02_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$0E",
+   "start": "$5D40",
+   "end": "$7FFF",
+   "bytes": 8896,
+   "label": "Level02_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$0F",
+   "start": "$4000",
+   "end": "$5F7F",
+   "bytes": 8064,
+   "label": "Level03_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$0F",
+   "start": "$5F80",
+   "end": "$75D0",
+   "bytes": 5713,
+   "label": "Level03_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$0F",
+   "start": "$75D1",
+   "end": "$7670",
+   "bytes": 160,
+   "label": "Level03_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$0F",
+   "start": "$7671",
+   "end": "$7FFF",
+   "bytes": 2447,
+   "label": "Level03_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$10",
+   "start": "$4000",
+   "end": "$5F7F",
+   "bytes": 8064,
+   "label": "Level03_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$10",
+   "start": "$5F80",
+   "end": "$7FFF",
+   "bytes": 8320,
+   "label": "Level03_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$11",
+   "start": "$4000",
+   "end": "$5E3F",
+   "bytes": 7744,
+   "label": "Level04_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$11",
+   "start": "$5E40",
+   "end": "$70A0",
+   "bytes": 4705,
+   "label": "Level04_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$11",
+   "start": "$70A1",
+   "end": "$7140",
+   "bytes": 160,
+   "label": "Level04_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$11",
+   "start": "$7141",
+   "end": "$7FFF",
+   "bytes": 3775,
+   "label": "Level04_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$12",
+   "start": "$4000",
+   "end": "$5E3F",
+   "bytes": 7744,
+   "label": "Level04_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$12",
+   "start": "$5E40",
+   "end": "$7FFF",
+   "bytes": 8640,
+   "label": "Level04_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$13",
+   "start": "$4000",
+   "end": "$5D3F",
+   "bytes": 7488,
+   "label": "Level05_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$13",
+   "start": "$5D40",
+   "end": "$7660",
+   "bytes": 6433,
+   "label": "Level05_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$13",
+   "start": "$7661",
+   "end": "$7700",
+   "bytes": 160,
+   "label": "Level05_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$13",
+   "start": "$7701",
+   "end": "$7FFF",
+   "bytes": 2303,
+   "label": "Level05_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$14",
+   "start": "$4000",
+   "end": "$5D3F",
+   "bytes": 7488,
+   "label": "Level05_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$14",
+   "start": "$5D40",
+   "end": "$7FFF",
+   "bytes": 8896,
+   "label": "Level05_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$15",
+   "start": "$4000",
+   "end": "$5B7F",
+   "bytes": 7040,
+   "label": "Level06_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$15",
+   "start": "$5B80",
+   "end": "$6D10",
+   "bytes": 4497,
+   "label": "Level06_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$15",
+   "start": "$6D11",
+   "end": "$6DB0",
+   "bytes": 160,
+   "label": "Level06_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$15",
+   "start": "$6DB1",
+   "end": "$7FFF",
+   "bytes": 4687,
+   "label": "Level06_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$16",
+   "start": "$4000",
+   "end": "$5B7F",
+   "bytes": 7040,
+   "label": "Level06_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$16",
+   "start": "$5B80",
+   "end": "$7FFF",
+   "bytes": 9344,
+   "label": "Level06_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$17",
+   "start": "$4000",
+   "end": "$5F7F",
+   "bytes": 8064,
+   "label": "Level07_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$17",
+   "start": "$5F80",
+   "end": "$7970",
+   "bytes": 6641,
+   "label": "Level07_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$17",
+   "start": "$7971",
+   "end": "$7A10",
+   "bytes": 160,
+   "label": "Level07_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$17",
+   "start": "$7A11",
+   "end": "$7FFF",
+   "bytes": 1519,
+   "label": "Level07_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$18",
+   "start": "$4000",
+   "end": "$5F7F",
+   "bytes": 8064,
+   "label": "Level07_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$18",
+   "start": "$5F80",
+   "end": "$7FFF",
+   "bytes": 8320,
+   "label": "Level07_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$19",
+   "start": "$4000",
+   "end": "$5F7F",
+   "bytes": 8064,
+   "label": "Level08_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$19",
+   "start": "$5F80",
+   "end": "$79C0",
+   "bytes": 6721,
+   "label": "Level08_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$19",
+   "start": "$79C1",
+   "end": "$7A60",
+   "bytes": 160,
+   "label": "Level08_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$19",
+   "start": "$7A61",
+   "end": "$7FFF",
+   "bytes": 1439,
+   "label": "Level08_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$1A",
+   "start": "$4000",
+   "end": "$5F7F",
+   "bytes": 8064,
+   "label": "Level08_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$1A",
+   "start": "$5F80",
+   "end": "$7FFF",
+   "bytes": 8320,
+   "label": "Level08_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$1B",
+   "start": "$4000",
+   "end": "$5DFF",
+   "bytes": 7680,
+   "label": "Level09_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$1B",
+   "start": "$5E00",
+   "end": "$7230",
+   "bytes": 5169,
+   "label": "Level09_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$1B",
+   "start": "$7231",
+   "end": "$72D0",
+   "bytes": 160,
+   "label": "Level09_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$1B",
+   "start": "$72D1",
+   "end": "$7FFF",
+   "bytes": 3375,
+   "label": "Level09_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$1C",
+   "start": "$4000",
+   "end": "$5DFF",
+   "bytes": 7680,
+   "label": "Level09_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$1C",
+   "start": "$5E00",
+   "end": "$7FFF",
+   "bytes": 8704,
+   "label": "Level09_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$1D",
+   "start": "$4000",
+   "end": "$5E3F",
+   "bytes": 7744,
+   "label": "Level10_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$1D",
+   "start": "$5E40",
+   "end": "$6EC0",
+   "bytes": 4225,
+   "label": "Level10_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$1D",
+   "start": "$6EC1",
+   "end": "$6F60",
+   "bytes": 160,
+   "label": "Level10_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$1D",
+   "start": "$6F61",
+   "end": "$7FFF",
+   "bytes": 4255,
+   "label": "Level10_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$1E",
+   "start": "$4000",
+   "end": "$5E3F",
+   "bytes": 7744,
+   "label": "Level10_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$1E",
+   "start": "$5E40",
+   "end": "$7FFF",
+   "bytes": 8640,
+   "label": "Level10_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$1F",
+   "start": "$4000",
+   "end": "$5DFF",
+   "bytes": 7680,
+   "label": "Level11_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$1F",
+   "start": "$5E00",
+   "end": "$7020",
+   "bytes": 4641,
+   "label": "Level11_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$1F",
+   "start": "$7021",
+   "end": "$70C0",
+   "bytes": 160,
+   "label": "Level11_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$1F",
+   "start": "$70C1",
+   "end": "$7FFF",
+   "bytes": 3903,
+   "label": "Level11_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$20",
+   "start": "$4000",
+   "end": "$5DFF",
+   "bytes": 7680,
+   "label": "Level11_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$20",
+   "start": "$5E00",
+   "end": "$7FFF",
+   "bytes": 8704,
+   "label": "Level11_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$21",
+   "start": "$4000",
+   "end": "$5DFF",
+   "bytes": 7680,
+   "label": "Level12_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$21",
+   "start": "$5E00",
+   "end": "$6D70",
+   "bytes": 3953,
+   "label": "Level12_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$21",
+   "start": "$6D71",
+   "end": "$6E10",
+   "bytes": 160,
+   "label": "Level12_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$21",
+   "start": "$6E11",
+   "end": "$7FFF",
+   "bytes": 4591,
+   "label": "Level12_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$22",
+   "start": "$4000",
+   "end": "$5DFF",
+   "bytes": 7680,
+   "label": "Level12_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$22",
+   "start": "$5E00",
+   "end": "$7FFF",
+   "bytes": 8704,
+   "label": "Level12_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$23",
+   "start": "$4000",
+   "end": "$5E3F",
+   "bytes": 7744,
+   "label": "Level13_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$23",
+   "start": "$5E40",
+   "end": "$6E20",
+   "bytes": 4065,
+   "label": "Level13_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$23",
+   "start": "$6E21",
+   "end": "$6EC0",
+   "bytes": 160,
+   "label": "Level13_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$23",
+   "start": "$6EC1",
+   "end": "$7FFF",
+   "bytes": 4415,
+   "label": "Level13_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$24",
+   "start": "$4000",
+   "end": "$5E3F",
+   "bytes": 7744,
+   "label": "Level13_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$24",
+   "start": "$5E40",
+   "end": "$7FFF",
+   "bytes": 8640,
+   "label": "Level13_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$25",
+   "start": "$4000",
+   "end": "$5DFF",
+   "bytes": 7680,
+   "label": "Level14_CellMap",
+   "aliases": []
+  },
+  {
+   "bank": "$25",
+   "start": "$5E00",
+   "end": "$7680",
+   "bytes": 6273,
+   "label": "Level14_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$25",
+   "start": "$7681",
+   "end": "$7720",
+   "bytes": 160,
+   "label": "Level14_AttrLookup",
+   "aliases": []
+  },
+  {
+   "bank": "$25",
+   "start": "$7721",
+   "end": "$7FFF",
+   "bytes": 2271,
+   "label": "Level14_BGPalettes",
+   "aliases": []
+  },
+  {
+   "bank": "$26",
+   "start": "$4000",
+   "end": "$5DFF",
+   "bytes": 7680,
+   "label": "Level14_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$26",
+   "start": "$5E00",
+   "end": "$7FFF",
+   "bytes": 8704,
+   "label": "Level14_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$4000",
+   "end": "$408F",
+   "bytes": 144,
+   "label": "Bank27OrientationFrame0",
+   "aliases": [
+    "Bank27OrientationTiles"
+   ]
+  },
+  {
+   "bank": "$27",
+   "start": "$4090",
+   "end": "$411F",
+   "bytes": 144,
+   "label": "Bank27OrientationFrame1",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$4120",
+   "end": "$41AF",
+   "bytes": 144,
+   "label": "Bank27OrientationFrame2",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$41B0",
+   "end": "$423F",
+   "bytes": 144,
+   "label": "Bank27OrientationFrame3",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$4240",
+   "end": "$42CF",
+   "bytes": 144,
+   "label": "Bank27OrientationFrame4",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$42D0",
+   "end": "$435F",
+   "bytes": 144,
+   "label": "Bank27OrientationFrame5",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$4360",
+   "end": "$43EF",
+   "bytes": 144,
+   "label": "Bank27OrientationFrame6",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$43F0",
+   "end": "$447F",
+   "bytes": 144,
+   "label": "Bank27OrientationFrame7",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$4480",
+   "end": "$450F",
+   "bytes": 144,
+   "label": "Bank27OrientationFrame8",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$4510",
+   "end": "$4511",
+   "bytes": 2,
+   "label": "Bank27Unknown4510",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$4512",
+   "end": "$4517",
+   "bytes": 6,
+   "label": "Bank27ObjectPalette",
+   "aliases": []
+  },
+  {
+   "bank": "$27",
+   "start": "$4518",
+   "end": "$7FFF",
+   "bytes": 15080,
+   "label": "Bank27Bank26Residue",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$4000",
+   "end": "$408F",
+   "bytes": 144,
+   "label": "Bank28OrientationFrame0",
+   "aliases": [
+    "Bank28OrientationTiles"
+   ]
+  },
+  {
+   "bank": "$28",
+   "start": "$4090",
+   "end": "$411F",
+   "bytes": 144,
+   "label": "Bank28OrientationFrame1",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$4120",
+   "end": "$41AF",
+   "bytes": 144,
+   "label": "Bank28OrientationFrame2",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$41B0",
+   "end": "$423F",
+   "bytes": 144,
+   "label": "Bank28OrientationFrame3",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$4240",
+   "end": "$42CF",
+   "bytes": 144,
+   "label": "Bank28OrientationFrame4",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$42D0",
+   "end": "$435F",
+   "bytes": 144,
+   "label": "Bank28OrientationFrame5",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$4360",
+   "end": "$43EF",
+   "bytes": 144,
+   "label": "Bank28OrientationFrame6",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$43F0",
+   "end": "$447F",
+   "bytes": 144,
+   "label": "Bank28OrientationFrame7",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$4480",
+   "end": "$450F",
+   "bytes": 144,
+   "label": "Bank28OrientationFrame8",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$4510",
+   "end": "$4511",
+   "bytes": 2,
+   "label": "Bank28Unknown4510",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$4512",
+   "end": "$4517",
+   "bytes": 6,
+   "label": "Bank28ObjectPalette",
+   "aliases": []
+  },
+  {
+   "bank": "$28",
+   "start": "$4518",
+   "end": "$7FFF",
+   "bytes": 15080,
+   "label": "Bank28Bank26Residue",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$4000",
+   "end": "$408F",
+   "bytes": 144,
+   "label": "Bank29OrientationFrame0",
+   "aliases": [
+    "Bank29OrientationTiles"
+   ]
+  },
+  {
+   "bank": "$29",
+   "start": "$4090",
+   "end": "$411F",
+   "bytes": 144,
+   "label": "Bank29OrientationFrame1",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$4120",
+   "end": "$41AF",
+   "bytes": 144,
+   "label": "Bank29OrientationFrame2",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$41B0",
+   "end": "$423F",
+   "bytes": 144,
+   "label": "Bank29OrientationFrame3",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$4240",
+   "end": "$42CF",
+   "bytes": 144,
+   "label": "Bank29OrientationFrame4",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$42D0",
+   "end": "$435F",
+   "bytes": 144,
+   "label": "Bank29OrientationFrame5",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$4360",
+   "end": "$43EF",
+   "bytes": 144,
+   "label": "Bank29OrientationFrame6",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$43F0",
+   "end": "$447F",
+   "bytes": 144,
+   "label": "Bank29OrientationFrame7",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$4480",
+   "end": "$450F",
+   "bytes": 144,
+   "label": "Bank29OrientationFrame8",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$4510",
+   "end": "$4511",
+   "bytes": 2,
+   "label": "Bank29Unknown4510",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$4512",
+   "end": "$4517",
+   "bytes": 6,
+   "label": "Bank29ObjectPalette",
+   "aliases": []
+  },
+  {
+   "bank": "$29",
+   "start": "$4518",
+   "end": "$7FFF",
+   "bytes": 15080,
+   "label": "Bank29Bank26Residue",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$4000",
+   "end": "$5CFF",
+   "bytes": 7424,
+   "label": "FixedScreen2A_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$5D00",
+   "end": "$5E67",
+   "bytes": 360,
+   "label": "FixedScreen2A_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$5E68",
+   "end": "$5F43",
+   "bytes": 220,
+   "label": "FixedScreen2A_FrameTileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$5F44",
+   "end": "$60AB",
+   "bytes": 360,
+   "label": "FixedScreen2A_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$60AC",
+   "end": "$6187",
+   "bytes": 220,
+   "label": "FixedScreen2A_FrameAttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$6188",
+   "end": "$61C7",
+   "bytes": 64,
+   "label": "FixedScreen2A_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$61C8",
+   "end": "$61D7",
+   "bytes": 16,
+   "label": "FixedScreen2A_FrameTable",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$61D8",
+   "end": "$622F",
+   "bytes": 88,
+   "label": "Func_2A_61D8",
+   "aliases": [
+    "OptionsScreen_LoadTiles",
+    "ScreenMode01_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2A",
+   "start": "$6230",
+   "end": "$62A3",
+   "bytes": 116,
+   "label": "Func_2A_6230",
+   "aliases": [
+    "OptionsScreen_Draw",
+    "ScreenMode01_Draw"
+   ]
+  },
+  {
+   "bank": "$2A",
+   "start": "$62A4",
+   "end": "$62B1",
+   "bytes": 14,
+   "label": "OptionsScreen_Descriptor",
+   "aliases": [
+    "ScreenMode01_Descriptor"
+   ]
+  },
+  {
+   "bank": "$2A",
+   "start": "$62B2",
+   "end": "$6761",
+   "bytes": 1200,
+   "label": "ScreenMode01_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$6762",
+   "end": "$68B5",
+   "bytes": 340,
+   "label": "ScreenMode01_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$68B6",
+   "end": "$6A09",
+   "bytes": 340,
+   "label": "ScreenMode01_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$6A0A",
+   "end": "$6A21",
+   "bytes": 24,
+   "label": "ScreenMode01_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$6A22",
+   "end": "$6A79",
+   "bytes": 88,
+   "label": "Func_2A_6A22",
+   "aliases": [
+    "ScreenMode12_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2A",
+   "start": "$6A7A",
+   "end": "$6AD2",
+   "bytes": 89,
+   "label": "Func_2A_6A7A",
+   "aliases": [
+    "ScreenMode12_Draw"
+   ]
+  },
+  {
+   "bank": "$2A",
+   "start": "$6AD3",
+   "end": "$6AE0",
+   "bytes": 14,
+   "label": "ScreenMode12_Descriptor",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$6AE1",
+   "end": "$7430",
+   "bytes": 2384,
+   "label": "ScreenMode12_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$7431",
+   "end": "$7598",
+   "bytes": 360,
+   "label": "ScreenMode12_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$7599",
+   "end": "$7700",
+   "bytes": 360,
+   "label": "ScreenMode12_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$7701",
+   "end": "$7718",
+   "bytes": 24,
+   "label": "ScreenMode12_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$7719",
+   "end": "$7753",
+   "bytes": 59,
+   "label": "FixedScreen2A_LoadTiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$7754",
+   "end": "$7773",
+   "bytes": 32,
+   "label": "FixedScreen2A_Draw",
+   "aliases": []
+  },
+  {
+   "bank": "$2A",
+   "start": "$7774",
+   "end": "$7794",
+   "bytes": 33,
+   "label": "FixedScreen2A_Run",
+   "aliases": [
+    "Func_2A_7774"
+   ]
+  },
+  {
+   "bank": "$2A",
+   "start": "$7795",
+   "end": "$7FFF",
+   "bytes": 2155,
+   "label": "FixedScreen2A_DrawFrame",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$4000",
+   "end": "$4057",
+   "bytes": 88,
+   "label": "BootSequenceScreen4_LoadTiles",
+   "aliases": [
+    "Func_2B_4000",
+    "ScreenMode07_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2B",
+   "start": "$4058",
+   "end": "$40CB",
+   "bytes": 116,
+   "label": "BootSequenceScreen4_Draw",
+   "aliases": [
+    "Func_2B_4058",
+    "ScreenMode07_Draw"
+   ]
+  },
+  {
+   "bank": "$2B",
+   "start": "$40CC",
+   "end": "$40D9",
+   "bytes": 14,
+   "label": "BootSequenceScreen4_Descriptor",
+   "aliases": [
+    "ScreenMode07_Descriptor"
+   ]
+  },
+  {
+   "bank": "$2B",
+   "start": "$40DA",
+   "end": "$5829",
+   "bytes": 5968,
+   "label": "ScreenMode07_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$582A",
+   "end": "$59E1",
+   "bytes": 440,
+   "label": "ScreenMode07_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$59E2",
+   "end": "$5B99",
+   "bytes": 440,
+   "label": "ScreenMode07_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$5B9A",
+   "end": "$5BD9",
+   "bytes": 64,
+   "label": "ScreenMode07_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$5BDA",
+   "end": "$5C31",
+   "bytes": 88,
+   "label": "BootSequenceScreen1_LoadTiles",
+   "aliases": [
+    "Func_2B_5BDA",
+    "ScreenMode09_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2B",
+   "start": "$5C32",
+   "end": "$5CA5",
+   "bytes": 116,
+   "label": "BootSequenceScreen1_Draw",
+   "aliases": [
+    "Func_2B_5C32",
+    "ScreenMode09_Draw"
+   ]
+  },
+  {
+   "bank": "$2B",
+   "start": "$5CA6",
+   "end": "$5CB3",
+   "bytes": 14,
+   "label": "BootSequenceScreen1_Descriptor",
+   "aliases": [
+    "ScreenMode09_Descriptor"
+   ]
+  },
+  {
+   "bank": "$2B",
+   "start": "$5CB4",
+   "end": "$6B93",
+   "bytes": 3808,
+   "label": "ScreenMode09_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$6B94",
+   "end": "$6CFB",
+   "bytes": 360,
+   "label": "ScreenMode09_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$6CFC",
+   "end": "$6E63",
+   "bytes": 360,
+   "label": "ScreenMode09_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$6E64",
+   "end": "$6E6B",
+   "bytes": 8,
+   "label": "ScreenMode09_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$6E6C",
+   "end": "$6EC3",
+   "bytes": 88,
+   "label": "Func_2B_6E6C",
+   "aliases": [
+    "ScreenMode04_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2B",
+   "start": "$6EC4",
+   "end": "$6F1C",
+   "bytes": 89,
+   "label": "Func_2B_6EC4",
+   "aliases": [
+    "ScreenMode04_Draw"
+   ]
+  },
+  {
+   "bank": "$2B",
+   "start": "$6F1D",
+   "end": "$6F2A",
+   "bytes": 14,
+   "label": "ScreenMode04_Descriptor",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$6F2B",
+   "end": "$73FA",
+   "bytes": 1232,
+   "label": "ScreenMode04_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$73FB",
+   "end": "$7562",
+   "bytes": 360,
+   "label": "ScreenMode04_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$7563",
+   "end": "$76CA",
+   "bytes": 360,
+   "label": "ScreenMode04_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2B",
+   "start": "$76CB",
+   "end": "$7FFF",
+   "bytes": 2357,
+   "label": "ScreenMode04_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$4000",
+   "end": "$4057",
+   "bytes": 88,
+   "label": "BootSequenceScreen2_LoadTiles",
+   "aliases": [
+    "Func_2C_4000",
+    "ScreenMode02_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$4058",
+   "end": "$40CB",
+   "bytes": 116,
+   "label": "BootSequenceScreen2_Draw",
+   "aliases": [
+    "Func_2C_4058",
+    "ScreenMode02_Draw"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$40CC",
+   "end": "$40D9",
+   "bytes": 14,
+   "label": "BootSequenceScreen2_Descriptor",
+   "aliases": [
+    "ScreenMode02_Descriptor"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$40DA",
+   "end": "$4839",
+   "bytes": 1888,
+   "label": "ScreenMode02_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$483A",
+   "end": "$49A1",
+   "bytes": 360,
+   "label": "ScreenMode02_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$49A2",
+   "end": "$4B09",
+   "bytes": 360,
+   "label": "ScreenMode02_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$4B0A",
+   "end": "$4B39",
+   "bytes": 48,
+   "label": "ScreenMode02_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$4B3A",
+   "end": "$4B91",
+   "bytes": 88,
+   "label": "BootSequenceScreen3_LoadTiles",
+   "aliases": [
+    "Func_2C_4B3A",
+    "ScreenMode05_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$4B92",
+   "end": "$4C05",
+   "bytes": 116,
+   "label": "BootSequenceScreen3_Draw",
+   "aliases": [
+    "Func_2C_4B92",
+    "ScreenMode05_Draw"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$4C06",
+   "end": "$4C13",
+   "bytes": 14,
+   "label": "BootSequenceScreen3_Descriptor",
+   "aliases": [
+    "ScreenMode05_Descriptor"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$4C14",
+   "end": "$52E3",
+   "bytes": 1744,
+   "label": "ScreenMode05_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$52E4",
+   "end": "$544B",
+   "bytes": 360,
+   "label": "ScreenMode05_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$544C",
+   "end": "$55B3",
+   "bytes": 360,
+   "label": "ScreenMode05_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$55B4",
+   "end": "$55C3",
+   "bytes": 16,
+   "label": "ScreenMode05_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$55C4",
+   "end": "$561B",
+   "bytes": 88,
+   "label": "Func_2C_55C4",
+   "aliases": [
+    "ScreenMode11_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$561C",
+   "end": "$5674",
+   "bytes": 89,
+   "label": "Func_2C_561C",
+   "aliases": [
+    "ScreenMode11_Draw"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$5675",
+   "end": "$5682",
+   "bytes": 14,
+   "label": "ScreenMode11_Descriptor",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$5683",
+   "end": "$5BF2",
+   "bytes": 1392,
+   "label": "ScreenMode11_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$5BF3",
+   "end": "$5D5A",
+   "bytes": 360,
+   "label": "ScreenMode11_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$5D5B",
+   "end": "$5EC2",
+   "bytes": 360,
+   "label": "ScreenMode11_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$5EC3",
+   "end": "$5ED2",
+   "bytes": 16,
+   "label": "ScreenMode11_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$5ED3",
+   "end": "$5F2A",
+   "bytes": 88,
+   "label": "Func_2C_5ED3",
+   "aliases": [
+    "ScreenMode03_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$5F2B",
+   "end": "$5F9E",
+   "bytes": 116,
+   "label": "Func_2C_5F2B",
+   "aliases": [
+    "ScreenMode03_Draw"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$5F9F",
+   "end": "$5FF6",
+   "bytes": 88,
+   "label": "Func_2C_5F9F",
+   "aliases": [
+    "ScreenMode06_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$5FF7",
+   "end": "$606A",
+   "bytes": 116,
+   "label": "Func_2C_5FF7",
+   "aliases": [
+    "ScreenMode06_Draw"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$606B",
+   "end": "$6078",
+   "bytes": 14,
+   "label": "ScreenMode03_Descriptor",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$6079",
+   "end": "$6CE8",
+   "bytes": 3184,
+   "label": "ScreenMode03_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$6CE9",
+   "end": "$6E50",
+   "bytes": 360,
+   "label": "CodeRejectedTileMap",
+   "aliases": [
+    "ScreenMode03_AltTileMap"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$6E51",
+   "end": "$6FB8",
+   "bytes": 360,
+   "label": "ScreenMode03_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$6FB9",
+   "end": "$7120",
+   "bytes": 360,
+   "label": "CodeRejectedAttrMap",
+   "aliases": [
+    "ScreenMode03_AltAttrMap"
+   ]
+  },
+  {
+   "bank": "$2C",
+   "start": "$7121",
+   "end": "$7288",
+   "bytes": 360,
+   "label": "ScreenMode03_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$7289",
+   "end": "$72A8",
+   "bytes": 32,
+   "label": "ScreenMode03_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$72A9",
+   "end": "$7B08",
+   "bytes": 2144,
+   "label": "ScreenMode06_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$7B09",
+   "end": "$7C70",
+   "bytes": 360,
+   "label": "ScreenMode06_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$7C71",
+   "end": "$7DD8",
+   "bytes": 360,
+   "label": "ScreenMode06_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$7DD9",
+   "end": "$7DF8",
+   "bytes": 32,
+   "label": "ScreenMode06_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2C",
+   "start": "$7DF9",
+   "end": "$7FFF",
+   "bytes": 519,
+   "label": "ScreenMode06_Descriptor",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$4000",
+   "end": "$4057",
+   "bytes": 88,
+   "label": "Func_2D_4000",
+   "aliases": [
+    "ScreenMode08_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2D",
+   "start": "$4058",
+   "end": "$40CB",
+   "bytes": 116,
+   "label": "Func_2D_4058",
+   "aliases": [
+    "ScreenMode08_Draw"
+   ]
+  },
+  {
+   "bank": "$2D",
+   "start": "$40CC",
+   "end": "$40D9",
+   "bytes": 14,
+   "label": "ScreenMode08_Descriptor",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$40DA",
+   "end": "$51E9",
+   "bytes": 4368,
+   "label": "ScreenMode08_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$51EA",
+   "end": "$5351",
+   "bytes": 360,
+   "label": "ScreenMode08_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$5352",
+   "end": "$54B9",
+   "bytes": 360,
+   "label": "ScreenMode08_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$54BA",
+   "end": "$54F9",
+   "bytes": 64,
+   "label": "ScreenMode08_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$54FA",
+   "end": "$5551",
+   "bytes": 88,
+   "label": "Func_2D_54FA",
+   "aliases": [
+    "ScreenMode00_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2D",
+   "start": "$5552",
+   "end": "$55C5",
+   "bytes": 116,
+   "label": "Func_2D_5552",
+   "aliases": [
+    "ScreenMode00_Draw"
+   ]
+  },
+  {
+   "bank": "$2D",
+   "start": "$55C6",
+   "end": "$55D3",
+   "bytes": 14,
+   "label": "ScreenMode00_Descriptor",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$55D4",
+   "end": "$5E93",
+   "bytes": 2240,
+   "label": "ScreenMode00_Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$5E94",
+   "end": "$5FE7",
+   "bytes": 340,
+   "label": "ScreenMode00_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$5FE8",
+   "end": "$613B",
+   "bytes": 340,
+   "label": "ScreenMode00_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2D",
+   "start": "$613C",
+   "end": "$7FFF",
+   "bytes": 7876,
+   "label": "ScreenMode00_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$4000",
+   "end": "$4057",
+   "bytes": 88,
+   "label": "Func_2E_4000",
+   "aliases": [
+    "Screen2E_LoadTiles"
+   ]
+  },
+  {
+   "bank": "$2E",
+   "start": "$4058",
+   "end": "$40CB",
+   "bytes": 116,
+   "label": "Func_2E_4058",
+   "aliases": [
+    "Screen2E_Draw"
+   ]
+  },
+  {
+   "bank": "$2E",
+   "start": "$40CC",
+   "end": "$40D9",
+   "bytes": 14,
+   "label": "Screen2E_Descriptor",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$40DA",
+   "end": "$51E9",
+   "bytes": 4368,
+   "label": "MenuState05Picture2_Tiles",
+   "aliases": [
+    "Screen2E_Tiles"
+   ]
+  },
+  {
+   "bank": "$2E",
+   "start": "$51EA",
+   "end": "$5365",
+   "bytes": 380,
+   "label": "Screen2E_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$5366",
+   "end": "$54E1",
+   "bytes": 380,
+   "label": "Screen2E_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$54E2",
+   "end": "$5521",
+   "bytes": 64,
+   "label": "Screen2E_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$5522",
+   "end": "$6561",
+   "bytes": 4160,
+   "label": "MenuState05Picture1_Tiles",
+   "aliases": [
+    "Picture596D1_Tiles"
+   ]
+  },
+  {
+   "bank": "$2E",
+   "start": "$6562",
+   "end": "$66DD",
+   "bytes": 380,
+   "label": "Picture596D1_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$66DE",
+   "end": "$6859",
+   "bytes": 380,
+   "label": "Picture596D1_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$685A",
+   "end": "$6899",
+   "bytes": 64,
+   "label": "Picture596D1_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$689A",
+   "end": "$7999",
+   "bytes": 4352,
+   "label": "MenuState05Picture0_Tiles",
+   "aliases": [
+    "Picture596D0_Tiles"
+   ]
+  },
+  {
+   "bank": "$2E",
+   "start": "$799A",
+   "end": "$7B15",
+   "bytes": 380,
+   "label": "Picture596D0_TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$7B16",
+   "end": "$7C91",
+   "bytes": 380,
+   "label": "Picture596D0_AttrMap",
+   "aliases": []
+  },
+  {
+   "bank": "$2E",
+   "start": "$7C92",
+   "end": "$7FFF",
+   "bytes": 878,
+   "label": "Picture596D0_Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4000",
+   "end": "$445F",
+   "bytes": 1120,
+   "label": "ScrollScene21Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4460",
+   "end": "$454F",
+   "bytes": 240,
+   "label": "ScrollScene21Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4550",
+   "end": "$4557",
+   "bytes": 8,
+   "label": "ScrollScene21Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4558",
+   "end": "$4997",
+   "bytes": 1088,
+   "label": "ScrollScene22Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4998",
+   "end": "$4A87",
+   "bytes": 240,
+   "label": "ScrollScene22Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4A88",
+   "end": "$4A8F",
+   "bytes": 8,
+   "label": "ScrollScene22Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4A90",
+   "end": "$4EDF",
+   "bytes": 1104,
+   "label": "ScrollScene23Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4EE0",
+   "end": "$4FCF",
+   "bytes": 240,
+   "label": "ScrollScene23Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4FD0",
+   "end": "$4FD7",
+   "bytes": 8,
+   "label": "ScrollScene23Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$4FD8",
+   "end": "$54C7",
+   "bytes": 1264,
+   "label": "ScrollScene24Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$54C8",
+   "end": "$55B7",
+   "bytes": 240,
+   "label": "ScrollScene24Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$55B8",
+   "end": "$55BF",
+   "bytes": 8,
+   "label": "ScrollScene24Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$55C0",
+   "end": "$5A8F",
+   "bytes": 1232,
+   "label": "ScrollScene25Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$5A90",
+   "end": "$5B7F",
+   "bytes": 240,
+   "label": "ScrollScene25Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$5B80",
+   "end": "$5B87",
+   "bytes": 8,
+   "label": "ScrollScene25Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$5B88",
+   "end": "$5FD7",
+   "bytes": 1104,
+   "label": "ScrollScene26Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$5FD8",
+   "end": "$60C7",
+   "bytes": 240,
+   "label": "ScrollScene26Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$60C8",
+   "end": "$60CF",
+   "bytes": 8,
+   "label": "ScrollScene26Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$60D0",
+   "end": "$651F",
+   "bytes": 1104,
+   "label": "ScrollScene27Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$6520",
+   "end": "$660F",
+   "bytes": 240,
+   "label": "ScrollScene27Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$6610",
+   "end": "$6617",
+   "bytes": 8,
+   "label": "ScrollScene27Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$6618",
+   "end": "$6A27",
+   "bytes": 1040,
+   "label": "ScrollScene28Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$6A28",
+   "end": "$6B17",
+   "bytes": 240,
+   "label": "ScrollScene28Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$6B18",
+   "end": "$6B1F",
+   "bytes": 8,
+   "label": "ScrollScene28Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$6B20",
+   "end": "$6F3F",
+   "bytes": 1056,
+   "label": "ScrollScene29Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$6F40",
+   "end": "$702F",
+   "bytes": 240,
+   "label": "ScrollScene29Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$7030",
+   "end": "$7037",
+   "bytes": 8,
+   "label": "ScrollScene29Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$7038",
+   "end": "$7437",
+   "bytes": 1024,
+   "label": "ScrollScene30Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$7438",
+   "end": "$7527",
+   "bytes": 240,
+   "label": "ScrollScene30Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$7528",
+   "end": "$752F",
+   "bytes": 8,
+   "label": "ScrollScene30Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$7530",
+   "end": "$79EF",
+   "bytes": 1216,
+   "label": "ScrollScene31Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$79F0",
+   "end": "$7ADF",
+   "bytes": 240,
+   "label": "ScrollScene31Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$2F",
+   "start": "$7AE0",
+   "end": "$7FFF",
+   "bytes": 1312,
+   "label": "ScrollScene31Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$4000",
+   "end": "$449F",
+   "bytes": 1184,
+   "label": "ScrollScene32Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$44A0",
+   "end": "$458F",
+   "bytes": 240,
+   "label": "ScrollScene32Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$4590",
+   "end": "$4597",
+   "bytes": 8,
+   "label": "ScrollScene32Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$4598",
+   "end": "$49F7",
+   "bytes": 1120,
+   "label": "ScrollScene33Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$49F8",
+   "end": "$4AE7",
+   "bytes": 240,
+   "label": "ScrollScene33Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$4AE8",
+   "end": "$4AEF",
+   "bytes": 8,
+   "label": "ScrollScene33Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$4AF0",
+   "end": "$501F",
+   "bytes": 1328,
+   "label": "ScrollScene34Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$5020",
+   "end": "$510F",
+   "bytes": 240,
+   "label": "ScrollScene34Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$5110",
+   "end": "$5117",
+   "bytes": 8,
+   "label": "ScrollScene34Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$5118",
+   "end": "$5647",
+   "bytes": 1328,
+   "label": "ScrollScene35Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$5648",
+   "end": "$5737",
+   "bytes": 240,
+   "label": "ScrollScene35Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$5738",
+   "end": "$57FF",
+   "bytes": 200,
+   "label": "ScrollScene35Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$5800",
+   "end": "$66FF",
+   "bytes": 3840,
+   "label": "FixedScene06Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$6700",
+   "end": "$67EF",
+   "bytes": 240,
+   "label": "FixedScene06TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$67F0",
+   "end": "$68DF",
+   "bytes": 240,
+   "label": "FixedScene06Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$68E0",
+   "end": "$69FF",
+   "bytes": 288,
+   "label": "FixedScene06Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$6A00",
+   "end": "$773F",
+   "bytes": 3392,
+   "label": "FixedScene07Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$7740",
+   "end": "$782F",
+   "bytes": 240,
+   "label": "FixedScene07TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$7830",
+   "end": "$791F",
+   "bytes": 240,
+   "label": "FixedScene07Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$30",
+   "start": "$7920",
+   "end": "$7FFF",
+   "bytes": 1760,
+   "label": "FixedScene07Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$4000",
+   "end": "$4E0F",
+   "bytes": 3600,
+   "label": "FixedScene08Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$4E10",
+   "end": "$4EFF",
+   "bytes": 240,
+   "label": "FixedScene08TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$4F00",
+   "end": "$4FEF",
+   "bytes": 240,
+   "label": "FixedScene08Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$4FF0",
+   "end": "$501F",
+   "bytes": 48,
+   "label": "FixedScene08Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$5020",
+   "end": "$5DAF",
+   "bytes": 3472,
+   "label": "FixedScene09Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$5DB0",
+   "end": "$5E9F",
+   "bytes": 240,
+   "label": "FixedScene09TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$5EA0",
+   "end": "$5F8F",
+   "bytes": 240,
+   "label": "FixedScene09Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$5F90",
+   "end": "$5FCF",
+   "bytes": 64,
+   "label": "FixedScene09Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$5FD0",
+   "end": "$697F",
+   "bytes": 2480,
+   "label": "FixedScene10Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$6980",
+   "end": "$6A6F",
+   "bytes": 240,
+   "label": "FixedScene10TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$6A70",
+   "end": "$6B5F",
+   "bytes": 240,
+   "label": "FixedScene10Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$6B60",
+   "end": "$6B9F",
+   "bytes": 64,
+   "label": "FixedScene10Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$6BA0",
+   "end": "$77FF",
+   "bytes": 3168,
+   "label": "FixedScene01Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$7800",
+   "end": "$78EF",
+   "bytes": 240,
+   "label": "FixedScene01TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$78F0",
+   "end": "$79DF",
+   "bytes": 240,
+   "label": "FixedScene01Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$31",
+   "start": "$79E0",
+   "end": "$7FFF",
+   "bytes": 1568,
+   "label": "FixedScene01Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$4000",
+   "end": "$4EDF",
+   "bytes": 3808,
+   "label": "FixedScene02Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$4EE0",
+   "end": "$4FCF",
+   "bytes": 240,
+   "label": "FixedScene02TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$4FD0",
+   "end": "$50BF",
+   "bytes": 240,
+   "label": "FixedScene02Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$50C0",
+   "end": "$50FF",
+   "bytes": 64,
+   "label": "FixedScene02Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$5100",
+   "end": "$5F7F",
+   "bytes": 3712,
+   "label": "FixedScene03Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$5F80",
+   "end": "$606F",
+   "bytes": 240,
+   "label": "FixedScene03TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$6070",
+   "end": "$615F",
+   "bytes": 240,
+   "label": "FixedScene03Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$6160",
+   "end": "$619F",
+   "bytes": 64,
+   "label": "FixedScene03Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$61A0",
+   "end": "$708F",
+   "bytes": 3824,
+   "label": "FixedScene04Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$7090",
+   "end": "$717F",
+   "bytes": 240,
+   "label": "FixedScene04TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$7180",
+   "end": "$726F",
+   "bytes": 240,
+   "label": "FixedScene04Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$32",
+   "start": "$7270",
+   "end": "$7FFF",
+   "bytes": 3472,
+   "label": "FixedScene04Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$33",
+   "start": "$4000",
+   "end": "$4E5F",
+   "bytes": 3680,
+   "label": "FixedScene05Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$33",
+   "start": "$4E60",
+   "end": "$4F4F",
+   "bytes": 240,
+   "label": "FixedScene05TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$33",
+   "start": "$4F50",
+   "end": "$503F",
+   "bytes": 240,
+   "label": "FixedScene05Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$33",
+   "start": "$5040",
+   "end": "$519F",
+   "bytes": 352,
+   "label": "FixedScene05Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$33",
+   "start": "$51A0",
+   "end": "$5ECF",
+   "bytes": 3376,
+   "label": "FixedScene00Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$33",
+   "start": "$5ED0",
+   "end": "$5FBF",
+   "bytes": 240,
+   "label": "FixedScene00TileMap",
+   "aliases": []
+  },
+  {
+   "bank": "$33",
+   "start": "$5FC0",
+   "end": "$60AF",
+   "bytes": 240,
+   "label": "FixedScene00Attributes",
+   "aliases": []
+  },
+  {
+   "bank": "$33",
+   "start": "$60B0",
+   "end": "$7FFF",
+   "bytes": 8016,
+   "label": "FixedScene00Palettes",
+   "aliases": []
+  },
+  {
+   "bank": "$34",
+   "start": "$4000",
+   "end": "$4E3F",
+   "bytes": 3648,
+   "label": "ScrollScene06Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$34",
+   "start": "$4E40",
+   "end": "$524F",
+   "bytes": 1040,
+   "label": "ScrollScene06Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$34",
+   "start": "$5250",
+   "end": "$5257",
+   "bytes": 8,
+   "label": "ScrollScene06Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$34",
+   "start": "$5258",
+   "end": "$60D7",
+   "bytes": 3712,
+   "label": "ScrollScene07Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$34",
+   "start": "$60D8",
+   "end": "$650F",
+   "bytes": 1080,
+   "label": "ScrollScene07Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$34",
+   "start": "$6510",
+   "end": "$6517",
+   "bytes": 8,
+   "label": "ScrollScene07Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$34",
+   "start": "$6518",
+   "end": "$71F7",
+   "bytes": 3296,
+   "label": "ScrollScene08Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$34",
+   "start": "$71F8",
+   "end": "$762F",
+   "bytes": 1080,
+   "label": "ScrollScene08Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$34",
+   "start": "$7630",
+   "end": "$7FFF",
+   "bytes": 2512,
+   "label": "ScrollScene08Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$35",
+   "start": "$4000",
+   "end": "$4A5F",
+   "bytes": 2656,
+   "label": "ScrollScene09Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$35",
+   "start": "$4A60",
+   "end": "$4E97",
+   "bytes": 1080,
+   "label": "ScrollScene09Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$35",
+   "start": "$4E98",
+   "end": "$4E9F",
+   "bytes": 8,
+   "label": "ScrollScene09Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$35",
+   "start": "$4EA0",
+   "end": "$5ACF",
+   "bytes": 3120,
+   "label": "ScrollScene10Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$35",
+   "start": "$5AD0",
+   "end": "$5EDF",
+   "bytes": 1040,
+   "label": "ScrollScene10Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$35",
+   "start": "$5EE0",
+   "end": "$5EE7",
+   "bytes": 8,
+   "label": "ScrollScene10Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$35",
+   "start": "$5EE8",
+   "end": "$6D87",
+   "bytes": 3744,
+   "label": "ScrollScene11Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$35",
+   "start": "$6D88",
+   "end": "$71BF",
+   "bytes": 1080,
+   "label": "ScrollScene11Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$35",
+   "start": "$71C0",
+   "end": "$7FFF",
+   "bytes": 3648,
+   "label": "ScrollScene11Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$36",
+   "start": "$4000",
+   "end": "$4D2F",
+   "bytes": 3376,
+   "label": "ScrollScene12Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$36",
+   "start": "$4D30",
+   "end": "$5167",
+   "bytes": 1080,
+   "label": "ScrollScene12Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$36",
+   "start": "$5168",
+   "end": "$516F",
+   "bytes": 8,
+   "label": "ScrollScene12Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$36",
+   "start": "$5170",
+   "end": "$5BAF",
+   "bytes": 2624,
+   "label": "ScrollScene13Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$36",
+   "start": "$5BB0",
+   "end": "$5FE7",
+   "bytes": 1080,
+   "label": "ScrollScene13Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$36",
+   "start": "$5FE8",
+   "end": "$5FEF",
+   "bytes": 8,
+   "label": "ScrollScene13Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$36",
+   "start": "$5FF0",
+   "end": "$6D2F",
+   "bytes": 3392,
+   "label": "ScrollScene14Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$36",
+   "start": "$6D30",
+   "end": "$7167",
+   "bytes": 1080,
+   "label": "ScrollScene14Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$36",
+   "start": "$7168",
+   "end": "$7FFF",
+   "bytes": 3736,
+   "label": "ScrollScene14Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$37",
+   "start": "$4000",
+   "end": "$4B7F",
+   "bytes": 2944,
+   "label": "ScrollScene15Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$37",
+   "start": "$4B80",
+   "end": "$4FB7",
+   "bytes": 1080,
+   "label": "ScrollScene15Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$37",
+   "start": "$4FB8",
+   "end": "$4FBF",
+   "bytes": 8,
+   "label": "ScrollScene15Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$37",
+   "start": "$4FC0",
+   "end": "$5B2F",
+   "bytes": 2928,
+   "label": "ScrollScene16Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$37",
+   "start": "$5B30",
+   "end": "$5F67",
+   "bytes": 1080,
+   "label": "ScrollScene16Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$37",
+   "start": "$5F68",
+   "end": "$5F6F",
+   "bytes": 8,
+   "label": "ScrollScene16Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$37",
+   "start": "$5F70",
+   "end": "$6ABF",
+   "bytes": 2896,
+   "label": "ScrollScene17Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$37",
+   "start": "$6AC0",
+   "end": "$6EF7",
+   "bytes": 1080,
+   "label": "ScrollScene17Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$37",
+   "start": "$6EF8",
+   "end": "$7FFF",
+   "bytes": 4360,
+   "label": "ScrollScene17Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$38",
+   "start": "$4000",
+   "end": "$4AFF",
+   "bytes": 2816,
+   "label": "ScrollScene18Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$38",
+   "start": "$4B00",
+   "end": "$4F0F",
+   "bytes": 1040,
+   "label": "ScrollScene18Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$38",
+   "start": "$4F10",
+   "end": "$4F17",
+   "bytes": 8,
+   "label": "ScrollScene18Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$38",
+   "start": "$4F18",
+   "end": "$5D87",
+   "bytes": 3696,
+   "label": "ScrollScene19Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$38",
+   "start": "$5D88",
+   "end": "$6197",
+   "bytes": 1040,
+   "label": "ScrollScene19Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$38",
+   "start": "$6198",
+   "end": "$619F",
+   "bytes": 8,
+   "label": "ScrollScene19Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$38",
+   "start": "$61A0",
+   "end": "$6C9F",
+   "bytes": 2816,
+   "label": "ScrollScene20Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$38",
+   "start": "$6CA0",
+   "end": "$70AF",
+   "bytes": 1040,
+   "label": "ScrollScene20Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$38",
+   "start": "$70B0",
+   "end": "$7FFF",
+   "bytes": 3920,
+   "label": "ScrollScene20Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$39",
+   "start": "$4000",
+   "end": "$53FF",
+   "bytes": 5120,
+   "label": "ScrollScene01Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$39",
+   "start": "$5400",
+   "end": "$5A67",
+   "bytes": 1640,
+   "label": "ScrollScene01Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$39",
+   "start": "$5A68",
+   "end": "$5A6F",
+   "bytes": 8,
+   "label": "ScrollScene01Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$39",
+   "start": "$5A70",
+   "end": "$6B4F",
+   "bytes": 4320,
+   "label": "ScrollScene02Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$39",
+   "start": "$6B50",
+   "end": "$70EF",
+   "bytes": 1440,
+   "label": "ScrollScene02Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$39",
+   "start": "$70F0",
+   "end": "$7FFF",
+   "bytes": 3856,
+   "label": "ScrollScene02Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$3A",
+   "start": "$4000",
+   "end": "$545F",
+   "bytes": 5216,
+   "label": "ScrollScene03Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$3A",
+   "start": "$5460",
+   "end": "$5A4F",
+   "bytes": 1520,
+   "label": "ScrollScene03Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$3A",
+   "start": "$5A50",
+   "end": "$5A57",
+   "bytes": 8,
+   "label": "ScrollScene03Palette",
+   "aliases": []
+  },
+  {
+   "bank": "$3A",
+   "start": "$5A58",
+   "end": "$6A47",
+   "bytes": 4080,
+   "label": "ScrollScene04Tiles",
+   "aliases": []
+  },
+  {
+   "bank": "$3A",
+   "start": "$6A48",
+   "end": "$7037",
+   "bytes": 1520,
+   "label": "ScrollScene04Rows",
+   "aliases": []
+  },
+  {
+   "bank": "$3A",
+   "start": "$7038",
+   "end": "$7FFF",
+   "bytes": 4040,
+   "label": "ScrollScene04Palette",
+   "aliases": []
+  }
+ ]
+}

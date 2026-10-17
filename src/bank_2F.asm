@@ -179,5 +179,42 @@ ScrollScene31Palette:
 	dw $1120, $0204, $270A, $63D9
 
 	ds $7FFF - @, 0
-	db $2F ; bank marker
+	db BANK(@) ; bank marker
 ASSERT @ == $8000
+
+; Relocation pins (RELOCATION_AUDIT.md): these addresses are stored as raw
+; numbers in banks outside this assignment, so moving them must stop the
+; build until those tables use symbols.
+	ASSERT BANK(ScrollScene21Tiles) == $2F && ScrollScene21Tiles == $4000, "raw pointer: src/bank_01.asm:3841"
+	ASSERT BANK(ScrollScene21Rows) == $2F && ScrollScene21Rows == $4460, "raw pointer: src/bank_01.asm:3841"
+	ASSERT BANK(ScrollScene21Palette) == $2F && ScrollScene21Palette == $4550, "raw pointer: src/bank_01.asm:3843"
+	ASSERT BANK(ScrollScene22Tiles) == $2F && ScrollScene22Tiles == $4558, "raw pointer: src/bank_01.asm:3845"
+	ASSERT BANK(ScrollScene22Rows) == $2F && ScrollScene22Rows == $4998, "raw pointer: src/bank_01.asm:3845"
+	ASSERT BANK(ScrollScene22Palette) == $2F && ScrollScene22Palette == $4A88, "raw pointer: src/bank_01.asm:3847"
+	ASSERT BANK(ScrollScene23Tiles) == $2F && ScrollScene23Tiles == $4A90, "raw pointer: src/bank_01.asm:3849"
+	ASSERT BANK(ScrollScene23Rows) == $2F && ScrollScene23Rows == $4EE0, "raw pointer: src/bank_01.asm:3849"
+	ASSERT BANK(ScrollScene23Palette) == $2F && ScrollScene23Palette == $4FD0, "raw pointer: src/bank_01.asm:3851"
+	ASSERT BANK(ScrollScene24Tiles) == $2F && ScrollScene24Tiles == $4FD8, "raw pointer: src/bank_01.asm:3853"
+	ASSERT BANK(ScrollScene24Rows) == $2F && ScrollScene24Rows == $54C8, "raw pointer: src/bank_01.asm:3853"
+	ASSERT BANK(ScrollScene24Palette) == $2F && ScrollScene24Palette == $55B8, "raw pointer: src/bank_01.asm:3855"
+	ASSERT BANK(ScrollScene25Tiles) == $2F && ScrollScene25Tiles == $55C0, "raw pointer: src/bank_01.asm:3857"
+	ASSERT BANK(ScrollScene25Rows) == $2F && ScrollScene25Rows == $5A90, "raw pointer: src/bank_01.asm:3857"
+	ASSERT BANK(ScrollScene25Palette) == $2F && ScrollScene25Palette == $5B80, "raw pointer: src/bank_01.asm:3859"
+	ASSERT BANK(ScrollScene26Tiles) == $2F && ScrollScene26Tiles == $5B88, "raw pointer: src/bank_01.asm:3861"
+	ASSERT BANK(ScrollScene26Rows) == $2F && ScrollScene26Rows == $5FD8, "raw pointer: src/bank_01.asm:3861"
+	ASSERT BANK(ScrollScene26Palette) == $2F && ScrollScene26Palette == $60C8, "raw pointer: src/bank_01.asm:3863"
+	ASSERT BANK(ScrollScene27Tiles) == $2F && ScrollScene27Tiles == $60D0, "raw pointer: src/bank_01.asm:3865"
+	ASSERT BANK(ScrollScene27Rows) == $2F && ScrollScene27Rows == $6520, "raw pointer: src/bank_01.asm:3865"
+	ASSERT BANK(ScrollScene27Palette) == $2F && ScrollScene27Palette == $6610, "raw pointer: src/bank_01.asm:3867"
+	ASSERT BANK(ScrollScene28Tiles) == $2F && ScrollScene28Tiles == $6618, "raw pointer: src/bank_01.asm:3869"
+	ASSERT BANK(ScrollScene28Rows) == $2F && ScrollScene28Rows == $6A28, "raw pointer: src/bank_01.asm:3869"
+	ASSERT BANK(ScrollScene28Palette) == $2F && ScrollScene28Palette == $6B18, "raw pointer: src/bank_01.asm:3871"
+	ASSERT BANK(ScrollScene29Tiles) == $2F && ScrollScene29Tiles == $6B20, "raw pointer: src/bank_01.asm:3873"
+	ASSERT BANK(ScrollScene29Rows) == $2F && ScrollScene29Rows == $6F40, "raw pointer: src/bank_01.asm:3873"
+	ASSERT BANK(ScrollScene29Palette) == $2F && ScrollScene29Palette == $7030, "raw pointer: src/bank_01.asm:3875"
+	ASSERT BANK(ScrollScene30Tiles) == $2F && ScrollScene30Tiles == $7038, "raw pointer: src/bank_01.asm:3877"
+	ASSERT BANK(ScrollScene30Rows) == $2F && ScrollScene30Rows == $7438, "raw pointer: src/bank_01.asm:3877"
+	ASSERT BANK(ScrollScene30Palette) == $2F && ScrollScene30Palette == $7528, "raw pointer: src/bank_01.asm:3879"
+	ASSERT BANK(ScrollScene31Tiles) == $2F && ScrollScene31Tiles == $7530, "raw pointer: src/bank_01.asm:3881"
+	ASSERT BANK(ScrollScene31Rows) == $2F && ScrollScene31Rows == $79F0, "raw pointer: src/bank_01.asm:3881"
+	ASSERT BANK(ScrollScene31Palette) == $2F && ScrollScene31Palette == $7AE0, "raw pointer: src/bank_01.asm:3883"

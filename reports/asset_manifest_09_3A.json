@@ -1,0 +1,1012 @@
+{
+ "assets": {
+  "assets/levels/level_00/attrmap.bin": {
+   "bytes": 4096,
+   "sha1": "cbec1d95a2bddf9788364925b38c6a524d68ec4e",
+   "rom_range": "0x29000+0x1000",
+   "consumers": [
+    "src/bank_0A.asm"
+   ]
+  },
+  "assets/levels/level_00/cellmap.bin": {
+   "bytes": 4096,
+   "sha1": "3bf8a3e8893706290be9f169e36a7ced3f8114fb",
+   "rom_range": "0x24000+0x1000",
+   "consumers": [
+    "src/bank_09.asm"
+   ]
+  },
+  "assets/levels/level_00/tilemap.bin": {
+   "bytes": 4096,
+   "sha1": "ec04cb8fd06e9ffb430fcec30c6a5fb1e1bcdee8",
+   "rom_range": "0x28000+0x1000",
+   "consumers": [
+    "src/bank_0A.asm"
+   ]
+  },
+  "assets/levels/level_00/tiles.2bpp": {
+   "bytes": 6416,
+   "sha1": "1cbd256d0bff9bff68c4aedfb7309a5d6507d48d",
+   "rom_range": "0x25000+0x1910",
+   "consumers": [
+    "src/bank_09.asm"
+   ]
+  },
+  "assets/levels/level_01/attrmap.bin": {
+   "bytes": 7744,
+   "sha1": "43eb239823b84a4f1913392faa0c4551de97db88",
+   "rom_range": "0x31e40+0x1e40",
+   "consumers": [
+    "src/bank_0C.asm"
+   ]
+  },
+  "assets/levels/level_01/cellmap.bin": {
+   "bytes": 7744,
+   "sha1": "3a13a5211d405ef2bda606f7deea4728ec0126f1",
+   "rom_range": "0x2c000+0x1e40",
+   "consumers": [
+    "src/bank_0B.asm"
+   ]
+  },
+  "assets/levels/level_01/tilemap.bin": {
+   "bytes": 7744,
+   "sha1": "1c20a490e6bef2f5c017c7d50a847f2faf9b6982",
+   "rom_range": "0x30000+0x1e40",
+   "consumers": [
+    "src/bank_0C.asm"
+   ]
+  },
+  "assets/levels/level_01/tiles.2bpp": {
+   "bytes": 5872,
+   "sha1": "3db90742fa65956fce277bd7ae03898a87d69fb3",
+   "rom_range": "0x2de40+0x16f0",
+   "consumers": [
+    "src/bank_0B.asm"
+   ]
+  },
+  "assets/levels/level_02/attrmap.bin": {
+   "bytes": 7488,
+   "sha1": "1c173f409e11db4bd4296d86a8bf5f81d7a75498",
+   "rom_range": "0x39d40+0x1d40",
+   "consumers": [
+    "src/bank_0E.asm"
+   ]
+  },
+  "assets/levels/level_02/cellmap.bin": {
+   "bytes": 7488,
+   "sha1": "6b6dd3338b0d7fe367b96e1367f22d467a580bc4",
+   "rom_range": "0x34000+0x1d40",
+   "consumers": [
+    "src/bank_0D.asm"
+   ]
+  },
+  "assets/levels/level_02/tilemap.bin": {
+   "bytes": 7488,
+   "sha1": "ede3917cbf74f4f96f01a768052018ce410bfe3e",
+   "rom_range": "0x38000+0x1d40",
+   "consumers": [
+    "src/bank_0E.asm"
+   ]
+  },
+  "assets/levels/level_02/tiles.2bpp": {
+   "bytes": 5888,
+   "sha1": "a47644927480160195d0d9d938ac64ff1f380b89",
+   "rom_range": "0x35d40+0x1700",
+   "consumers": [
+    "src/bank_0D.asm"
+   ]
+  },
+  "assets/levels/level_03/attrmap.bin": {
+   "bytes": 8064,
+   "sha1": "82f8402d464a9c70faa8374d85a06ba0bf184528",
+   "rom_range": "0x41f80+0x1f80",
+   "consumers": [
+    "src/bank_10.asm"
+   ]
+  },
+  "assets/levels/level_03/cellmap.bin": {
+   "bytes": 8064,
+   "sha1": "bf7db61eb0f74b9e0e6b029c57c46fe73bdb78ea",
+   "rom_range": "0x3c000+0x1f80",
+   "consumers": [
+    "src/bank_0F.asm"
+   ]
+  },
+  "assets/levels/level_03/tilemap.bin": {
+   "bytes": 8064,
+   "sha1": "327a85226436e266645dd337223738199fa5a228",
+   "rom_range": "0x40000+0x1f80",
+   "consumers": [
+    "src/bank_10.asm"
+   ]
+  },
+  "assets/levels/level_03/tiles.2bpp": {
+   "bytes": 5712,
+   "sha1": "305e95d2b29073dcbf451e3d42bf1e8fd2853199",
+   "rom_range": "0x3df80+0x1650",
+   "consumers": [
+    "src/bank_0F.asm"
+   ]
+  },
+  "assets/levels/level_04/attrmap.bin": {
+   "bytes": 7744,
+   "sha1": "b12e17c84271a4250b257005df1153724c7706e7",
+   "rom_range": "0x49e40+0x1e40",
+   "consumers": [
+    "src/bank_12.asm"
+   ]
+  },
+  "assets/levels/level_04/cellmap.bin": {
+   "bytes": 7744,
+   "sha1": "8d97857a50bcf5c10c40d00528a8c49bdab3735f",
+   "rom_range": "0x44000+0x1e40",
+   "consumers": [
+    "src/bank_11.asm"
+   ]
+  },
+  "assets/levels/level_04/tilemap.bin": {
+   "bytes": 7744,
+   "sha1": "be0955e273a3ed2ad245eead1bc43e8d484c9938",
+   "rom_range": "0x48000+0x1e40",
+   "consumers": [
+    "src/bank_12.asm"
+   ]
+  },
+  "assets/levels/level_04/tiles.2bpp": {
+   "bytes": 4704,
+   "sha1": "75e97c380a9eaae7073da9019fa81ee5fc7345b8",
+   "rom_range": "0x45e40+0x1260",
+   "consumers": [
+    "src/bank_11.asm"
+   ]
+  },
+  "assets/levels/level_05/attrmap.bin": {
+   "bytes": 7488,
+   "sha1": "887522268f6e1665f8439751120d914fe015092d",
+   "rom_range": "0x51d40+0x1d40",
+   "consumers": [
+    "src/bank_14.asm"
+   ]
+  },
+  "assets/levels/level_05/cellmap.bin": {
+   "bytes": 7488,
+   "sha1": "0c42b69b1cbed14d3be389d9cb6b6d7db9de7f13",
+   "rom_range": "0x4c000+0x1d40",
+   "consumers": [
+    "src/bank_13.asm"
+   ]
+  },
+  "assets/levels/level_05/tilemap.bin": {
+   "bytes": 7488,
+   "sha1": "d4e14da58447db03aacbddeb637196a27a39f7b8",
+   "rom_range": "0x50000+0x1d40",
+   "consumers": [
+    "src/bank_14.asm"
+   ]
+  },
+  "assets/levels/level_05/tiles.2bpp": {
+   "bytes": 6432,
+   "sha1": "4c4415a0245ad3e429162a9c8aaf9650e19a89a9",
+   "rom_range": "0x4dd40+0x1920",
+   "consumers": [
+    "src/bank_13.asm"
+   ]
+  },
+  "assets/levels/level_06/attrmap.bin": {
+   "bytes": 7040,
+   "sha1": "80528ab4fa8882de9e9cbc661d2d73dcc2126fb2",
+   "rom_range": "0x59b80+0x1b80",
+   "consumers": [
+    "src/bank_16.asm"
+   ]
+  },
+  "assets/levels/level_06/cellmap.bin": {
+   "bytes": 7040,
+   "sha1": "a0b70aadea5939afbea12baace09b0a2c405ab6b",
+   "rom_range": "0x54000+0x1b80",
+   "consumers": [
+    "src/bank_15.asm"
+   ]
+  },
+  "assets/levels/level_06/tilemap.bin": {
+   "bytes": 7040,
+   "sha1": "6aefdde82155c21941aab68491e13fb724928bae",
+   "rom_range": "0x58000+0x1b80",
+   "consumers": [
+    "src/bank_16.asm"
+   ]
+  },
+  "assets/levels/level_06/tiles.2bpp": {
+   "bytes": 4496,
+   "sha1": "40d9563820a8cc6aebd0fb4c0f37c674a637c4c4",
+   "rom_range": "0x55b80+0x1190",
+   "consumers": [
+    "src/bank_15.asm"
+   ]
+  },
+  "assets/levels/level_07/attrmap.bin": {
+   "bytes": 8064,
+   "sha1": "bc65de58c71a09ef8370a7977c46e69128d6d2f4",
+   "rom_range": "0x61f80+0x1f80",
+   "consumers": [
+    "src/bank_18.asm"
+   ]
+  },
+  "assets/levels/level_07/cellmap.bin": {
+   "bytes": 8064,
+   "sha1": "277c24fdcc9a149a4e9de2748e8bde590795fe96",
+   "rom_range": "0x5c000+0x1f80",
+   "consumers": [
+    "src/bank_17.asm"
+   ]
+  },
+  "assets/levels/level_07/tilemap.bin": {
+   "bytes": 8064,
+   "sha1": "72ef364666278463f34c7d0e5e41f261785a847c",
+   "rom_range": "0x60000+0x1f80",
+   "consumers": [
+    "src/bank_18.asm"
+   ]
+  },
+  "assets/levels/level_07/tiles.2bpp": {
+   "bytes": 6640,
+   "sha1": "c7f6f0670905133c9db3b403a18246263e865a91",
+   "rom_range": "0x5df80+0x19f0",
+   "consumers": [
+    "src/bank_17.asm"
+   ]
+  },
+  "assets/levels/level_08/attrmap.bin": {
+   "bytes": 8064,
+   "sha1": "dedd4a27e872cc57a4565607b93b70709fae658a",
+   "rom_range": "0x69f80+0x1f80",
+   "consumers": [
+    "src/bank_1A.asm"
+   ]
+  },
+  "assets/levels/level_08/cellmap.bin": {
+   "bytes": 8064,
+   "sha1": "163207d70b97aaf0c929b6635df0d7da5c1ab07a",
+   "rom_range": "0x64000+0x1f80",
+   "consumers": [
+    "src/bank_19.asm"
+   ]
+  },
+  "assets/levels/level_08/tilemap.bin": {
+   "bytes": 8064,
+   "sha1": "0b21e5a7f9ec23571f59b445f7eb66b930b90e37",
+   "rom_range": "0x68000+0x1f80",
+   "consumers": [
+    "src/bank_1A.asm"
+   ]
+  },
+  "assets/levels/level_08/tiles.2bpp": {
+   "bytes": 6720,
+   "sha1": "e17f3aee9264ab5a82855f19a524676aa1f4da57",
+   "rom_range": "0x65f80+0x1a40",
+   "consumers": [
+    "src/bank_19.asm"
+   ]
+  },
+  "assets/levels/level_09/attrmap.bin": {
+   "bytes": 7680,
+   "sha1": "90fabc4442f3b9c552d74bd791dfed4db8e446e7",
+   "rom_range": "0x71e00+0x1e00",
+   "consumers": [
+    "src/bank_1C.asm"
+   ]
+  },
+  "assets/levels/level_09/cellmap.bin": {
+   "bytes": 7680,
+   "sha1": "d058bc85920a1726bdf2b86490910101f1dc2ba9",
+   "rom_range": "0x6c000+0x1e00",
+   "consumers": [
+    "src/bank_1B.asm"
+   ]
+  },
+  "assets/levels/level_09/tilemap.bin": {
+   "bytes": 7680,
+   "sha1": "ad22c51837e6c63a8ee6cfe26af4adde6adfdf5d",
+   "rom_range": "0x70000+0x1e00",
+   "consumers": [
+    "src/bank_1C.asm"
+   ]
+  },
+  "assets/levels/level_09/tiles.2bpp": {
+   "bytes": 5168,
+   "sha1": "6378ac2986cd0789d3835c87ab6a542bf4e16497",
+   "rom_range": "0x6de00+0x1430",
+   "consumers": [
+    "src/bank_1B.asm"
+   ]
+  },
+  "assets/levels/level_10/attrmap.bin": {
+   "bytes": 7744,
+   "sha1": "ece67f9e77c7165c0126289ac50117f72bbbe80a",
+   "rom_range": "0x79e40+0x1e40",
+   "consumers": [
+    "src/bank_1E.asm"
+   ]
+  },
+  "assets/levels/level_10/cellmap.bin": {
+   "bytes": 7744,
+   "sha1": "c00090e732e2f638db31a9b166146fbf38d32692",
+   "rom_range": "0x74000+0x1e40",
+   "consumers": [
+    "src/bank_1D.asm"
+   ]
+  },
+  "assets/levels/level_10/tilemap.bin": {
+   "bytes": 7744,
+   "sha1": "61d7e0630804cd65102edac1de6bed6e5a50d1d9",
+   "rom_range": "0x78000+0x1e40",
+   "consumers": [
+    "src/bank_1E.asm"
+   ]
+  },
+  "assets/levels/level_10/tiles.2bpp": {
+   "bytes": 4224,
+   "sha1": "386b1376567c02318beb4ec134ab4d84f53eff63",
+   "rom_range": "0x75e40+0x1080",
+   "consumers": [
+    "src/bank_1D.asm"
+   ]
+  },
+  "assets/levels/level_11/attrmap.bin": {
+   "bytes": 7680,
+   "sha1": "577b3c486b711277855cb915cbafb2d41b1851f8",
+   "rom_range": "0x81e00+0x1e00",
+   "consumers": [
+    "src/bank_20.asm"
+   ]
+  },
+  "assets/levels/level_11/cellmap.bin": {
+   "bytes": 7680,
+   "sha1": "1fe0e21edae7cf4d31de7d0058f37889ff70a917",
+   "rom_range": "0x7c000+0x1e00",
+   "consumers": [
+    "src/bank_1F.asm"
+   ]
+  },
+  "assets/levels/level_11/tilemap.bin": {
+   "bytes": 7680,
+   "sha1": "73949644df3f1f337d15c4913373e992ca481632",
+   "rom_range": "0x80000+0x1e00",
+   "consumers": [
+    "src/bank_20.asm"
+   ]
+  },
+  "assets/levels/level_11/tiles.2bpp": {
+   "bytes": 4640,
+   "sha1": "9c59dccdb88b82d52f8bb2496264dffc1099e6d0",
+   "rom_range": "0x7de00+0x1220",
+   "consumers": [
+    "src/bank_1F.asm"
+   ]
+  },
+  "assets/levels/level_12/attrmap.bin": {
+   "bytes": 7680,
+   "sha1": "bb7a6dd2ff63256220efcd5643d9be04d1de4551",
+   "rom_range": "0x89e00+0x1e00",
+   "consumers": [
+    "src/bank_22.asm"
+   ]
+  },
+  "assets/levels/level_12/cellmap.bin": {
+   "bytes": 7680,
+   "sha1": "909ec7573388c9bad6a9b830ddce0bda5e06c83c",
+   "rom_range": "0x84000+0x1e00",
+   "consumers": [
+    "src/bank_21.asm"
+   ]
+  },
+  "assets/levels/level_12/tilemap.bin": {
+   "bytes": 7680,
+   "sha1": "aa317f845878d8a3acbdc871d6f59b3a7130c645",
+   "rom_range": "0x88000+0x1e00",
+   "consumers": [
+    "src/bank_22.asm"
+   ]
+  },
+  "assets/levels/level_12/tiles.2bpp": {
+   "bytes": 3952,
+   "sha1": "c2e5509e0c7f9c6ff734db919fca70e7c6b780e9",
+   "rom_range": "0x85e00+0xf70",
+   "consumers": [
+    "src/bank_21.asm"
+   ]
+  },
+  "assets/levels/level_13/attrmap.bin": {
+   "bytes": 7744,
+   "sha1": "cefc19be49bfd891863401ff0b1a06c2a7798249",
+   "rom_range": "0x91e40+0x1e40",
+   "consumers": [
+    "src/bank_24.asm"
+   ]
+  },
+  "assets/levels/level_13/cellmap.bin": {
+   "bytes": 7744,
+   "sha1": "ca38b47e76f8513c2bb8eba1a60fa5ff9938b15b",
+   "rom_range": "0x8c000+0x1e40",
+   "consumers": [
+    "src/bank_23.asm"
+   ]
+  },
+  "assets/levels/level_13/tilemap.bin": {
+   "bytes": 7744,
+   "sha1": "5515d814d2a6e8a5ae97384490c58e81243fa011",
+   "rom_range": "0x90000+0x1e40",
+   "consumers": [
+    "src/bank_24.asm"
+   ]
+  },
+  "assets/levels/level_13/tiles.2bpp": {
+   "bytes": 4064,
+   "sha1": "298323401f73ceed241dae98de94e79db007de20",
+   "rom_range": "0x8de40+0xfe0",
+   "consumers": [
+    "src/bank_23.asm"
+   ]
+  },
+  "assets/levels/level_14/attrmap.bin": {
+   "bytes": 7680,
+   "sha1": "882d6fa78b41e1c836b738253fd80774389e982a",
+   "rom_range": "0x99e00+0x1e00",
+   "consumers": [
+    "src/bank_26.asm"
+   ]
+  },
+  "assets/levels/level_14/cellmap.bin": {
+   "bytes": 7680,
+   "sha1": "55fde09dfed911e3bff65560aa6fd498f81d58fc",
+   "rom_range": "0x94000+0x1e00",
+   "consumers": [
+    "src/bank_25.asm"
+   ]
+  },
+  "assets/levels/level_14/tilemap.bin": {
+   "bytes": 7680,
+   "sha1": "8bca317732a01031fb255f469c0d2dde4dc0e461",
+   "rom_range": "0x98000+0x1e00",
+   "consumers": [
+    "src/bank_26.asm"
+   ]
+  },
+  "assets/levels/level_14/tiles.2bpp": {
+   "bytes": 6272,
+   "sha1": "7446c43f94dd56bff50f1b3d5d6a9893254c5e02",
+   "rom_range": "0x95e00+0x1880",
+   "consumers": [
+    "src/bank_25.asm"
+   ]
+  },
+  "assets/scenes/bank_30_tiles_4000_449F.2bpp": {
+   "bytes": 1184,
+   "sha1": "29c24a2312ffed2d7e86bb0f985a73efa5e976d1",
+   "rom_range": "0xc0000+0x4a0",
+   "consumers": [
+    "src/bank_30.asm"
+   ]
+  },
+  "assets/scenes/bank_30_tiles_4598_49F7.2bpp": {
+   "bytes": 1120,
+   "sha1": "ab7d2cc15a05064871c43fab352c2744d1380006",
+   "rom_range": "0xc0598+0x460",
+   "consumers": [
+    "src/bank_30.asm"
+   ]
+  },
+  "assets/scenes/bank_30_tiles_4AF0_501F.2bpp": {
+   "bytes": 1328,
+   "sha1": "4eff0126e59d200e122191493102cf2293e55f10",
+   "rom_range": "0xc0af0+0x530",
+   "consumers": [
+    "src/bank_30.asm"
+   ]
+  },
+  "assets/scenes/bank_30_tiles_5118_5647.2bpp": {
+   "bytes": 1328,
+   "sha1": "247813eab2253f0a340faacc88e7cf03ad789342",
+   "rom_range": "0xc1118+0x530",
+   "consumers": [
+    "src/bank_30.asm"
+   ]
+  },
+  "assets/scenes/bank_30_tiles_5800_66FF.2bpp": {
+   "bytes": 3840,
+   "sha1": "1cdff2c58803574b8c79a6495de90a27efbd8811",
+   "rom_range": "0xc1800+0xf00",
+   "consumers": [
+    "src/bank_30.asm"
+   ]
+  },
+  "assets/scenes/bank_30_tiles_6A00_773F.2bpp": {
+   "bytes": 3392,
+   "sha1": "b4c0d4b121421fafd8f6b4d99bf16ca1d31da01b",
+   "rom_range": "0xc2a00+0xd40",
+   "consumers": [
+    "src/bank_30.asm"
+   ]
+  },
+  "assets/scenes/bank_30_tiles_7960_79EF.2bpp": {
+   "bytes": 144,
+   "sha1": "d77ebb25c8471fdd5c726fae9f28626670033d9a",
+   "rom_range": "0xc3960+0x90",
+   "consumers": [
+    "src/bank_30.asm"
+   ]
+  },
+  "assets/scenes/bank_31_tiles_4000_4E0F.2bpp": {
+   "bytes": 3600,
+   "sha1": "edf9ed43d32016808390c09a3e31f7b7615fe88e",
+   "rom_range": "0xc4000+0xe10",
+   "consumers": [
+    "src/bank_31.asm"
+   ]
+  },
+  "assets/scenes/bank_31_tiles_5030_5DAF.2bpp": {
+   "bytes": 3456,
+   "sha1": "f5e54cbd35c20d09c8b142357655594924dfe505",
+   "rom_range": "0xc5030+0xd80",
+   "consumers": [
+    "src/bank_31.asm"
+   ]
+  },
+  "assets/scenes/bank_31_tiles_5FD0_600F.2bpp": {
+   "bytes": 64,
+   "sha1": "6d718a210a88e2dac0bac6688cf594fee859bb13",
+   "rom_range": "0xc5fd0+0x40",
+   "consumers": [
+    "src/bank_31.asm"
+   ]
+  },
+  "assets/scenes/bank_31_tiles_6010_697F.2bpp": {
+   "bytes": 2416,
+   "sha1": "01583e68d64c0f97f834a6d28ee8bb79ed2e4a2d",
+   "rom_range": "0xc6010+0x970",
+   "consumers": [
+    "src/bank_31.asm"
+   ]
+  },
+  "assets/scenes/bank_31_tiles_6BA0_6FBF.2bpp": {
+   "bytes": 1056,
+   "sha1": "0b5244ca49b6c47cc39096e7e27eb02896ba17ac",
+   "rom_range": "0xc6ba0+0x420",
+   "consumers": [
+    "src/bank_31.asm"
+   ]
+  },
+  "assets/scenes/bank_31_tiles_6FC0_77FF.2bpp": {
+   "bytes": 2112,
+   "sha1": "8386a8ff93c8209e549d97b777449cea7ffac9e6",
+   "rom_range": "0xc6fc0+0x840",
+   "consumers": [
+    "src/bank_31.asm"
+   ]
+  },
+  "assets/scenes/bank_31_tiles_7A20_7B8F.2bpp": {
+   "bytes": 368,
+   "sha1": "5b0e81749184b77c752a38f7ebfe8e9b007a1134",
+   "rom_range": "0xc7a20+0x170",
+   "consumers": [
+    "src/bank_31.asm"
+   ]
+  },
+  "assets/scenes/bank_32_tiles_4000_4EDF.2bpp": {
+   "bytes": 3808,
+   "sha1": "8070de9a03bff7ee0ceab07080d3bf8fad2845da",
+   "rom_range": "0xc8000+0xee0",
+   "consumers": [
+    "src/bank_32.asm"
+   ]
+  },
+  "assets/scenes/bank_32_tiles_5100_5F7F.2bpp": {
+   "bytes": 3712,
+   "sha1": "258404a04763a40d6dfdb96ce91b22c83b0d69a4",
+   "rom_range": "0xc9100+0xe80",
+   "consumers": [
+    "src/bank_32.asm"
+   ]
+  },
+  "assets/scenes/bank_32_tiles_61A0_708F.2bpp": {
+   "bytes": 3824,
+   "sha1": "8fe225a4125a17a1d74e0dde18b70ae5be89afd3",
+   "rom_range": "0xca1a0+0xef0",
+   "consumers": [
+    "src/bank_32.asm"
+   ]
+  },
+  "assets/scenes/bank_33_tiles_4000_4E5F.2bpp": {
+   "bytes": 3680,
+   "sha1": "f6555a1712830fa817d59e12fcca9868a9a54426",
+   "rom_range": "0xcc000+0xe60",
+   "consumers": [
+    "src/bank_33.asm"
+   ]
+  },
+  "assets/scenes/bank_33_tiles_51A0_5ECF.2bpp": {
+   "bytes": 3376,
+   "sha1": "aa6061251e60716d8ebf90d69b73f4ea68f0a6c9",
+   "rom_range": "0xcd1a0+0xd30",
+   "consumers": [
+    "src/bank_33.asm"
+   ]
+  },
+  "assets/scenes/bank_33_tiles_60F0_618F.2bpp": {
+   "bytes": 160,
+   "sha1": "9797edf8d0eed36b1cf92547816051c8af4e45ee",
+   "rom_range": "0xce0f0+0xa0",
+   "consumers": [
+    "src/bank_33.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_01_tiles.2bpp": {
+   "bytes": 5120,
+   "sha1": "988ed0839140324e6d17c171759c4b2dee4a5e26",
+   "rom_range": "0xe4000+0x1400",
+   "consumers": [
+    "src/bank_39.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_02_tiles.2bpp": {
+   "bytes": 4320,
+   "sha1": "67ee1c466295c48dec26e73115b78dc607710498",
+   "rom_range": "0xe5a70+0x10e0",
+   "consumers": [
+    "src/bank_39.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_03_tiles.2bpp": {
+   "bytes": 5216,
+   "sha1": "10f951715703bbb87f9252f7bc873fbe8e502c41",
+   "rom_range": "0xe8000+0x1460",
+   "consumers": [
+    "src/bank_3A.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_04_tiles.2bpp": {
+   "bytes": 4080,
+   "sha1": "d0bd569754be620f21a6fa024ae2372933e73591",
+   "rom_range": "0xe9a58+0xff0",
+   "consumers": [
+    "src/bank_3A.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_06_tiles.2bpp": {
+   "bytes": 3648,
+   "sha1": "1a5e52c20c8231977651065ccc1a73ce46a28722",
+   "rom_range": "0xd0000+0xe40",
+   "consumers": [
+    "src/bank_34.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_07_tiles.2bpp": {
+   "bytes": 3712,
+   "sha1": "4e90eb6266cfb07ccfa25056a2e5d105c39e1af2",
+   "rom_range": "0xd1258+0xe80",
+   "consumers": [
+    "src/bank_34.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_08_tiles.2bpp": {
+   "bytes": 3296,
+   "sha1": "c03642bc9467775192cf7157a30ebd6272aee02f",
+   "rom_range": "0xd2518+0xce0",
+   "consumers": [
+    "src/bank_34.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_09_tiles.2bpp": {
+   "bytes": 2656,
+   "sha1": "1fd4fb19e6051eaff4574097a34ae16bd7c5efa5",
+   "rom_range": "0xd4000+0xa60",
+   "consumers": [
+    "src/bank_35.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_10_tiles.2bpp": {
+   "bytes": 3120,
+   "sha1": "88cc391653cdfa423061d98bbb98128a089d9a6a",
+   "rom_range": "0xd4ea0+0xc30",
+   "consumers": [
+    "src/bank_35.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_11_tiles.2bpp": {
+   "bytes": 3744,
+   "sha1": "e37a7ef555c57a9fecd16601252f3679efca8720",
+   "rom_range": "0xd5ee8+0xea0",
+   "consumers": [
+    "src/bank_35.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_12_tiles.2bpp": {
+   "bytes": 3376,
+   "sha1": "26005a6c1ca6209a3ea4d3cdeb5ebd3d9ec8bc1e",
+   "rom_range": "0xd8000+0xd30",
+   "consumers": [
+    "src/bank_36.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_13_tiles.2bpp": {
+   "bytes": 2624,
+   "sha1": "1b8aa86faba96d1c5b433379fa95d503b66c7d63",
+   "rom_range": "0xd9170+0xa40",
+   "consumers": [
+    "src/bank_36.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_14_tiles.2bpp": {
+   "bytes": 3392,
+   "sha1": "ab829ea8af5d8eaf4985a5bd8583df4169f2f64f",
+   "rom_range": "0xd9ff0+0xd40",
+   "consumers": [
+    "src/bank_36.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_15_tiles.2bpp": {
+   "bytes": 2944,
+   "sha1": "bf99a1f3cbd8cf12dd061de7c268ce3d7bf81810",
+   "rom_range": "0xdc000+0xb80",
+   "consumers": [
+    "src/bank_37.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_16_tiles.2bpp": {
+   "bytes": 2928,
+   "sha1": "cf8a00da696828818fbc7f51a4eb14ffe663bd1e",
+   "rom_range": "0xdcfc0+0xb70",
+   "consumers": [
+    "src/bank_37.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_17_tiles.2bpp": {
+   "bytes": 2896,
+   "sha1": "fd107770a305f6be1faf2607743a2583f0647f51",
+   "rom_range": "0xddf70+0xb50",
+   "consumers": [
+    "src/bank_37.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_18_tiles.2bpp": {
+   "bytes": 2816,
+   "sha1": "cf5a0f3927cc398109725d0c6dc711cbe10fba6f",
+   "rom_range": "0xe0000+0xb00",
+   "consumers": [
+    "src/bank_38.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_19_tiles.2bpp": {
+   "bytes": 3696,
+   "sha1": "156a948540ba7011f689ecaace21013ccfad45cb",
+   "rom_range": "0xe0f18+0xe70",
+   "consumers": [
+    "src/bank_38.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_20_tiles.2bpp": {
+   "bytes": 2816,
+   "sha1": "2d5cffc50c1d3ab0757eae8a063d699d089ab265",
+   "rom_range": "0xe21a0+0xb00",
+   "consumers": [
+    "src/bank_38.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_21_tiles.2bpp": {
+   "bytes": 1120,
+   "sha1": "c3ef9044ea77156e1e29ce42ed8f3a0f0a0494d9",
+   "rom_range": "0xbc000+0x460",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_22_tiles.2bpp": {
+   "bytes": 1088,
+   "sha1": "3ef66737df62a0b7c6b3691c11369d667b26838d",
+   "rom_range": "0xbc558+0x440",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_23_tiles.2bpp": {
+   "bytes": 1104,
+   "sha1": "0d2bd84ba3dd8692d1c85251cd8285126150d41d",
+   "rom_range": "0xbca90+0x450",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_24_tiles.2bpp": {
+   "bytes": 1264,
+   "sha1": "b55fcc327ee1b37a2af808e648bb3850ea955bd3",
+   "rom_range": "0xbcfd8+0x4f0",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_25_tiles.2bpp": {
+   "bytes": 1232,
+   "sha1": "0a432f1a5b49ef9c60a5519de90f2ddd2abfdd39",
+   "rom_range": "0xbd5c0+0x4d0",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_26_tiles.2bpp": {
+   "bytes": 1104,
+   "sha1": "e19c9f5d279847fda99ed0ff04f5460ab4d75e62",
+   "rom_range": "0xbdb88+0x450",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_27_tiles.2bpp": {
+   "bytes": 1104,
+   "sha1": "f7804ddbf8b4e2a31299d636e2cae6de29b42d1f",
+   "rom_range": "0xbe0d0+0x450",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_28_tiles.2bpp": {
+   "bytes": 1040,
+   "sha1": "a991d036ece0606fabb2c58304094677522ab592",
+   "rom_range": "0xbe618+0x410",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_29_tiles.2bpp": {
+   "bytes": 1056,
+   "sha1": "1645a511dc24aa53cf79d86bd8572f2aa23a3780",
+   "rom_range": "0xbeb20+0x420",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_30_tiles.2bpp": {
+   "bytes": 1024,
+   "sha1": "ac2da052e82d06850187f4873cefdc1debadb4e1",
+   "rom_range": "0xbf038+0x400",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/scenes/scroll_scene_31_tiles.2bpp": {
+   "bytes": 1216,
+   "sha1": "d82addba6e787a3bd4514e4012a6bb7f01e02089",
+   "rom_range": "0xbf530+0x4c0",
+   "consumers": [
+    "src/bank_2F.asm"
+   ]
+  },
+  "assets/screens/fixedscreen2a_tiles.2bpp": {
+   "bytes": 7424,
+   "sha1": "6276264c1d23b1599c53f065156c5e911e51c8ba",
+   "rom_range": "0xa8000+0x1d00",
+   "consumers": [
+    "src/bank_2A.asm"
+   ]
+  },
+  "assets/screens/picture596d0_tiles.2bpp": {
+   "bytes": 4352,
+   "sha1": "f3497ff9060662d1c4b866b04ed0516e963401d0",
+   "rom_range": "0xba89a+0x1100",
+   "consumers": [
+    "src/bank_2E.asm"
+   ]
+  },
+  "assets/screens/picture596d1_tiles.2bpp": {
+   "bytes": 4160,
+   "sha1": "622fc248d96c6e22017339b1a3dc49f0782d6d45",
+   "rom_range": "0xb9522+0x1040",
+   "consumers": [
+    "src/bank_2E.asm"
+   ]
+  },
+  "assets/screens/screen2e_tiles.2bpp": {
+   "bytes": 4368,
+   "sha1": "f2b9a9ffd8ec82cdefcf150f64039d36b1de4482",
+   "rom_range": "0xb80da+0x1110",
+   "consumers": [
+    "src/bank_2E.asm"
+   ]
+  },
+  "assets/screens/screenmode00_tiles.2bpp": {
+   "bytes": 2240,
+   "sha1": "704292460c3778255acf7063fcdeea67eac5cb1d",
+   "rom_range": "0xb55d4+0x8c0",
+   "consumers": [
+    "src/bank_2D.asm"
+   ]
+  },
+  "assets/screens/screenmode01_tiles.2bpp": {
+   "bytes": 1200,
+   "sha1": "7cefa0af6874d7b16ac6e65d00acd2189256b6d8",
+   "rom_range": "0xaa2b2+0x4b0",
+   "consumers": [
+    "src/bank_2A.asm"
+   ]
+  },
+  "assets/screens/screenmode02_tiles.2bpp": {
+   "bytes": 1888,
+   "sha1": "3a856e8f878c77b1e9f6d3f2a3cc22565924e7f1",
+   "rom_range": "0xb00da+0x760",
+   "consumers": [
+    "src/bank_2C.asm"
+   ]
+  },
+  "assets/screens/screenmode03_tiles.2bpp": {
+   "bytes": 3184,
+   "sha1": "1a14e09c819a92047b5f25e8c80120f39573034b",
+   "rom_range": "0xb2079+0xc70",
+   "consumers": [
+    "src/bank_2C.asm"
+   ]
+  },
+  "assets/screens/screenmode04_tiles.2bpp": {
+   "bytes": 1232,
+   "sha1": "fc4b4a49a91f2b87a64f6cf7496c1701e7a4b798",
+   "rom_range": "0xaef2b+0x4d0",
+   "consumers": [
+    "src/bank_2B.asm"
+   ]
+  },
+  "assets/screens/screenmode05_tiles.2bpp": {
+   "bytes": 1728,
+   "sha1": "f7341a82a54fc18127441d878755f2fd40db57cf",
+   "rom_range": "0xb0c14+0x6c0",
+   "consumers": [
+    "src/bank_2C.asm"
+   ]
+  },
+  "assets/screens/screenmode06_tiles.2bpp": {
+   "bytes": 2144,
+   "sha1": "38c223ec28ff7c6c55d9fd677faf53309b6db7b1",
+   "rom_range": "0xb32a9+0x860",
+   "consumers": [
+    "src/bank_2C.asm"
+   ]
+  },
+  "assets/screens/screenmode07_tiles.2bpp": {
+   "bytes": 5952,
+   "sha1": "cffec73c67f386395b1e675692083c6e45593169",
+   "rom_range": "0xac0da+0x1740",
+   "consumers": [
+    "src/bank_2B.asm"
+   ]
+  },
+  "assets/screens/screenmode08_tiles.2bpp": {
+   "bytes": 4368,
+   "sha1": "67b74128150896c7793bb90af51b769d65e988d3",
+   "rom_range": "0xb40da+0x1110",
+   "consumers": [
+    "src/bank_2D.asm"
+   ]
+  },
+  "assets/screens/screenmode09_tiles.2bpp": {
+   "bytes": 3792,
+   "sha1": "75fbb00c83722f1e79c2add72757f39e934f2f93",
+   "rom_range": "0xadcb4+0xed0",
+   "consumers": [
+    "src/bank_2B.asm"
+   ]
+  },
+  "assets/screens/screenmode11_tiles.2bpp": {
+   "bytes": 1392,
+   "sha1": "e6324a2401115274e24b395ff087f786de487203",
+   "rom_range": "0xb1683+0x570",
+   "consumers": [
+    "src/bank_2C.asm"
+   ]
+  },
+  "assets/screens/screenmode12_tiles.2bpp": {
+   "bytes": 2368,
+   "sha1": "d25fd6bdce4128478f2446c21fdd7f2920584c57",
+   "rom_range": "0xaaae1+0x940",
+   "consumers": [
+    "src/bank_2A.asm"
+   ]
+  }
+ }
+}

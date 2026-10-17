@@ -100,5 +100,15 @@ ScrollScene02Palette:
 	dw $0000, $0000, $043F, $7D66
 
 	ds $7FFF - @, 0
-	db $39 ; bank marker
+	db BANK(@) ; bank marker
 ASSERT @ == $8000
+
+; Relocation pins (RELOCATION_AUDIT.md): these addresses are stored as raw
+; numbers in banks outside this assignment, so moving them must stop the
+; build until those tables use symbols.
+	ASSERT BANK(ScrollScene01Tiles) == $39 && ScrollScene01Tiles == $4000, "raw pointer: src/bank_01.asm:3761"
+	ASSERT BANK(ScrollScene01Rows) == $39 && ScrollScene01Rows == $5400, "raw pointer: src/bank_01.asm:3761"
+	ASSERT BANK(ScrollScene01Palette) == $39 && ScrollScene01Palette == $5A68, "raw pointer: src/bank_01.asm:3763"
+	ASSERT BANK(ScrollScene02Tiles) == $39 && ScrollScene02Tiles == $5A70, "raw pointer: src/bank_01.asm:3765"
+	ASSERT BANK(ScrollScene02Rows) == $39 && ScrollScene02Rows == $6B50, "raw pointer: src/bank_01.asm:3765"
+	ASSERT BANK(ScrollScene02Palette) == $39 && ScrollScene02Palette == $70F0, "raw pointer: src/bank_01.asm:3767"

@@ -4,7 +4,6 @@ SECTION "ROM Bank $32", ROMX[$4000], BANK[$32]
 
 FixedScene02Tiles:
 	INCBIN "assets/scenes/bank_32_tiles_4000_4EDF.2bpp"
-ASSERT @ == $4EE0
 
 FixedScene02TileMap:
 	db $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91, $92, $93, $94
@@ -19,12 +18,10 @@ FixedScene02TileMap:
 	db $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $3E, $3F, $40, $41, $42, $43, $44, $45, $46
 	db $47, $48, $49, $4A, $4B, $4C, $4C, $4D, $4E, $4F, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59
 	db $5A, $5B, $5C, $5D, $5E, $5F, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $6A, $6B, $6C, $6D
-ASSERT @ == $4FD0
 
 FixedScene02Attributes:
 	db $01, $01, $00, $00, $00, $00, $01, $01, $01, $01, $01, $00, $02, $02, $02, $03, $03, $04, $03, $03
 	db $01, $05, $04, $06, $00, $04, $04, $04, $01, $01, $01, $00
-ASSERT @ == $4FF0
 	db $02, $02, $06, $00, $00, $04, $00, $05, $01, $03, $04, $04, $05, $05, $05, $07, $01, $01, $01, $01
 	db $02, $02, $00, $01, $01, $03, $05, $04, $01, $00, $00, $06, $06, $01, $06, $06, $01, $01, $01, $01
 	db $01, $01, $00, $06, $07, $06, $05, $05, $01, $05, $00, $07, $07, $01, $01, $07, $00, $00, $01, $01
@@ -36,7 +33,6 @@ ASSERT @ == $4FF0
 	db $00, $00, $07, $07, $07, $07, $00, $00, $00, $00, $00, $03, $02, $02, $02, $02, $07, $00, $00, $00
 	db $00, $00, $00, $00, $01, $01, $07, $00, $00, $00, $00, $00, $03, $02, $02, $07, $07, $00, $00, $00
 	db $00, $00, $00, $00, $00, $00, $01, $00
-ASSERT @ == $50C0
 
 FixedScene02Palettes:
 	dw $0000, $2DDC, $694B, $7EB3
@@ -47,11 +43,9 @@ FixedScene02Palettes:
 	dw $0000, $10CF, $2DDC, $4AFF
 	dw $0000, $08DC, $2DDC, $7EB3
 	dw $0000, $2DDC, $4AFF, $77BF
-ASSERT @ == $5100
 
 FixedScene03Tiles:
 	INCBIN "assets/scenes/bank_32_tiles_5100_5F7F.2bpp"
-ASSERT @ == $5F80
 
 FixedScene03TileMap:
 	db $81, $82, $83, $84, $84, $84, $85, $86, $87, $88, $84, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91
@@ -66,7 +60,6 @@ FixedScene03TileMap:
 	db $2E, $2F, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $84, $84, $3C, $3D, $3E, $3F
 	db $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $4A, $4B, $4C, $4D, $4E, $4F, $50, $51, $52, $53
 	db $54, $55, $56, $57, $58, $59, $5A, $5B, $5C, $5D, $5E, $5F, $60, $61, $62, $63, $64, $65, $66, $67
-ASSERT @ == $6070
 
 FixedScene03Attributes:
 	db $00, $01, $00, $00, $00, $00, $01, $01, $00, $00, $00, $01, $01, $00, $01, $01, $01, $01, $01, $01
@@ -76,14 +69,12 @@ FixedScene03Attributes:
 	db $01, $06, $01, $04, $00, $01, $01, $05, $00, $00, $00, $00, $01, $01, $01, $04, $04, $01, $06, $03
 	db $01, $05, $05, $01, $00, $00, $01, $01, $00, $01, $00, $03, $01, $01, $00, $04, $01, $01, $01, $01
 	db $01, $01, $01, $01, $03, $00, $01, $01
-ASSERT @ == $60F0
 	db $01, $01, $00, $03, $01, $03, $00, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $01, $01
 	db $01, $00, $00, $01, $01, $00, $00, $00, $01, $01, $01, $01, $01, $01, $01, $01, $04, $00, $01, $01
 	db $00, $00, $03, $01, $03, $00, $00, $00, $00, $02, $01, $01, $01, $01, $01, $01, $00, $03, $00, $00
 	db $00, $03, $01, $01, $00, $00, $00, $00, $00, $01, $01, $01, $00, $00, $00, $00, $00, $01, $01, $03
 	db $03, $01, $01, $01, $01, $00, $00, $00, $00, $01, $01, $01, $00, $01, $00, $00, $01, $01, $00, $00
 	db $01, $01, $01, $01, $01, $00, $00, $00, $00, $01, $01, $01
-ASSERT @ == $6160
 
 FixedScene03Palettes:
 	dw $0000, $3C6B, $3DC0, $7F94
@@ -94,11 +85,9 @@ FixedScene03Palettes:
 	dw $0000, $3C6B, $7ED3, $7F94
 	dw $0000, $6595, $7E37, $7F94
 	dw $0000, $2D27, $4A0D, $03DE
-ASSERT @ == $61A0
 
 FixedScene04Tiles:
 	INCBIN "assets/scenes/bank_32_tiles_61A0_708F.2bpp"
-ASSERT @ == $7090
 
 FixedScene04TileMap:
 	db $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91, $92, $93, $94
@@ -113,11 +102,9 @@ FixedScene04TileMap:
 	db $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $3E, $3F, $40, $41, $42, $43, $44, $45, $46
 	db $47, $48, $49, $4A, $4B, $4C, $4D, $4E, $4F, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $5A
 	db $5B, $5C, $5D, $5E, $5F, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $6A, $6B, $6C, $6D, $6E
-ASSERT @ == $7180
 
 FixedScene04Attributes:
 	db $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, $00, $01
-ASSERT @ == $7190
 	db $00, $01, $01, $01, $01, $01, $01, $00, $00, $00, $00, $01, $01, $01, $02, $00, $00, $00, $01, $01
 	db $01, $01, $01, $01, $01, $01, $01, $00, $00, $00, $00, $00, $00, $02, $05, $01, $03, $04, $03, $04
 	db $01, $00, $01, $01, $01, $01, $01, $01, $00, $00, $01, $00, $00, $02, $05, $05, $03, $04, $04, $04
@@ -130,7 +117,6 @@ ASSERT @ == $7190
 	db $03, $08, $05, $06, $02, $05, $05, $08, $04, $04, $04, $04, $04, $04, $06, $06, $00, $01, $00, $03
 	db $04, $04, $04, $04, $02, $05, $08, $00, $04, $04, $04, $04, $04, $04, $06, $06, $03, $02, $02, $03
 	db $04, $04, $04, $04
-ASSERT @ == $7270
 
 FixedScene04Palettes:
 	dw $0000, $662C, $525E, $673E
@@ -142,9 +128,23 @@ FixedScene04Palettes:
 	dw $0000, $2533, $2DC0, $525E
 	dw $2D27, $4A0D, $62B1, $7359
 	dw $0000, $0000, $2DC0, $673E
-ASSERT @ == $72B8
-	ds $D47, 0
-ASSERT @ == $7FFF
+	ds $7FFF - @, 0
 
-	db $32 ; bank marker
-ASSERT @ == $8000
+	db BANK(@) ; bank marker
+
+; Bank $01 descriptors store these banks as raw bytes; addresses are symbolic.
+	ASSERT BANK(FixedScene02Tiles) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene02TileMap) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene02Attributes) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene02Palettes) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene03Tiles) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene03TileMap) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene03Attributes) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene03Palettes) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene04Tiles) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene04TileMap) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene04Attributes) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT BANK(FixedScene04Palettes) == $32, "raw bank byte in a $01 scene descriptor"
+	ASSERT (FixedScene02Tiles & $0F) == 0, "HDMA source must be 16-byte aligned (LoadFixedSceneResources)"
+	ASSERT (FixedScene03Tiles & $0F) == 0, "HDMA source must be 16-byte aligned (LoadFixedSceneResources)"
+	ASSERT (FixedScene04Tiles & $0F) == 0, "HDMA source must be 16-byte aligned (LoadFixedSceneResources)"

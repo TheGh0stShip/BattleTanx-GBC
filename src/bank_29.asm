@@ -28,3 +28,17 @@ Bank29Bank26Residue:
 
 	ASSERT Bank29Unknown4510 == $4000 + ORIENTATION_FRAMES * ORIENTATION_FRAME_SIZE
 	ASSERT Bank29Bank26Residue == RESIDUE_START
+
+; Relocation pins (RELOCATION_AUDIT.md): these addresses are stored as raw
+; numbers in banks outside this assignment, so moving them must stop the
+; build until those tables use symbols.
+	ASSERT BANK(Bank29OrientationFrame0) == $29 && Bank29OrientationFrame0 == $4000, "raw pointer: src/bank_05.asm ObjectOrientationTilePointers (raw $4000-$4480)"
+	ASSERT BANK(Bank29OrientationFrame1) == $29 && Bank29OrientationFrame1 == $4090, "raw pointer: src/bank_05.asm ObjectOrientationTilePointers (raw $4000-$4480)"
+	ASSERT BANK(Bank29OrientationFrame2) == $29 && Bank29OrientationFrame2 == $4120, "raw pointer: src/bank_05.asm ObjectOrientationTilePointers (raw $4000-$4480)"
+	ASSERT BANK(Bank29OrientationFrame3) == $29 && Bank29OrientationFrame3 == $41B0, "raw pointer: src/bank_05.asm ObjectOrientationTilePointers (raw $4000-$4480)"
+	ASSERT BANK(Bank29OrientationFrame4) == $29 && Bank29OrientationFrame4 == $4240, "raw pointer: src/bank_05.asm ObjectOrientationTilePointers (raw $4000-$4480)"
+	ASSERT BANK(Bank29OrientationFrame5) == $29 && Bank29OrientationFrame5 == $42D0, "raw pointer: src/bank_05.asm ObjectOrientationTilePointers (raw $4000-$4480)"
+	ASSERT BANK(Bank29OrientationFrame6) == $29 && Bank29OrientationFrame6 == $4360, "raw pointer: src/bank_05.asm ObjectOrientationTilePointers (raw $4000-$4480)"
+	ASSERT BANK(Bank29OrientationFrame7) == $29 && Bank29OrientationFrame7 == $43F0, "raw pointer: src/bank_05.asm ObjectOrientationTilePointers (raw $4000-$4480)"
+	ASSERT BANK(Bank29OrientationFrame8) == $29 && Bank29OrientationFrame8 == $4480, "raw pointer: src/bank_05.asm ObjectOrientationTilePointers (raw $4000-$4480)"
+	ASSERT BANK(Bank29OrientationTiles) == BANK(Bank28OrientationTiles) + 1, "Func_0F43 selects bank $27 + [$FF80]"

@@ -95,13 +95,16 @@ FixedScreen2A_FrameTable:
 
 ; ScreenModeTable entries 1.
 Func_2A_61D8: ; address-based alias kept for other banks
+OptionsScreen_LoadTiles: ; MenuState04 (OptionsMenuEntries text MUSIC/CONTROL/SKILL)
 ScreenMode01_LoadTiles:
 	screen_load_tiles ScreenMode01_Descriptor
 
 Func_2A_6230: ; address-based alias kept for other banks
+OptionsScreen_Draw: ; MenuState04 (OptionsMenuEntries text MUSIC/CONTROL/SKILL)
 ScreenMode01_Draw: ; fades in from black
 	screen_draw_fade ScreenMode01_Descriptor, 0
 
+OptionsScreen_Descriptor: ; MenuState04 (OptionsMenuEntries text MUSIC/CONTROL/SKILL)
 ScreenMode01_Descriptor:
 	screen_descriptor ScreenMode01_Tiles, ScreenMode01_TileMap, ScreenMode01_AttrMap, ScreenMode01_Palettes, 75, 20, 17, 3, 0
 
@@ -374,3 +377,7 @@ FixedScreen2A_DrawFrame:
 	ASSERT ScreenMode01_Palettes - ScreenMode01_AttrMap == 20 * 17
 	ASSERT ScreenMode12_TileMap - ScreenMode12_Tiles == 148 * 16 + 16
 	ASSERT ScreenMode12_Palettes - ScreenMode12_AttrMap == 20 * 18
+	ASSERT BANK(Func_2A_61D8) == $2A, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2A_6230) == $2A, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2A_6A22) == $2A, "raw bank byte in $01:ScreenModeTable"
+	ASSERT BANK(Func_2A_6A7A) == $2A, "raw bank byte in $01:ScreenModeTable"
