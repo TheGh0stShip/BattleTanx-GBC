@@ -201,8 +201,8 @@ Func_0192:
 	ld [$C6C1], a
 	call Func_04CD
 	call Func_09AB
-	call Func_0807
-	call Func_0879
+	call LoadInterfaceTilesVRAM1
+	call LoadInterfaceTilesVRAM0
 	call Func_35D7
 	call Func_37CE
 	call Func_0402
@@ -245,8 +245,8 @@ Jump_01B4:
 	call Func_0781
 	call Func_322D
 	call LoadLevelPalettes
-	call Func_092F
-	call Func_07A7
+	call LoadInterfacePalettes
+	call LoadObjectPalettes
 	call Func_0AB3
 	ld d, $08
 Jump_0214:
@@ -1249,7 +1249,7 @@ Jump_078D:
 	ret
 
 
-Func_07A7:
+LoadObjectPalettes:
 	ld a, $08
 	ld [rROMB0], a
 	ld a, $27
@@ -1291,7 +1291,9 @@ Func_07A7:
 	ret
 
 
-Func_0807:
+; Load the interface sheets used in VRAM bank 1, including the UI font and
+; the numeric subset of the alphanumeric font.
+LoadInterfaceTilesVRAM1:
 	ld a, $08
 	ld [rROMB0], a
 	ld a, $01
@@ -1342,7 +1344,9 @@ Func_0807:
 	ret
 
 
-Func_0879:
+; Load the interface sheets used in VRAM bank 0, including arrows and the
+; complete alphanumeric font.
+LoadInterfaceTilesVRAM0:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $08
@@ -1449,7 +1453,7 @@ RAM_FFF6:
 
 	ENDL
 
-Func_092F:
+LoadInterfacePalettes:
 	push af
 	push bc
 	push de

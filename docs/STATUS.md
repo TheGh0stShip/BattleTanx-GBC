@@ -178,6 +178,10 @@ portions are now limited to `$44A8-$46E9`, `$46F0-$60F7`, `$6108-$6119`,
 `$621A-$6221`, and `$6242-$626A` (7,309 bytes total); they are not counted as
 understood graphics.
 
+ROM0 now names the object-palette loader, both interface-tile loaders by VRAM
+bank, and the interface-palette loader. Their explicit sources include the UI
+font, complete alphanumeric font, numeric subset, arrows, and HUD sheets.
+
 Banks `$27`, `$28`, and `$29` each start with nine orientation frames of nine
 native 2bpp tiles. Bank `$05:$4020` contains the 16-entry orientation lookup:
 the first nine entries select the nine consecutive `$90`-byte frames and the

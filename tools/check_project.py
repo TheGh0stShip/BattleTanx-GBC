@@ -137,6 +137,10 @@ def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -
     if sym.exists():
         expected_symbols = {
             "SelectObjectSpritePaletteFar": (0x00, 0x37AC),
+            "LoadObjectPalettes": (0x00, 0x07A7),
+            "LoadInterfaceTilesVRAM1": (0x00, 0x0807),
+            "LoadInterfaceTilesVRAM0": (0x00, 0x0879),
+            "LoadInterfacePalettes": (0x00, 0x092F),
             "Bank08UiFontTiles": (0x08, 0x4000),
             "Bank08UiFontPalette": (0x08, 0x44A0),
             "Bank08ObjectPalette46EA": (0x08, 0x46EA),
