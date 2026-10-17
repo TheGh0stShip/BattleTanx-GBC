@@ -9416,7 +9416,7 @@ RefreshHud:
 Func_325B:
 	call LoadHudBaseMapsFar
 	call DrawHudStatus
-	call Func_32B4
+	call DrawEmptyHudHealthBar
 	xor a
 	ld [wVBlankPending], a
 Jump_3268:
@@ -9469,7 +9469,10 @@ Func_32A3: ; legacy alias
 	ret
 
 
-Func_32B4:
+; Draw the zero-health six-cell bar: left tile $16, four $1E middle tiles,
+; and right cap $27, all using attribute $87.
+DrawEmptyHudHealthBar:
+Func_32B4: ; legacy alias
 	push de
 	push hl
 	ld d, $87

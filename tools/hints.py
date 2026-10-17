@@ -254,6 +254,7 @@ NAMES = {
     0x35F7: "AnimatePlayerHealthBarFillFar",
     0x3202: "CopyMapRows20Wide",
     0x32A3: "LoadHudBaseMapsFar",
+    0x32B4: "DrawEmptyHudHealthBar",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",
