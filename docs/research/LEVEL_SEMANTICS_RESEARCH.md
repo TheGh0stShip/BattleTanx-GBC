@@ -43,7 +43,7 @@ rSVBK 2 or 3. There are 17 access sites.
 | 2 | `CELLB_DESTRUCTIBLE` | region (cells with bits 2/3) converted by `ConvertLevelCellBit2ToLookupState`: `and $B1 / or $81`, 5 points per cell |
 | 3 | `CELLB_TOUCH_REGION` | `HandleObjectLevelBit3Cell` converts the region on contact: sound and 20 points; `and $F1`, bits 0/7 set |
 | 4-5 | — | never tested, never set (all masks seen: `$01/$02/$04/$08/$0C/$C0`) |
-| 6 | `CELLB_ANIMATED` | set by `StartLevelCellLookupTransition` when bits 2-3 = `%01`; draws tile `$BB + (frame+1)&7`, attribute `[$C8D3]` |
+| 6 | `CELLB_ANIMATED` | set by `StartLevelCellLookupTransition` when bits 2-3 = `%01`; draws tile `$BB + (frame+1)&7`, attribute `wLevelAnimatedCellAttribute` selected from `LevelAnimatedCellAttributes` |
 | 7 | `CELLB_LOOKUP` | set on conversion. The tile comes from the `$05` table at `[$C8CE]` (per-tile, 2-bit frame); the attribute comes from `LevelNN_AttrLookup` (`[$C8D0]`, bank `[$C8D2]`) at `newtile + $7F` |
 
 ROM values are only `$00 $01 $02 $03 $06 $08 $09 $0A $0F`. `$0A` appears only

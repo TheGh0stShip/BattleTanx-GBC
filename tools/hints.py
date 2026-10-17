@@ -209,6 +209,7 @@ NAMES = {
     0x05C5: "CopyScreenMaps",
     0x06F8: "FadePalettesToBlackWithSound",
     0x071F: "FadeBackgroundPalettesToWhiteWithSound",
+    0x09AB: "InitializeLevelRuntime",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",
     0x325B: "RefreshHud",

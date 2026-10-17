@@ -93,7 +93,8 @@ falls in `$09-$26` within their known index ranges.
 
 Copied to WRAM. In `$1D93`, bits 6-7 select the lookup path: `00` uses the
 tile/attribute maps; `$40`/`$C0` returns tile `$BB + (counter & 7)` with
-attribute `[$C8D3]`; `$80` uses the bank-`$05` table at `[$C8CE]` and
+attribute `wLevelAnimatedCellAttribute`; `$80` uses the bank-`$05` table at
+`wLevelTileAnimationTable` and
 the attribute lookup table. **Every cell byte in ROM has bits 4-7 clear.**
 Values seen are 0, 1, 2, 3, 6, 8, 9, 10, and 15. Dedicated ROM0 routines
 read bits 0, 1, 2, and 3 at a pixel coordinate; another tests bit 0 around

@@ -284,6 +284,11 @@ The gameplay meanings of cell-map bits 0 through 3, record fields +6 and
 unknown. No ROM cell sets bits 4 through 7, so the bit-6/7 lookup-table paths
 are entered only after the run-time transformations described above.
 
+`InitializeLevelRuntime` now names the ROM0 per-level reset/load path. Its
+trailing 15-byte `LevelAnimatedCellAttributes` table supplies one CGB attribute
+per level to the bit-6 animated-cell renderer; the table and its WRAM cache are
+labelled and address-checked.
+
 ## Confirmed graphics boundaries
 
 Bank `$08` is fully classified; see [`research/BANK08_RESEARCH.md`](research/BANK08_RESEARCH.md). Every boundary is

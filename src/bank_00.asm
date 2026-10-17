@@ -204,7 +204,7 @@ Func_0192:
 	xor a
 	ld [$C6C1], a
 	call ClearCgbPalettes
-	call Func_09AB
+	call InitializeLevelRuntime
 	call LoadInterfaceTilesVRAM1
 	call LoadInterfaceTilesVRAM0
 	call SpawnPlayerObject
@@ -1585,7 +1585,10 @@ Jump_0996:
 	ret
 
 
-Func_09AB:
+; Reset per-level object, sprite, display, and transient state; load the active
+; level and interface font; and select its animated-cell CGB attribute.
+InitializeLevelRuntime:
+Func_09AB: ; legacy alias
 	call Func_0AC4
 	call ClearCgbPalettes
 	ld hl, $D000
@@ -1629,12 +1632,15 @@ Jump_09F1:
 	ld b, $00
 	ld a, [wLevelNumber]
 	ld c, a
-	ld hl, $0A14
+	ld hl, LevelAnimatedCellAttributes
 	add hl, bc
 	ld a, [hl]
-	ld [$C8D3], a
+	ld [wLevelAnimatedCellAttribute], a
 	ret
 
+
+; One CGB attribute per level for the tiles drawn by cell-map bit 6.
+LevelAnimatedCellAttributes:
 	db $0A, $0A, $0A, $09, $09, $0A, $0B, $0B, $0B, $0A, $0A, $0A, $0A, $0A, $0A
 
 Func_0A23:
@@ -5275,7 +5281,7 @@ GetLevelCellTileAndAttr:
 	cp $80
 	jr z, Jump_1DEB
 Jump_1DD8:
-	ld a, [$C8D3]
+	ld a, [wLevelAnimatedCellAttribute]
 	ld d, a
 	ld a, [wLevelAnimationFrame]
 	inc a
