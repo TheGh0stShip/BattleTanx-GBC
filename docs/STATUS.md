@@ -111,6 +111,11 @@ the compatibility guard accepts only the CGB value `$11`. The main loop stages
 SCX and SCY through `wPendingScrollX` and `wPendingScrollY`, then increments the
 16-bit `wFrameCounter`; its low nibble gates one observed 16-frame update.
 
+Level completion and player destruction share `wLevelEndCountdown`. The
+completion path sets `wLevelComplete`; the destruction path clears
+`wPlayerAlive`. `UpdateLevelEndCountdown` distinguishes those states and
+returns carry only when an active countdown expires.
+
 ## Level banks `$09-$26`
 
 The 30 banks are structured as 15 two-bank levels through the record table at

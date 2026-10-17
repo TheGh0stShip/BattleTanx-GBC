@@ -1175,7 +1175,7 @@ Jump_03_61C5:
 	push de
 	ld l, e
 	ld h, d
-	ld a, [$CD09]
+	ld a, [wPlayerAlive]
 	and a
 	jp z, Jump_03_62E5
 	ld a, l
@@ -1867,7 +1867,7 @@ Jump_03_6573:
 
 
 Func_03_6575:
-	ld a, [$CD09]
+	ld a, [wPlayerAlive]
 	and a
 	ret z
 	ld a, [$CD15]
@@ -2613,11 +2613,11 @@ Level14StateCheck:
 	ret
 
 Jump_03_6911:
-	ld a, [$C6CE]
+	ld a, [wLevelComplete]
 	and a
 	ret nz
 	ld bc, $003C
-	call Func_0388
+	call BeginLevelCompleteCountdown
 	ld bc, $2710
 	call AddToScore
 	ret

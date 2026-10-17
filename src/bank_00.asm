@@ -57,10 +57,10 @@ JoypadInterrupt:
 	reti
 
 Jump_0061:
-	ld a, [$C6CE]
+	ld a, [wLevelComplete]
 	or a
 	jp nz, Jump_0076
-	ld a, [$CD09]
+	ld a, [wPlayerAlive]
 	or a
 	jr nz, Jump_0074
 	call Func_034B
@@ -241,7 +241,7 @@ Jump_01B4:
 	ld [hl], a
 	ld b, $00
 	ld c, $00
-	call Func_03CB
+	call ResetLevelEndState
 	call SetLevelScrollPosition
 	call Func_1927
 	call Func_194B
@@ -379,7 +379,7 @@ Jump_02E9:
 	ld a, [$CD01]
 	ld h, a
 	call UpdateLevelCamera
-	call Func_03DB
+	call UpdateLevelEndCountdown
 	jp c, Jump_0061
 	ld a, [$C6C1]
 	or a
@@ -451,23 +451,25 @@ Jump_0360:
 	ret
 
 
+BeginLevelCompleteCountdown:
 Func_0388:
 	ld a, c
-	ld [$C6EB], a
+	ld [wLevelEndCountdown], a
 	ld a, b
-	ld [$C6EC], a
+	ld [wLevelEndCountdown + 1], a
 	ld a, $01
-	ld [$C6CE], a
+	ld [wLevelComplete], a
 	ret
 
 
+BeginPlayerDestroyedCountdown:
 Func_0396:
 	ld a, c
-	ld [$C6EB], a
+	ld [wLevelEndCountdown], a
 	ld a, b
-	ld [$C6EC], a
+	ld [wLevelEndCountdown + 1], a
 	xor a
-	ld [$CD09], a
+	ld [wPlayerAlive], a
 	ld e, $87
 	call Audio_QueueSound
 	ld a, [$C91D]
@@ -489,21 +491,24 @@ Func_0396:
 	ret
 
 
+ResetLevelEndState:
 Func_03CB:
 	xor a
-	ld [$C6EB], a
-	ld [$C6EC], a
-	ld [$C6CE], a
+	ld [wLevelEndCountdown], a
+	ld [wLevelEndCountdown + 1], a
+	ld [wLevelComplete], a
 	ld a, $01
-	ld [$CD09], a
+	ld [wPlayerAlive], a
 	ret
 
 
+; Return carry once an active completion/destruction countdown expires.
+UpdateLevelEndCountdown:
 Func_03DB:
-	ld a, [$CD09]
+	ld a, [wPlayerAlive]
 	or a
 	jr z, Jump_03EA
-	ld a, [$C6CE]
+	ld a, [wLevelComplete]
 	or a
 	jr nz, Jump_03EA
 Jump_03E7:
@@ -512,17 +517,17 @@ Jump_03E7:
 	ret
 
 Jump_03EA:
-	ld a, [$C6EB]
+	ld a, [wLevelEndCountdown]
 	ld c, a
-	ld a, [$C6EC]
+	ld a, [wLevelEndCountdown + 1]
 	ld b, a
 	or c
 	jr z, Jump_0400
 	dec bc
 	ld a, c
-	ld [$C6EB], a
+	ld [wLevelEndCountdown], a
 	ld a, b
-	ld [$C6EC], a
+	ld [wLevelEndCountdown + 1], a
 	jr Jump_03E7
 
 Jump_0400:
@@ -2914,7 +2919,7 @@ Jump_10CA:
 	ld b, $00
 	call Func_0AF5
 	ld bc, $0078
-	call Func_0396
+	call BeginPlayerDestroyedCountdown
 	xor a
 	pop hl
 	pop bc
@@ -9450,7 +9455,7 @@ Func_334A:
 	and $C0
 	add a, $1E
 	ld l, a
-	ld a, [$CD09]
+	ld a, [wPlayerAlive]
 	and a
 	jr nz, Jump_336C
 	ld c, a

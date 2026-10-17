@@ -17,6 +17,12 @@ DEF wPendingScrollX EQU $C6B0
 DEF wPendingScrollY EQU $C6B1
 DEF wFrameCounter   EQU $C6B9 ; 2-byte little-endian counter
 
+; Level termination state. Completion checks and the player-destruction path
+; start the shared countdown; UpdateLevelEndCountdown reports expiry in carry.
+DEF wLevelEndCountdown EQU $C6EB ; 2-byte little-endian frame count
+DEF wLevelComplete     EQU $C6CE
+DEF wPlayerAlive       EQU $CD09
+
 ; Little-endian callback selected from RuntimeCallbackTable and dispatched by
 ; the indirect jump at ROM0:$364D.
 DEF wRuntimeCallback EQU $C6BE

@@ -1187,7 +1187,7 @@ Func_02_4E9F:
 	jp Jump_02_4DC0
 
 Jump_02_4F00:
-	ld a, [$CD09]
+	ld a, [wPlayerAlive]
 	and a
 	ret z
 	ld a, [$CD00]
@@ -1240,7 +1240,7 @@ Jump_02_4F00:
 	jr Jump_02_4FB8
 
 Jump_02_4F43:
-	ld a, [$CD09]
+	ld a, [wPlayerAlive]
 	and a
 	ret z
 	ld a, [$C8D7]
@@ -1282,7 +1282,7 @@ Jump_02_4F43:
 	jp Jump_02_4FB8
 
 Jump_02_4F7C:
-	ld a, [$CD09]
+	ld a, [wPlayerAlive]
 	and a
 	ret z
 	ld a, [$C8D7]
