@@ -916,4 +916,8 @@ Jump_04_6573:
 	xor a
 	ret
 
-	INCBIN "assets/bank_04/6575.bin" ; $1A8B bytes
+Bank04ZeroFill:
+	ds $7FFF - @, 0
+Bank04BankMarker:
+	db $04
+ASSERT @ == $8000

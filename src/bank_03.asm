@@ -2772,4 +2772,15 @@ Jump_03_69D1:
 	ld l, $00
 	ret
 
-	INCBIN "assets/bank_03/69D7.bin" ; $1629 bytes
+; Four unreachable instruction-shaped bytes remain after the final traced
+; return.  No direct or indirect reference to this range is known, so keep
+; them as data rather than claiming another routine.
+Bank03UnreferencedTailBytes:
+	db $C9, $C1, $D1, $C9
+ASSERT @ == $69DB
+
+Bank03ZeroFill:
+	ds $7FFF - @, 0
+Bank03BankMarker:
+	db $03
+ASSERT @ == $8000

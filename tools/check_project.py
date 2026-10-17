@@ -1415,6 +1415,49 @@ def check_unused_banks(rom: bytes, entries: list[tuple[pathlib.Path, int, int]])
     print("unused banks: $3C-$3F are 65536 checked $FF padding bytes")
 
 
+def check_code_bank_tails(
+    rom: bytes, entries: list[tuple[pathlib.Path, int, int]]
+) -> None:
+    """Require the recovered bank $03/$04 tails to remain explicit source."""
+    bank3 = rom[0xE9D7:0x10000]
+    if bank3[:4] != bytes.fromhex("c9 c1 d1 c9"):
+        fail("code-bank tails: bank $03 residue changed")
+    if bank3[4:-1] != bytes(len(bank3) - 5) or bank3[-1] != 0x03:
+        fail("code-bank tails: bank $03 fill or marker changed")
+
+    bank4 = rom[0x12575:0x14000]
+    if bank4[:-1] != bytes(len(bank4) - 1) or bank4[-1] != 0x04:
+        fail("code-bank tails: bank $04 fill or marker changed")
+
+    forbidden = {
+        pathlib.Path("assets/bank_03/69D7.bin"),
+        pathlib.Path("assets/bank_04/6575.bin"),
+    }
+    if forbidden & {path for path, _, _ in entries}:
+        fail("code-bank tails: an obsolete suffix asset returned to the manifest")
+
+    expected_labels = {
+        ROOT / "src" / "bank_03.asm": (
+            "Bank03UnreferencedTailBytes:",
+            "Bank03ZeroFill:",
+            "Bank03BankMarker:",
+        ),
+        ROOT / "src" / "bank_04.asm": (
+            "Bank04ZeroFill:",
+            "Bank04BankMarker:",
+        ),
+    }
+    for path, labels in expected_labels.items():
+        source = path.read_text()
+        if 'INCBIN "assets/bank_0' in source:
+            fail(f"code-bank tails: {path.name} still contains an opaque asset")
+        for label in labels:
+            if label not in source:
+                fail(f"code-bank tails: {path.name} is missing {label}")
+
+    print("code-bank tails: banks $03/$04 explicit through their bank markers")
+
+
 def check_object_sequences() -> None:
     """Bank $03 per-level object-sequence pointers and counted records."""
     sys.path.insert(0, str(ROOT / "tools"))
@@ -1445,6 +1488,7 @@ def main() -> None:
     check_sprite_bank_palettes(entries)
     rom = (ROOT / "baserom.gbc").read_bytes()
     check_unused_banks(rom, entries)
+    check_code_bank_tails(rom, entries)
     check_scene_descriptors(rom)
     check_structured_scrolling_scene_banks(rom, entries)
     check_fixed_scene_source(rom, entries)

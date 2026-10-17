@@ -292,6 +292,12 @@ Details and evidence: `AUDIO_RESEARCH.md`.
 Reconstruction completeness (bytes represented as explicit, structured
 source rather than opaque INCBIN):
 
+- Banks `$03` and `$04` are explicit through `$7FFF`. Bank `$03:$69D7-$69DA`
+  retains four unreferenced instruction-shaped bytes as data, followed by
+  checked zero fill and its bank marker. Bank `$04:$6575-$7FFE` is checked
+  zero fill followed by its bank marker. Neither bank has a remaining opaque
+  suffix asset.
+
 - Bank `$06:$4000-$7CAD` (15,534 bytes): 37 sound patches, 25 sound-effect
   sequence pointers + 24 distinct sequences, register init, 90 note
   frequencies, waveform, noise-note table, channel register bases, 10 music
