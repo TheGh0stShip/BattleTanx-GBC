@@ -1819,21 +1819,21 @@ Func_02_5C40: ; legacy alias, used by src/bank_00.asm, src/bank_2B.asm
 	ld bc, $0000
 	call ScreenTable_CallUpdate
 	ld d, $B4
-Jump_02_5C52:
+.waitFirstScreen:
 	xor a
 	ld [wVBlankPending], a
-Jump_02_5C56:
+.waitFirstScreenVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_02_5C56
+	jr z, .waitFirstScreenVBlank
 	xor a
 	ld [wVBlankPending], a
 	call Audio_Update
 	dec d
-	jr nz, Jump_02_5C52
+	jr nz, .waitFirstScreen
 	call Func_06F8
 	ld a, $02
 	call ScreenTable_CallInit
@@ -1864,16 +1864,16 @@ Jump_02_5C56:
 	ld bc, $0000
 	call ScreenTable_CallUpdate
 	ld e, $3C
-Jump_02_5CB5:
+.shakeFrame:
 	xor a
 	ld [wVBlankPending], a
-Jump_02_5CB9:
+.waitShakeVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_02_5CB9
+	jr z, .waitShakeVBlank
 	xor a
 	ld [wVBlankPending], a
 	call Audio_Update
@@ -1883,26 +1883,26 @@ Jump_02_5CB9:
 	call Func_0421
 	and $01
 	or a
-	jr z, Jump_02_5CDA
+	jr z, .maybeSetScrollY
 	ld a, d
 	ldh [rSCX], a
-Jump_02_5CDA:
+.maybeSetScrollY:
 	call Func_0421
 	and $01
 	or a
-	jr z, Jump_02_5CE5
+	jr z, .choosePaletteDelay
 	ld a, d
 	ldh [rSCY], a
-Jump_02_5CE5:
+.choosePaletteDelay:
 	call Func_0421
 	and $03
 	or $01
 	sla a
 	ld d, a
-Jump_02_5CEF:
+.waitForPaletteAccess:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_02_5CEF
+	jr nz, .waitForPaletteAccess
 	ld a, d
 	ldh a, [rBCPD]
 	ld c, a
@@ -1914,13 +1914,13 @@ Jump_02_5CEF:
 	ld a, $03
 	xor a
 	ld [wVBlankPending], a
-Jump_02_5D06:
+.waitDelayVBlank:
 	halt
 	nop
 	nop
 	ld a, [wVBlankPending]
 	or a
-	jr z, Jump_02_5D06
+	jr z, .waitDelayVBlank
 	xor a
 	ld [wVBlankPending], a
 	call Audio_Update
@@ -1930,7 +1930,7 @@ Jump_02_5D06:
 	inc a
 	ld a, b
 	dec e
-	jp nz, Jump_02_5CB5
+	jp nz, .shakeFrame
 	ld a, $08
 	ldh [rSCX], a
 	ldh [rSCY], a
@@ -1950,15 +1950,15 @@ Func_02_5D33: ; legacy alias, used by src/bank_00.asm
 	ld [wScore + 1], a
 	ld [wScore + 2], a
 	ld [wScore + 3], a
-Jump_02_5D40:
+.nextThousand:
 	xor a
 	or b
-	jr nz, Jump_02_5D49
+	jr nz, .addThousand
 	or c
-	jr nz, Jump_02_5D49
-	jr Jump_02_5D6C
+	jr nz, .addThousand
+	jr .return
 
-Jump_02_5D49:
+.addThousand:
 	ld a, [wScore]
 	add a, $E8
 	ld [wScore], a
@@ -1972,9 +1972,9 @@ Jump_02_5D49:
 	adc a, $00
 	ld [wScore + 3], a
 	dec bc
-	jr Jump_02_5D40
+	jr .nextThousand
 
-Jump_02_5D6C:
+.return:
 	ret
 
 
@@ -2251,16 +2251,16 @@ InitBurstEffectScreen:
 	ld hl, $D000
 	xor a
 	ld b, $28
-Jump_02_627C:
+.clearShadowOam:
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
 	dec b
-	jr nz, Jump_02_627C
+	jr nz, .clearShadowOam
 	ld hl, wBurstObjects
 	ld b, $28
-Jump_02_6288:
+.clearObjects:
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
@@ -2270,7 +2270,7 @@ Jump_02_6288:
 	ld [hli], a
 	ld [hli], a
 	dec b
-	jr nz, Jump_02_6288
+	jr nz, .clearObjects
 	xor a
 	ld [wBurstActiveObjectCount], a
 	ld [wBurstBlockAnimTick], a
@@ -2284,12 +2284,12 @@ Jump_02_6288:
 	ld b, $A0
 	ld de, $FE00
 	ld hl, $D000
-Jump_02_62B0:
+.clearHardwareOam:
 	ld [de], a
 	ld [hli], a
 	inc e
 	dec b
-	jr nz, Jump_02_62B0
+	jr nz, .clearHardwareOam
 	ldh a, [rLCDC]
 	res 6, a
 	res 5, a
@@ -2305,23 +2305,23 @@ Jump_02_62B0:
 
 Bank02LoadObjPalettes:
 	ld hl, BurstObjPalettes
-Jump_02_62D0:
+.waitForPaletteAccess:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_02_62D0
+	jr nz, .waitForPaletteAccess
 	ld a, $80
 	ldh [rOCPS], a
 	ld b, $20
-Jump_02_62DC:
+.copyColour:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_02_62DC
+	jr nz, .copyColour
 	ld a, [hli]
 	ldh [rOCPD], a
 	ld a, [hli]
 	ldh [rOCPD], a
 	dec b
-	jr nz, Jump_02_62DC
+	jr nz, .copyColour
 	ret
 
 
@@ -2329,19 +2329,19 @@ Bank02LoadObjTiles:
 	ld hl, $8000
 	ld de, BurstTiles
 	ld b, $21
-Jump_02_62F4:
+.nextTile:
 	ld c, $10
-Jump_02_62F6:
+.copyTileByte:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_02_62F6
+	jr nz, .copyTileByte
 	ld a, [de]
 	inc de
 	ld [hli], a
 	dec c
-	jr nz, Jump_02_62F6
+	jr nz, .copyTileByte
 	dec b
-	jr nz, Jump_02_62F4
+	jr nz, .nextTile
 	ret
 
 
@@ -2350,7 +2350,7 @@ Func_02_6306: ; legacy alias, used by src/bank_00.asm
 	call InitBurstEffectScreen
 	ld a, $FF
 	ld [wBurstFrameCountdown], a
-Jump_02_630E:
+.nextFrame:
 	call UpdateBurstEffectFrame
 	call Audio_Update
 	call WaitForLY91
@@ -2358,12 +2358,12 @@ Jump_02_630E:
 	ld a, [wBurstFrameCountdown]
 	dec a
 	ld [wBurstFrameCountdown], a
-	jr nz, Jump_02_630E
+	jr nz, .nextFrame
 	inc a
 	ld [wBurstFrameCountdown], a
 	ld a, [$C6B5]
 	and a
-	jr z, Jump_02_630E
+	jr z, .nextFrame
 	ld e, $80
 	call Audio_QueueSound
 	call Audio_Update
@@ -2375,7 +2375,7 @@ CopyBurstShadowOamToOam:
 	ld de, $FE00
 	ld hl, $D000
 	ld b, $28
-Jump_02_633F:
+.copyEntry:
 	ld a, [hli]
 	ld [de], a
 	inc e
@@ -2389,7 +2389,7 @@ Jump_02_633F:
 	ld [de], a
 	inc e
 	dec b
-	jr nz, Jump_02_633F
+	jr nz, .copyEntry
 	ret
 
 
@@ -2436,13 +2436,13 @@ SpawnBurstSpriteBlock:
 	ld de, wBurstObjects
 	ld a, $04
 	ldh [$FF84], a
-Jump_02_639F:
+.nextRow:
 	ld a, $04
 	ldh [$FF83], a
-Jump_02_63A3:
+.findFreeSlot:
 	ld a, [de]
 	and a
-	jr z, Jump_02_63B9
+	jr z, .initializeSlot
 	ld a, $08
 	add a, e
 	ld e, a
@@ -2455,9 +2455,9 @@ Jump_02_63A3:
 	ld a, $00
 	adc a, h
 	ld h, a
-	jr Jump_02_63A3
+	jr .findFreeSlot
 
-Jump_02_63B9:
+.initializeSlot:
 	ld a, $FF
 	ld [de], a
 	ldh a, [$FF81]
@@ -2482,7 +2482,7 @@ Jump_02_63B9:
 	ldh a, [$FF83]
 	dec a
 	ldh [$FF83], a
-	jr nz, Jump_02_63A3
+	jr nz, .findFreeSlot
 	ldh a, [$FF80]
 	sub $20
 	ldh [$FF80], a
@@ -2492,7 +2492,7 @@ Jump_02_63B9:
 	ldh a, [$FF84]
 	dec a
 	ldh [$FF84], a
-	jr nz, Jump_02_639F
+	jr nz, .nextRow
 	ret
 
 
@@ -2512,7 +2512,7 @@ AnimateBurstSpriteBlock:
 	inc a
 	ld [wBurstBlockAnimStep], a
 	cp $06
-	jr z, Jump_02_6454
+	jr z, .finishAnimation
 	swap a
 	ld e, a
 	ld d, $00
@@ -2522,10 +2522,10 @@ AnimateBurstSpriteBlock:
 	ld bc, wBurstObjects
 	ld a, $10
 	ldh [$FF80], a
-Jump_02_6425:
+.findBlockEntry:
 	ld a, [bc]
 	cp $FF
-	jr z, Jump_02_643C
+	jr z, .updateBlockEntry
 	ld a, $08
 	add a, c
 	ld c, a
@@ -2538,9 +2538,9 @@ Jump_02_6425:
 	ld a, $00
 	adc a, e
 	ld e, a
-	jr Jump_02_6425
+	jr .findBlockEntry
 
-Jump_02_643C:
+.updateBlockEntry:
 	ld a, [hli]
 	sub $62
 	ld [de], a
@@ -2557,13 +2557,13 @@ Jump_02_643C:
 	ldh a, [$FF80]
 	dec a
 	ldh [$FF80], a
-	jr nz, Jump_02_6425
+	jr nz, .findBlockEntry
 	ret
 
-Jump_02_6454:
-	jp Jump_02_6457
+.finishAnimation:
+	jp .releaseBlock
 
-Jump_02_6457:
+.releaseBlock:
 	ld a, $FF
 	ld [wBurstBlockAnimStep], a
 	call Bank02NextTableRandom
@@ -2576,10 +2576,10 @@ Jump_02_6457:
 	ld de, wBurstObjects
 	ld b, $10
 	xor a
-Jump_02_6475:
+.findActiveBlockEntry:
 	ld a, [de]
 	cp $FF
-	jr z, Jump_02_648C
+	jr z, .clearBlockEntry
 	ld a, $08
 	add a, e
 	ld e, a
@@ -2592,9 +2592,9 @@ Jump_02_6475:
 	ld a, $00
 	adc a, h
 	ld h, a
-	jr Jump_02_6475
+	jr .findActiveBlockEntry
 
-Jump_02_648C:
+.clearBlockEntry:
 	xor a
 	ld [hli], a
 	ld [hli], a
@@ -2608,7 +2608,7 @@ Jump_02_648C:
 	adc a, d
 	ld d, a
 	dec b
-	jr nz, Jump_02_6475
+	jr nz, .findActiveBlockEntry
 	ret
 
 
@@ -2617,23 +2617,23 @@ UpdateBurstEffectObjects:
 	ld de, $D000
 	ld a, $28
 	ldh [$FF87], a
-Jump_02_64A8:
+.nextObject:
 	ld a, [hli]
 	ldh [$FF82], a
 	and a
-	jr z, Jump_02_64F2
+	jr z, .skipObject
 	cp $FF
-	jr z, Jump_02_64F2
+	jr z, .skipObject
 	ld a, [hl]
 	cp $7E
-	jr c, Jump_02_64BD
+	jr c, .moveVertically
 	cp $80
-	jr nc, Jump_02_64BD
-	jr Jump_02_64BF
+	jr nc, .moveVertically
+	jr .storeVerticalPosition
 
-Jump_02_64BD:
+.moveVertically:
 	add a, $02
-Jump_02_64BF:
+.storeVerticalPosition:
 	ld [hli], a
 	ldh [$FF81], a
 	ld a, [hli]
@@ -2645,12 +2645,12 @@ Jump_02_64BF:
 	call AddSignedVelocityToPosition
 	sub $10
 	cp $91
-	jr nc, Jump_02_6506
+	jr nc, .removeOffscreen
 	ldh a, [$FF80]
 	call AddSignedVelocityToPosition
 	sub $08
 	cp $A1
-	jr nc, Jump_02_6504
+	jr nc, .rewindAndRemove
 	ld a, [hli]
 	ld [de], a
 	inc de
@@ -2660,14 +2660,14 @@ Jump_02_64BF:
 	ld [de], a
 	inc de
 	inc hl
-Jump_02_64EA:
+.advanceObject:
 	ldh a, [$FF87]
 	dec a
 	ldh [$FF87], a
-	jr nz, Jump_02_64A8
+	jr nz, .nextObject
 	ret
 
-Jump_02_64F2:
+.skipObject:
 	ld a, $07
 	add a, l
 	ld l, a
@@ -2680,19 +2680,19 @@ Jump_02_64F2:
 	ld a, $00
 	adc a, d
 	ld d, a
-	jr Jump_02_64EA
+	jr .advanceObject
 
-Jump_02_6504:
+.rewindAndRemove:
 	dec hl
 	dec de
-Jump_02_6506:
+.removeOffscreen:
 	ld a, [de]
 	and a
-	jr z, Jump_02_6511
+	jr z, .clearObject
 	ld a, [wBurstActiveObjectCount]
 	dec a
 	ld [wBurstActiveObjectCount], a
-Jump_02_6511:
+.clearObject:
 	dec hl
 	dec hl
 	dec de
@@ -2716,15 +2716,15 @@ Jump_02_6511:
 	ld a, $00
 	adc a, d
 	ld d, a
-	jr Jump_02_64EA
+	jr .advanceObject
 
 
 AddSignedVelocityToPosition:
 	ld b, $00
 	bit 7, a
-	jr z, Jump_02_6535
+	jr z, .addVelocity
 	dec b
-Jump_02_6535:
+.addVelocity:
 	sla a
 	rl b
 	sla a
@@ -2788,18 +2788,18 @@ ExpireBurstEffectObject:
 	inc a
 	ld b, a
 	ld a, [hl]
-Jump_02_6587:
+.findFittingChildCount:
 	cp b
-	jr c, Jump_02_6593
+	jr c, .spawnChildren
 	dec hl
 	dec hl
 	ld a, [hl]
 	cp $FF
-	jr nz, Jump_02_6587
+	jr nz, .findFittingChildCount
 	pop hl
 	ret
 
-Jump_02_6593:
+.spawnChildren:
 	ld b, a
 	ldh [$FF8A], a
 	ld a, [wBurstActiveObjectCount]
@@ -2821,7 +2821,7 @@ Jump_02_6593:
 	ld a, $00
 	adc a, b
 	ld b, a
-Jump_02_65B8:
+.spawnChild:
 	call ComputeBurstChildPosition
 	ldh a, [$FF89]
 	add a, c
@@ -2835,7 +2835,7 @@ Jump_02_65B8:
 	ldh a, [$FF8A]
 	dec a
 	ldh [$FF8A], a
-	jr nz, Jump_02_65B8
+	jr nz, .spawnChild
 	xor a
 	ldh [$FF80], a
 	ldh [$FF81], a
@@ -2865,7 +2865,7 @@ ComputeBurstChildPosition:
 AllocBurstEffectObject:
 	ld a, [hl]
 	and a
-	jr z, Jump_02_6600
+	jr z, .initializeSlot
 	ld a, $08
 	add a, l
 	ld l, a
@@ -2880,7 +2880,7 @@ AllocBurstEffectObject:
 	ld d, a
 	jr AllocBurstEffectObject
 
-Jump_02_6600:
+.initializeSlot:
 	ld a, $01
 	ld [hli], a
 	ldh a, [$FF84]
@@ -2928,16 +2928,16 @@ SpawnBurstEffectObjectOnTimer:
 	ld hl, wBurstObjects
 	ld de, $0008
 	ld b, $28
-Jump_02_6648:
+.findFreeSlot:
 	ld a, [hl]
 	and a
-	jr z, Jump_02_6651
+	jr z, .initializeObject
 	add hl, de
 	dec b
-	jr nz, Jump_02_6648
+	jr nz, .findFreeSlot
 	ret
 
-Jump_02_6651:
+.initializeObject:
 	ld a, [wBurstActiveObjectCount]
 	inc a
 	ld [wBurstActiveObjectCount], a
@@ -2948,16 +2948,16 @@ Jump_02_6651:
 	add a, a
 	add a, e
 	ld e, a
-	jr nc, Jump_02_6665
+	jr nc, .initializeOamEntry
 	inc d
-Jump_02_6665:
+.initializeOamEntry:
 	ld a, $8F
 	ld [de], a
 	inc de
-Jump_02_6669:
+.chooseXPosition:
 	call Bank02NextTableRandom
 	cp $64
-	jr nc, Jump_02_6669
+	jr nc, .chooseXPosition
 	ld [de], a
 	ld b, a
 	inc de
@@ -2981,7 +2981,7 @@ Jump_02_6669:
 	ld a, b
 	srl a
 	cp $28
-	jr nc, Jump_02_66A6
+	jr nc, .storeNegativeVelocity
 	sub $28
 	ld b, a
 	ld a, $28
@@ -2990,9 +2990,9 @@ Jump_02_6669:
 	sra a
 	sra a
 	ld [hli], a
-	jr Jump_02_66B1
+	jr .storeLifetime
 
-Jump_02_66A6:
+.storeNegativeVelocity:
 	ld b, a
 	ld a, $00
 	sub b
@@ -3000,7 +3000,7 @@ Jump_02_66A6:
 	sra a
 	sra a
 	ld [hli], a
-Jump_02_66B1:
+.storeLifetime:
 	call Bank02NextTableRandom
 	and $0F
 	add a, $28
@@ -3032,10 +3032,10 @@ Bank02NextTableRandom:
 
 WaitForLY91:
 	ld b, $91
-Jump_02_66D6:
+.wait:
 	ldh a, [rLY]
 	cp b
-	jr nz, Jump_02_66D6
+	jr nz, .wait
 	ret
 
 Bank02ZeroFill: ; no reader; zero fill to the bank marker
