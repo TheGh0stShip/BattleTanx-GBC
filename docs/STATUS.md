@@ -77,9 +77,9 @@ interrupt routine. Fields whose behavior is not yet established remain raw.
 
 ## Immediate roadmap
 
-1. Introduce evidence-based WRAM/HRAM symbols and hardware-state documentation.
-2. Split mixed code/data banks into named tables and resources.
-3. Add lossless graphics, map, and text extraction/rebuild paths.
+1. Continue replacing automatic routine and RAM labels with evidence-backed names.
+2. Split the remaining mixed ranges in code banks `$01`, `$02`, and `$05`.
+3. Identify neutral level, scene, screen, object, and audio names from behavior.
 4. Run relocation/shift tests before declaring source freely editable.
 5. Validate timing-sensitive and RAM-executed behavior on physical hardware.
 

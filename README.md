@@ -31,11 +31,13 @@ tree as its verified behavioral reference.
 
 ## Building
 
-Requires RGBDS 1.0.x and Python 3.
+Requires RGBDS 1.0.4 and Python 3. The project checker rejects other RGBDS
+versions so instruction encoding cannot drift silently.
 
 ```sh
 cp /path/to/BattleTanx.gbc baserom.gbc
 make            # builds from committed sources/assets and compares with baserom
+make check      # runs the complete structural and lossless round-trip suite
 ```
 
 `make compare` fails unless `battletanx.gbc` hashes identically to the retail ROM.
@@ -43,7 +45,9 @@ make            # builds from committed sources/assets and compares with baserom
 ## Layout
 
 - `src/main.asm` - includes every bank; `src/bank_XX.asm` - one file per ROM bank
-- `include/hardware.inc` - hardware register names
+- `include/hardware.inc` - hardware register and joypad-bit names
+- `include/memory.inc` - evidence-backed WRAM/HRAM symbols
+- `include/object.inc` - checked 64-byte runtime object-record layout
 - `assets/` - committed source assets for graphics, maps, and data ranges that
   have not yet been expressed directly as assembly
 - `graphics.txt` - confirmed native 2bpp ranges rendered losslessly by
@@ -52,6 +56,10 @@ make            # builds from committed sources/assets and compares with baserom
   writes tile-index/attribute CSV plus decoded palette values under `build/maps/`
 - `make objects` - renders the three object-orientation banks and round-trips
   their frames, assembled orientations, layouts, and palettes under `build/objects/`
+- `make levels` - exports and round-trips all fifteen two-bank level packages
+- `make screens` - exports and round-trips all seventeen full-screen pictures
+- `make bank08` - validates and renders the interleaved interface, font,
+  metatile, object-animation, and effect ranges in bank `$08`
 - `tools/` - tracer/disassembler used to generate the initial source
 
 ## Method
@@ -83,6 +91,6 @@ bytes; confirmed data ranges are explicitly excluded from instruction tracing.
 Detailed recovery status, control-flow gaps, and the current roadmap are tracked
 in [`docs/STATUS.md`](docs/STATUS.md). Run `make check` before committing; it pins
 RGBDS 1.0.4, validates every committed asset against its ROM range, checks tracing
-invariants, round-trips confirmed graphics through PNG, rebuilds the cartridge,
-renders and validates every recovered scene tilemap, and verifies the retail
-hashes.
+invariants, rebuilds the cartridge, round-trips confirmed graphics through PNG,
+and renders and validates every recovered scene, level, object-orientation, and
+full-screen picture package before verifying the retail hashes.
