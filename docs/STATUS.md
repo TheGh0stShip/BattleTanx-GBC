@@ -562,10 +562,9 @@ Semantic understanding:
   `Audio_Update`, `Audio_QueueSound`, `Audio_Init`, `Music_HandleEvent`,
   `Audio_PlaySound`, `SfxSequence_Update`), 9 data tables and 17 WRAM symbols
   in `include/memory.inc`, including three explicitly named vestigial/gating bytes.
-- Remaining unread bytes:
-  `06:415A-415B`, `4660-4661`, `4740-4743`, `476C-476D`, patch `$00`
-  bytes 6-7, music-pointer byte 3, the bytes after each sequence
-  terminator; raw sfx op bytes; musical meaning of notes and tracks.
+- Structurally bounded but unread: the named patch/table padding fields,
+  music-pointer byte 3, and the bytes after each sequence terminator. Raw sfx
+  op bits and the musical meaning of notes and tracks also remain unknown.
 - Not audio: bank `$05` (sprite layouts and level parameters).
 - Bank `$07`: after one malformed sound-patch slot, `$4008-$4BFB` duplicates
   bank `$06`. All 57 sound-queue call sites and every computed bank selector

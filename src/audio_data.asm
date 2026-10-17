@@ -6,7 +6,9 @@
 ; channels or 4 for even, written from ChannelRegisterBases[channel-1]
 ; with bit 7 forced on the last; then the NR51 bits to set; rest unread.
 SoundPatches:
-	db 2, $86, $F0, $00, $03, $22, $22, $00 ; $00
+	db 2, $86, $F0, $00, $03, $22 ; $00: channel, four registers, NR51
+SoundPatch00UnreadTail:
+	db $22, $00 ; fixed record tail, never read
 	db 1, $77, $87, $F7, $82, $47, $11, $00 ; $01
 	db 1, $2C, $84, $F7, $82, $47, $11, $00 ; $02
 	db 1, $25, $41, $F2, $A8, $01, $11, $00 ; $03
@@ -71,7 +73,8 @@ SfxSequencePointers:
 	dw SfxSequence_16 ; $56
 	dw SfxSequence_17 ; $57
 	dw SfxSequence_18 ; $58
-	dw $0000 ; $59: null word, no caller found
+SfxSequencePointerTablePadding:
+	dw $0000 ; would be id $59; no caller and not part of the 25-entry table
 
 SfxSequence_18:
 	sfx_patch $11, $1A, 6
@@ -629,7 +632,8 @@ SfxSequence_16:
 AudioRegisterInit:
 	db $77, $87, $97, $82, $07, $00, $80, $F7, $82, $07, $80, $00
 	db $20, $82, $07, $00, $00, $F7, $08, $00, $77, $FF, $8F
-	db $00, $00 ; no reference found
+AudioRegisterInitPadding:
+	db $00, $00 ; lies between tables; never read
 
 ; 90 little-endian 11-bit channel frequency values, indexed by note.
 NoteFrequencies:
@@ -666,7 +670,8 @@ NoiseNoteTable:
 ; First sound register of channels 1-4.
 ChannelRegisterBases:
 	dw rNR10, rNR21, rNR30, rNR41
-	db $FF, $FF, $FF, $FF ; no reference found
+ChannelRegisterBasesPadding:
+	db $FF, $FF, $FF, $FF ; lies between tables; never read
 
 ; Indexed by (sound id & $7F) for ids $80-$FF. +0 dw sequence (also the
 ; loop target), +2 ROM bank of the sequence, +3 not read. Ids $80-$88 used.
@@ -691,7 +696,8 @@ MusicPointers:
 	db BANK(Music_08), $00
 	dw Music_09
 	db BANK(Music_09), $00
-	db $FF, $FF ; no reference found
+MusicPointerTablePadding:
+	db $FF, $FF ; lies between tables; never read
 
 ; 11 x 4 bytes, selected per channel by music_instrument (and channel
 ; defaults 0-3, NoiseNoteTable 8-10). +0..+2 are written to the channel's

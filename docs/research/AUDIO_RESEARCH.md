@@ -43,17 +43,17 @@ adjacency and by parsing every sequence to its terminator.
 | --- | --- | --- | --- |
 | `4000-4127` | 37 x 8 | SoundPatches | `7E49`/`7F3D`: `ld hl,$4000`, `id*8` |
 | `4128-4159` | 25 x 2 | SfxSequencePointers | `7EE6`: `ld hl,$4128`, `(id&$3F)*2` |
-| `415A-415B` | 2 | `$0000`; would be id `$59`, no caller | adjacency |
+| `415A-415B` | 2 | `SfxSequencePointerTablePadding`; `$0000` would be id `$59`, no caller | adjacency and zero readers |
 | `415C-4648` | `$4ED` | 24 distinct sfx sequences (ids `$40` and `$4B` share `$43EB`) | parsed to `$FF` |
 | `4649-465F` | 23 | AudioRegisterInit -> `$FF10-$FF26` | `7CFD`: `ld hl,$4649`, `d=$17` |
-| `4660-4661` | 2 | `00 00`, no reference found | gap |
+| `4660-4661` | 2 | `AudioRegisterInitPadding` | exact 23-byte register-copy count and zero readers |
 | `4662-4715` | 90 x 2 | NoteFrequencies (11-bit, ascending) | `7DDA`, `7FA4`: `ld hl,$4662`, `note*2` |
 | `4716-4725` | 16 | WaveformPattern -> `$FF30-$FF3F` | `7CEC`: `ld bc,$4716`, `d=$10` |
 | `4726-4737` | 9 x 2 | NoiseNoteTable (channel-4 notes `$0C-$14`) | `7D96`: `ld hl,$4726` |
 | `4738-473F` | 4 x 2 | ChannelRegisterBases `$FF10,$FF16,$FF1A,$FF20` | `7DB5`, `7E70`, `7F63` |
-| `4740-4743` | 4 | `FF FF FF FF`, no reference found | gap |
+| `4740-4743` | 4 | `ChannelRegisterBasesPadding` | exact four-entry index bound and zero readers |
 | `4744-476B` | 10 x 4 | MusicPointers | `7E9F`: `ld hl,$4744`, `(id&$7F)*4` |
-| `476C-476D` | 2 | `FF FF`, no reference found | gap |
+| `476C-476D` | 2 | `MusicPointerTablePadding` | exact ten-entry index bound and zero readers |
 | `476E-4799` | 11 x 4 | Instruments | `7DAE`: `ld hl,$476E`, `instrument*4` |
 | `479A-7CAD` | `$3514` | 10 music sequences | parsed to `$FE`/`$FF` terminators |
 | `7CAE-7FD1` | `$324` | driver code | traced |
@@ -198,8 +198,9 @@ loop. Each sequence is followed by `FE FF` (`$07`: `00 FF FF`), never read.
    note-ons, but nothing in traced code sets it nonzero.
 2. `wUnusedAudioStateC8E4` is initialized to zero and never read;
    `wUnusedChannel1PatchFlag` is set by channel-1 patches and never read.
-3. Unread bytes: `06:415A-415B`, `4660-4661`, `4740-4743`, `476C-476D`,
-   patch `$00` bytes 6-7, music-pointer byte 3, sequence trailers.
+3. The fixed padding and reserved fields are structurally bounded but their
+   build-time purpose is unknown: `SoundPatch00UnreadTail`, the four named
+   table-padding ranges, music-pointer byte 3, and sequence trailers.
 4. Instruments 4, 6, 7 and music id `$89` (`Music_09`) have no static
    reference. Dynamic id sources (ROM0 `$1042` uses `b` in {4, 5, `$1B`};
    random `$81-$86`) were inspected; others may exist in untraced code.
