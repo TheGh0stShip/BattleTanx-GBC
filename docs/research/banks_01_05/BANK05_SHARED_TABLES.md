@@ -15,7 +15,7 @@
 | `$5120` | `LevelTileAnimationPointers` | | |
 | `$513E` | `LevelAttributeLookupPointers` | | |
 | `$517A-$59DF` | level tile-animation sets | | |
-| `$59E0-$6357` | 24 groups of three `ScreenEffectPartXXXX` records + their `ScreenEffectTemplateXXXX` | ROM0 `LoadScreenEffectPart`/`BuildScreenEffectPartOam` | 72 parts, 72 templates; two unread gaps (`$62CD`, `$62F5`) |
+| `$59E0-$6357` | 24 groups of three `ScreenEffectPartXXXX` records + their `ScreenEffectTemplateXXXX` | ROM0 `LoadScreenEffectPart`/`BuildScreenEffectPartOam` | 72 parts, 72 templates; seven unused OAM-template entries at `$62CD` and `$62F5` |
 | `$6358-$6507` | `ScreenEffectSteps`: 72 steps x 3 part pointers (0 = none) | ROM0 `StartScreenEffect`/`UpdateScreenEffect` | raw `$58`/`$63` immediates in ROM0, pinned |
 | `$6508-$7FFE` | zero fill | | |
 | `$7FFF` | bank marker | `ROM_BANK_MARKER` | |

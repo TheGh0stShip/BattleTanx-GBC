@@ -38,5 +38,10 @@
   "bank": "$02",
   "bytes": 2048,
   "sha1": "bc3392db623b91add8fedead651e6343497ca4ed"
+ },
+ "assets/bank_02/unused_indexed_sprite_grid_tiles.2bpp": {
+  "bank": "$02",
+  "bytes": 32,
+  "sha1": "24ff2c0caf588ef2c490c56fe21a97c16583ece2"
  }
 }

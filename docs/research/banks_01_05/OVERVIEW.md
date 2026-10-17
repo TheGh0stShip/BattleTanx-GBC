@@ -30,7 +30,7 @@ address print before every statement in a scratch assembly.
 | --- | ---: | --- |
 | Exact reconstruction | 81,920 | all five banks match |
 | Behaviour understood (code with evidence names, tables with traced readers, fill/marker) | most | all 278 routine entries carry behaviour names (FINAL_FUNCTIONS.md) |
-| Bounded, meaning unknown | 114 | bank `$02` indexed-grid gaps (52) and other unread gaps (`Bank01Unread77D6/785E/786C` 25, `Bank02Unread5E80` 9, two effect gaps 28) |
+| Bounded, meaning unknown | 11 | `Bank02UnknownWord481E` (2) and `Bank02Unread5E80` (9) |
 | Unresolved control flow | 0 indirect sites | see INDIRECT_CONTROL_FLOW.md; open interrupt-bank question in UNRESOLVED.md |
 | Speculative visual interpretation | none used for naming | |
 

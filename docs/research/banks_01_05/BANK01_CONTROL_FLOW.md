@@ -88,7 +88,8 @@ Evidence: `src/bank_01.asm` and its callers in `src/bank_00.asm`, `src/bank_02.a
   - `ObjectPaletteCycleTable` (14 x 8);
   - column tables for characters, score and lives digits;
   - two 4-tile sprite blocks;
-  - three unread gaps.
+  - one unused RGB555 palette, three unused RGB555 object colours, four unused
+    column/row pairs, and three zero padding bytes.
 - **`FreeObjectsOutsideStatuses1And4`** (`$7D3A`): called only from
   `PreserveScreenEffectObjects`. It frees every object record except statuses
   1 (created by `CreateObjectAtOrigin`) and 4 (created by `Func_372E`).

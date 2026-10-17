@@ -65,9 +65,11 @@ Reached only through ROM0 `Func_3F1F`.
   `E`, transfers 40 tiles to VRAM bank 1, and builds a 10-by-4 OAM grid.
 - `IndexedSpriteGrid1Tiles` (`$4830-$4AAF`) and
   `IndexedSpriteGrid0Tiles` (`$4AD0-$4D4F`) are the two 40-tile sources.
-- Only 52 bytes in the former `$481E-$4D51` block remain unread:
-  `Bank02Unread481E` (18), `Bank02Unread4AB0` (32), and
-  `Bank02Unread4D50` (2).
-- `Bank02ObjPalette7Colours` (`$4D52`): read by `LoadIndexedSpriteGrid`, whose only
+- The 32 bytes between the grids are two unused 2bpp tiles. Before the first
+  grid, `Bank02UnknownWord481E` remains unexplained and is followed by 16 zero
+  bytes that align the grid to `$4830`.
+- `Bank02ObjPalette7` (`$4D50`) is a complete four-colour record. The loader
+  supplies colour 0 itself and reads colours 1-3 from `Bank02ObjPalette7Colours`
+  at `$4D52`. Its only
   caller `Func_3CC2` is itself never called.
 - `Bank02Unread5E80` (9 bytes).

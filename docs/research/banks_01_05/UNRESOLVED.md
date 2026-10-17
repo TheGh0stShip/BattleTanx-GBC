@@ -66,11 +66,8 @@
    - `wPlayerSpawnHealthPenalty` (`$CD1A`) is written but never read;
    - the type-0/1 `+$39` swap on the respawn path is unexplained.
 7. **Unread bytes**:
-   - `Bank02Unread481E`, `Bank02Unread4AB0`, and `Bank02Unread4D50`
-     (52 bytes total around two recovered indexed sprite grids);
-   - `Bank01Unread77D6/785E/786C`;
+   - `Bank02UnknownWord481E` (2 bytes before two recovered indexed sprite grids);
    - `Bank02Unread5E80`;
-   - two screen-effect gaps;
    - `$D7CA`/`$D260` single-`ret` data images.
 8. **RAM**:
    - `wC8E6` is written, but its purpose is unknown.

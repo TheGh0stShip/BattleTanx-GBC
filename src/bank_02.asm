@@ -930,29 +930,27 @@ Func_02_4810: ; legacy alias
 	ret
 
 
-; Unread prefix before the two sprite grids.
-Bank02Unread481E:
-	db $9F, $5F
+; Unread word followed by zero padding to the next $10-byte boundary.
+Bank02UnknownWord481E:
+	dw $5F9F
+IndexedSpriteGridAlignmentPadding:
 	ds $10, $00
 
 ; Descriptor 1: 40 tiles transferred to VRAM bank 1 and drawn as a 10x4 grid.
 IndexedSpriteGrid1Tiles:
 	INCBIN "assets/bank_02/indexed_sprite_grid_1.2bpp"
 
-; Unread bytes between the two grids.
-Bank02Unread4AB0:
-	db $00, $00, $00, $00, $1F, $00, $DF, $03
-	db $50, $D5, $CD, $90, $4E, $3E, $00, $E0
-	ds $10, $00
+; Two unused 2bpp tiles between the descriptor-selected grids.
+UnusedIndexedSpriteGridTiles:
+	INCBIN "assets/bank_02/unused_indexed_sprite_grid_tiles.2bpp"
 
 ; Descriptor 0: 40 tiles transferred to VRAM bank 1 and drawn as a 10x4 grid.
 IndexedSpriteGrid0Tiles:
 	INCBIN "assets/bank_02/indexed_sprite_grid_0.2bpp"
 
-Bank02Unread4D50:
-	db $00, $00
-
-; OBJ palette 7 colours 1-3 (LoadIndexedSpriteGrid via LoadObjectPaletteRange)
+; Complete OBJ palette 7 record. The loader supplies colour 0 itself and starts at +2.
+Bank02ObjPalette7:
+	dw $0000
 Bank02ObjPalette7Colours:
 	dw $0000, $001F, $03DF
 

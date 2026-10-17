@@ -699,7 +699,7 @@ ScreenEffectTemplate62C1:
 	db -32, -8, 0, $08
 	db -32, 0, 1, $08
 	db -24, -8, 2, $08
-ScreenEffectUnreadBytes62CD: ; 12 bytes no reader; template-shaped entries after a 3-tile template (steps $42-$44 only)
+ScreenEffectUnusedTemplateEntries62CD: ; three unused OAM entries after a 3-entry template
 	db $E8, $00, $03, $08
 	db $F0, $F8, $04, $08
 	db $F8, $F8, $05, $08
@@ -712,7 +712,7 @@ ScreenEffectTemplate62E9:
 	db -32, -8, 0, $08
 	db -32, 0, 1, $08
 	db -24, -8, 2, $08
-ScreenEffectUnreadBytes62F5: ; 16 bytes no reader; template-shaped entries after a 3-tile template (steps $42-$44 only)
+ScreenEffectUnusedTemplateEntries62F5: ; four unused OAM entries after a 3-entry template
 	db $F0, $F8, $03, $08
 	db $F0, $00, $04, $08
 	db $F8, $F8, $05, $08

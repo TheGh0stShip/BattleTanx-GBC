@@ -152,6 +152,7 @@ assets/bank_01/sprite_tiles_7871.2bpp 0x7871 0x40
 assets/bank_01/sprite_tiles_78B1.2bpp 0x78b1 0x40
 
 assets/bank_02/indexed_sprite_grid_1.2bpp 0x8830 0x280
+assets/bank_02/unused_indexed_sprite_grid_tiles.2bpp 0x8ab0 0x20
 assets/bank_02/indexed_sprite_grid_0.2bpp 0x8ad0 0x280
 
 assets/bank_02/tracker_direction_lookup.bin 0x9440 0x800

@@ -167,6 +167,8 @@ def check_indexed_sprite_grids(rom, sym):
               f"indexed grids: descriptor {i} does not bound 40 tiles")
     check(sym["IndexedSpriteGrid0Tiles"] == (2, 0x4AD0), "indexed grids: grid 0 symbol")
     check(sym["IndexedSpriteGrid1Tiles"] == (2, 0x4830), "indexed grids: grid 1 symbol")
+    check(sym["UnusedIndexedSpriteGridTiles"] == (2, 0x4AB0), "indexed grids: unused tiles symbol")
+    check(sym["Bank02ObjPalette7"] == (2, 0x4D50), "indexed grids: palette symbol")
     # The loader writes $27 to HDMA5: (value + 1) * $10 = 40 tiles.
     # Its nested counters stop after 10 columns and 4 rows.
     _, loader = sym["LoadIndexedSpriteGrid"]
@@ -180,6 +182,10 @@ def check_indexed_sprite_grids(rom, sym):
 def check_palettes(rom, sym):
     for label, n in (("MenuCursorObjectPalette", 3), ("PasswordBgPalettes", 16), ("PasswordObjPaletteColours", 6),
                      ("BurstObjPalettes", 32), ("Bank02ObjPalette7Colours", 3)):
+        b, a = sym[label]
+        for i in range(n):
+            check(not word(rom, b, a + 2 * i) & 0x8000, f"palette: {label} word {i} bit 15 set")
+    for label, n in (("UnusedPasswordBgPalette", 4), ("UnusedPasswordObjPaletteColours", 3)):
         b, a = sym[label]
         for i in range(n):
             check(not word(rom, b, a + 2 * i) & 0x8000, f"palette: {label} word {i} bit 15 set")

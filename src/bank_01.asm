@@ -7236,10 +7236,11 @@ PasswordObjPaletteColours:
 	dw $0BE0, $26E0, $1180
 	dw $0BE0, $26E0, $1180
 
-; no reader
-Bank01Unread77D6:
-	db $00, $00, $00, $7C, $E0, $03, $1F, $00
-	db $00, $7C, $FF, $03, $1F, $00
+; Valid RGB555 records adjacent to the password palettes, but no reader found.
+UnusedPasswordBgPalette:
+	dw $0000, $7C00, $03E0, $001F
+UnusedPasswordObjPaletteColours:
+	dw $7C00, $03FF, $001F
 
 ; 14 x 8: bytes 0-5 = OBJ colours 1-3 for palettes 1 and 2, bytes 6-7 unread (CycleObjectPalettes12)
 ObjectPaletteCycleTable:
@@ -7266,17 +7267,16 @@ PasswordCharColumns:
 	db $0B, $0B
 	db $0D, $0D
 
-; no reader
-Bank01Unread785E:
+; Four unused (column, row) pairs following PasswordCharColumns.
+UnusedPasswordColumnRowPairs:
 	db $0F, $04, $11, $04, $13, $04, $15, $04
 
 ; BG columns for the score digits (DrawScoreDigitsAtRow)
 ScoreDigitColumns:
 	db $04, $06, $08, $0A, $0C, $0E
 
-; no reader
-Bank01Unread786C:
-	db $00, $00, $00
+PasswordTablePadding:
+	ds 3, $00
 
 ; BG columns for the lives digits (DrawLivesDigitsAtRow)
 LivesDigitColumns:

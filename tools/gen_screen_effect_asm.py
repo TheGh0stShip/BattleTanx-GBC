@@ -52,7 +52,7 @@ while a < STEPS:
         end = a
         while end < STEPS and end not in recs and end not in tmpls:
             end += 1
-        out.append(f"ScreenEffectUnreadBytes{a:04X}: ; {end - a} bytes no reader; template-shaped entries after a 3-tile template (steps $42-$44 only)")
+        out.append(f"ScreenEffectUnusedTemplateEntries{a:04X}: ; {(end - a) // 4} unused OAM entries after a 3-entry template")
         for i in range(a, end, 4):
             out.append("\tdb " + ", ".join(f"${x:02X}" for x in rom[B(i):B(min(end, i + 4))]))
         a = end

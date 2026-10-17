@@ -2,19 +2,19 @@
  "$01": {
   "asset": 2320,
   "code (direct)": 8442,
-  "fill": 804,
+  "fill": 807,
   "marker": 1,
   "ram code source": 2308,
   "ram data source": 2,
-  "structured data": 2507
+  "structured data": 2504
  },
  "$02": {
-  "asset": 3856,
+  "asset": 3888,
   "code (direct)": 3293,
-  "fill": 6467,
+  "fill": 6451,
   "marker": 1,
   "ram code source": 210,
-  "structured data": 2557
+  "structured data": 2541
  },
  "$03": {
   "code (direct)": 3496,
