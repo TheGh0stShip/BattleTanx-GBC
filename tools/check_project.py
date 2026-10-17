@@ -263,6 +263,14 @@ def check_structured_scrolling_scene_banks(
     rom: bytes, entries: list[tuple[pathlib.Path, int, int]]
 ) -> None:
     """Validate explicit scrolling-scene source in banks $2F/$34-$3B."""
+    if rom[0x651:0x658] != bytes.fromhex("fa00c0fe11c83e"):
+        fail("scrolling source: CGB hardware guard changed")
+    warning_load = bytes.fromhex(
+        "78ea00203e8816dd1e00010040cd220601e04d21009816111e14"
+    )
+    if rom[0x66B:0x685] != warning_load:
+        fail("scrolling source: CGB warning loader operands changed")
+
     banks = (0x2F, *range(0x34, 0x3C))
     prefix_ends = {0x3B: 0x5090}
     scenes = {bank: [] for bank in banks}
@@ -287,34 +295,33 @@ def check_structured_scrolling_scene_banks(
         position = prefix_ends.get(bank, 0x4000)
         bank_base = bank * 0x4000 - 0x4000
         if position != 0x4000:
-            # Bank $3B starts with an unreferenced package matching the fixed
-            # 20x12 background format: tiles, map, attributes, 8 palettes.
+            # RequireCgbHardware maps bank $3B on non-CGB startup, copies 221
+            # tiles to $8800, and writes a 20x17 DMG tile map to $9800.
             path = pathlib.Path("assets/scenes/bank_3B_gbc_warning_tiles.2bpp")
-            expected_assets[path] = (bank_base + 0x4000, 0x0E70)
-            tilemap = rom[bank_base + 0x4E70:bank_base + 0x4F60]
-            attributes = rom[bank_base + 0x4F60:bank_base + 0x5050]
-            palettes = rom[bank_base + 0x5050:bank_base + 0x5090]
-            if len(tilemap) != 240 or len(attributes) != 240 or any(attributes):
-                fail("scrolling source: bank $3B orphan fixed maps changed")
-            if any(
-                int.from_bytes(palettes[i:i + 2], "little") & 0x8000
-                for i in range(0, len(palettes), 2)
-            ):
-                fail("scrolling source: bank $3B orphan palette has bit 15 set")
+            expected_assets[path] = (bank_base + 0x4000, 0x0DD0)
+            gap = rom[bank_base + 0x4DD0:bank_base + 0x4DE0]
+            tilemap = rom[bank_base + 0x4DE0:bank_base + 0x4F34]
+            fill = rom[bank_base + 0x4F34:bank_base + 0x5088]
+            unused_palette = rom[bank_base + 0x5088:bank_base + 0x5090]
+            if len(tilemap) != 20 * 17 or any(gap) or any(fill):
+                fail("scrolling source: bank $3B warning layout changed")
+            if unused_palette != bytes.fromhex("00008c31d65aff7f"):
+                fail("scrolling source: bank $3B unused palette changed")
             source_indices = [
                 (value & 0x7F) + (0 if value & 0x80 else 128)
                 for value in tilemap
             ]
-            if max(source_indices) >= 231:
+            if max(source_indices) >= 221:
                 fail("scrolling source: bank $3B warning map exceeds its graphics span")
             expected_symbols.update({
                 "Bank3BGbcWarningTiles": (0x3B, 0x4000),
-                "Bank3BGbcWarningTileMap": (0x3B, 0x4E70),
-                "Bank3BGbcWarningAttributes": (0x3B, 0x4F60),
-                "Bank3BGbcWarningPalettes": (0x3B, 0x5050),
+                "Bank3BGbcWarningTileMap": (0x3B, 0x4DE0),
+                "Bank3BGbcWarningUnusedPalette": (0x3B, 0x5088),
+                "RequireCgbHardware": (0x00, 0x0651),
             })
-            counts["graphics"] += 0x0E70
-            counts["structured"] += 0x220
+            counts["graphics"] += 0x0DD0
+            counts["structured"] += len(tilemap) + len(unused_palette)
+            counts["padding"] += len(gap) + len(fill)
         for index, graphics, rows, row_count, palette in sorted(
             records, key=lambda item: item[1]
         ):
@@ -349,6 +356,14 @@ def check_structured_scrolling_scene_banks(
         source = (ROOT / "src" / f"bank_{bank:02X}.asm").read_text()
         if f'assets/bank_{bank:02X}/4000.bin' in source:
             fail(f"scrolling source: bank ${bank:02X} returned to a whole-bank blob")
+    rom0_source = (ROOT / "src" / "bank_00.asm").read_text()
+    for token in (
+        "RequireCgbHardware:",
+        "ld bc, Bank3BGbcWarningTiles",
+        "ld bc, Bank3BGbcWarningTileMap",
+    ):
+        if token not in rom0_source:
+            fail(f"scrolling source: CGB warning reference lost {token}")
 
     sym = ROOT / "battletanx.sym"
     if sym.exists():

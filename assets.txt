@@ -152,6 +152,6 @@ assets/scenes/scroll_scene_01_tiles.2bpp 0xe4000 0x1400
 assets/scenes/scroll_scene_02_tiles.2bpp 0xe5a70 0x10e0
 assets/scenes/scroll_scene_03_tiles.2bpp 0xe8000 0x1460
 assets/scenes/scroll_scene_04_tiles.2bpp 0xe9a58 0xff0
-assets/scenes/bank_3B_gbc_warning_tiles.2bpp 0xec000 0xe70
+assets/scenes/bank_3B_gbc_warning_tiles.2bpp 0xec000 0xdd0
 assets/scenes/scroll_scene_05_tiles.2bpp 0xed090 0xcd0
 assets/scenes/scroll_scene_00_tiles.2bpp 0xee218 0xc70

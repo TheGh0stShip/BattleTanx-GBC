@@ -36,7 +36,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
 | Graphics | 62 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three fully classified orientation sets, twelve fixed-background packages, and 36 scrolling-scene sheets | Resolve the remaining mixed ranges in bank `$08` and identify individual layouts |
-| Maps | All eleven referenced fixed backgrounds, the unreferenced Game Boy Color warning in bank `$3B`, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions, indices, attributes, flips, and palettes | Name individual scenes and levels and find whether the warning package ever had a caller |
+| Maps | All eleven descriptor-driven fixed backgrounds, the referenced Game Boy Color warning in bank `$3B`, all 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers and explicit map/row/palette source with checked dimensions and indices | Name individual scenes and levels |
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Object sequences | Bank `$03:$4000-$5C10` is explicit source: two signed-vector tables, fifteen 64-slot per-level pointer tables, 203 counted sequences, and 626 eight-byte records; the vector-direction quantizer and all 15 level-state checks are named | Determine the remaining record-field meanings and name individual sequences |
 | Level objects | Bank `$04:$4000-$601B` is explicit source: 600 fixed-size object initialization records, 120 auxiliary records, and the per-level pointer directory; the 20-entry deferred-spawn queue, active-table pointers, slow-tick counter, and camera-window spawn path are named | Determine the remaining field meanings and the role of enabled auxiliary records |
@@ -241,13 +241,13 @@ counts use readable 16-tile-wide previews without changing the round trip.
 Banks `$2F` and `$34-$3B` contain thirty-two of the scrolling scenes. Their 16-bit row
 indices and four-color palettes are now explicit assembly, their graphics are
 narrowly typed tracked 2bpp assets, and their zero-filled tails and one-byte
-bank markers are explicit source. Bank `$3B:$4000-$508F` is an additional,
-unreferenced Game Boy Color compatibility warning in the fixed-background
-format: 231 physical 2bpp tiles, a 20x12 tile map, a zeroed 20x12 attribute map,
-and eight palette records. Its map resolves entirely within those 231 tiles,
-and its
-render is coherent, but no descriptor or code reference has been found. The
-source therefore records the format without assigning it a gameplay role.
+bank markers are explicit source. Bank `$3B:$4000-$508F` additionally contains
+the Game Boy Color compatibility warning used by `RequireCgbHardware` during
+startup when the boot value is not `$11`. Its actual DMG-format layout is 221
+physical 2bpp tiles, a 16-byte alignment gap, and a 20x17 tile map. The loader
+sets `BGP` directly and does not read attributes or CGB palettes. Zero fill and
+one trailing unread palette-shaped record occupy the rest of the prefix.
+Detailed loader and range evidence is recorded in `GBC_WARNING_RESEARCH.md`.
 The four remaining scrolling scenes and all eleven fixed scenes share banks
 `$30-$33`. Their maps, attributes, rows, and palette blocks are explicit source;
 graphics-only intervals are narrowly typed assets. Some fixed-scene tile loads

@@ -1031,7 +1031,7 @@ Jump_063D:
 	ret
 
 
-Func_0651:
+RequireCgbHardware:
 	ld a, [$C000]
 	cp $11
 	ret z
@@ -1051,9 +1051,9 @@ Jump_065D:
 	ld a, $88
 	ld d, $DD
 	ld e, $00
-	ld bc, $4000
+	ld bc, Bank3BGbcWarningTiles
 	call Func_0622
-	ld bc, $4DE0
+	ld bc, Bank3BGbcWarningTileMap
 	ld hl, $9800
 	ld d, $11
 Jump_0683:
@@ -1393,7 +1393,7 @@ Func_08C6:
 	call Func_072C
 	ld a, d
 	ld [$C000], a
-	call Func_0651
+	call RequireCgbHardware
 	call Func_0764
 	call LoadOAMDMARoutine
 	call Func_0AC4

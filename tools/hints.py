@@ -120,6 +120,7 @@ NAMES = {
     0x0100: "Boot",
     0x0150: "Init",
     0x06AB: "EnableDoubleSpeed",
+    0x0651: "RequireCgbHardware",
     0x0911: "LoadOAMDMARoutine",
     0x0925: "OAMDMARoutine",
     0x0A8F: "CopyBytes",

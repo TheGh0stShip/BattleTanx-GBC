@@ -2,33 +2,39 @@
 
 SECTION "ROM Bank $3B", ROMX[$4000], BANK[$3B]
 
-; Unreferenced Game Boy Color compatibility warning. Its 20x12 map, attribute
-; map and 64-byte palette block match the descriptor-driven fixed-scene format,
-; but no descriptor or loader reference to this package has been found.
+; Game Boy Color compatibility warning used by RequireCgbHardware. The loader
+; copies 221 tiles to $8800 and writes this 20x17 map to $9800 in DMG mode.
 Bank3BGbcWarningTiles:
 	INCBIN "assets/scenes/bank_3B_gbc_warning_tiles.2bpp"
-ASSERT @ == $4E70
+ASSERT @ == $4DD0
+
+; Unread alignment gap between the tile source and map.
+	ds $10, 0
 
 Bank3BGbcWarningTileMap:
-	db $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3, $F4, $F5, $F6, $F7, $F8, $F9, $81, $81, $FA, $FB, $FC
-	db $FD, $FC, $FE, $FF, $00, $01, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $81, $81, $81, $81
-	db $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $0B, $0C, $81, $0D, $0E, $0F
-	db $10, $11, $12, $13, $14, $15, $16, $17, $13, $18, $19, $1A, $1B, $1C, $1D, $81, $81, $1E, $1F, $20
-	db $21, $22, $23, $24, $25, $26, $27, $28, $24, $29, $2A, $2B, $2C, $2D, $2E, $81, $81, $2F, $30, $31
-	db $32, $16, $1C, $33, $34, $35, $36, $37, $38, $39, $19, $3A, $3B, $3C, $30, $81, $81, $3D, $3E, $3F
-	db $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $4A, $4B, $4C, $4D, $3E, $81, $81, $81, $81, $81
-	db $81, $4E, $36, $4F, $38, $50, $51, $52, $36, $53, $54, $81, $81, $81, $81, $81, $81, $81, $81, $81
-	db $81, $55, $46, $56, $57, $58, $59, $5A, $46, $5B, $5C, $81, $81, $81, $81, $81, $81, $81, $81, $81
-	db $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $00, $00, $00, $00
-	ds 40, 0
-ASSERT @ == $4F60
+	db $81, $82, $83, $84, $81, $81, $81, $81, $81, $81, $85, $86, $87, $81, $81, $81, $81, $81, $81, $81
+	db $81, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $81
+	db $81, $88, $9A, $9B, $9C, $9D, $9E, $9F, $A0, $A1, $A2, $A3, $A4, $A5, $A6, $A7, $A8, $A9, $AA, $81
+	db $81, $88, $AB, $AC, $AD, $AE, $AF, $B0, $B1, $A1, $B2, $B3, $B4, $B5, $A6, $B6, $B7, $B8, $B9, $81
+	db $81, $BA, $BB, $BC, $BD, $AE, $AF, $B0, $B1, $A1, $BE, $BF, $C0, $C1, $C2, $C3, $C4, $C5, $C6, $81
+	db $81, $C7, $C8, $C9, $CA, $CB, $AF, $CC, $CD, $CE, $CF, $D0, $D1, $D2, $D3, $D4, $D5, $D6, $D7, $81
+	db $81, $D8, $D9, $DA, $DB, $DC, $AF, $DD, $DE, $DF, $E0, $E1, $E2, $E3, $E2, $E4, $E5, $E6, $E7, $81
+	db $81, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3, $F4, $F5, $F6, $F7, $F8, $F9, $81
+	db $81, $FA, $FB, $FC, $FD, $FC, $FE, $FF, $00, $01, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A
+	db $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $0B, $0C
+	db $81, $0D, $0E, $0F, $10, $11, $12, $13, $14, $15, $16, $17, $13, $18, $19, $1A, $1B, $1C, $1D, $81
+	db $81, $1E, $1F, $20, $21, $22, $23, $24, $25, $26, $27, $28, $24, $29, $2A, $2B, $2C, $2D, $2E, $81
+	db $81, $2F, $30, $31, $32, $16, $1C, $33, $34, $35, $36, $37, $38, $39, $19, $3A, $3B, $3C, $30, $81
+	db $81, $3D, $3E, $3F, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $4A, $4B, $4C, $4D, $3E, $81
+	db $81, $81, $81, $81, $81, $4E, $36, $4F, $38, $50, $51, $52, $36, $53, $54, $81, $81, $81, $81, $81
+	db $81, $81, $81, $81, $81, $55, $46, $56, $57, $58, $59, $5A, $46, $5B, $5C, $81, $81, $81, $81, $81
+	db $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81, $81
+ASSERT @ == $4F34
 
-Bank3BGbcWarningAttributes:
-	ds 240, 0
-ASSERT @ == $5050
-
-Bank3BGbcWarningPalettes:
-	ds 56, 0
+; The DMG warning loader stops at $4F34. This trailing palette-shaped record
+; is not read by that path; retain it separately from the zero fill.
+	ds $5088 - @, 0
+Bank3BGbcWarningUnusedPalette:
 	dw $0000, $318C, $5AD6, $7FFF
 ASSERT @ == $5090
 
