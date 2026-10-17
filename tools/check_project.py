@@ -1134,6 +1134,7 @@ def check_level_banks() -> None:
         "wLevelViewX": 0xCA10, "wLevelViewRowOffset": 0xCA11,
         "wLevelRingY": 0xCA13, "wLevelRingX": 0xCA14,
         "wLevelRingRowOffset": 0xCA15, "wLevelRowOffsets": 0xCA17,
+        "wLevelObjectSequenceTable": 0xCD1C,
     }
     if memory_symbols != expected_memory:
         fail(f"levels: WRAM symbols differ: {memory_symbols.items() ^ expected_memory.items()}")
@@ -1414,6 +1415,17 @@ def check_unused_banks(rom: bytes, entries: list[tuple[pathlib.Path, int, int]])
     print("unused banks: $3C-$3F are 65536 checked $FF padding bytes")
 
 
+def check_object_sequences() -> None:
+    """Bank $03 per-level object-sequence pointers and counted records."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import object_sequences  # pylint: disable=import-outside-toplevel
+
+    try:
+        print(object_sequences.validate_project(ROOT))
+    except object_sequences.SequenceError as exc:
+        fail(f"object sequences: {exc}")
+
+
 def main() -> None:
     check_toolchain()
     entries = read_manifest()
@@ -1428,6 +1440,7 @@ def main() -> None:
     check_menu_states(rom)
     check_menu_memory_symbols()
     check_text(rom)
+    check_object_sequences()
     check_executable_ram_source()
     check_tracing()
     check_audio()

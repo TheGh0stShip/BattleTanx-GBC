@@ -83,6 +83,9 @@ DEF wLevelRingX                EQU $CA14
 DEF wLevelRingRowOffset        EQU $CA15 ; 2-byte ring Y multiplied by 32
 DEF wLevelRowOffsets           EQU $CA17 ; little-endian offset per row
 
+; Active bank-$03 object-sequence table for the current level.
+DEF wLevelObjectSequenceTable  EQU $CD1C ; 2-byte pointer to 64 sequence slots
+
 ; Shared HRAM scratch while processing a rectangular cell-map region.
 DEF hLevelRegionLeft           EQU $FF90
 DEF hLevelRegionRight          EQU $FF91

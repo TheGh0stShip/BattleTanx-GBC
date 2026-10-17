@@ -1,9 +1,30 @@
 ; BattleTanx (USA) - ROM bank $03
 
 SECTION "ROM Bank $03", ROMX[$4000], BANK[$03]
-	INCBIN "assets/bank_03/4000.bin" ; $1C11 bytes
 
-Func_03_5C11:
+; Five four-byte lookup rows selected from the magnitudes of signed B/C inputs.
+SignedVectorDirectionLookup:
+	db $00, $40, $40, $00
+	db $08, $38, $38, $08
+	db $10, $30, $30, $10
+	db $18, $28, $32, $18
+	db $20, $20, $20, $20
+
+; Added to that lookup according to the input vector's sign quadrant.
+SignedVectorQuadrantOffsets:
+	db $40, $80, $00, $C0
+
+	INCLUDE "src/level_object_sequences.asm"
+
+LevelObjectSequenceTables:
+	dw Level00ObjectSequences, Level01ObjectSequences, Level02ObjectSequences
+	dw Level03ObjectSequences, Level04ObjectSequences, Level05ObjectSequences
+	dw Level06ObjectSequences, Level07ObjectSequences, Level08ObjectSequences
+	dw Level09ObjectSequences, Level10ObjectSequences, Level11ObjectSequences
+	dw Level12ObjectSequences, Level13ObjectSequences, Level14ObjectSequences
+ASSERT @ == $5C11
+
+InitializeObjectSequenceState:
 	push af
 	push bc
 	push de
@@ -15,12 +36,12 @@ Func_03_5C11:
 	ld h, $00
 	ld l, a
 	add hl, hl
-	ld bc, $5BF3
+	ld bc, LevelObjectSequenceTables
 	add hl, bc
 	ld a, [hli]
-	ld [$CD1C], a
+	ld [wLevelObjectSequenceTable], a
 	ld a, [hl]
-	ld [$CD1D], a
+	ld [wLevelObjectSequenceTable + 1], a
 	pop hl
 	ld a, l
 	and $C0
@@ -57,9 +78,9 @@ Func_03_5C11:
 	add hl, hl
 	ld b, h
 	ld c, l
-	ld a, [$CD1C]
+	ld a, [wLevelObjectSequenceTable]
 	ld l, a
-	ld a, [$CD1D]
+	ld a, [wLevelObjectSequenceTable + 1]
 	ld h, a
 	add hl, bc
 	ld a, [hli]
@@ -554,9 +575,9 @@ Jump_03_5ED3:
 	add hl, hl
 	ld b, h
 	ld c, l
-	ld a, [$CD1C]
+	ld a, [wLevelObjectSequenceTable]
 	ld l, a
-	ld a, [$CD1D]
+	ld a, [wLevelObjectSequenceTable + 1]
 	ld h, a
 	add hl, bc
 	ld a, [hl]
@@ -789,9 +810,9 @@ Func_03_5FF2:
 	add hl, hl
 	ld b, h
 	ld c, l
-	ld a, [$CD1C]
+	ld a, [wLevelObjectSequenceTable]
 	ld l, a
-	ld a, [$CD1D]
+	ld a, [wLevelObjectSequenceTable + 1]
 	ld h, a
 	add hl, bc
 	ld a, [hl]
@@ -2388,7 +2409,7 @@ Jump_03_6807:
 	set 0, e
 Jump_03_6811:
 	push de
-	ld hl, $4000
+	ld hl, SignedVectorDirectionLookup
 	ld a, b
 	cp c
 	jr nc, Jump_03_681C
@@ -2442,7 +2463,7 @@ Jump_03_684B:
 	add hl, de
 	ld a, [hl]
 	pop de
-	ld hl, $4014
+	ld hl, SignedVectorQuadrantOffsets
 	add hl, de
 	add a, [hl]
 	ret

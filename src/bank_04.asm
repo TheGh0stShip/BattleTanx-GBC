@@ -18,7 +18,7 @@ Func_04_601C:
 	ld [$CD16], a
 	ld [$CD17], a
 	ld [$CD19], a
-	ld [$CD1C], a
+	ld [wLevelObjectSequenceTable], a
 	ld [$CD1E], a
 	ld [$CD20], a
 	ld [$CD23], a
@@ -156,7 +156,7 @@ Jump_04_6106:
 	pop de
 	ld a, [de]
 	ld b, a
-	call Func_3801
+	call InitializeObjectSequenceStateFar
 	jp Jump_04_61E7
 
 Jump_04_6133:
@@ -755,7 +755,7 @@ Jump_04_646B:
 	pop de
 	ld a, [de]
 	ld b, a
-	call Func_3801
+	call InitializeObjectSequenceStateFar
 	jr Jump_04_6506
 
 Jump_04_6495:

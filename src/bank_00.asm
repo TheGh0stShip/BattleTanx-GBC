@@ -10229,12 +10229,12 @@ Func_37F0:
 	ret
 
 
-Func_3801:
+InitializeObjectSequenceStateFar:
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $03
 	ld [rROMB0], a
-	call Func_03_5C11
+	call InitializeObjectSequenceState
 	pop af
 	ld [rROMB0], a
 	ret
