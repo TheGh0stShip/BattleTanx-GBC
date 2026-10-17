@@ -2322,7 +2322,7 @@ Jump_0D4B:
 	ld [hl], c
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_VEHICLE_ACTION_INTERVAL_OFFSET
 	ld l, a
 	ld [hl], d
 	ld b, $00
@@ -2757,7 +2757,7 @@ Func_0F98:
 	jr z, Jump_101F
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_VEHICLE_ACTION_INTERVAL_OFFSET
 	ld l, a
 	ld e, [hl]
 	ld a, l
@@ -9272,15 +9272,15 @@ Jump_31AF:
 
 
 ; Increment a timed type-3 effect's age and release its object record once the
-; age reaches byte +$20. Core vehicle records interpret the same two offsets as
-; current and maximum health, so this routine is only used by the type-3 path.
+; age reaches its status-dependent lifetime at byte +$20. Vehicles instead use
+; byte +$20 as their action-repeat interval.
 AdvanceTimedObjectEffect:
 Func_31E3:
 	push de
 	push hl
 	ld a, l
 	and $C0
-	add a, OBJECT_MAX_HEALTH_OR_LIFE_OFFSET
+	add a, OBJECT_EFFECT_LIFETIME_OFFSET
 	ld l, a
 	ld d, [hl]
 	ld a, l

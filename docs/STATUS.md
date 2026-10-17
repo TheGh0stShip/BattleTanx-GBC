@@ -180,6 +180,9 @@ position. `UpdateAllObjects` walks all 64 runtime records and dispatches their
 status-specific paths; its vehicle path updates motion, timers, collision, and
 destruction. `UpdateVehicleTimersAndRemoveDestroyed` also attributes score to
 the player when its recorded attacker pointer matches the player object.
+The earlier `$20` field description has been corrected: vehicle health is at
+`$1F`, while `$20` is status-dependent—a vehicle action-repeat interval, a
+timed-effect lifetime, or a state byte in the status-2 update path.
 `WaitForButtonOrTimeout` explains the bank-`$2A` fixed screen's `$C6B5` test:
 it exits on any held button or after its caller-provided VBlank timeout.
 

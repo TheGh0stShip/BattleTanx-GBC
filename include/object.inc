@@ -38,7 +38,13 @@ DEF OBJECT_TYPE_OFFSET             EQU $1E
 DEF OBJECT_HEALTH_OR_AGE_OFFSET    EQU $1F
 DEF OBJECT_HEALTH_OFFSET           EQU OBJECT_HEALTH_OR_AGE_OFFSET
 DEF OBJECT_EFFECT_AGE_OFFSET       EQU OBJECT_HEALTH_OR_AGE_OFFSET
-DEF OBJECT_MAX_HEALTH_OR_LIFE_OFFSET EQU $20
+; Byte +$20 is status-dependent. Vehicles use the type-initialized value to
+; reload their action timer; timed effects compare their age against it; the
+; status-2 update path treats values 0, 1, and 2 as distinct states.
+DEF OBJECT_TYPE_STATE_OR_LIMIT_OFFSET      EQU $20
+DEF OBJECT_VEHICLE_ACTION_INTERVAL_OFFSET  EQU $20
+DEF OBJECT_EFFECT_LIFETIME_OFFSET          EQU $20
+DEF OBJECT_TYPE2_STATE_OFFSET              EQU $20
 DEF OBJECT_FRAME_TABLE_OFFSET      EQU $21 ; bank-$02 pointer
 DEF OBJECT_OAM_LAYOUT_OFFSET       EQU $23 ; bank-$02 pointer
 DEF OBJECT_TILE_COUNT_OFFSET       EQU $25
