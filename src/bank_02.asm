@@ -2264,7 +2264,7 @@ InitBurstEffectScreen:
 	ld a, $02
 	ldh [rSVBK], a
 	ld a, $02
-	ld [wC8E6], a
+	ld [wVestigialStateC8E6], a
 	ld hl, wBurstShadowOam
 	xor a
 	ld b, $28

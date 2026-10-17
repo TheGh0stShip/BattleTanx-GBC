@@ -78,7 +78,7 @@ written to NR23 and immediately replaced by the note-frequency low byte.
 
 | Address | Name | Evidence |
 | --- | --- | --- |
-| `$2EB8` | Audio_InitFar | saves the bank marker, maps `$06`, calls `06:7CAE`, sets `$C8E6` to 1 if it was 0, restores the bank. Called once, from Init (`$0159`). The `$C8E6` side effect is not audio-specific (bank `02:626D` writes 2 there) and stays unnamed. |
+| `$2EB8` | Audio_InitFar | saves the bank marker, maps `$06`, calls `06:7CAE`, sets `wVestigialStateC8E6` to 1 if it was 0, restores the bank. Called once, from Init (`$0159`). The byte is not audio-specific: `InitBurstEffectScreen` later writes 2, and nothing consumes that later value. |
 | `$2ED5` | Music_Update | returns if `wMusicPtr` high byte or `wMusicEnabled` is 0; decrements `wMusicDelay`; at 1, maps `wMusicBank`, reads 3 bytes, maps `$06`, calls Music_HandleEvent, repeats while the new delay is 0. |
 | `$2F21` | Audio_Update | decrements `wNoiseLockTimer`, maps `$06`, calls SfxSequence_Update and Music_Update, then drains the queue from `wSoundQueueNext` through Audio_PlaySound, clearing each slot. Restores the caller's bank. |
 | `$2F73` | Audio_QueueSound | `e` = id. Advances `wSoundQueueLast` modulo 30 and stores `e` there. |

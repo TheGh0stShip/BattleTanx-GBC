@@ -229,6 +229,11 @@ def check_ram_include(root):
         v = int(a, 16)
         check(0xC000 <= v < 0xE000 or 0xFF80 <= v < 0xFFFF, f"ram: {n} = ${a} outside WRAM/HRAM")
     check(len({a for _, a in names}) == len(names), "ram: two symbols share an address")
+    all_source = "".join(path.read_text() for path in (root / "src").glob("*.asm"))
+    check(all_source.count("wVestigialStateC8E6") == 3,
+          "ram: vestigial $C8E6 access set changed")
+    check("wC8E6" not in all_source and "$C8E6" not in all_source,
+          "ram: raw or obsolete $C8E6 reference remains")
     return len(names)
 
 

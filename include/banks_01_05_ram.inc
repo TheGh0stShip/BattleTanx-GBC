@@ -16,7 +16,7 @@ DEF wNearestTargetPtr                EQU $C8D6 ; 2 byte(s)
 DEF wNearestTargetDistance           EQU $C8D8 ; 2 byte(s)
 DEF wNearestTargetScanIndex          EQU $C8DA ; 1 byte(s)
 DEF wNearestTargetScanJump           EQU $C8DB ; 4 byte(s)
-DEF wC8E6                            EQU $C8E6 ; 1 byte(s)
+DEF wVestigialStateC8E6              EQU $C8E6 ; boot writes 1, burst screen writes 2; no later reader
 DEF wAlertObjectTypePtr              EQU $C91E ; 2 byte(s)
 DEF wMenuScrollStep                  EQU $C924 ; 1 byte(s)
 DEF wUnusedCommittedMusicSetting     EQU $C92E ; written when leaving the menu; never read

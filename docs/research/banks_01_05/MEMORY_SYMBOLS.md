@@ -24,7 +24,7 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$C8D8` | `wNearestTargetDistance` | 2 | Used as 16-bit in bank_02:1002-1013. The other refs (bank_00 Jump_01B4:222, Jump_09F1:1615, bank_01:963) only clear it on reset. Consistent. |
 | `$C8DA` | `wNearestTargetScanIndex` | 1 | Only bank_02 scan loops use it. Consistent. |
 | `$C8DB` | `wNearestTargetScanJump` | 4 | Width is 4, not 3: bank_02:65-73 writes C3 lo hi C9 (jp nn; ret), and bank_02:901 does jp $C8DB. |
-| `$C8E6` | `wC8E6` | 1 | Neutral name kept. Audio_InitFar sets it to 1 if 0 (bank_00:8608) and Func_02_626D sets it to 2 (bank_02:1688). No reader found that shows what it means. |
+| `$C8E6` | `wVestigialStateC8E6` | 1 | `Audio_InitFar` changes the cleared byte to 1 during boot. `InitBurstEffectScreen` later writes 2. The boot guard is its only read, so the later value has no consumer; it is not synchronized with `rSVBK` and is not audio state. |
 | `$C91E` | `wAlertObjectTypePtr` | 2 | w01 and w15 agree: bank_01:975 stores a pointer to object field +$1E after incrementing it; Func_0A23 decrements through it and clears it. Picked w15's name. Ne |
 | `$C924` | `wMenuScrollStep` | 1 | 8 refs, all in the bank_01 menu scroll code. Consistent. |
 | `$C6ED` | `wUnwrittenStatusDisplayValue0` | 1 | Read only by `DrawObjectStatusCountsToWindow`, which renders it as a two-digit value. No direct writer exists, so normal cleared WRAM leaves it zero. |

@@ -8745,11 +8745,11 @@ Audio_InitFar:
 	ld a, $06
 	ld [rROMB0], a
 	call Audio_Init
-	ld a, [wC8E6]
+	ld a, [wVestigialStateC8E6]
 	cp $00
 	jr nz, .RestoreBank
 	ld a, $01
-	ld [wC8E6], a
+	ld [wVestigialStateC8E6], a
 .RestoreBank:
 	pop af
 	ld [rROMB0], a
