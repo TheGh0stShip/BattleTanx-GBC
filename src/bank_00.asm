@@ -2406,7 +2406,11 @@ Jump_0D4B:
 	ret
 
 
-Func_0DB6:
+; Render object variants 0-2 as a dynamically loaded 3x3 sprite orientation.
+; Variant 3 instead queues its selected 2x3 interface metatile into the level
+; BG map. Fields $27/$28 gate whether the render proceeds.
+RenderObjectOrientationGraphic:
+Func_0DB6: ; legacy alias
 	push de
 	push bc
 	push hl
@@ -2424,19 +2428,19 @@ Func_0DB6:
 	or a
 	jp z, Jump_0E35
 Jump_0DCB:
-	ld a, $1E
+	ld a, OBJECT_TYPE_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
 	ldh [$FF80], a
-	ld a, $06
+	ld a, OBJECT_SCREEN_X_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hli]
 	ldh [$FF82], a
 	ld a, [hl]
 	ldh [$FF83], a
-	ld a, $01
+	ld a, OBJECT_X_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hli]
@@ -2464,7 +2468,7 @@ Jump_0DCB:
 	rr c
 	ld a, c
 	ldh [$FF87], a
-	ld a, $19
+	ld a, OBJECT_DIRECTION_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
@@ -6419,7 +6423,7 @@ Jump_2345:
 	xor a
 	or b
 	jr z, Jump_2353
-	call Func_0DB6
+	call RenderObjectOrientationGraphic
 	ld a, [$CA08]
 	inc a
 	ld [$CA08], a
