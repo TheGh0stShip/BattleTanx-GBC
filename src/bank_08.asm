@@ -79,7 +79,7 @@ SpriteTiles48A0:
 SpriteTiles4930:
 	INCBIN "assets/bank_08/object_animation_tiles.bin", 1152, 144
 
-PaletteRecord49C0: ; palette-shaped record, no reader found
+PaletteRecord49C0: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
 ; Func_3190 frame: frame table $02:457F[0] (9 tiles)
@@ -126,7 +126,7 @@ SpriteTiles4ED8:
 SpriteTiles4F68:
 	INCBIN "assets/bank_08/object_animation_tiles.bin", 2736, 144
 
-PaletteRecord4FF8: ; palette-shaped record, no reader found
+PaletteRecord4FF8: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
 ; Func_3190 frame: frame table $02:4595[0] (4 tiles)
@@ -145,7 +145,7 @@ SpriteTiles5080:
 SpriteTiles50C0:
 	INCBIN "assets/bank_08/object_animation_tiles.bin", 3072, 64
 
-PaletteRecord5100: ; palette-shaped record, no reader found
+PaletteRecord5100: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
 ; Func_3190 frame: frame table $02:459D[0] (4 tiles)
@@ -164,7 +164,7 @@ SpriteTiles5188:
 SpriteTiles51C8:
 	INCBIN "assets/bank_08/object_animation_tiles.bin", 3328, 64
 
-PaletteRecord5208: ; palette-shaped record, no reader found
+PaletteRecord5208: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
 ; Func_3190 frame: frame table $02:45A5[0] (4 tiles)
@@ -183,7 +183,7 @@ SpriteTiles5290:
 SpriteTiles52D0:
 	INCBIN "assets/bank_08/object_animation_tiles.bin", 3584, 64
 
-PaletteRecord5310: ; palette-shaped record, no reader found
+PaletteRecord5310: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
 ; Func_3190 frame: frame table $02:45AD[0] (4 tiles)
@@ -202,7 +202,7 @@ SpriteTiles5398:
 SpriteTiles53D8:
 	INCBIN "assets/bank_08/object_animation_tiles.bin", 3840, 64
 
-PaletteRecord5418: ; palette-shaped record, no reader found
+PaletteRecord5418: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
 ; Func_3190 frame: frame table $02:45B5[0] (1 tiles)
@@ -217,7 +217,7 @@ SpriteTiles5430:
 SpriteTiles5440:
 	INCBIN "assets/bank_08/object_animation_tiles.bin", 3936, 16
 
-PaletteRecord5450: ; palette-shaped record, no reader found
+PaletteRecord5450: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
 ; Func_3190 frame: frame table $02:45BB[0] (1 tiles)
@@ -232,7 +232,7 @@ SpriteTiles5468:
 SpriteTiles5478:
 	INCBIN "assets/bank_08/object_animation_tiles.bin", 3984, 16
 
-PaletteRecord5488: ; palette-shaped record, no reader found
+PaletteRecord5488: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
 ; Func_3E3C effect tiles: 7 tiles
@@ -249,182 +249,182 @@ EffectPalette5502:
 SpriteTiles5508:
 	INCBIN "assets/bank_08/effect_tiles.bin", 112, 144
 
-PaletteRecord5598: ; palette-shaped record, no reader found
+PaletteRecord5598: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 7 tiles
 SpriteTiles55A0:
 	INCBIN "assets/bank_08/effect_tiles.bin", 256, 112
 
-PaletteRecord5610: ; palette-shaped record, no reader found
+PaletteRecord5610: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 7 tiles
 SpriteTiles5618:
 	INCBIN "assets/bank_08/effect_tiles.bin", 368, 112
 
-PaletteRecord5688: ; palette-shaped record, no reader found
+PaletteRecord5688: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 6 tiles
 SpriteTiles5690:
 	INCBIN "assets/bank_08/effect_tiles.bin", 480, 96
 
-PaletteRecord56F0: ; palette-shaped record, no reader found
+PaletteRecord56F0: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 6 tiles
 SpriteTiles56F8:
 	INCBIN "assets/bank_08/effect_tiles.bin", 576, 96
 
-PaletteRecord5758: ; palette-shaped record, no reader found
+PaletteRecord5758: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 8 tiles
 SpriteTiles5760:
 	INCBIN "assets/bank_08/effect_tiles.bin", 672, 128
 
-PaletteRecord57E0: ; palette-shaped record, no reader found
+PaletteRecord57E0: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 9 tiles
 SpriteTiles57E8:
 	INCBIN "assets/bank_08/effect_tiles.bin", 800, 144
 
-PaletteRecord5878: ; palette-shaped record, no reader found
+PaletteRecord5878: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 9 tiles
 SpriteTiles5880:
 	INCBIN "assets/bank_08/effect_tiles.bin", 944, 144
 
-PaletteRecord5910: ; palette-shaped record, no reader found
+PaletteRecord5910: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 7 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles5918:
 	INCBIN "assets/bank_08/effect_tiles.bin", 1088, 112
 
-PaletteRecord5988: ; palette-shaped record, no reader found
+PaletteRecord5988: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 6 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles5990:
 	INCBIN "assets/bank_08/effect_tiles.bin", 1200, 96
 
-PaletteRecord59F0: ; palette-shaped record, no reader found
+PaletteRecord59F0: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 6 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles59F8:
 	INCBIN "assets/bank_08/effect_tiles.bin", 1296, 96
 
-PaletteRecord5A58: ; palette-shaped record, no reader found
+PaletteRecord5A58: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 7 tiles
 SpriteTiles5A60:
 	INCBIN "assets/bank_08/effect_tiles.bin", 1392, 112
 
-PaletteRecord5AD0: ; palette-shaped record, no reader found
+PaletteRecord5AD0: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 8 tiles
 SpriteTiles5AD8:
 	INCBIN "assets/bank_08/effect_tiles.bin", 1504, 128
 
-PaletteRecord5B58: ; palette-shaped record, no reader found
+PaletteRecord5B58: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 9 tiles
 SpriteTiles5B60:
 	INCBIN "assets/bank_08/effect_tiles.bin", 1632, 144
 
-PaletteRecord5BF0: ; palette-shaped record, no reader found
+PaletteRecord5BF0: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 4 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles5BF8:
 	INCBIN "assets/bank_08/effect_tiles.bin", 1776, 64
 
-PaletteRecord5C38: ; palette-shaped record, no reader found
+PaletteRecord5C38: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 6 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles5C40:
 	INCBIN "assets/bank_08/effect_tiles.bin", 1840, 96
 
-PaletteRecord5CA0: ; palette-shaped record, no reader found
+PaletteRecord5CA0: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 6 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles5CA8:
 	INCBIN "assets/bank_08/effect_tiles.bin", 1936, 96
 
-PaletteRecord5D08: ; palette-shaped record, no reader found
+PaletteRecord5D08: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 3 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles5D10:
 	INCBIN "assets/bank_08/effect_tiles.bin", 2032, 48
 
-PaletteRecord5D40: ; palette-shaped record, no reader found
+PaletteRecord5D40: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 4 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles5D48:
 	INCBIN "assets/bank_08/effect_tiles.bin", 2080, 64
 
-PaletteRecord5D88: ; palette-shaped record, no reader found
+PaletteRecord5D88: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 3 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles5D90:
 	INCBIN "assets/bank_08/effect_tiles.bin", 2144, 48
 
-PaletteRecord5DC0: ; palette-shaped record, no reader found
+PaletteRecord5DC0: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 7 tiles
 SpriteTiles5DC8:
 	INCBIN "assets/bank_08/effect_tiles.bin", 2192, 112
 
-PaletteRecord5E38: ; palette-shaped record, no reader found
+PaletteRecord5E38: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 13 tiles
 SpriteTiles5E40:
 	INCBIN "assets/bank_08/effect_tiles.bin", 2304, 208
 
-PaletteRecord5F10: ; palette-shaped record, no reader found
+PaletteRecord5F10: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 11 tiles
 SpriteTiles5F18:
 	INCBIN "assets/bank_08/effect_tiles.bin", 2512, 176
 
-PaletteRecord5FC8: ; palette-shaped record, no reader found
+PaletteRecord5FC8: ; byte-identical to PaletteRecord5500 / EffectPalette5502 (unread)
 	dw $0000, $7D04, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 3 tiles, 6 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles5FD0:
 	INCBIN "assets/bank_08/effect_tiles.bin", 2688, 96
 
-PaletteRecord6030: ; palette-shaped record, no reader found
+PaletteRecord6030: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 4 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles6038:
 	INCBIN "assets/bank_08/effect_tiles.bin", 2784, 64
 
-PaletteRecord6078: ; palette-shaped record, no reader found
+PaletteRecord6078: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; Func_3E3C effect tiles: 3 tiles, 7 tiles (referenced only by unreachable steps 19-71)
 SpriteTiles6080:
 	INCBIN "assets/bank_08/effect_tiles.bin", 2848, 112
 
-PaletteRecord60F0: ; palette-shaped record, no reader found
+PaletteRecord60F0: ; colours 1-3 = EffectPalette5502 with colour 1 $7D03 (unread)
 	dw $0000, $7D03, $46A0, $7FFF
 
 ; LoadInterfaceTilesVRAM1: 1 tile -> VRAM1 tile $C0.
@@ -434,7 +434,7 @@ Bank08InterfaceTiles60F8:
 Bank08Unknown6108: ; 2 bytes, no reader found; meaning unknown
 	db $81, $00
 
-PaletteRecord610A: ; palette-shaped record, no reader found
+PaletteRecord610A: ; byte-identical to PaletteRecord621A; $033F is in no loaded palette (unread)
 	dw $0000, $001F, $033F, $03FE
 
 ; Complete, valid RGB555 palette record; no reader was found. All four entries
@@ -446,14 +446,14 @@ Bank08UnusedPalette6112:
 Bank08InterfaceTiles611A:
 	INCBIN "assets/bank_08/interface_tiles_611A.bin" ; 16 tiles
 
-PaletteRecord621A: ; palette-shaped record, no reader found
+PaletteRecord621A: ; byte-identical to PaletteRecord610A; $033F is in no loaded palette (unread)
 	dw $0000, $001F, $033F, $03FE
 
 ; LoadInterfaceTilesVRAM1: 2 tiles -> VRAM1 tiles $C1-$C2.
 Bank08InterfaceTiles6222:
 	INCBIN "assets/bank_08/interface_tiles_6222.bin" ; 2 tiles
 
-PaletteRecord6242: ; palette-shaped record, no reader found
+PaletteRecord6242: ; byte-identical to PaletteRecord46E8 / Bank08ObjectPalette46EA (unread)
 	dw $0000, $001C, $025C, $03FF
 
 Bank08Unknown624A: ; 6 bytes, no reader found; meaning unknown
@@ -466,7 +466,7 @@ Bank08DuplicateInterfaceTile6250:
 Bank08Unknown6260: ; 3 bytes, no reader found; meaning unknown
 	db $80, $00, $01
 
-PaletteRecord6263: ; palette-shaped record, no reader found
+PaletteRecord6263: ; byte-identical to Bank08HudIconPalette (unread)
 	dw $0000, $10A3, $3200, $42E0
 
 ; LoadInterfaceTilesVRAM0: 78 tiles -> VRAM0 tiles $80-$CD.
@@ -484,7 +484,7 @@ Bank08HudIconTiles:
 	INCBIN "assets/bank_08/hud_icon_tiles.bin" ; 10 tiles
 
 ; Indexed by status-4 object type 0-9 in SelectObjectSpritePalette
-; (palette = value + 4, masked to 0-3 by the routine).
+; (OBJ palette = (value & 3) + 4).
 ObjectSpritePaletteIndexTable:
 	db 0 ; type 0
 	db 1 ; type 1
@@ -509,46 +509,57 @@ Bank08ObjectPalettes67FD:
 Bank08InterfaceTiles6815:
 	INCBIN "assets/bank_08/interface_tiles_6815.bin" ; 12 tiles
 
-PaletteRecord68D5: ; palette-shaped record, no reader found
+PaletteRecord68D5: ; unique; $465F is in no loaded palette (unread)
 Bank08InterfacePalette68D5: ; legacy alias, used by tools/bank08.py and reports/
 	dw $0000, $001F, $465F, $7FFF
 
-; LoadInterfaceTilesVRAM0: 4 tiles -> VRAM0 tiles $CE-$D1.
+; LoadInterfaceTilesVRAM0: 4 tiles -> VRAM0 tiles $4E-$51 (VRAM $84E0).
 Bank08InterfaceTiles68DD:
 	INCBIN "assets/bank_08/interface_tiles_68DD.bin" ; 4 tiles
 
-Bank08ArrowUpPalette:
+; HudPowerupPalettes entry 1: palette of HUD power-up kind 1, tile $4E (Bank08InterfaceTiles68DD).
+Bank08PowerupIcon1Palette:
+Bank08ArrowUpPalette: ; legacy alias, used by tools/bank08.py and docs
 	LOAD UNION "RAM data $C701", WRAM0[$C701] ; copied from $08:691D
-wArrowUpPalette:
+wPowerupIcon1Palette:
+wArrowUpPalette: ; legacy alias, used by tools/bank08.py and docs
 	dw $0000, $10A3, $1515, $1FFF
 	ENDL
 
-; LoadInterfaceTilesVRAM0: 4 tiles -> VRAM0 tiles $D2-$D5.
+; LoadInterfaceTilesVRAM0: 4 tiles -> VRAM0 tiles $52-$55.
 Bank08ArrowUpTiles:
 	INCBIN "assets/bank_08/arrow_up_tiles.bin" ; 4 tiles
 
-Bank08ArrowDownPalette:
+; HudPowerupPalettes entry 2: palette of HUD power-up kind 2, tile $52 (Bank08ArrowUpTiles).
+Bank08PowerupIcon2Palette:
+Bank08ArrowDownPalette: ; legacy alias, used by tools/bank08.py and docs
 	LOAD UNION "RAM data $C709", WRAM0[$C709] ; copied from $08:6965
-wArrowDownPalette:
+wPowerupIcon2Palette:
+wArrowDownPalette: ; legacy alias, used by tools/bank08.py and docs
 	dw $0000, $001F, $10A3, $7FFF
 	ENDL
 
-; LoadInterfaceTilesVRAM0: 4 tiles -> VRAM0 tiles $D6-$D9.
+; LoadInterfaceTilesVRAM0: 4 tiles -> VRAM0 tiles $56-$59.
 Bank08ArrowDownTiles:
 	INCBIN "assets/bank_08/arrow_down_tiles.bin" ; 4 tiles
 
-Bank08AlphanumericFontPalette:
+; HudPowerupPalettes entry 3: palette of HUD power-up kind 3, tile $56 (Bank08ArrowDownTiles).
+Bank08PowerupIcon3Palette:
+Bank08AlphanumericFontPalette: ; legacy alias, used by tools/bank08.py and docs
 	LOAD UNION "RAM data $C711", WRAM0[$C711] ; copied from $08:69AD
-wAlphanumericFontPalette:
+wPowerupIcon3Palette:
+wAlphanumericFontPalette: ; legacy alias, used by tools/bank08.py and docs
 	dw $0000, $0000, $0000, $03FE
 	ENDL
 
-; LoadInterfaceTilesVRAM0: 4 tiles -> VRAM0 tiles $DA-$DD.
+; LoadInterfaceTilesVRAM0: 4 tiles -> VRAM0 tiles $5A-$5D.
+; HUD alert icon: tiles $5A-$5D, drawn with attribute $87 while wHudAlertActive is set.
 Bank08InterfaceTiles69B5:
-Bank08AlphanumericFontTiles: ; legacy name; only 4 tiles are loaded from here
+Bank08HudAlertIconTiles:
+Bank08AlphanumericFontTiles: ; legacy alias, used by tools/bank08.py and docs
 	INCBIN "assets/bank_08/interface_tiles_69B5.bin" ; 4 tiles
 
-PaletteRecord69F5: ; palette-shaped record, no reader found
+PaletteRecord69F5: ; colours 2-3 = OBJ palette 7 of Bank08ObjectPalettes67FD colours 2-3 (unread)
 	dw $0000, $10A3, $5818, $7E9F
 
 ; LoadInterfaceTilesVRAM1: 8 tiles -> VRAM1 tiles $BB-$C2.
@@ -577,7 +588,7 @@ EncodedGlyphTable:
 	db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; $70-$7F
 
 ; 37 tiles (blank, 0-9, A-Z): LoadEncodedFontTiles -> VRAM0 $8000 and
-; $01:RAM_D9CB -> VRAM1 $8800.
+; $01:LoadEncodedFontTilesToVram1 -> VRAM1 $8800.
 EncodedFontTiles:
 	INCBIN "assets/bank_08/encoded_font_tiles.bin" ; 37 tiles
 
@@ -586,7 +597,7 @@ SelectObjectSpritePalette:
 	push hl
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld a, [hl]
 	add a, LOW(ObjectSpritePaletteIndexTable)
@@ -597,7 +608,7 @@ SelectObjectSpritePalette:
 	ld a, [hl]
 	and $03
 	add a, $04
-	ldh [$FF80], a
+	ldh [hStatus4SpritePalette], a
 	pop hl
 	pop bc
 	ret

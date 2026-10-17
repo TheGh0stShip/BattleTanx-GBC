@@ -4,6 +4,9 @@
 Owns nothing after its first run: src/bank_08.asm and assets/bank_08/*.bin are
 hand-maintained source. Rerunning overwrites them; do not rerun over edits.
 Usage: gen_bank08_asm.py baserom.gbc
+
+One-time edit tool; owns nothing; do not rerun. It no longer runs on the
+current tree (stops at range Bank08UnusedPalette6112).
 """
 import pathlib, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
@@ -52,7 +55,7 @@ COMMENTS = {
     "EncodedGlyphTable": "DrawEncodedGlyph: tile = [EncodedGlyphTable + char] + $80 (VRAM1, attribute $0F).\n"
                          "; ASCII '0'-'9' -> 1-10, 'A'-'Z' -> 11-36, every other code -> 0 (blank).",
     "EncodedFontTiles": "37 tiles (blank, 0-9, A-Z): LoadEncodedFontTiles -> VRAM0 $8000 and\n"
-                        "; $01:RAM_D9CB -> VRAM1 $8800.",
+                        "; $01:LoadEncodedFontTilesToVram1 -> VRAM1 $8800.",
 }
 out = ['; BattleTanx (USA) - ROM bank $08: interface and object graphics.\n'
        '; Layout and evidence: BANK08_RESEARCH.md. Every range is checked by tools/bank08.py.\n\n'

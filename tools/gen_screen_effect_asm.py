@@ -3,6 +3,9 @@
 
 Replaces assets/bank_05/59E0.bin. The checked-in assembly is authoritative;
 do not rerun this over reviewed source. Usage: gen_screen_effect_asm.py baserom.gbc
+
+Superseded: output differs from hand-maintained src/screen_effect_tables.asm;
+comparison only.
 """
 import pathlib, re, sys
 

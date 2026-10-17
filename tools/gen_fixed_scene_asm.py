@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Generate the overlapping fixed/scrolling scene layouts in banks $30-$33."""
+"""Generate the overlapping fixed/scrolling scene layouts in banks $30-$33.
+
+Superseded: output differs from hand-maintained src/bank_30.asm-bank_33.asm;
+comparison only. Running it overwrites those files; do not rerun in the tree.
+"""
 
 from __future__ import annotations
 

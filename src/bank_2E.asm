@@ -5,13 +5,16 @@ SECTION "ROM Bank $2E", ROMX[$4000], BANK[$2E]
 
 ; no caller found; the picture is also reached through $01:$596D entry 2.
 Func_2E_4000: ; address-based alias kept for other banks
+UncalledScreen2E_LoadTiles:
 Screen2E_LoadTiles:
 	screen_load_tiles Screen2E_Descriptor
 
 Func_2E_4058: ; address-based alias kept for other banks
+UncalledScreen2E_Draw:
 Screen2E_Draw: ; fades in from black
 	screen_draw_fade Screen2E_Descriptor, 0
 
+UncalledScreen2E_Descriptor:
 Screen2E_Descriptor:
 	screen_descriptor Screen2E_Tiles, Screen2E_TileMap, Screen2E_AttrMap, Screen2E_Palettes, 273, 20, 19, 8, 0
 
@@ -73,7 +76,7 @@ Screen2E_Palettes:
 
 ; Bank $2E picture 1 of the $01:$596D table (no descriptor; drawn by bank
 ; $01 routines through $C943-$C952). 20x19 maps, 8 palettes.
-MenuState05Picture1_Tiles: ; wMenuState05Selection = 1 (RAM_D7CB, $01:$596D entry 1)
+MenuState05Picture1_Tiles: ; wMenuState05Selection = 1 (LoadMenuState05Graphics, $01:$596D entry 1)
 Picture596D1_Tiles:
 	INCBIN "assets/screens/picture596d1_tiles.2bpp"
 
@@ -131,7 +134,7 @@ Picture596D1_Palettes:
 
 ; Bank $2E picture 0 of the $01:$596D table (no descriptor; drawn by bank
 ; $01 routines through $C943-$C952). 20x19 maps, 8 palettes.
-MenuState05Picture0_Tiles: ; wMenuState05Selection = 0 (RAM_D7CB, $01:$596D entry 0)
+MenuState05Picture0_Tiles: ; wMenuState05Selection = 0 (LoadMenuState05Graphics, $01:$596D entry 0)
 Picture596D0_Tiles:
 	INCBIN "assets/screens/picture596d0_tiles.2bpp"
 

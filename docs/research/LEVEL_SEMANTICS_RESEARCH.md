@@ -60,7 +60,7 @@ movement rollback.
 2. `LoadLevelData` stores its argument; its only caller passes `wLevelNumber`.
 3. bank $01:1836: 3 x `wMenuGridRow` (wraps 0-4) + `wMenuGridColumn` (clamped 0-2).
 4. bank $01:1851: 0.
-5. bank $01:2505: `[$C939]`, reached only when the decoder `Func_01_6C24` accepts
+5. bank $01:2505: `[$C939]`, reached only when the decoder `DecodePasswordBits` accepts
    a value of at most `$0E`.
 
 Uninitialised-RAM and corruption cases were not analysed.

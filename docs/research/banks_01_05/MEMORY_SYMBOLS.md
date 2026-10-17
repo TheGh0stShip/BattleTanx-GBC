@@ -14,18 +14,18 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | Address | Name | Width | Evidence |
 | --- | --- | ---: | --- |
 | `$C6C1` | `wGamePaused` | 1 | All 6 refs consistent: cleared bank_00:205, cpl-toggled 10056, tested 384/10054/10080 and bank_01:56. Not defined in include/. |
-| `$C6CD` | `wGameStartMode` | 1 | 10 refs (bank_00 Func_3ABF/3B12/3B5A, bank_01 menu, bank_04:6133), all one menu/start-mode byte; no include/ name. |
+| `$C6CD` | `wGameStartMode` | 1 | 10 refs (bank_00 RunLevelIntroSceneFlow/3B12/3B5A, bank_01 menu, bank_04:6133), all one menu/start-mode byte; no include/ name. |
 | `$C6CF` | `wActiveSkillLevel` | 1 | Duplicate proposals (w01 wActiveSkill, w15 wActiveSkillLevel) describe the same byte; 6 refs consistent. Picked w15's name. |
-| `$C6EF` | `wBonusPickupCount` | 1 | Both proposals give the same meaning (incremented by Func_01_4582, cleared by InitializeLevelObjects, compared in Level01/08StateCheck). Picked w01's name. |
-| `$C6F0` | `wPowerupType3PickupCount` | 1 | w01 and w15 agree; Func_01_4615 ++, InitializeLevelObjects clears, Level09StateCheck reads. |
+| `$C6EF` | `wBonusPickupCount` | 1 | Both proposals give the same meaning (incremented by PickupBonusScore3000, cleared by InitializeLevelObjects, compared in Level01/08StateCheck). Picked w01's name. |
+| `$C6F0` | `wPowerupType3PickupCount` | 1 | w01 and w15 agree; PickupScreenEffectCharge ++, InitializeLevelObjects clears, Level09StateCheck reads. |
 | `$C719` | `wBgPalette6To7Shadow` | 16 | Name changed: the proposed 'wVBlankBgPalette3' has the wrong palette index. bank_00:1550 LoadInterfacePalettes reads palette 6 back from BCPD ($B0 = auto-increm |
 | `$C8D4` | `wNearestTargetScanPtr` | 2 | w05 and w15 agree on the meaning; only bank_02 nearest-target scan code uses it, as a 16-bit value (40C7, 4D6A, 4E0E, 4E9F). Picked w15's name. |
-| `$C8D6` | `wNearestTargetPtr` | 2 | 3 proposals, same meaning. Used by the bank_02 scan; cleared by bank_00 Func_0A23 (1631). Consistent. |
-| `$C8D8` | `wNearestTargetDistance` | 2 | Used as 16-bit in bank_02:1002-1013. The other refs (bank_00 Jump_01B4:222, Jump_09F1:1615, bank_01:963) only clear it on reset. Consistent. |
+| `$C8D6` | `wNearestTargetPtr` | 2 | 3 proposals, same meaning. Used by the bank_02 scan; cleared by bank_00 ResetGameplayFrameState (1631). Consistent. |
+| `$C8D8` | `wNearestTargetDistance` | 2 | Used as 16-bit in bank_02:1002-1013. The other refs (bank_00 RespawnPlayer:222, InitializeLevelRuntime .resetTransientState:1615, bank_01:963) only clear it on reset. Consistent. |
 | `$C8DA` | `wNearestTargetScanIndex` | 1 | Only bank_02 scan loops use it. Consistent. |
 | `$C8DB` | `wNearestTargetScanJump` | 4 | Width is 4, not 3: bank_02:65-73 writes C3 lo hi C9 (jp nn; ret), and bank_02:901 does jp $C8DB. |
 | `$C8E6` | `wVestigialStateC8E6` | 1 | `Audio_InitFar` changes the cleared byte to 1 during boot. `InitBurstEffectScreen` later writes 2. The boot guard is its only read, so the later value has no consumer; it is not synchronized with `rSVBK` and is not audio state. |
-| `$C91E` | `wAlertObjectTypePtr` | 2 | w01 and w15 agree: bank_01:975 stores a pointer to object field +$1E after incrementing it; Func_0A23 decrements through it and clears it. Picked w15's name. Ne |
+| `$C91E` | `wAlertObjectTypePtr` | 2 | w01 and w15 agree: bank_01:975 stores a pointer to object field +$1E after incrementing it; ResetGameplayFrameState decrements through it and clears it. Picked w15's name. Ne |
 | `$C924` | `wMenuScrollStep` | 1 | 8 refs, all in the bank_01 menu scroll code. Consistent. |
 | `$C6ED` | `wUnwrittenStatusDisplayValue0` | 1 | Read only by `DrawObjectStatusCountsToWindow`, which renders it as a two-digit value. No direct writer exists, so normal cleared WRAM leaves it zero. |
 | `$C6EE` | `wUnwrittenStatusDisplayValue1` | 1 | The adjacent second value follows the same read-only display path and likewise has no direct writer. |
@@ -33,28 +33,28 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$C92F` | `wUnusedCommittedControlSetting` | 1 | Written from `wControlSetting` when leaving the menu; no reader exists. |
 | `$C931` | `wPasswordBits` | 4 | w04 and w15 agree; all 4 bytes used only by the password routines 6B35-6DF0. |
 | `$C935` | `wPasswordBitIndex` | 1 | Same meaning in both proposals; only the bank_01 password bit routines use it. |
-| `$C936` | `wPasswordScoreThousands` | 2 | 16-bit field decoded from the password and applied at Jump_01_5164 (score). Picked w04's more specific name. |
+| `$C936` | `wPasswordScoreThousands` | 2 | 16-bit field decoded from the password and applied at SubmitEnteredCode_Accepted (score). Picked w04's more specific name. |
 | `$C938` | `wPasswordLives` | 1 | w04 and w15 agree. |
 | `$C939` | `wPasswordLevel` | 1 | Same meaning; picked w04's name. |
 | `$C93A` | `wPasswordChecksum` | 1 | w04 and w15 agree. |
 | `$C93B` | `wPasswordChars` | 5 | w04 and w15 agree; base-addressed refs only. |
-| `$C943` | `wBankedBgSourceBank` | 1 | 10 refs, all in the banked BG copy path (bank_00 Func_3C90, bank_01 7981-7CEF). Consistent. |
-| `$C944` | `wBankedBgSourcePtrs` | 4 | Two 16-bit pointers written by Func_01_7AA3 (bank_01:7176-7187) and read by RAM_D91B. |
+| `$C943` | `wBankedBgSourceBank` | 1 | 10 refs, all in the banked BG copy path (bank_00 LoadScrollingScreenFillCell, bank_01 7981-7CEF). Consistent. |
+| `$C944` | `wBankedBgSourcePtrs` | 4 | Two 16-bit pointers written by SetBankedRowSourcePtrs (bank_01:7176-7187) and read by CopyBankedTilemapRectToBG. |
 | `$C948` | `wBgCopyColumn` | 1 | Consistent within the BG copy routines. |
 | `$C949` | `wBgCopyRow` | 1 | Consistent. |
 | `$C94A` | `wBgCopyWidth` | 1 | Consistent. |
-| `$C94F` | `wSceneTileAttrPtrs` | 4 | Every byte accessed by the same 4 sites (Func_3C90, RAM_D7CB, 7BF3, 7C52). |
-| `$C953` | `wSceneBank` | 1 | Written by RAM_D7CB and read by the bank_01 BG copy routines. |
-| `$C955` | `wBgFillTileAttr` | 2 | 2 sites (Func_3C90, Jump_01_790E). Consistent. |
-| `$C9E8` | `wBurstRandomIndex` | 1 | Only Func_02_66C0 uses it (bank_02:2459-2461), as the index into the $614F random table. Picked w07's name. |
+| `$C94F` | `wSceneTileAttrPtrs` | 4 | Every byte accessed by the same 4 sites (LoadScrollingScreenFillCell, LoadMenuState05Graphics, 7BF3, 7C52). |
+| `$C953` | `wSceneBank` | 1 | Written by LoadMenuState05Graphics and read by the bank_01 BG copy routines. |
+| `$C955` | `wBgFillTileAttr` | 2 | 2 sites (LoadScrollingScreenFillCell, FillBgRectWithTileAttr_TileLoop). Consistent. |
+| `$C9E8` | `wBurstRandomIndex` | 1 | Only Bank02NextTableRandom uses it (bank_02:2459-2461), as the index into the $614F random table. Picked w07's name. |
 | `$C9E9` | `wBurstActiveObjectCount` | 1 | 15 refs, all in the bank_02 burst routines. |
 | `$C9EA` | `wBurstFrameCountdown` | 1 | Burst code only. |
-| `$C9EB` | `wBurstBlockAnimStep` | 1 | Burst code only. Func_02_63F4 uses it as the grid index ($5E20 + n*16, ends at 6). |
+| `$C9EB` | `wBurstBlockAnimStep` | 1 | Burst code only. AnimateBurstSpriteBlock uses it as the grid index ($5E20 + n*16, ends at 6). |
 | `$C9EC` | `wBurstBlockAnimTick` | 1 | Burst code only. |
 | `$C9ED` | `wBurstSpawnCooldown` | 1 | Burst code only. |
-| `$CA07` | `wActiveFlag26ObjectCount` | 1 | Counted in bank_00 Func_22ED and read in bank_03. Consistent. Medium confidence. |
-| `$CA08` | `wVisibleStatus1ObjectCount` | 1 | Counted in Func_22ED and read in Func_02_4D58. Medium confidence. |
-| `$CD10` | `wLevelAuxTimerDivider` | 1 | Only Func_03_6391 and InitializeLevelObjects use it. |
+| `$CA07` | `wActiveFlag26ObjectCount` | 1 | Counted in bank_00 UpdateAllObjects and read in bank_03. Consistent. Medium confidence. |
+| `$CA08` | `wVisibleStatus1ObjectCount` | 1 | Counted in UpdateAllObjects and read in UpdateNearestObjectTracker. Medium confidence. |
+| `$CD10` | `wLevelAuxTimerDivider` | 1 | Only UpdateLevelObjectAuxState and InitializeLevelObjects use it. |
 | `$CD11` | `wLevelAuxTimerExpiredCount` | 1 | Consistent. |
 | `$CD12` | `wLevelAuxType3Pending` | 1 | 11 refs: level state checks plus the aux timer. Consistent. |
 | `$CD13` | `wLevelAuxType2AllReached` | 1 | Consistent. |
@@ -62,16 +62,16 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$CD18` | `wLevelSpawnHealthPenalty` | 1 | Same meaning in both proposals; only bank_04 level spawn code uses it. Picked a name that matches the $CD1A naming. |
 | `$CD19` | `wLevelObjectRecordType` | 1 | 17 refs, all in bank_04 level-object spawning. Picked w10's name. |
 | `$CD1A` | `wUnusedPlayerSpawnHealthPenalty` | 1 | Receives the player-record health penalty once in bank `$04`; player creation never reads it. Validator-pinned dead write. |
-| `$CD22` | `wLevelObjectSkillScratch` | 1 | Only bank_04 Func_04_62A7/62F7 code uses it. Scratch-like, but used in one place. |
+| `$CD22` | `wLevelObjectSkillScratch` | 1 | Only bank_04 GetLevelObjectHealthPenalty/62F7 code uses it. Scratch-like, but used in one place. |
 | `$CD23` | `wLevelObjectRecordIndex` | 1 | Only bank_03/04 level-object code uses it. |
 | `$CD24` | `wLevelObjectRespawnsLeft` | 1 | Consistent. |
 | `$CD25` | `wPendingSpawnOutsideView` | 1 | Same meaning in both proposals; only TrySpawnPendingLevelObject uses it. |
 | `$CD26` | `wObjectProximityThreshold` | 1 | `CheckObjectNearPlayerBox` stores `$55`, passes it to the two-axis distance test, and checks it again before setting the proximity latch. |
-| `$CD28` | `wObjectSequenceThrottleCounter` | 1 | Address was given without '$' in the input. Uses: Jump_03_5CED and InitializeLevelObjects. |
+| `$CD28` | `wObjectSequenceThrottleCounter` | 1 | Address was given without '$' in the input. Uses: UpdateObjectSequenceMovement_CheckThrottleBypass and InitializeLevelObjects. |
 | `$CD29` | `wForceRecordedPathAppend` | 1 | Normally zero. `UnusedStartRecordedPathFollow` temporarily makes it nonzero so `AppendRecordedPathWaypoint` bypasses its duplicate-waypoint check. |
-| `$CD2A` | `wSequenceObjectsInState2Count` | 1 | Address was given without '$' in the input. Counted in Func_03_5CD0 and read in the level checks. |
-| `$D0A0` | `wBurstObjects` | 320 | Only bank_02 burst code refs it, with rSVBK=2 (Func_02_626D). Caveat: in WRAM bank 1 this address lies inside wObjectPool, so the comment must state WRAM bank 2 |
-| `$D3F8` | `wScenePaletteFadeTable` | 32 | Only bank_01 scene code uses it (RAM_D273, RAM_D2C0, 6180, 61F9). No overlap with wScrollingScenePalette at $D3F6 if that field is 2 bytes. |
+| `$CD2A` | `wSequenceObjectsInState2Count` | 1 | Address was given without '$' in the input. Counted in UpdateObjectSequenceMovement and read in the level checks. |
+| `$D0A0` | `wBurstObjects` | 320 | Only bank_02 burst code refs it, with rSVBK=2 (InitBurstEffectScreen). Caveat: in WRAM bank 1 this address lies inside wObjectPool, so the comment must state WRAM bank 2 |
+| `$D3F8` | `wScenePaletteFadeTable` | 32 | Only bank_01 scene code uses it (BuildScenePaletteFadeTable_ColorLoop, WriteBgPalette7FromD3F8, 6180, 61F9). No overlap with wScrollingScenePalette at $D3F6 if that field is 2 bytes. |
 | `$D550` | `wMenuCursorChoice` | 1 | 11 refs, all in the bank_01 menu. |
 | `$D553` | `wMenuCursorY` | 1 | w01 and w02 agree. |
 | `$D554` | `wMenuCursorTargetY` | 1 | Consistent. |
@@ -86,12 +86,12 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 | `$DF09` | `wPasswordCursorX` | 1 | Consistent. |
 | `$DF0A` | `wPasswordCursorTargetX` | 1 | Consistent. |
 | `$DF0B` | `wPasswordCursorIndex` | 1 | Picked w04's name. w02's refs use it as the same cursor position. |
-| `$DF0C` | `wPasswordCursorPaletteFrame` | 1 | Cursor palette cycle index into $77E4, 0..$0D (Func_01_6762). |
+| `$DF0C` | `wPasswordCursorPaletteFrame` | 1 | Cursor palette cycle index into $77E4, 0..$0D (CycleObjectPalettes12). |
 | `$DF0D` | `wGlyphTileBuffer` | 8 | Only the glyph renderer uses it. |
 | `$FFA9` | `hSceneLcdStepPending` | 1 | Only bank_01 scene code and its STAT RAM handlers use it. No reuse found. |
 | `$FFAA` | `hSceneLcdStepIndex` | 1 | Only the bank_01 scene STAT RAM code uses it. |
 | `$FFAF` | `hSceneLcdStepLimit` | 1 | Only bank_01 scene code uses it. |
-| `$FFB3` | `hSceneRowTileVramAddress` | 2 | Only Func_01_64F1 and Func_01_6580 (scene row upload) use it. Flagged as HRAM: no reuse found, but nearby bytes are scratch. |
+| `$FFB3` | `hSceneRowTileVramAddress` | 2 | Only SelectSceneTileRowDestination and StartSceneTileRowHdma (scene row upload) use it. Flagged as HRAM: no reuse found, but nearby bytes are scratch. |
 | `$FFB5` | `hSceneTileSlot` | 1 | Only bank_01 scene code uses it. Flagged as HRAM: no reuse found. |
 | `$FFB6` | `hSceneRowHdmaPending` | 1 | Only bank_01 scene code and its VBlank RAM code use it. |
 
@@ -117,4 +117,5 @@ Not symbolised: `$C729`/`$C7F1`, which are `LOAD` destinations for the swappable
 - HRAM reused by other banks (`$FF80-$FF8E`, `$FF96-$FFA7`, `$FFB0-$FFB2`);
 - written but never read (`$FFAB`, `$CD2B-$CD32`, `$D561-$D565`);
 - a role that differs by routine (`$C94B`);
-- a time-shared or bank-dependent region (`$DBFB-$DC40`, `$D7FF`).
+- a time-shared or bank-dependent region (`$DBFB-$DC40`). `$D7FF` was
+  later resolved as the last byte of fade frame 31 in WRAM bank 2.

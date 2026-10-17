@@ -6,6 +6,8 @@ outside a LOAD block, the statement is split at that byte (dw only at word
 boundaries), a label `BankNNData_XXXX` is inserted, and raw operands equal to
 the address in the listed files are replaced by the label.
 Usage: split_data_lines_01_05.py RAW.json
+
+One-time edit tool; owns nothing; do not rerun.
 """
 import json, pathlib, re, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent

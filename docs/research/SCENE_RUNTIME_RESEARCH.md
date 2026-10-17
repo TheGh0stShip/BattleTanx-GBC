@@ -11,19 +11,19 @@ Layout and checks: `tools/check_project.py` fixed/scrolling scene checks and
 - **Scrolling index**: `$FF82`. `CopyScrollingSceneDescriptor` copies `idx*8`
   to `$D3F0`, then `LoadScrollingScenePalette` (RAM `$D160`) loads it.
 
-The only callers are `Func_01_609A`, `Func_01_6247`, `Func_01_6309` and
-`Func_01_6367`.
+The only callers are `RunScrollingScene`, `RunMenuGridSceneScroll`, `LoadFixedSceneForRow` and
+`LoadScrollVariantForGridCell`.
 
 | Fixed | Writer | Scroll | Writer |
 | --- | --- | --- | --- |
 | 0 | `RunLevelExitScreenFlow` | 0 | `RunLevelExitScreenFlow` |
-| 1-5 | `Func_01_63B3` (levels 0/3/6/9/12 via `$01:$6609`, world w = `$65EB[2L]`) | 1-5 | same |
-| 6-10 | `Func_01_63D1` (`SceneDescriptorIndexTable[w]`, *verified*) and menu row (`6309`) | 6-`$14` | `63D1` (`SceneScrollDescriptorIndexTable[4w+c]`, *verified*) and menu confirm (`6247`) |
+| 1-5 | `SelectLevelRowScene` (levels 0/3/6/9/12 via `$01:$6609`, world w = `$65EB[2L]`) | 1-5 | same |
+| 6-10 | `SelectLevelScene` (`SceneDescriptorIndexTable[w]`, *verified*) and menu row (`6309`) | 6-`$14` | `63D1` (`SceneScrollDescriptorIndexTable[4w+c]`, *verified*) and menu confirm (`6247`) |
 | | | `$15-$23` | menu preview `6367` (`SceneScrollVariantIndexTable`, *verified*) |
 
 - Every descriptor index is produced; none is unused.
 - Table slots 3/7/11/15 (zeros) would need column c = 3. The column is
-  clamped to 0-2 (`Func_01_535D`) and every `$65EB` column is at most 2, so
+  clamped to 0-2 (`SetMenuGridColumnClamped`) and every `$65EB` column is at most 2, so
   those slots are never selected.
 - Scenes are grouped per world (5 worlds x 3 levels). No scene is named,
   because no encoded text identifies one.
@@ -31,8 +31,8 @@ The only callers are `Func_01_609A`, `Func_01_6247`, `Func_01_6309` and
 ## Scrolling behaviour
 
 - **Rows**: 40 bytes, 20 x 16-bit tile indices.
-- **Speed**: `RAM_D1B0` advances SCY by `$FF97` (1 px/frame, set by
-  `Func_01_5BF1`) and streams one row every 8 px into a 7-slot VRAM ring
+- **Speed**: `AdvanceSceneScroll` advances SCY by `$FF97` (1 px/frame, set by
+  `InitSceneDisplay`) and streams one row every 8 px into a 7-slot VRAM ring
   (`ScrollingTileRowDestinations`).
 - **Initial row**: 0 for previews; `SceneScrollInitialRowTable` (`$13`/`$14`,
   *verified*) on confirm.
@@ -40,7 +40,7 @@ The only callers are `Func_01_609A`, `Func_01_6247`, `Func_01_6309` and
   (`$FF84` = 1).
 - **Previews** (last row 5) draw 6 rows at once.
 - **Mutation**: rows and tiles are never modified in place. The palette is
-  copied to `$DC48` and processed by `RAM_D270`.
+  copied to `$DC48` and processed by `BuildScenePaletteFadeTable`.
 
 ## Dual-use bytes (5,872) and over-reads
 

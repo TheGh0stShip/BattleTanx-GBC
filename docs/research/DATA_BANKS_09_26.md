@@ -46,8 +46,8 @@ bank from the level record, never an immediate:
 | --- | --- | --- |
 | ROM0 `$18EE` | `a` = level; record pointer from `05:4300 + 2a` | — |
 | ROM0 `$188B` | copies record +0 to `$CA09`, +1 to `$CA0A`, +2..+19 to `$C8B9-$C8CA` (`ld d,$12`) | — |
-| ROM0 `$1A33` | `[$C8B9]` (record +2) | 440 tiles from `[$C8C1]` (record +10): 128 to VRAM0 `$8800`, 128 to VRAM0 `$9000`, 128 to VRAM1 `$9000`, 56 to VRAM1 `$8800` (`Func_0622`, 16 bytes per tile) |
-| ROM0 `$1A86` | `[$C8BA]` (record +3) | `[$C8C0]` (record +9) palettes x 8 bytes from `[$C8C3]` (record +12) to BCPS/BCPD (`Func_052F`) |
+| ROM0 `$1A33` | `[$C8B9]` (record +2) | 440 tiles from `[$C8C1]` (record +10): 128 to VRAM0 `$8800`, 128 to VRAM0 `$9000`, 128 to VRAM1 `$9000`, 56 to VRAM1 `$8800` (`CopyTilesToVRAM`, 16 bytes per tile) |
+| ROM0 `$1A86` | `[$C8BA]` (record +3) | `[$C8C0]` (record +9) palettes x 8 bytes from `[$C8C3]` (record +12) to BCPS/BCPD (`LoadBackgroundPaletteRange`) |
 | ROM0 `$1AA4` | `[$C8BB]` (record +4) | width x height bytes from `[$C8C9]` (record +18) to WRAM banks 2-3 at `$D000` |
 | ROM0 `$1D93`/`$1E84` and row/column drawers `$1D26`, `$1E97`, `$1EC5`, `$1F82` | `[$C8BC]` (record +5) | tile id `[$C8C7 + off]` (record +16), attribute `[$C8C5 + off]` (record +14), off = row table `$CA17[y] + x`, rows = `$CA09` bytes (`$1A10`) |
 | ROM0 `$1D93` (cells with bit 7 set) | `[$C8D2]` from `05:513E` (via `05:4088`) | one byte of the 160-byte table at `[$C8D0]` |

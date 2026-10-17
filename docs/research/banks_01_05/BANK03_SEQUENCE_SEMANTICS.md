@@ -20,7 +20,7 @@ The table is cached at `$CD1C`, and each object stores its sequence slot in
 ## Runtime
 
 - **Per-object update**: `UpdateObjectSequenceMovement` (via ROM0
-  `UpdateObjectSequenceMovementFar`) turns the object toward the target
+  `UpdateCurrentObjectSequenceFar`) turns the object toward the target
   heading.
 - **Arrival**: `HandleSequenceWaypointArrival` snaps to the waypoint;
   `AdvanceObjectSequenceRecord` moves the point index forward, or backward

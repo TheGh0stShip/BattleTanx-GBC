@@ -24,8 +24,8 @@ ROM span.
   keep their RAM addresses.
 - **Calls into ROM copies**: two RAM routines call the ROM copy of another
   image rather than its RAM copy. They now use ROM-side labels:
-  - `call Bank01RomImage_5F26`;
-  - `call Bank01RomImage_5EE0`.
+  - `call WriteBgPalette7FromFF98RomImage`;
+  - `call WriteBgPalette7FromD3F8RomImage`.
 
   Both work because bank `$01` is mapped at the time and the callees do not
   branch internally.
@@ -42,7 +42,7 @@ ROM span.
   bank-`$01` handler pairs call bank-`$01` routines.
 - **Menu VBlank handler**: saves the bank and maps bank `$01` itself.
 - **Scene VBlank handler**: calls `StartSceneTileRowHdma` (`$01:6580`) without
-  mapping bank `$01`. The scene STAT handler calls `Bank01RomImage_5EE0`, and
-  `StepSceneWindowSplit` (`$D140`) calls `Bank01RomImage_5F26`, the same way.
+  mapping bank `$01`. The scene STAT handler calls `WriteBgPalette7FromD3F8RomImage`, and
+  `StepSceneWindowSplit` (`$D140`) calls `WriteBgPalette7FromFF98RomImage`, the same way.
   The call set is pinned by `tools/banks_01_05.py`; the invariant and the
   timing-dependent sites are in UNRESOLVED.md item 1.

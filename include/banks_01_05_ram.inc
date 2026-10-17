@@ -1,10 +1,16 @@
 ; RAM symbols used by banks $01-$05 (docs/research/banks_01_05/MEMORY_SYMBOLS.md).
 ; Included by src/bank_01.asm; guarded. Widths in bytes; multi-byte values little-endian
-; unless noted. HRAM $FF80-$FF8D, $FF97, $FFB0-$FFB1 are shared scratch and stay numeric.
+; unless noted. HRAM $FF80-$FF8D, $FF97, $FFB0-$FFB2 are time-shared scratch; bank $01 scene aliases below name their scene role only.
 IF !DEF(BANKS_01_05_RAM_INC)
 DEF BANKS_01_05_RAM_INC EQU 1
+DEF hSceneWriteOnlyFlag              EQU $FFAB ; 1; write-only: set 0/1 by scene code, never read
+DEF wBgCopyReloadCount               EQU $C94B ; 1; reload for wBgCopyColumnsLeft (CopyBankedTilemapRectToBG) or wBgCopyRowsLeft (CopyBankedTilemapRowsToBG)
+DEF wMenuState05UnreadPtr            EQU $D564 ; 2, little-endian; write-only: always $DC03, never read
 DEF wGamePaused                      EQU $C6C1 ; 1 byte(s)
-DEF wGameStartMode                   EQU $C6CD ; 1 byte(s)
+DEF wGameStartMode                   EQU $C6CD ; 1 byte(s); GAME_START_* value
+DEF GAME_START_NEW                   EQU 0 ; main-menu kind-$0F start
+DEF GAME_START_LEVEL_SELECT          EQU 1 ; MenuState06 grid confirm
+DEF GAME_START_PASSWORD              EQU 2 ; accepted password
 DEF wActiveSkillLevel                EQU $C6CF ; 1 byte(s)
 DEF wUnwrittenStatusDisplayValue0    EQU $C6ED ; displayed by DrawObjectStatusCountsToWindow; no direct writer
 DEF wUnwrittenStatusDisplayValue1    EQU $C6EE ; displayed by DrawObjectStatusCountsToWindow; no direct writer
@@ -101,8 +107,39 @@ DEF hScenePaletteFadeOffset          EQU $FFAE ; 1
 ; Bank $01 scene roles; these HRAM bytes are time-shared with bank $00 hLevelRegion* scratch.
 DEF hSceneRomBank                    EQU $FF92 ; 1, copied from wScrollingSceneBank; written to rROMB0 (time-shared with hLevelRegionTop)
 DEF hSceneScrollStarted              EQU $FF95 ; 1 (time-shared with hLevelRegionX)
-DEF hSceneScrollDelay                EQU $FF96 ; 1, VBlank countdown that sets hSceneScrollStarted at 0
+DEF hSceneScrollDelay                EQU $FF96 ; 1, VBlank countdown that sets hSceneScrollStarted at 0 (time-shared with hBit2ScanLeft)
+DEF hSceneBankSwitchGuard            EQU $FF80 ; 1, nonzero skips SceneStatHandler and StepSceneWindowSplit while a ROM/resource bank is switched (time-shared)
+DEF hSceneFixedIndex                 EQU $FF81 ; 1, SceneBackgroundDescriptors index read by CopyFixedSceneDescriptor (time-shared)
+DEF hSceneScrollIndex                EQU $FF82 ; 1, ScrollingSceneDescriptors index read by CopyScrollingSceneDescriptor (time-shared)
+DEF hSceneScrollEnded                EQU $FF84 ; 1, set to 1 by AdvanceSceneScroll when hSceneRow reaches hSceneLastRow (time-shared)
+DEF hSceneWindowSplitCountdown       EQU $FF86 ; 1, VBlank countdown written to LYC; also WY and the STAT split line (time-shared)
+DEF hSceneScrollY                    EQU $FF87 ; 1, copied to rSCY each scene VBlank (time-shared)
+DEF hSceneDescriptorPointer          EQU $FF88 ; 2, little-endian address of wScrollingSceneBank (time-shared)
+DEF hSceneLastRow                    EQU $FF8A ; 1, copied from wScrollingSceneLastRow (time-shared)
+DEF hSceneRow                        EQU $FF8B ; 1, scrolling-scene row index used by ComputeSceneRowPointer (time-shared)
+DEF hSceneRowPixelPhase              EQU $FF8C ; 1, pixels scrolled since the last row draw, 0-7 (time-shared)
+DEF hSceneRowSourcePointer           EQU $FF8D ; 2, little-endian pointer into the current row's cell words (time-shared)
+DEF hSceneScrollStep                 EQU $FF97 ; 1, pixels added to hSceneScrollY per AdvanceSceneScroll (time-shared)
+DEF hSceneRowTileBase                EQU $FFB0 ; 1, first BG tile index written for the next row (time-shared)
+DEF hSceneRowMapAddress              EQU $FFB1 ; 2, little-endian BG map address of the next row (time-shared)
 DEF hScoreDigitsStarted              EQU $FFB8 ; 1
 DEF hPasswordLevelNumber             EQU $FFC6 ; 1
 DEF wUnusedC954                     EQU $C954 ; written only by the unreferenced UnusedWipeSceneIn* routines
+; Bank $01 BCD helpers (time-shared).
+DEF hBcdByteCounter                  EQU $FF80 ; 1, input bytes left in AddWordToBcd24 (2) and LongToBcd40 (4) (time-shared)
+
+; DrawObjectStatusCountsToWindow counters and digit buffer (time-shared).
+DEF hStatusCountBcd                  EQU $FF80 ; 2, ByteToBcd16 output; +1 holds the two digits drawn (time-shared)
+DEF hStatusCountNonZero              EQU $FF83 ; 1, objects whose byte +$1D is nonzero (time-shared)
+DEF hStatusCountStatus2              EQU $FF84 ; 1, objects whose byte +$1D is 2 (time-shared)
+DEF hStatusCountStatus1              EQU $FF85 ; 1, objects whose byte +$1D is 1 (time-shared)
+
+; Scene init/load write-only bytes (time-shared).
+DEF hSceneInitWriteOnly              EQU $FF83 ; 1, set to 1 by InitSceneDisplay, never read by scene code (time-shared)
+DEF hSceneWxCopy                     EQU $FF85 ; 1, write-only copy of values written to rWX ($B4, $07) (time-shared)
+
+; Scene BG palette 7 buffers, 4 RGB555 colours each (time-shared).
+DEF hScenePalette7BufferA            EQU $FF98 ; 8, read by WriteBgPalette7FromFF98; Func_3A68 target (time-shared)
+DEF hScenePalette7BufferB            EQU $FFA0 ; 8, read by WriteBgPalette7FromFFA0 (time-shared)
+
 ENDC

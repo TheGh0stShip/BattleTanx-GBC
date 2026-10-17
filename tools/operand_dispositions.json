@@ -4,190 +4,189 @@
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "selects $05 and reads OAM records from wScreenEffectPartOam pointer",
    "sites": [
-    "src/bank_00.asm:11793"
+    "src/bank_00.asm:11804"
    ]
   },
   "ComputeSceneRowPointer|$01": {
    "class": "restores the caller's bank $01",
    "evidence": "RAM code (01:D1F0): stores row pointer in $FF8D/$FF8E, sets $01, ret",
    "sites": [
-    "src/bank_01.asm:5491"
+    "src/bank_01.asm:5526"
    ]
   },
   "CopyScreenEffectPartTiles|$08": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "selects $08 and copies tiles from wScreenEffectPartTiles pointer",
    "sites": [
-    "src/bank_00.asm:11730"
+    "src/bank_00.asm:11741"
    ]
   },
   "Func_3104|$05": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "pushes bank, selects $05, reads record at HL+offsets",
    "sites": [
-    "src/bank_00.asm:9195"
+    "src/bank_00.asm:9205"
    ]
   },
   "Func_315F|$02": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "selects $02 and reads OAM layout records from pointer in $FF88/$FF89",
    "sites": [
-    "src/bank_00.asm:9255"
+    "src/bank_00.asm:9265"
    ]
   },
   "Func_3190|$02": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "selects $02 and resolves frame through pointer table at $FF86/$FF87",
    "sites": [
-    "src/bank_00.asm:9298"
+    "src/bank_00.asm:9308"
    ]
   },
   "Func_3190|$08": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "selects $08 to copy tiles from the pointer just read from the bank-$02 table",
    "sites": [
-    "src/bank_00.asm:9314"
+    "src/bank_00.asm:9324"
    ]
   },
   "GetLevelCellTileAndAttr|$05": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "pushes bank, selects $05, indexes a table with e+$7F",
    "sites": [
-    "src/bank_00.asm:5395"
+    "src/bank_00.asm:5399"
    ]
   },
   "InitMenuSystem|$01": {
    "class": "restores the caller's bank $01",
    "evidence": "RAM code (01:D56A): re-selects $01 after ROM0 ScreenTable_CallInit, which can change the bank, before ScreenTable_CallUpdate",
    "sites": [
-    "src/bank_01.asm:1455"
+    "src/bank_01.asm:1469"
+   ]
+  },
+  "LoadFixedSceneResources_NextTile|$01": {
+   "class": "restores the caller's bank $01",
+   "evidence": "RAM code: after Func_3A88/Func_3A2F palette calls, sets $01 then ret (end of LOAD block)",
+   "sites": [
+    "src/bank_01.asm:4806"
    ]
   },
   "LoadLevelData|$01": {
    "class": "restores the caller's bank $01",
    "evidence": "after LoadLevelRecord/LoadLevelTiles/LoadLevelCellMap, sets bank $01 (no push/pop) before popping registers and returning",
    "sites": [
-    "src/bank_00.asm:4600"
+    "src/bank_00.asm:4603"
    ]
   },
   "LoadLevelRecord|$05": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "selects $05 then indexes the level record pointer passed in HL",
    "sites": [
-    "src/bank_00.asm:4514"
+    "src/bank_00.asm:4517"
    ]
   },
   "LoadObjectPalettes|$08": {
-   "class": "unresolved",
-   "evidence": "redundant: $08 is overwritten by BANK(Bank27ObjectPalette) on the next instruction; no read in between",
+   "class": "redundant (overwritten by another bank write before any banked read)",
+   "evidence": "$08 is overwritten by BANK(Bank27ObjectPalette) on the next instruction; no read in between",
    "sites": [
-    "src/bank_00.asm:1341"
+    "src/bank_00.asm:1343"
    ]
   },
   "LoadScreenEffectPart|$05": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "selects $05 and indexes wScreenEffectStepTable+b",
    "sites": [
-    "src/bank_00.asm:11663"
+    "src/bank_00.asm:11674"
    ]
   },
   "LoadScrollingScenePalette|$01": {
    "class": "restores the caller's bank $01",
    "evidence": "RAM code (01:D160): sets $01 after copying palette data, then pops and returns",
    "sites": [
-    "src/bank_01.asm:4813"
+    "src/bank_01.asm:4847"
    ]
   },
   "MenuEnterNewState|$01": {
    "class": "restores the caller's bank $01",
    "evidence": "RAM code (01:D664): re-selects $01 after ScreenTable_CallInit before ScreenTable_CallUpdate",
    "sites": [
-    "src/bank_01.asm:1550"
+    "src/bank_01.asm:1564"
    ]
   },
   "MenuLoopTop|$01": {
    "class": "restores the caller's bank $01",
    "evidence": "RAM code (01:D62E): sets bank $01 immediately before ret",
    "sites": [
-    "src/bank_01.asm:1507"
-   ]
-  },
-  "RAM_D0DF|$01": {
-   "class": "restores the caller's bank $01",
-   "evidence": "RAM code: after Func_3A88/Func_3A2F palette calls, sets $01 then ret (end of LOAD block)",
-   "sites": [
-    "src/bank_01.asm:4772"
-   ]
-  },
-  "RAM_D37C|$01": {
-   "class": "restores the caller's bank $01",
-   "evidence": "RAM code (01:D37C): after 20-iteration row loop, sets $01, ret",
-   "sites": [
-    "src/bank_01.asm:5647"
+    "src/bank_01.asm:1521"
    ]
   },
   "RefreshLevelViewport|$01": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "pushes bank, selects $01, calls ROM0 DrawLevel* routines that read level map data; no bank-$01 code is called",
    "sites": [
-    "src/bank_00.asm:4916"
+    "src/bank_00.asm:4919"
    ]
   },
   "RenderObjectOrientationGraphic|$05": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "pushes current bank, selects $05, then reads bank-$05 tables via HL derived from $FF80/$FF81",
    "sites": [
-    "src/bank_00.asm:2486"
+    "src/bank_00.asm:2488"
    ]
   },
   "RenderObjectOrientationGraphic|$08": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "selects $08 after computing tile source pointer into $FF8A/$FF8B",
    "sites": [
-    "src/bank_00.asm:2572"
+    "src/bank_00.asm:2574"
    ]
   },
   "RenderScreenEffect|$08": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "pushes bank, selects $08 for the part loop (LoadScreenEffectPart switches to $05 itself); tile data read through computed pointers",
    "sites": [
-    "src/bank_00.asm:11698"
+    "src/bank_00.asm:11709"
    ]
   },
   "RunMenuAndLevelLoop|$01": {
-   "class": "unresolved",
-   "evidence": "first site maps bank $01 before InstallMenuRuntimeCodeFar and RAM_D56A/RAM_D62A (RAM code calling bank-$01 ROM); second site maps bank $01 before ROM0 RunLevel, consumer not traced",
+   "class": "redundant (same bank re-mapped before any banked read)",
+   "evidence": "site 2: MenuLoopTop already sets $01 before RunMenuLoop returns; RunLevel immediately calls RunLevelIntroSceneFlow, which writes BANK(InitSceneDisplay)=$01 (bank_00.asm:11146; operand spelled with the legacy alias Func_01_5BF1) before any banked read; RunLevelCompleteFlow enters RunLevel without it. (The first site now reads BANK(ClearPasswordEntryChars).)",
    "sites": [
-    "src/bank_00.asm:196",
-    "src/bank_00.asm:201"
+    "src/bank_00.asm:202"
    ]
   },
   "ScreenTable_LoadEntry|$01": {
    "class": "data bank selected for a pointer computed at run time",
    "evidence": "pushes bank, selects $01, CopyBytesShort from computed screen-table entry, pops bank",
    "sites": [
-    "src/bank_00.asm:10997"
+    "src/bank_00.asm:11008"
    ]
   },
   "SpawnVehicleProjectile|$05": {
    "class": "data bank selected for a pointer computed at run time",
-   "evidence": "pushes bank, selects $05, reads ObjectTypeParameterTable (05:5100) at an index computed from the object type",
+   "evidence": "pushes bank, selects $05, reads ProjectileSubtypeParameters (05:5100) at an index computed from the object type",
    "sites": [
-    "src/bank_00.asm:8148"
+    "src/bank_00.asm:8158"
+   ]
+  },
+  "StageSceneRowTiles_TileLoop|$01": {
+   "class": "restores the caller's bank $01",
+   "evidence": "RAM code (01:D37C): after 20-iteration row loop, sets $01, ret",
+   "sites": [
+    "src/bank_01.asm:5682"
    ]
   },
   "UpdateAllObjects|$01": {
-   "class": "unresolved",
-   "evidence": "pushes bank, selects $01 for the object loop; only ROM0 callees seen (UpdateObjectScreenPosition etc.); bank-$01 reader not identified",
+   "class": "redundant (no banked reader found; strong, not proven)",
+   "evidence": "pushes and pops the caller's bank; in the transitive callee closure, bank-$01 code is reached only through RenderStatus4ObjectSpriteFar/DispatchStatus4PickupHandlerFar, which select $01 themselves; every other banked read sits under its callee's own switch; Status4PickupHandlerTable jp hl targets not traced",
    "sites": [
-    "src/bank_00.asm:6381"
+    "src/bank_00.asm:6386"
    ]
   }
  },
  "ram": {
   "C0FF": {
    "class": "layout",
-   "evidence": "Init: ld sp,$C0FF sets the initial stack top; Func_072C: ld hl,$C0FF is the start of the $C0FF-$CEFF clear (comment bank_00.asm:1258). memory.inc:70 also DEFs wScreenEffectActive EQU $C0FF, so naming either site with that symbol would be wrong",
+   "evidence": "Init: ld sp,$C0FF sets the initial stack top; Func_072C: ld hl,$C0FF is the start of the $C0FF-$CEFF clear (comment bank_00.asm:1260). memory.inc:70 also DEFs wScreenEffectActive EQU $C0FF, so naming either site with that symbol would be wrong",
    "users": [
     "bank_00:Func_072C",
     "bank_00:Init"
@@ -215,78 +214,67 @@
     "bank_02:InstallVBlankOnlyInterruptHandlers"
    ]
   },
-  "C94B": {
-   "class": "shared scratch",
-   "evidence": "CopyBankedTilemapRectToBG writes the copy width; RAM_D968 reloads it; RAM_D88B and both password-rejection routines (bank_01.asm:7352-7433) point hl at it as row reload. Same byte used by menu tilemap copy and password screen",
-   "users": [
-    "bank_01:CopyBankedTilemapRectToBG",
-    "bank_01:RAM_D88B",
-    "bank_01:RAM_D968",
-    "bank_01:ShowPasswordRejection",
-    "bank_01:UnusedPasswordRejectionVariant"
-   ]
-  },
   "CD2B": {
    "class": "write-only",
-   "evidence": "CheckAuxRegion_Loop (bank_03.asm:1639-1706) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
+   "evidence": "CheckObjectAuxRegionTriggers (bank_03.asm:1649-1717) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
    "users": [
     "bank_03:CheckAuxRegion_Loop"
    ]
   },
   "CD2C": {
    "class": "write-only",
-   "evidence": "CheckAuxRegion_Loop (bank_03.asm:1639-1706) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
+   "evidence": "CheckObjectAuxRegionTriggers (bank_03.asm:1649-1717) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
    "users": [
     "bank_03:CheckAuxRegion_Loop"
    ]
   },
   "CD2D": {
    "class": "write-only",
-   "evidence": "CheckAuxRegion_Loop (bank_03.asm:1639-1706) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
+   "evidence": "CheckObjectAuxRegionTriggers (bank_03.asm:1649-1717) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
    "users": [
-    "bank_03:CheckAuxRegion_Loop"
+    "bank_03:CheckObjectAuxRegionTriggers"
    ]
   },
   "CD2E": {
    "class": "write-only",
-   "evidence": "CheckAuxRegion_Loop (bank_03.asm:1639-1706) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
+   "evidence": "CheckObjectAuxRegionTriggers (bank_03.asm:1649-1717) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
    "users": [
-    "bank_03:CheckAuxRegion_Loop"
+    "bank_03:CheckObjectAuxRegionTriggers"
    ]
   },
   "CD2F": {
    "class": "write-only",
-   "evidence": "CheckAuxRegion_Loop (bank_03.asm:1639-1706) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
+   "evidence": "CheckObjectAuxRegionTriggers (bank_03.asm:1649-1717) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
    "users": [
     "bank_03:CheckAuxRegion_Loop"
    ]
   },
   "CD30": {
    "class": "write-only",
-   "evidence": "CheckAuxRegion_Loop (bank_03.asm:1639-1706) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
+   "evidence": "CheckObjectAuxRegionTriggers (bank_03.asm:1649-1717) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
    "users": [
     "bank_03:CheckAuxRegion_Loop"
    ]
   },
   "CD31": {
    "class": "write-only",
-   "evidence": "CheckAuxRegion_Loop (bank_03.asm:1639-1706) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
+   "evidence": "CheckObjectAuxRegionTriggers (bank_03.asm:1649-1717) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
    "users": [
-    "bank_03:CheckAuxRegion_Loop"
+    "bank_03:CheckObjectAuxRegionTriggers"
    ]
   },
   "CD32": {
    "class": "write-only",
-   "evidence": "CheckAuxRegion_Loop (bank_03.asm:1639-1706) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
+   "evidence": "CheckObjectAuxRegionTriggers (bank_03.asm:1649-1717) stores object position / aux record coordinate bytes here; no reader found in src or include (grep of raw and symbol spellings)",
    "users": [
-    "bank_03:CheckAuxRegion_Loop"
+    "bank_03:CheckObjectAuxRegionTriggers"
    ]
   },
   "D000": {
    "class": "bank-dependent (SVBK)",
    "evidence": "WRAMX base: object pool walk (UpdateAllObjects, ResolveProjectileHit, etc., SVBK=1), clear starts in Func_072C/InitializeLevelRuntime/RunLevel per bank, LoadLevelCellMap destination, InstallSceneRamCode; meaning depends on SVBK at each site",
    "users": [
-    "bank_00:DispatchNearbyType4Entity",
+    "bank_00:DispatchNearbyStatus4Pickup",
     "bank_00:FindNearestVisibleObjectFacingSource",
     "bank_00:Func_072C",
     "bank_00:InitializeLevelRuntime",
@@ -302,228 +290,203 @@
   },
   "D120": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D120 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D120 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D130": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D130 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D130 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D140": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D140 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D140 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D160": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D160 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D160 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D1B0": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D1B0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D1B0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D1F0": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D1F0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D1F0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D230": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D230 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D230 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D260": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D260 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1; image is a single ret byte",
+   "evidence": "only site is ld bc,$D260 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1; image is a single ret byte",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D270": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D270 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D270 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D2C0": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D2C0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D2C0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D2F0": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D2F0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D2F0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D310": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D310 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D310 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D330": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D330 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D330 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D370": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D370 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D370 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D3B0": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D3B0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5800-5856): LOAD address of a scene RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D3B0 as CopyBytes destination in InstallSceneRamCode (bank_01.asm:5836-5892): LOAD address of a scene RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallSceneRamCode"
    ]
   },
   "D561": {
    "class": "write-only",
-   "evidence": "InitMenuSystem stores MenuHandlerReturn low/high here (bank_01.asm:1419-1421); no reader found; WRAMX bank 1 at that point (SVBK=1 set just before)",
+   "evidence": "InitMenuSystem stores MenuHandlerReturn low/high here (bank_01.asm:1433-1435); no reader found; WRAMX bank 1 at that point (SVBK=1 set just before)",
    "users": [
     "bank_01:InitMenuSystem"
    ]
   },
   "D562": {
    "class": "write-only",
-   "evidence": "InitMenuSystem stores MenuHandlerReturn low/high here (bank_01.asm:1419-1421); no reader found; WRAMX bank 1 at that point (SVBK=1 set just before)",
+   "evidence": "InitMenuSystem stores MenuHandlerReturn low/high here (bank_01.asm:1433-1435); no reader found; WRAMX bank 1 at that point (SVBK=1 set just before)",
    "users": [
     "bank_01:InitMenuSystem"
    ]
   },
-  "D564": {
-   "class": "write-only",
-   "evidence": "RAM_D761, RAM_D7A1 and InitMenuStateScreen store the pointer $DC03 here; no reader found",
-   "users": [
-    "bank_01:InitMenuStateScreen",
-    "bank_01:RAM_D761",
-    "bank_01:RAM_D7A1"
-   ]
-  },
-  "D565": {
-   "class": "write-only",
-   "evidence": "RAM_D761, RAM_D7A1 and InitMenuStateScreen store the pointer $DC03 here; no reader found",
-   "users": [
-    "bank_01:InitMenuStateScreen",
-    "bank_01:RAM_D761",
-    "bank_01:RAM_D7A1"
-   ]
-  },
   "D56A": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D56A as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3698-3726): LOAD address of a menu RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D56A as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3729-3757): LOAD address of a menu RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallMenuRamCode"
    ]
   },
   "D62A": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D62A as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3698-3726): LOAD address of a menu RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D62A as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3729-3757): LOAD address of a menu RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallMenuRamCode"
    ]
   },
   "D70A": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D70A as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3698-3726): LOAD address of a menu RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D70A as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3729-3757): LOAD address of a menu RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallMenuRamCode"
    ]
   },
   "D7CA": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D7CA as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3698-3726): LOAD address of a menu RAM image in WRAMX bank 1; image is a single ret byte",
+   "evidence": "only site is ld bc,$D7CA as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3729-3757): LOAD address of a menu RAM image in WRAMX bank 1; image is a single ret byte",
    "users": [
     "bank_01:InstallMenuRamCode"
    ]
   },
   "D7CB": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D7CB as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3698-3726): LOAD address of a menu RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D7CB as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3729-3757): LOAD address of a menu RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallMenuRamCode"
    ]
   },
-  "D7FF": {
-   "class": "bank-dependent (SVBK)",
-   "evidence": "CaptureBgPalettesAndFadeToWhite sets SVBK=2 then ld hl,$D7FF with a $3F loop; buffer format unresolved",
-   "users": [
-    "bank_01:CaptureBgPalettesAndFadeToWhite"
-   ]
-  },
   "D88B": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D88B as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3698-3726): LOAD address of a menu RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D88B as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3729-3757): LOAD address of a menu RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallMenuRamCode"
    ]
   },
   "D91B": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D91B as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3698-3726): LOAD address of a menu RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D91B as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3729-3757): LOAD address of a menu RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallMenuRamCode"
    ]
   },
   "D9CB": {
    "class": "RAM code address",
-   "evidence": "only site is ld bc,$D9CB as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3698-3726): LOAD address of a menu RAM image in WRAMX bank 1",
+   "evidence": "only site is ld bc,$D9CB as CopyBytes destination in InstallMenuRamCode (bank_01.asm:3729-3757): LOAD address of a menu RAM image in WRAMX bank 1",
    "users": [
     "bank_01:InstallMenuRamCode"
    ]
   },
   "DBFB": {
    "class": "bank-dependent (SVBK)",
-   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3399-3405); WRAMX bank 1 menu context",
+   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3404-3489); WRAMX bank 1 menu context",
    "users": [
     "bank_01:LoadMenuState05Graphics"
    ]
   },
   "DBFD": {
    "class": "bank-dependent (SVBK)",
-   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3399-3405); WRAMX bank 1 menu context",
+   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3404-3489); WRAMX bank 1 menu context",
    "users": [
     "bank_01:LoadMenuState05Graphics"
    ]
   },
   "DBFE": {
    "class": "bank-dependent (SVBK)",
-   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3399-3405); WRAMX bank 1 menu context",
+   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3404-3489); WRAMX bank 1 menu context",
    "users": [
     "bank_01:LoadMenuState05Graphics"
    ]
   },
   "DBFF": {
    "class": "bank-dependent (SVBK)",
-   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3399-3405); WRAMX bank 1 menu context",
+   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3404-3489); WRAMX bank 1 menu context",
    "users": [
     "bank_01:LoadMenuState05Graphics"
    ]
@@ -538,38 +501,38 @@
   },
   "DC01": {
    "class": "bank-dependent (SVBK)",
-   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3399-3405); WRAMX bank 1 menu context",
+   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3404-3489); WRAMX bank 1 menu context",
    "users": [
     "bank_01:LoadMenuState05Graphics"
    ]
   },
   "DC02": {
    "class": "bank-dependent (SVBK)",
-   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3399-3405); WRAMX bank 1 menu context",
+   "evidence": "LoadMenuState05Graphics copies a table record into $DBFB/$DBFD-$DC02 ($DBFC skipped) and reads $DBFB as a ROM bank and $DBFD as a pointer (bank_01.asm:3404-3489); WRAMX bank 1 menu context",
    "users": [
     "bank_01:LoadMenuState05Graphics"
    ]
   },
   "DC03": {
    "class": "bank-dependent (SVBK)",
-   "evidence": "pointer value stored into $D564/$D565 by RAM_D761, RAM_D7A1, InitMenuStateScreen; lies inside the $DC00 fill buffer",
+   "evidence": "pointer value stored into wMenuState05UnreadPtr ($D564/$D565, write-only) by MenuState05SelectPrevious_StoreSelection, MenuState05SelectNext_StoreSelection, InitMenuStateScreen; lies inside the $DC00 fill buffer",
    "users": [
     "bank_01:InitMenuStateScreen",
-    "bank_01:RAM_D761",
-    "bank_01:RAM_D7A1"
+    "bank_01:MenuState05SelectNext",
+    "bank_01:MenuState05SelectPrevious"
    ]
   },
   "DC40": {
    "class": "bank-dependent (SVBK)",
-   "evidence": "RAM_D049 copies 8 palette bytes to $DC40; ApplySceneTargetPalettes reads $DC40 (16 bytes to $FF98); inside $DC00 buffer region",
+   "evidence": "LoadFixedSceneResources_WaitVBlankBeforeVram0Dma copies 8 palette bytes to $DC40; ApplySceneTargetPalettes reads $DC40 (16 bytes to $FF98); inside $DC00 buffer region",
    "users": [
     "bank_01:ApplySceneTargetPalettes",
-    "bank_01:RAM_D049"
+    "bank_01:LoadFixedSceneResources"
    ]
   },
   "FF80": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: CopyObjectOrientationTiles, FindNearestVisibleObjectFacingSource, Func_072C, Func_194B, Func_3104, GetLevelCellTileAndAttr, HandleObjectLevelBit1And2Cells, InitializeHomingProjectileTarget, LoadVehicleForwardVelocity, LoadVehicleReverseVelocity, RemoveObject, RenderObjectOrientationGraphic, SelectObjectOrientationPalette; bank_01: AddWordToBcd24, DrawObjectStatusCountsToWindow, DrawObjectTypeMarkerSprite, LoadFixedSceneForRow, LoadScrollingScenePalette, LongToBcd40, RunScrollingScene, SceneStatHandler, SceneVBlankHandler; bank_02: AnimateBurstSpriteBlock, ComputeBurstChildPosition, ExpireBurstEffectObject, SpawnBurstSpriteBlock, UpdateBurstEffectObjects; bank_08: SelectObjectSpritePalette. Func_072C ld hl,$FF80 is the start of the HRAM clear",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: CopyObjectOrientationTiles, FindNearestVisibleObjectFacingSource, Func_072C, Func_194B, Func_3104, GetLevelCellTileAndAttr, HandleObjectLevelBit1And2Cells, InitializeHomingProjectileTarget, LoadVehicleForwardVelocity, LoadVehicleReverseVelocity, RemoveObject, RenderObjectOrientationGraphic, SelectObjectOrientationPalette; bank_01: AddWordToBcd24, DrawObjectStatusCountsToWindow, DrawObjectTypeMarkerSprite, LongToBcd40; bank_02: AnimateBurstSpriteBlock, ComputeBurstChildPosition, ExpireBurstEffectObject, SpawnBurstSpriteBlock, UpdateBurstEffectObjects; bank_08: SelectObjectSpritePalette. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneBankSwitchGuard (include/banks_01_05_ram.inc) and are no longer raw. Func_072C ld hl,$FF80 is the start of the HRAM clear",
    "users": [
     "bank_00:CopyObjectOrientationTiles",
     "bank_00:FindNearestVisibleObjectFacingSource",
@@ -587,12 +550,7 @@
     "bank_01:AddWordToBcd24",
     "bank_01:DrawObjectStatusCountsToWindow",
     "bank_01:DrawObjectTypeMarkerSprite",
-    "bank_01:LoadFixedSceneForRow",
-    "bank_01:LoadScrollingScenePalette",
     "bank_01:LongToBcd40",
-    "bank_01:RunScrollingScene",
-    "bank_01:SceneStatHandler",
-    "bank_01:SceneVBlankHandler",
     "bank_02:AnimateBurstSpriteBlock",
     "bank_02:ComputeBurstChildPosition",
     "bank_02:ExpireBurstEffectObject",
@@ -603,7 +561,7 @@
   },
   "FF81": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: CopyObjectOrientationTiles, FindNearestVisibleObjectFacingSource, Func_194B, Func_3104, Func_315F, GetLevelCellTileAndAttr, InitializeHomingProjectileTarget, LoadVehicleForwardVelocity, LoadVehicleReverseVelocity, RemoveObject, RenderObjectOrientationGraphic, RunLevelExitScreenFlow, WriteObjectOrientationOam; bank_01: CopyFixedSceneDescriptor, DrawObjectStatusCountsToWindow, LoadFixedSceneForRow, SelectLevelRowScene, SelectLevelScene; bank_02: ComputeBurstChildPosition, ExpireBurstEffectObject, SpawnBurstSpriteBlock, UpdateBurstEffectObjects",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: CopyObjectOrientationTiles, FindNearestVisibleObjectFacingSource, Func_194B, Func_3104, Func_315F, GetLevelCellTileAndAttr, InitializeHomingProjectileTarget, LoadVehicleForwardVelocity, LoadVehicleReverseVelocity, RemoveObject, RenderObjectOrientationGraphic, RunLevelExitScreenFlow, WriteObjectOrientationOam; bank_01: DrawObjectStatusCountsToWindow; bank_02: ComputeBurstChildPosition, ExpireBurstEffectObject, SpawnBurstSpriteBlock, UpdateBurstEffectObjects. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneFixedIndex (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:CopyObjectOrientationTiles",
     "bank_00:FindNearestVisibleObjectFacingSource",
@@ -618,11 +576,7 @@
     "bank_00:RenderObjectOrientationGraphic",
     "bank_00:RunLevelExitScreenFlow",
     "bank_00:WriteObjectOrientationOam",
-    "bank_01:CopyFixedSceneDescriptor",
     "bank_01:DrawObjectStatusCountsToWindow",
-    "bank_01:LoadFixedSceneForRow",
-    "bank_01:SelectLevelRowScene",
-    "bank_01:SelectLevelScene",
     "bank_02:ComputeBurstChildPosition",
     "bank_02:ExpireBurstEffectObject",
     "bank_02:SpawnBurstSpriteBlock",
@@ -631,7 +585,7 @@
   },
   "FF82": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_194B, Func_3104, Func_315F, RemoveObject, RenderObjectOrientationGraphic, RunLevelExitScreenFlow, WriteObjectOrientationOam; bank_01: CopyScrollingSceneDescriptor, LoadScrollVariantForGridCell, RunMenuGridSceneScroll, SelectLevelRowScene, SelectLevelScene; bank_02: AllocBurstEffectObject, ExpireBurstEffectObject, UpdateBurstEffectObjects",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_194B, Func_3104, Func_315F, RemoveObject, RenderObjectOrientationGraphic, RunLevelExitScreenFlow, WriteObjectOrientationOam; bank_02: AllocBurstEffectObject, ExpireBurstEffectObject, UpdateBurstEffectObjects. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneScrollIndex (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:FindNearestVisibleObjectFacingSource",
     "bank_00:Func_194B",
@@ -641,11 +595,6 @@
     "bank_00:RenderObjectOrientationGraphic",
     "bank_00:RunLevelExitScreenFlow",
     "bank_00:WriteObjectOrientationOam",
-    "bank_01:CopyScrollingSceneDescriptor",
-    "bank_01:LoadScrollVariantForGridCell",
-    "bank_01:RunMenuGridSceneScroll",
-    "bank_01:SelectLevelRowScene",
-    "bank_01:SelectLevelScene",
     "bank_02:AllocBurstEffectObject",
     "bank_02:ExpireBurstEffectObject",
     "bank_02:UpdateBurstEffectObjects"
@@ -653,7 +602,7 @@
   },
   "FF83": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_194B, RemoveObject, RenderObjectOrientationGraphic, WriteObjectOrientationOam; bank_01: DrawObjectStatusCountsToWindow, InitSceneDisplay; bank_02: AllocBurstEffectObject, ComputeBurstChildPosition, SpawnBurstSpriteBlock",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_194B, RemoveObject, RenderObjectOrientationGraphic, WriteObjectOrientationOam; bank_01: DrawObjectStatusCountsToWindow, InitSceneDisplay; bank_02: AllocBurstEffectObject, ComputeBurstChildPosition, SpawnBurstSpriteBlock",
    "users": [
     "bank_00:FindNearestVisibleObjectFacingSource",
     "bank_00:Func_194B",
@@ -669,7 +618,7 @@
   },
   "FF84": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_315F, RemoveObject, RenderObjectOrientationGraphic, WriteObjectOrientationOam; bank_01: DrawObjectStatusCountsToWindow, InitSceneDisplay, RAM_D1D7, RunMenuGridSceneScroll, RunScrollingScene; bank_02: AllocBurstEffectObject, ComputeBurstChildPosition, SpawnBurstSpriteBlock",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_315F, RemoveObject, RenderObjectOrientationGraphic, WriteObjectOrientationOam; bank_01: DrawObjectStatusCountsToWindow; bank_02: AllocBurstEffectObject, ComputeBurstChildPosition, SpawnBurstSpriteBlock. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneScrollEnded (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:FindNearestVisibleObjectFacingSource",
     "bank_00:Func_3104",
@@ -678,10 +627,6 @@
     "bank_00:RenderObjectOrientationGraphic",
     "bank_00:WriteObjectOrientationOam",
     "bank_01:DrawObjectStatusCountsToWindow",
-    "bank_01:InitSceneDisplay",
-    "bank_01:RAM_D1D7",
-    "bank_01:RunMenuGridSceneScroll",
-    "bank_01:RunScrollingScene",
     "bank_02:AllocBurstEffectObject",
     "bank_02:ComputeBurstChildPosition",
     "bank_02:SpawnBurstSpriteBlock"
@@ -689,7 +634,7 @@
   },
   "FF85": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_3190, RemoveObject, SelectObjectOrientationPalette, WriteObjectOrientationOam; bank_01: DrawObjectStatusCountsToWindow, InitSceneDisplay, LoadFixedSceneForRow; bank_02: AllocBurstEffectObject, ExpireBurstEffectObject",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_3190, RemoveObject, SelectObjectOrientationPalette, WriteObjectOrientationOam; bank_01: DrawObjectStatusCountsToWindow, InitSceneDisplay, LoadFixedSceneForRow; bank_02: AllocBurstEffectObject, ExpireBurstEffectObject",
    "users": [
     "bank_00:FindNearestVisibleObjectFacingSource",
     "bank_00:Func_3104",
@@ -706,125 +651,89 @@
   },
   "FF86": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_3190, RemoveObject, RenderObjectOrientationGraphic; bank_01: EnableSceneWindow, InitSceneDisplay, LoadFixedSceneForRow, RAM_C761, RAM_C769, RAM_C7AD, RAM_D14B, StepSceneWindowSplit; bank_02: AllocBurstEffectObject, ExpireBurstEffectObject",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_3190, RemoveObject, RenderObjectOrientationGraphic; bank_02: AllocBurstEffectObject, ExpireBurstEffectObject. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneWindowSplitCountdown (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:FindNearestVisibleObjectFacingSource",
     "bank_00:Func_3104",
     "bank_00:Func_3190",
     "bank_00:RemoveObject",
     "bank_00:RenderObjectOrientationGraphic",
-    "bank_01:EnableSceneWindow",
-    "bank_01:InitSceneDisplay",
-    "bank_01:LoadFixedSceneForRow",
-    "bank_01:RAM_C761",
-    "bank_01:RAM_C769",
-    "bank_01:RAM_C7AD",
-    "bank_01:RAM_D14B",
-    "bank_01:StepSceneWindowSplit",
     "bank_02:AllocBurstEffectObject",
     "bank_02:ExpireBurstEffectObject"
    ]
   },
   "FF87": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_3190, RenderObjectOrientationGraphic; bank_01: AdvanceSceneScroll, InitSceneDisplay, LoadScrollVariantForGridCell, RAM_C809; bank_02: UpdateBurstEffectObjects",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_3190, RenderObjectOrientationGraphic; bank_02: UpdateBurstEffectObjects. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneScrollY (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:FindNearestVisibleObjectFacingSource",
     "bank_00:Func_3104",
     "bank_00:Func_3190",
     "bank_00:RenderObjectOrientationGraphic",
-    "bank_01:AdvanceSceneScroll",
-    "bank_01:InitSceneDisplay",
-    "bank_01:LoadScrollVariantForGridCell",
-    "bank_01:RAM_C809",
     "bank_02:UpdateBurstEffectObjects"
    ]
   },
   "FF88": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_315F, RenderObjectOrientationGraphic; bank_01: GetSceneTileSourceAddress, LoadScrollingScenePalette; bank_02: InitBurstEffectScreen, SpawnBurstEffectObjectOnTimer",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_315F, RenderObjectOrientationGraphic; bank_02: InitBurstEffectScreen, SpawnBurstEffectObjectOnTimer. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneDescriptorPointer (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:FindNearestVisibleObjectFacingSource",
     "bank_00:Func_3104",
     "bank_00:Func_315F",
     "bank_00:RenderObjectOrientationGraphic",
-    "bank_01:GetSceneTileSourceAddress",
-    "bank_01:LoadScrollingScenePalette",
     "bank_02:InitBurstEffectScreen",
     "bank_02:SpawnBurstEffectObjectOnTimer"
    ]
   },
   "FF89": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_315F, RenderObjectOrientationGraphic; bank_01: GetSceneTileSourceAddress, LoadScrollingScenePalette; bank_02: ExpireBurstEffectObject",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: FindNearestVisibleObjectFacingSource, Func_3104, Func_315F, RenderObjectOrientationGraphic; bank_02: ExpireBurstEffectObject. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneDescriptorPointer + 1 (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:FindNearestVisibleObjectFacingSource",
     "bank_00:Func_3104",
     "bank_00:Func_315F",
     "bank_00:RenderObjectOrientationGraphic",
-    "bank_01:GetSceneTileSourceAddress",
-    "bank_01:LoadScrollingScenePalette",
     "bank_02:ExpireBurstEffectObject"
    ]
   },
   "FF8A": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: Func_3104, Func_315F, Func_3190, InitializeHomingProjectileTarget, RenderObjectOrientationGraphic; bank_01: AdvanceSceneScroll, LoadScrollingScenePalette; bank_02: ExpireBurstEffectObject",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: Func_3104, Func_315F, Func_3190, InitializeHomingProjectileTarget, RenderObjectOrientationGraphic; bank_02: ExpireBurstEffectObject. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneLastRow (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:Func_3104",
     "bank_00:Func_315F",
     "bank_00:Func_3190",
     "bank_00:InitializeHomingProjectileTarget",
     "bank_00:RenderObjectOrientationGraphic",
-    "bank_01:AdvanceSceneScroll",
-    "bank_01:LoadScrollingScenePalette",
     "bank_02:ExpireBurstEffectObject"
    ]
   },
   "FF8B": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: InitializeHomingProjectileTarget, RenderObjectOrientationGraphic; bank_01: AdvanceSceneScroll, ComputeSceneRowPointer, LoadScrollVariantForGridCell, LoadScrollingScenePalette, RunMenuGridSceneScroll",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: InitializeHomingProjectileTarget, RenderObjectOrientationGraphic. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneRow (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:InitializeHomingProjectileTarget",
-    "bank_00:RenderObjectOrientationGraphic",
-    "bank_01:AdvanceSceneScroll",
-    "bank_01:ComputeSceneRowPointer",
-    "bank_01:LoadScrollVariantForGridCell",
-    "bank_01:LoadScrollingScenePalette",
-    "bank_01:RunMenuGridSceneScroll"
+    "bank_00:RenderObjectOrientationGraphic"
    ]
   },
   "FF8C": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: InitializeHomingProjectileTarget, RenderObjectOrientationGraphic; bank_01: AdvanceSceneScroll, InitSceneDisplay, RAM_D1DD",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: InitializeHomingProjectileTarget, RenderObjectOrientationGraphic. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneRowPixelPhase (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
     "bank_00:InitializeHomingProjectileTarget",
-    "bank_00:RenderObjectOrientationGraphic",
-    "bank_01:AdvanceSceneScroll",
-    "bank_01:InitSceneDisplay",
-    "bank_01:RAM_D1DD"
+    "bank_00:RenderObjectOrientationGraphic"
    ]
   },
   "FF8D": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: InitializeHomingProjectileTarget; bank_01: ComputeSceneRowPointer, RAM_D37C",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: InitializeHomingProjectileTarget. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneRowSourcePointer (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
-    "bank_00:InitializeHomingProjectileTarget",
-    "bank_01:ComputeSceneRowPointer",
-    "bank_01:RAM_D37C"
-   ]
-  },
-  "FF8E": {
-   "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: ComputeSceneRowPointer, RAM_D37C",
-   "users": [
-    "bank_01:ComputeSceneRowPointer",
-    "bank_01:RAM_D37C"
+    "bank_00:InitializeHomingProjectileTarget"
    ]
   },
   "FF90": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: DrawLevelViewport, Func_356B, GetDirectionTowardObject",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: DrawLevelViewport, Func_356B, GetDirectionTowardObject",
    "users": [
     "bank_00:DrawLevelViewport",
     "bank_00:Func_356B",
@@ -833,67 +742,57 @@
   },
   "FF91": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: DrawLevelViewport",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: DrawLevelViewport",
    "users": [
     "bank_00:DrawLevelViewport"
    ]
   },
   "FF92": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: DrawLevelViewport, Func_356B; bank_01: ComputeSceneRowPointer, LoadScrollingScenePalette, StageSceneRowTiles. Func_356B uses ld bc,$FF92 as a pointer",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: DrawLevelViewport, Func_356B. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneRomBank (include/banks_01_05_ram.inc) and are no longer raw. Func_356B uses ld bc,$FF92 as a pointer",
    "users": [
     "bank_00:DrawLevelViewport",
-    "bank_00:Func_356B",
-    "bank_01:ComputeSceneRowPointer",
-    "bank_01:LoadScrollingScenePalette",
-    "bank_01:StageSceneRowTiles"
+    "bank_00:Func_356B"
    ]
   },
   "FF93": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: DrawLevelViewport",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: DrawLevelViewport",
    "users": [
     "bank_00:DrawLevelViewport"
    ]
   },
   "FF94": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: DrawLevelViewport",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: DrawLevelViewport",
    "users": [
     "bank_00:DrawLevelViewport"
    ]
   },
   "FF95": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: DrawLevelViewport; bank_01: InitSceneDisplay, RAM_C7FD, RunScrollingScene",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: DrawLevelViewport. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneScrollStarted (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
-    "bank_00:DrawLevelViewport",
-    "bank_01:InitSceneDisplay",
-    "bank_01:RAM_C7FD",
-    "bank_01:RunScrollingScene"
+    "bank_00:DrawLevelViewport"
    ]
   },
   "FF96": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions; bank_01: InitSceneDisplay, RAM_C7FD",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneScrollDelay (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
-    "bank_00:ConvertVisibleLevelCellBit2Regions",
-    "bank_01:InitSceneDisplay",
-    "bank_01:RAM_C7FD"
+    "bank_00:ConvertVisibleLevelCellBit2Regions"
    ]
   },
   "FF97": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions; bank_01: AdvanceSceneScroll, InitSceneDisplay",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneScrollStep (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
-    "bank_00:ConvertVisibleLevelCellBit2Regions",
-    "bank_01:AdvanceSceneScroll",
-    "bank_01:InitSceneDisplay"
+    "bank_00:ConvertVisibleLevelCellBit2Regions"
    ]
   },
   "FF98": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions, Func_356B; bank_01: ApplySceneTargetPalettes, ClearSceneSplitPalettes, FadeInSceneBackground, FadeOutSceneBackground, InitSceneDisplay, WriteBgPalette7FromFF98. also used as a 16-byte BG palette buffer by scene code (ld hl,$FF98 in WriteBgPalette7FromFF98/ClearSceneSplitPalettes; target of ApplySceneTargetPalettes)",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions, Func_356B; bank_01: ApplySceneTargetPalettes, ClearSceneSplitPalettes, FadeInSceneBackground, FadeOutSceneBackground, InitSceneDisplay, WriteBgPalette7FromFF98. also used as a 16-byte BG palette buffer by scene code (ld hl,$FF98 in WriteBgPalette7FromFF98/ClearSceneSplitPalettes; target of ApplySceneTargetPalettes)",
    "users": [
     "bank_00:ConvertVisibleLevelCellBit2Regions",
     "bank_00:Func_356B",
@@ -907,28 +806,28 @@
   },
   "FF99": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions",
    "users": [
     "bank_00:ConvertVisibleLevelCellBit2Regions"
    ]
   },
   "FF9A": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions",
    "users": [
     "bank_00:ConvertVisibleLevelCellBit2Regions"
    ]
   },
   "FF9B": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: ConvertVisibleLevelCellBit2Regions",
    "users": [
     "bank_00:ConvertVisibleLevelCellBit2Regions"
    ]
   },
   "FFA0": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: DrawLevelCellIfVisible, ResolveProjectileHit; bank_01: FadeInSceneBackground, FadeOutSceneBackground, RunMenuGridSceneScroll, WriteBgPalette7FromFFA0. also a palette buffer source/destination in bank 1 scene fades (ld hl/bc,$FFA0)",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: DrawLevelCellIfVisible, ResolveProjectileHit; bank_01: FadeInSceneBackground, FadeOutSceneBackground, RunMenuGridSceneScroll, WriteBgPalette7FromFFA0. also a palette buffer source/destination in bank 1 scene fades (ld hl/bc,$FFA0)",
    "users": [
     "bank_00:DrawLevelCellIfVisible",
     "bank_00:ResolveProjectileHit",
@@ -940,7 +839,7 @@
   },
   "FFA1": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: DrawLevelCellIfVisible, ResolveProjectileHit; bank_01: RunMenuGridSceneScroll",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: DrawLevelCellIfVisible, ResolveProjectileHit; bank_01: RunMenuGridSceneScroll",
    "users": [
     "bank_00:DrawLevelCellIfVisible",
     "bank_00:ResolveProjectileHit",
@@ -949,93 +848,73 @@
   },
   "FFA2": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: RunMenuGridSceneScroll",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_01: RunMenuGridSceneScroll",
    "users": [
     "bank_01:RunMenuGridSceneScroll"
    ]
   },
   "FFA3": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: RunMenuGridSceneScroll",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_01: RunMenuGridSceneScroll",
    "users": [
     "bank_01:RunMenuGridSceneScroll"
    ]
   },
   "FFA4": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: RunMenuGridSceneScroll",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_01: RunMenuGridSceneScroll",
    "users": [
     "bank_01:RunMenuGridSceneScroll"
    ]
   },
   "FFA5": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: RunMenuGridSceneScroll",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_01: RunMenuGridSceneScroll",
    "users": [
     "bank_01:RunMenuGridSceneScroll"
    ]
   },
   "FFA6": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: RunMenuGridSceneScroll",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_01: RunMenuGridSceneScroll",
    "users": [
     "bank_01:RunMenuGridSceneScroll"
    ]
   },
   "FFA7": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: RunMenuGridSceneScroll",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_01: RunMenuGridSceneScroll",
    "users": [
     "bank_01:RunMenuGridSceneScroll"
    ]
   },
-  "FFAB": {
-   "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: InitSceneDisplay, LoadFixedSceneForRow, RunMenuGridSceneScroll, RunScrollingScene",
-   "users": [
-    "bank_01:InitSceneDisplay",
-    "bank_01:LoadFixedSceneForRow",
-    "bank_01:RunMenuGridSceneScroll",
-    "bank_01:RunScrollingScene"
-   ]
-  },
   "FFB0": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: DrawLivesDigitsAtRow, DrawScoreDigitsAtRow, InitSceneDisplay, LoadScrollVariantForGridCell, RAM_D348, RAM_D359, RunMenuGridSceneScroll, WriteSceneRowTileIndices. also a digit buffer base in DrawScoreDigitsAtRow/DrawLivesDigitsAtRow (ld hl,$FFB0)",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_01: DrawLivesDigitsAtRow, DrawScoreDigitsAtRow. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneRowTileBase (include/banks_01_05_ram.inc) and are no longer raw. also a digit buffer base in DrawScoreDigitsAtRow/DrawLivesDigitsAtRow (ld hl,$FFB0)",
    "users": [
     "bank_01:DrawLivesDigitsAtRow",
-    "bank_01:DrawScoreDigitsAtRow",
-    "bank_01:InitSceneDisplay",
-    "bank_01:LoadScrollVariantForGridCell",
-    "bank_01:RAM_D348",
-    "bank_01:RAM_D359",
-    "bank_01:RunMenuGridSceneScroll",
-    "bank_01:WriteSceneRowTileIndices"
+    "bank_01:DrawScoreDigitsAtRow"
    ]
   },
   "FFB1": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: ComputeSceneRowMapAddress, DrawLivesDigitsAtRow, WriteSceneRowTileIndices; bank_02: LoadIndexedSpriteGrid",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_01: DrawLivesDigitsAtRow; bank_02: LoadIndexedSpriteGrid. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneRowMapAddress (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
-    "bank_01:ComputeSceneRowMapAddress",
     "bank_01:DrawLivesDigitsAtRow",
-    "bank_01:WriteSceneRowTileIndices",
     "bank_02:LoadIndexedSpriteGrid"
    ]
   },
   "FFB2": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_01: ComputeSceneRowMapAddress, DrawScoreDigitsAtRow, WriteSceneRowTileIndices; bank_02: LoadIndexedSpriteGrid",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_01: DrawScoreDigitsAtRow; bank_02: LoadIndexedSpriteGrid. The bank-$01 scene uses of this byte, which carry values between scene routines (and, for some bytes, into the scene interrupt handlers), are written as hSceneRowMapAddress + 1 (include/banks_01_05_ram.inc) and are no longer raw",
    "users": [
-    "bank_01:ComputeSceneRowMapAddress",
     "bank_01:DrawScoreDigitsAtRow",
-    "bank_01:WriteSceneRowTileIndices",
     "bank_02:LoadIndexedSpriteGrid"
    ]
   },
   "FFC0": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_00: CopyScreenMaps; bank_02: BuildBackgroundPaletteFadeFramesImpl, DivideScoreByThousand; bank_2A: FixedScreen2A_DrawFrame",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_00: CopyScreenMaps; bank_02: BuildBackgroundPaletteFadeFramesImpl, DivideScoreByThousand; bank_2A: FixedScreen2A_DrawFrame",
    "users": [
     "bank_00:CopyScreenMaps",
     "bank_02:BuildBackgroundPaletteFadeFramesImpl",
@@ -1045,7 +924,7 @@
   },
   "FFC1": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_02: BuildBackgroundPaletteFadeFramesImpl, DivideScoreByThousand; bank_2A: FixedScreen2A_DrawFrame",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_02: BuildBackgroundPaletteFadeFramesImpl, DivideScoreByThousand; bank_2A: FixedScreen2A_DrawFrame",
    "users": [
     "bank_02:BuildBackgroundPaletteFadeFramesImpl",
     "bank_02:DivideScoreByThousand",
@@ -1054,7 +933,7 @@
   },
   "FFC2": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_02: BuildBackgroundPaletteFadeFramesImpl, DivideScoreByThousand",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_02: BuildBackgroundPaletteFadeFramesImpl, DivideScoreByThousand",
    "users": [
     "bank_02:BuildBackgroundPaletteFadeFramesImpl",
     "bank_02:DivideScoreByThousand"
@@ -1062,7 +941,7 @@
   },
   "FFC3": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_02: BuildBackgroundPaletteFadeFramesImpl, DivideScoreByThousand",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_02: BuildBackgroundPaletteFadeFramesImpl, DivideScoreByThousand",
    "users": [
     "bank_02:BuildBackgroundPaletteFadeFramesImpl",
     "bank_02:DivideScoreByThousand"
@@ -1070,14 +949,14 @@
   },
   "FFC4": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_02: DivideScoreByThousand",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_02: DivideScoreByThousand",
    "users": [
     "bank_02:DivideScoreByThousand"
    ]
   },
   "FFC5": {
    "class": "shared scratch",
-   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them. Users per bank -- bank_02: DivideScoreByThousand",
+   "evidence": "HRAM byte written and read within unrelated routines with no value carried between them (claim limited to the raw-address users listed here). Users per bank -- bank_02: DivideScoreByThousand",
    "users": [
     "bank_02:DivideScoreByThousand"
    ]

@@ -9,7 +9,7 @@
 
 ## Nearest-target tracker
 
-- `Func_02_406F` picks a scan routine from the 15-entry table at `$40DD`
+- `ResetNearestObjectTracker` picks a scan routine from the 15-entry table at `$40DD`
   (indexed by `wLevelNumber`). It writes `jp <routine>` / `ret` into
   `wNearestTargetScanJump` (`$C8DB`, 4 bytes).
 - `$02:4D58` runs every frame and enters the stub. The targets:
@@ -29,22 +29,22 @@
 ## Object animation frames
 
 `ObjectAnimationFrames4565` ... `45BB` are 9 tables of bank-`$08` tile
-pointers, read by ROM0 `Func_3190` through object field `+$21`, indexed by
+pointers, read by ROM0 `LoadObjectAnimationTiles` through object field `+$21`, indexed by
 age (`+$1F`) >> 2. Each table's length equals lifetime (`+$20`) / 4. The OAM
 layouts at `$4200/$4204/$4214` are 4-byte entries (dy, dx, tile, attribute).
 
-Effect object initialisers, named from `Func_3090`'s subtype dispatch:
+Effect object initialisers, named from `SpawnTimedObjectEffect`'s subtype dispatch:
 `InitEffectSubtype0Animation`, `InitEffectSubtype1Animation`,
 `InitEffectSubtype2Animation`.
 
 ## Boot sequence
 
-`RunBootScreenSequence` (`$5C40`, called from `Func_3B9F` on start-up) shows
+`RunBootScreenSequence` (`$5C40`, called from `RunBootScreenSequenceFar` on start-up) shows
 screen modes `$0A`, `$02`, `$05`, `$07` in order.
 
 ## Burst effect ($626D-$66DB)
 
-Reached only through ROM0 `Func_3F1F`.
+Reached only through ROM0 `RunScreenMode8ActivityFar`.
 
 - **Setup** (`InitBurstEffectScreen`): selects WRAM bank 2, clears the shadow
   OAM at `$D000` and `wBurstObjects` (40 x 8 at `$D0A0`), and loads
@@ -54,7 +54,7 @@ Reached only through ROM0 `Func_3F1F`.
   `BurstChildCountTable` and `BurstChildOffsets`.
 - **Randomness**: `Bank02NextTableRandom` reads the 256-byte
   `BurstRandomTable`.
-- **Dead code**: `Func_02_635F` and `Func_02_63F4` have no callers.
+- **Dead code**: `SpawnBurstSpriteBlock` and `AnimateBurstSpriteBlock` have no callers.
 - **Naming**: "burst" names the effect by its code behaviour (gravity,
   children spawned on expiry). It is a structural label, not a gameplay
   identity.
@@ -68,12 +68,12 @@ Reached only through ROM0 `Func_3F1F`.
   `IndexedSpriteGrid0Tiles` (`$4AD0-$4D4F`) are the two 40-tile sources.
 - The 32 bytes between the grids are two unused 2bpp tiles. Before the first
   grid, `Bank01ScreenMode06PointerResidue` is an unread same-address copy of
-  bank `$01:$481E`, the `ScreenMode06_LoadTiles` pointer, followed by 16 zero
+  bank `$01:$481E`, the `EarnedCodeScreen_LoadTiles` pointer, followed by 16 zero
   bytes that align the grid to `$4830`.
 - `Bank02ObjPalette7` (`$4D50`) is a complete four-colour record. The loader
   supplies colour 0 itself and reads colours 1-3 from `Bank02ObjPalette7Colours`
   at `$4D52`. Its only
-  caller `Func_3CC2` is itself never called.
+  caller `LoadIndexedSpriteGridFar` is itself never called.
 - `Bank02Unknown5E80` is one unread byte whose purpose is unknown.
 - `Bank02UnusedPaletteRecord5E81` is an unread eight-byte record containing
   four valid RGB555 words (`$0000`, `$0000`, `$0000`, `$7FFF`). Its format and

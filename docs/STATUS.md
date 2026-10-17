@@ -35,6 +35,37 @@ have reviewed companion names. `make progress` recomputes the per-bank
 breakdown from the linked symbol file. This measures naming progress only: it
 does not substitute for traced-byte coverage or semantic verification.
 
+### Semantic naming pass
+
+Counts recomputed from `src/` and `include/` at this revision.
+
+| Item | Current state | Open |
+| --- | --- | --- |
+| Automatic labels | 0 remain: no `Jump_`, `RAM_XXXX`, `BankNNData_` or `Bank01RomImage_` labels are left in `src/` or `include/`; branch, RAM-image and data labels are named from the instructions or readers at each target, and names are unique | Branch roles describe local control flow, not gameplay meaning |
+| Function entries | `make progress`: 288/288 automatic function entries have reviewed companion names | Naming progress only; not traced-byte coverage |
+| Constants | Joypad `PADB_*`/`PADF_*` (eight buttons each), `GAME_START_NEW`/`GAME_START_PASSWORD`/`GAME_START_LEVEL_SELECT`, and `hScene*` HRAM aliases replace raw operands | RAM fields with no established reader/writer role stay raw |
+| Identities | Object, screen and game-start identities are documented with their readers in `research/completion/GAMEPLAY_IDENTITIES.md` | Ambiguous or unreferenced values stay numeric |
+| Original defects | 38 `; Original:` comments mark original defects in place; the bytes are unchanged | Physical-hardware confirmation |
+| Checks | `tools/semantic_invariants.py` runs under `make check`; `tools/check_project.py` checks all 254 `INCBIN` slice placements listed in `asset_slices.txt`; `tools/diag_bank_trap.py` is a diagnostic run by `make diag` only; the disassembler and tracer are now `tools/sm83_dis.py` and `tools/rom_trace.py` | Relocation/shift tests before free editing |
+
+### Interrupt banking
+
+Static analysis only (code paths and hand-counted cycles); see
+[`research/completion/INTERRUPT_BANKING.md`](research/completion/INTERRUPT_BANKING.md).
+
+- ROM-bank hazards: every scene-interrupt window that maps another ROM bank
+  over bank `$01` is proven safe or safe under the invariants stated in
+  `INTERRUPT_BANKING.md`.
+- SVBK=2 STAT hazard: unsafe under the static model. An SVBK=2 palette-fade
+  window can cover a scene STAT edge, so the handler calls `$D310`/`$D120` in
+  WRAM bank 2, which hold palette-fade cache bytes instead of bank-1 code.
+  Tracing those bytes for the second-scene fixed scenes 6-10 gives a crash for
+  scenes 6, 7, 9 and 10 (12 of 15 levels) and a STOP freeze plus palette
+  corruption for scene 8. Scenes 0-5 are not modelled. The result still
+  depends on the unmeasured cycle, audio-state and frame-count model.
+- Nothing has been run on hardware. Hardware checks are planned in
+  `research/completion/HARDWARE_VERIFICATION.md`.
+
 | Area | Current state | Next gate |
 | --- | --- | --- |
 | Reviewed code | 38,774 decoded bytes: 35,303 from roots/tables, 3,265 from reviewed standalone seeds, and 206 callerless bytes (two copied RAM no-op stubs plus the bank `$2E` template pair) | Resolve remaining semantics without describing seeded code as caller-reached |
@@ -46,8 +77,8 @@ does not substitute for traced-byte coverage or semantic verification.
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Object sequences | Bank `$03:$4000-$5C10` is explicit source: two signed-vector tables, fifteen 64-slot per-level pointer tables, 203 counted sequences, and 626 eight-byte records; the vector-direction quantizer and all 15 level-state checks are named; two reachable malformed terminal transitions are preserved and checked | Determine the remaining record-field meanings and name individual sequences |
 | Level objects | Bank `$04:$4000-$601B` is explicit source: 600 fixed-size object initialization records, 120 auxiliary records, and the per-level pointer directory; the 20-entry deferred-spawn queue, active-table pointers, slow-tick counter, and camera-window spawn path are named | Determine the remaining field meanings and the role of enabled auxiliary records |
-| Banks `$01-$05` | Every byte is classified; all 278 routine entries have behavior-based names (`make progress` 288/288 project-wide), 95 RAM symbols replace 552 raw operands, and former opaque blobs are explicit tables or typed assets | Close the unproven scene-interrupt windows (see [`research/completion/INTERRUPT_BANKING.md`](research/completion/INTERRUPT_BANKING.md)) and settle the 9 bounded but unexplained bytes; see [`research/banks_01_05/`](research/banks_01_05/) |
-| Whole ROM | `tools/rom_range_map.py` maps all 1,048,576 bytes to source with no gaps; every raw address operand, bank byte, RAM literal and indirect transfer has a checked disposition (`tools/operand_audit.py`); dead `db` regions in banks `$01`/`$02` are explicit unreferenced routines; interrupt banking is classified per window, not proven safe overall | See [`research/completion/`](research/completion/) |
+| Banks `$01-$05` | Every byte is classified; all 278 routine entries have behavior-based names (`make progress` 288/288 project-wide), 95 RAM symbols replace 552 raw operands, and former opaque blobs are explicit tables or typed assets | Confirm the scene-interrupt classification on hardware (see [`research/completion/INTERRUPT_BANKING.md`](research/completion/INTERRUPT_BANKING.md)) and settle the 9 bounded but unexplained bytes; see [`research/banks_01_05/`](research/banks_01_05/) |
+| Whole ROM | `tools/rom_range_map.py` maps all 1,048,576 bytes to source with no gaps; every raw address operand, bank byte, RAM literal and indirect transfer has a checked disposition (`tools/operand_audit.py`); dead `db` regions in banks `$01`/`$02` are explicit unreferenced routines; interrupt banking is classified per window; ROM-bank windows are safe or safe under stated invariants; boot stale-image timing is unproven (content proven safe); the SVBK=2 STAT hazard is unsafe under the static model after a nonzero-guard password start and, on guard-0 entries, only with music `$86` plus a timed Start press; exit fades are safe; nothing has been run on hardware | See [`research/completion/`](research/completion/) |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Banks `$2A-$2E` | All 81,920 bytes classified: 17 full-screen pictures (typed 2bpp INCBINs, explicit maps and palettes) and 30 load/draw routines expressed through three byte-checked templates; see [`research/BANKS_2A_2E_RESEARCH.md`](research/BANKS_2A_2E_RESEARCH.md) | Trace the caller-less bank-`$2E` routines and picture meanings |
 | Text | The ROM0 encoded-text interpreter, cursor state, three option records, and all eleven directly referenced option strings are named and checked; see [`research/TEXT_RESEARCH.md`](research/TEXT_RESEARCH.md) | Glyph map reconciled ([`research/BANK08_RESEARCH.md`](research/BANK08_RESEARCH.md)); rule out indirect or constructed strings |
@@ -75,7 +106,8 @@ interrupt routine. Fields whose behavior is not yet established remain raw.
 
 ## Immediate roadmap
 
-1. Prove or disprove the scene-interrupt bank-`$01` timing invariant.
+1. Confirm or refute the SVBK=2 STAT hazard on hardware, trace fixed scenes
+   0-5, and check the ROM-bank invariants on hardware.
 2. Investigate the 11 bounded but unexplained bytes in banks `$01-$05`.
 3. Identify neutral level, scene, screen, object, and audio names from behavior.
 4. Run relocation/shift tests before declaring source freely editable.

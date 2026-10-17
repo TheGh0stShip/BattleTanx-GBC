@@ -104,12 +104,12 @@ See [`LEVEL_SEMANTICS_RESEARCH.md`](LEVEL_SEMANTICS_RESEARCH.md),
 | Address | New label | Old label kept | Evidence |
 | --- | --- | --- | --- |
 | `$2A:61D8/6230/62A4` | `OptionsScreen_LoadTiles/Draw/Descriptor` | `ScreenMode01_*`, `Func_2A_*` | MenuState04 + OptionsMenuEntries text |
-| `$2B:5BDA...` | `BootSequenceScreen1_*` | `ScreenMode09_*` | `Func_02_5C40` order (*verified*) |
+| `$2B:5BDA...` | `BootSequenceScreen1_*` | `ScreenMode09_*` | `RunBootScreenSequence` order (*verified*) |
 | `$2C:4000...` | `BootSequenceScreen2_*` | `ScreenMode02_*` | same |
 | `$2C:4B3A...` | `BootSequenceScreen3_*` | `ScreenMode05_*` | same |
 | `$2B:4000...` | `BootSequenceScreen4_*` | `ScreenMode07_*` | same |
 | `$2C:6CE9/6FB9` | `CodeRejectedTileMap/AttrMap` | `ScreenMode03_Alt*Map` | `$01:7981` failure path |
-| `$2E` pictures | `MenuState05Picture0-2_Tiles` | `Picture596D0/1_Tiles`, `Screen2E_Tiles` | `RAM_D7CB` index |
+| `$2E` pictures | `MenuState05Picture0-2_Tiles` | `Picture596D0/1_Tiles`, `Screen2E_Tiles` | `LoadMenuState05Graphics` index |
 | cell bits | `CELLB_*` constants | — | level report |
 
 Rejected names: "title", "ending", "password" (screens 7, 8, 3/`$0B`),
@@ -125,7 +125,7 @@ only appearance or inference supports them.
 4. Scene identities (no text).
 5. Visual meaning of the per-level tiles.
 6. F04's 72-byte palette copy into a 64-byte buffer (effect unknown).
-7. `Func_1FF5` slot exhaustion.
+7. `AllocateObjectRecord` slot exhaustion.
 8. The bank-`$01` LCD handler's `call $5EE0` while object banks are mapped.
 9. Bits 6-7 table semantics: tile choice traced, gameplay meaning not.
 
@@ -136,7 +136,7 @@ only appearance or inference supports them.
 - **Object bank** `$27 + [$FF80]`: 0-2 (3 skips the copy).
 - **Level bank selectors**: record bytes `BANK()`-derived; index 0-14.
 - **Scene selectors**: `$FF81` 0-10, `$FF82` 0-`$23`.
-- **`EntityHandlerTable`**: dispatched by `+$1E` (0-9).
+- **`Status4PickupHandlerTable`**: dispatched by `+$1E` (0-9).
 
 ## 7. Raw ROM addresses
 

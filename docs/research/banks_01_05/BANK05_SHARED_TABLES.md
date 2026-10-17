@@ -2,16 +2,16 @@
 
 | Range | Structure | Reader | Notes |
 | --- | --- | --- | --- |
-| `$4000-$401F` | `ObjectOrientationLayoutPointers` (16) | ROM0 `Func_0F0C` | 9 normal, 7 x-flipped |
-| `$4020-$403F` | `ObjectOrientationTilePointers` (16) | ROM0 `Func_0F43` | now `Bank27OrientationFrameN` labels; banks `$27-$29` share the layout |
-| `$4040-$4087` | normal and x-flipped OAM layouts | `Func_0F0C` | |
-| `$4088` | `LoadLevelLookupPointers` | ROM0 `Func_0402` | only code in the bank |
+| `$4000-$401F` | `ObjectOrientationLayoutPointers` (16) | ROM0 `WriteObjectOrientationOam` | 9 normal, 7 x-flipped |
+| `$4020-$403F` | `ObjectOrientationTilePointers` (16) | ROM0 `CopyObjectOrientationTiles` | now `Bank27OrientationFrameN` labels; banks `$27-$29` share the layout |
+| `$4040-$4087` | normal and x-flipped OAM layouts | `WriteObjectOrientationOam` | |
+| `$4088` | `LoadLevelLookupPointers` | ROM0 `LoadLevelLookupPointersFar` | only code in the bank |
 | `$40B1-$42FF`, `$431E-$43FF`, `$452C-$45FF` | unused fragments of bank `$04` level-object spawn records at the same addresses | none | explicit residue macros; byte equality checked |
 | `$4300` | `LevelRecordPointers` and 15 level records | `LoadLevelData` | |
-| `$4600-$4DFF` | `ObjectVelocityTable`: 16 speed classes x 16 directions x (X, Y) signed 32-bit, 1/256 px | ROM0 `Func_2241`/`Func_2295` (raw `ld bc, $4600`, pinned) | magnitude = (class + 1) x `$60`; class 15 is never selected (classes come from `ObjectTypeParameterTable`, at most 14) |
+| `$4600-$4DFF` | `ObjectVelocityTable`: 16 speed classes x 16 directions x (X, Y) signed 32-bit, 1/256 px | ROM0 `LoadVehicleForwardVelocity`/`LoadVehicleReverseVelocity` (raw `ld bc, $4600`, pinned) | magnitude = (class + 1) x `$60`; class 15 is never selected (classes come from `ProjectileSubtypeParameters`, at most 14) |
 | `$4E00-$4E9F` | zero | none | |
 | `$4EA0` | `ObjectScoreValues` | | |
-| `$5100` | `ObjectTypeParameterTable` | | |
+| `$5100` | `ProjectileSubtypeParameters` | | |
 | `$5120` | `LevelTileAnimationPointers` | | |
 | `$513E` | `LevelAttributeLookupPointers` | | |
 | `$517A-$59DF` | level tile-animation sets | | |

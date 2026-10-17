@@ -30,84 +30,84 @@
     "owner": "LCDInterrupt"
    },
    {
-    "at": "src/bank_00.asm:10259",
+    "at": "src/bank_00.asm:10271",
     "documented": true,
     "in_ram_image": false,
     "kind": "jp hl",
     "owner": "DispatchRuntimeCallbackUnlessPaused"
    },
    {
-    "at": "src/bank_00.asm:10928",
+    "at": "src/bank_00.asm:10942",
     "documented": true,
     "in_ram_image": false,
     "kind": "pushed constant (synthetic return candidate)",
     "owner": "ScreenTable_CallInit"
    },
    {
-    "at": "src/bank_00.asm:10929",
+    "at": "src/bank_00.asm:10943",
     "documented": true,
     "in_ram_image": false,
     "kind": "jp hl",
     "owner": "ScreenTable_CallInit"
    },
    {
-    "at": "src/bank_00.asm:10966",
+    "at": "src/bank_00.asm:10980",
     "documented": true,
     "in_ram_image": false,
     "kind": "pushed constant (synthetic return candidate)",
     "owner": "ScreenTable_CallUpdate"
    },
    {
-    "at": "src/bank_00.asm:10967",
+    "at": "src/bank_00.asm:10981",
     "documented": true,
     "in_ram_image": false,
     "kind": "jp hl",
     "owner": "ScreenTable_CallUpdate"
    },
    {
-    "at": "src/bank_01.asm:762",
+    "at": "src/bank_01.asm:767",
     "documented": true,
     "in_ram_image": false,
     "kind": "jp hl",
-    "owner": "DispatchEntityHandler"
+    "owner": "DispatchStatus4PickupHandler"
    },
    {
-    "at": "src/bank_01.asm:1588",
+    "at": "src/bank_01.asm:1600",
     "documented": true,
     "in_ram_image": true,
     "kind": "pushed constant (synthetic return candidate)",
-    "owner": "RAM_D6CE"
+    "owner": "RunMenuLoop_WaitVBlank"
    },
    {
-    "at": "src/bank_01.asm:1602",
+    "at": "src/bank_01.asm:1614",
     "documented": true,
     "in_ram_image": true,
     "kind": "jp hl",
-    "owner": "RAM_D6CE"
+    "owner": "RunMenuLoop_WaitVBlank"
    },
    {
     "at": "src/bank_03.asm:417",
-    "documented": true,
+    "documented": false,
     "in_ram_image": false,
     "kind": "pushed constant (synthetic return candidate)",
-    "owner": "UpdateObjectSequenceMovement"
+    "owner": "UpdateObjectSequenceMovement_CheckWaypoint"
    },
    {
-    "at": "src/bank_03.asm:962",
+    "at": "src/bank_03.asm:965",
     "documented": true,
     "in_ram_image": false,
     "kind": "pushed constant (synthetic return candidate)",
     "owner": "CheckObjectNearPlayerBox"
    },
    {
-    "at": "src/bank_03.asm:2100",
+    "at": "src/bank_03.asm:2119",
     "documented": false,
     "in_ram_image": false,
     "kind": "pushed constant (synthetic return candidate)",
-    "owner": "AppendRecordedPathWaypoint_Primed"
+    "owner": "UpdateObjectSequenceMovement_TestWaypointArrival"
    },
    {
-    "at": "src/bank_03.asm:2516",
+    "at": "src/bank_03.asm:2536",
     "documented": true,
     "in_ram_image": false,
     "kind": "jp hl",
@@ -126,9 +126,6 @@
    },
    "$C7F1": {
     "RAM code address": 5
-   },
-   "$C94B": {
-    "shared scratch": 7
    },
    "$CD2B": {
     "write-only": 1
@@ -208,12 +205,6 @@
    "$D562": {
     "write-only": 1
    },
-   "$D564": {
-    "write-only": 3
-   },
-   "$D565": {
-    "write-only": 3
-   },
    "$D56A": {
     "RAM code address": 1
    },
@@ -228,9 +219,6 @@
    },
    "$D7CB": {
     "RAM code address": 1
-   },
-   "$D7FF": {
-    "bank-dependent (SVBK)": 1
    },
    "$D88B": {
     "RAM code address": 1
@@ -269,139 +257,46 @@
     "bank-dependent (SVBK)": 2
    },
    "$FF80": {
-    "shared scratch": 63
+    "shared scratch": 13
    },
    "$FF81": {
-    "shared scratch": 43
-   },
-   "$FF82": {
-    "shared scratch": 24
-   },
-   "$FF83": {
-    "shared scratch": 22
-   },
-   "$FF84": {
-    "shared scratch": 20
-   },
-   "$FF85": {
-    "shared scratch": 18
-   },
-   "$FF86": {
-    "shared scratch": 22
-   },
-   "$FF87": {
-    "shared scratch": 15
-   },
-   "$FF88": {
-    "shared scratch": 14
-   },
-   "$FF89": {
-    "shared scratch": 13
-   },
-   "$FF8A": {
-    "shared scratch": 12
-   },
-   "$FF8B": {
-    "shared scratch": 13
-   },
-   "$FF8C": {
-    "shared scratch": 8
-   },
-   "$FF8D": {
-    "shared scratch": 5
-   },
-   "$FF8E": {
-    "shared scratch": 4
-   },
-   "$FF90": {
-    "shared scratch": 10
-   },
-   "$FF91": {
-    "shared scratch": 3
-   },
-   "$FF92": {
-    "shared scratch": 3
-   },
-   "$FF93": {
-    "shared scratch": 3
-   },
-   "$FF94": {
-    "shared scratch": 2
-   },
-   "$FF95": {
-    "shared scratch": 3
-   },
-   "$FF96": {
-    "shared scratch": 2
-   },
-   "$FF97": {
-    "shared scratch": 4
-   },
-   "$FF98": {
-    "shared scratch": 11
-   },
-   "$FF99": {
-    "shared scratch": 2
-   },
-   "$FF9A": {
-    "shared scratch": 4
-   },
-   "$FF9B": {
-    "shared scratch": 4
-   },
-   "$FFA0": {
     "shared scratch": 9
    },
-   "$FFA1": {
-    "shared scratch": 6
+   "$FF82": {
+    "shared scratch": 4
    },
-   "$FFA2": {
-    "shared scratch": 1
-   },
-   "$FFA3": {
-    "shared scratch": 1
-   },
-   "$FFA4": {
-    "shared scratch": 1
-   },
-   "$FFA5": {
-    "shared scratch": 1
-   },
-   "$FFA6": {
-    "shared scratch": 1
-   },
-   "$FFA7": {
-    "shared scratch": 1
-   },
-   "$FFAB": {
+   "$FF83": {
     "shared scratch": 5
+   },
+   "$FF84": {
+    "shared scratch": 5
+   },
+   "$FF85": {
+    "shared scratch": 2
+   },
+   "$FF86": {
+    "shared scratch": 2
+   },
+   "$FF87": {
+    "shared scratch": 3
+   },
+   "$FF88": {
+    "shared scratch": 3
+   },
+   "$FF89": {
+    "shared scratch": 2
+   },
+   "$FF8A": {
+    "shared scratch": 3
    },
    "$FFB0": {
-    "shared scratch": 8
+    "shared scratch": 2
    },
    "$FFB1": {
-    "shared scratch": 5
+    "shared scratch": 3
    },
    "$FFB2": {
-    "shared scratch": 5
-   },
-   "$FFC0": {
-    "shared scratch": 14
-   },
-   "$FFC1": {
-    "shared scratch": 10
-   },
-   "$FFC2": {
-    "shared scratch": 7
-   },
-   "$FFC3": {
-    "shared scratch": 7
-   },
-   "$FFC4": {
-    "shared scratch": 4
-   },
-   "$FFC5": {
-    "shared scratch": 4
+    "shared scratch": 3
    },
    "$FFDB": {
     "layout": 2
@@ -415,180 +310,176 @@
   },
   "by_class": {
    "RAM code address": 33,
-   "bank-dependent (SVBK)": 36,
+   "bank-dependent (SVBK)": 35,
    "layout": 7,
-   "shared scratch": 444,
-   "write-only": 16
+   "shared scratch": 59,
+   "write-only": 10
   }
  },
  "raw_bank_bytes": {
   "by_class": {
    "data bank selected for a pointer computed at run time": 15,
-   "restores the caller's bank $01": 8,
-   "unresolved": 4
+   "redundant (no banked reader found; strong, not proven)": 1,
+   "redundant (overwritten by another bank write before any banked read)": 1,
+   "redundant (same bank re-mapped before any banked read)": 1,
+   "restores the caller's bank $01": 8
   },
   "items": [
    {
-    "at": "src/bank_00.asm:196",
-    "bank": "$01",
-    "class": "unresolved",
-    "owner": "RunMenuAndLevelLoop"
-   },
-   {
     "at": "src/bank_00.asm:201",
     "bank": "$01",
-    "class": "unresolved",
+    "class": "redundant (same bank re-mapped before any banked read)",
     "owner": "RunMenuAndLevelLoop"
    },
    {
-    "at": "src/bank_00.asm:1341",
+    "at": "src/bank_00.asm:1342",
     "bank": "$08",
-    "class": "unresolved",
+    "class": "redundant (overwritten by another bank write before any banked read)",
     "owner": "LoadObjectPalettes"
    },
    {
-    "at": "src/bank_00.asm:2486",
+    "at": "src/bank_00.asm:2487",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "RenderObjectOrientationGraphic"
    },
    {
-    "at": "src/bank_00.asm:2572",
+    "at": "src/bank_00.asm:2573",
     "bank": "$08",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "RenderObjectOrientationGraphic"
    },
    {
-    "at": "src/bank_00.asm:4514",
+    "at": "src/bank_00.asm:4516",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "LoadLevelRecord"
    },
    {
-    "at": "src/bank_00.asm:4600",
+    "at": "src/bank_00.asm:4602",
     "bank": "$01",
     "class": "restores the caller's bank $01",
     "owner": "LoadLevelData"
    },
    {
-    "at": "src/bank_00.asm:4916",
+    "at": "src/bank_00.asm:4918",
     "bank": "$01",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "RefreshLevelViewport"
    },
    {
-    "at": "src/bank_00.asm:5395",
+    "at": "src/bank_00.asm:5398",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "GetLevelCellTileAndAttr"
    },
    {
-    "at": "src/bank_00.asm:6381",
+    "at": "src/bank_00.asm:6385",
     "bank": "$01",
-    "class": "unresolved",
+    "class": "redundant (no banked reader found; strong, not proven)",
     "owner": "UpdateAllObjects"
    },
    {
-    "at": "src/bank_00.asm:8148",
+    "at": "src/bank_00.asm:8159",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "SpawnVehicleProjectile"
    },
    {
-    "at": "src/bank_00.asm:9195",
+    "at": "src/bank_00.asm:9207",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "Func_3104"
    },
    {
-    "at": "src/bank_00.asm:9255",
+    "at": "src/bank_00.asm:9267",
     "bank": "$02",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "Func_315F"
    },
    {
-    "at": "src/bank_00.asm:9298",
+    "at": "src/bank_00.asm:9310",
     "bank": "$02",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "Func_3190"
    },
    {
-    "at": "src/bank_00.asm:9314",
+    "at": "src/bank_00.asm:9326",
     "bank": "$08",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "Func_3190"
    },
    {
-    "at": "src/bank_00.asm:10997",
+    "at": "src/bank_00.asm:11011",
     "bank": "$01",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "ScreenTable_LoadEntry"
    },
    {
-    "at": "src/bank_00.asm:11663",
+    "at": "src/bank_00.asm:11677",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "LoadScreenEffectPart"
    },
    {
-    "at": "src/bank_00.asm:11698",
+    "at": "src/bank_00.asm:11712",
     "bank": "$08",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "RenderScreenEffect"
    },
    {
-    "at": "src/bank_00.asm:11730",
+    "at": "src/bank_00.asm:11744",
     "bank": "$08",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "CopyScreenEffectPartTiles"
    },
    {
-    "at": "src/bank_00.asm:11793",
+    "at": "src/bank_00.asm:11807",
     "bank": "$05",
     "class": "data bank selected for a pointer computed at run time",
     "owner": "BuildScreenEffectPartOam"
    },
    {
-    "at": "src/bank_01.asm:1455",
+    "at": "src/bank_01.asm:1468",
     "bank": "$01",
     "class": "restores the caller's bank $01",
     "owner": "InitMenuSystem"
    },
    {
-    "at": "src/bank_01.asm:1507",
+    "at": "src/bank_01.asm:1519",
     "bank": "$01",
     "class": "restores the caller's bank $01",
     "owner": "MenuLoopTop"
    },
    {
-    "at": "src/bank_01.asm:1550",
+    "at": "src/bank_01.asm:1562",
     "bank": "$01",
     "class": "restores the caller's bank $01",
     "owner": "MenuEnterNewState"
    },
    {
-    "at": "src/bank_01.asm:4773",
+    "at": "src/bank_01.asm:4804",
     "bank": "$01",
     "class": "restores the caller's bank $01",
-    "owner": "RAM_D0DF"
+    "owner": "LoadFixedSceneResources_NextTile"
    },
    {
-    "at": "src/bank_01.asm:4814",
+    "at": "src/bank_01.asm:4845",
     "bank": "$01",
     "class": "restores the caller's bank $01",
     "owner": "LoadScrollingScenePalette"
    },
    {
-    "at": "src/bank_01.asm:5492",
+    "at": "src/bank_01.asm:5524",
     "bank": "$01",
     "class": "restores the caller's bank $01",
     "owner": "ComputeSceneRowPointer"
    },
    {
-    "at": "src/bank_01.asm:5648",
+    "at": "src/bank_01.asm:5680",
     "bank": "$01",
     "class": "restores the caller's bank $01",
-    "owner": "RAM_D37C"
+    "owner": "StageSceneRowTiles_TileLoop"
    }
   ]
  },

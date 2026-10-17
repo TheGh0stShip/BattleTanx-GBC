@@ -10,6 +10,8 @@ that are own-bank ROM pointers). For each target address:
   * anything else (inside a db line or INCBIN) is reported and left raw.
 The edited assembly is authoritative; this tool owns nothing.
 Usage: label_raw_pointers_01_05.py RAW.json REPORT.json
+
+Do not rerun.
 """
 import json, pathlib, re, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent

@@ -35,7 +35,7 @@ the linked region. The validator pins this relationship and all mode counts.
 
 ## Respawn queue (20 x 3 bytes: index, respawns left, delay)
 
-- **Filling**: `Func_0AF5` (object destroyed) adds an entry only when the
+- **Filling**: `RemoveObject` (object destroyed) adds an entry only when the
   object has respawns left.
 - **Overflow**: a full queue silently drops the respawn. There is no flag
   and no duplicate check.

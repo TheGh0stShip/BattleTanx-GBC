@@ -6,9 +6,11 @@ SECTION "ROM Bank $2A", ROMX[$4000], BANK[$2A]
 ; Bank $2A fixed screen, drawn and animated by FixedScreen2A_Run.
 ; 464 tiles; FixedScreen2A_LoadTiles copies 512 from here, so the last
 ; 48 copied tiles come from the maps below.
+NoLivesScreen_Tiles:
 FixedScreen2A_Tiles:
 	INCBIN "assets/screens/fixedscreen2a_tiles.2bpp"
 
+NoLivesScreen_TileMap:
 FixedScreen2A_TileMap:
 	db $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91, $92, $93, $94
 	db $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E, $9F, $A0, $A1, $A2, $A3, $A4, $A5, $A6, $A7, $A8
@@ -30,6 +32,7 @@ FixedScreen2A_TileMap:
 	db $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $3E, $3F, $40, $41, $42, $43, $44, $45
 
 ; 20x11 sheet of four 5x11 frames for the BG rectangle at $980F.
+NoLivesScreen_FrameTileMap:
 FixedScreen2A_FrameTileMap:
 	db $90, $91, $92, $93, $94, $90, $91, $92, $46, $47, $90, $91, $92, $48, $49, $90, $91, $4A, $4B, $4C
 	db $A4, $A5, $A6, $A7, $A8, $A4, $A5, $B0, $4D, $4E, $A4, $A5, $4F, $50, $51, $A4, $A5, $52, $53, $54
@@ -43,6 +46,7 @@ FixedScreen2A_FrameTileMap:
 	db $2B, $2C, $2D, $2E, $2F, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0, $C1, $C2, $C3, $C4, $C5, $C6
 	db $3F, $40, $41, $42, $43, $3F, $40, $C7, $C8, $C9, $3F, $40, $CA, $CB, $CC, $3F, $40, $CD, $CE, $CF
 
+NoLivesScreen_AttrMap:
 FixedScreen2A_AttrMap:
 	db $00, $00, $00, $00, $00, $01, $01, $01, $01, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $01
 	db $00, $00, $00, $00, $00, $01, $01, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $01, $01
@@ -63,6 +67,7 @@ FixedScreen2A_AttrMap:
 	db $0D, $09, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D, $09, $09
 	db $0D, $0D, $0D, $0D, $0D, $0D, $0D, $09, $09, $09, $09, $09, $09, $09, $09, $0D, $0D, $0D, $0D, $0D
 
+NoLivesScreen_FrameAttrMap:
 FixedScreen2A_FrameAttrMap:
 	db $00, $00, $00, $01, $01, $00, $00, $00, $09, $09, $00, $00, $00, $09, $09, $00, $00, $08, $09, $09
 	db $00, $00, $01, $01, $01, $00, $00, $00, $09, $09, $00, $00, $09, $09, $09, $00, $00, $09, $09, $09
@@ -76,6 +81,7 @@ FixedScreen2A_FrameAttrMap:
 	db $04, $04, $04, $04, $01, $0C, $0C, $0C, $0C, $09, $0C, $0C, $0C, $0C, $09, $0C, $0C, $0C, $0C, $09
 	db $03, $02, $04, $01, $01, $03, $02, $0C, $09, $09, $03, $02, $0C, $09, $09, $03, $02, $0C, $09, $09
 
+NoLivesScreen_Palettes:
 FixedScreen2A_Palettes:
 	dw $0C63, $2926, $45EC, $5E90 ; palette 0
 	dw $00E9, $0171, $2ED7, $5E90 ; palette 1
@@ -87,6 +93,7 @@ FixedScreen2A_Palettes:
 	dw $001F, $00E9, $0171, $03DD ; palette 7
 
 ; Frame n: tile and attribute sources of the 5x11 rectangle.
+NoLivesScreen_FrameTable:
 FixedScreen2A_FrameTable:
 	dw FixedScreen2A_FrameTileMap + 0, FixedScreen2A_FrameAttrMap + 0
 	dw FixedScreen2A_FrameTileMap + 5, FixedScreen2A_FrameAttrMap + 5
@@ -156,13 +163,16 @@ ScreenMode01_Palettes:
 
 ; ScreenModeTable entries 12.
 Func_2A_6A22: ; address-based alias kept for other banks
+FinalLevelCompleteScreen_LoadTiles:
 ScreenMode12_LoadTiles:
 	screen_load_tiles ScreenMode12_Descriptor
 
 Func_2A_6A7A: ; address-based alias kept for other banks
+FinalLevelCompleteScreen_Draw:
 ScreenMode12_Draw: ; no fade
 	screen_draw_plain ScreenMode12_Descriptor
 
+FinalLevelCompleteScreen_Descriptor:
 ScreenMode12_Descriptor:
 	screen_descriptor ScreenMode12_Tiles, ScreenMode12_TileMap, ScreenMode12_AttrMap, ScreenMode12_Palettes, 148, 20, 18, 3, 0
 
@@ -215,6 +225,7 @@ ScreenMode12_Palettes:
 	dw $0C63, $1120, $0204, $270A ; palette 1
 	dw $0C63, $1120, $0204, $6F58 ; palette 2
 
+NoLivesScreen_LoadTiles:
 FixedScreen2A_LoadTiles: ; loads 512 tiles (4 x 128)
 	call Func_3960
 	xor a
@@ -244,6 +255,7 @@ FixedScreen2A_LoadTiles: ; loads 512 tiles (4 x 128)
 	ret
 
 
+NoLivesScreen_Draw:
 FixedScreen2A_Draw:
 	ld a, $14
 	ld [wScreenWidth], a
@@ -263,6 +275,7 @@ Func_2A_7774: ; address-based alias kept for ROM0 $3F28
 ; Draws the fixed screen, then shows frames 0-3 for 10 frames each.
 ; WaitForButtonOrTimeout exits on a button; after a full cycle this also exits
 ; when wJoypadHeld is non-zero.
+NoLivesScreen_Run:
 FixedScreen2A_Run:
 	call FixedScreen2A_LoadTiles
 	call FixedScreen2A_Draw
@@ -287,6 +300,7 @@ FixedScreen2A_Run:
 
 
 ; a = frame 0-3: copies its 5x11 tiles and attributes to $980F.
+NoLivesScreen_DrawFrame:
 FixedScreen2A_DrawFrame:
 	push af
 	push bc
@@ -322,10 +336,10 @@ FixedScreen2A_DrawFrame:
 	xor a
 	ld [wVBlankPending], a
 	ld a, $0B
-	ldh [$FFC1], a
+	ldh [hFixedScreen2ARowsLeft], a
 .row:
 	ld a, $05
-	ldh [$FFC0], a
+	ldh [hFixedScreen2AColumnsLeft], a
 .cell:
 	ld a, $01
 	ldh [rVBK], a
@@ -337,9 +351,9 @@ FixedScreen2A_DrawFrame:
 	ld [hli], a
 	inc bc
 	inc de
-	ldh a, [$FFC0]
+	ldh a, [hFixedScreen2AColumnsLeft]
 	dec a
-	ldh [$FFC0], a
+	ldh [hFixedScreen2AColumnsLeft], a
 	jr nz, .cell
 	ld a, $0F
 	add a, c
@@ -359,9 +373,9 @@ FixedScreen2A_DrawFrame:
 	ld a, $00
 	adc a, h
 	ld h, a
-	ldh a, [$FFC1]
+	ldh a, [hFixedScreen2ARowsLeft]
 	dec a
-	ldh [$FFC1], a
+	ldh [hFixedScreen2ARowsLeft], a
 	jr nz, .row
 	pop hl
 	pop de

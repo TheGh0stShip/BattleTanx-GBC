@@ -8,6 +8,8 @@ Raw-pointer labels created earlier (`BankNNData_XXXX`) are rewritten to the new
 labels or `label + offset`. Asset files are written from baserom.gbc once; the
 checked-in source and assets are authoritative afterwards.
 Usage: rewrite_blobs_01_05.py
+
+One-time edit tool; owns nothing; do not rerun (it fails on the current tree).
 """
 import pathlib
 import re
@@ -35,7 +37,7 @@ BLOBS = {
         (0x58DF, 0x595F, "bin", "MenuCursorSpriteTiles", "8 tiles; LoadMenuCursorSprites -> VRAM $8780 (tiles $78-$7F)", "assets/bank_01/menu_cursor_sprite_tiles.2bpp"),
         (0x595F, 0x5967, "db8", "MenuCursorSpriteTileIds", "OAM tile ids written by LoadMenuCursorSprites", None),
         (0x5967, 0x596D, "dw3", "MenuCursorObjectPalette", "OBJ palette 0 colours 1-3 (LoadSingleObjectPalette)", None),
-        (0x596D, 0x599D, "pictures", "MenuState05PictureDescriptors", "read by LoadMenuState05Graphics (RAM_D7CB); index wMenuState05Selection 0-2", None),
+        (0x596D, 0x599D, "pictures", "MenuState05PictureDescriptors", "read by LoadMenuState05Graphics; index wMenuState05Selection 0-2", None),
     ],
     ("src/bank_01.asm", "assets/bank_01/6E8A.bin", 1, 0x6E8A, 0x78F1): [
         (0x6E8A, 0x769A, "bin", "PasswordScreenTiles", "LoadPasswordScreenTilesAndCursor copies 12 tiles from here and $80 tiles from +$80; the second copy runs on into the glyph tables", "assets/bank_01/password_screen_tiles.2bpp"),

@@ -64,7 +64,7 @@ move fails at assembly. Machine-readable list:
 | `$05:ObjectOrientationTilePointers` | 16 words | `Bank27OrientationFrame0-8` | `dw Bank27OrientationFrameN - Bank27OrientationTiles + $4000`, or labels |
 | `$01:ScreenModeTable` bank bytes | 26 | `$2A-$2E` routines | `BANK(label)` |
 | `$01` scene descriptor bank bytes | 54 | `$2F-$3A` | `BANK(label)` |
-| ROM0 `Func_0F43` `add a, $27` | 1 | bank arithmetic | `BANK(Bank27OrientationTiles)` |
+| ROM0 `CopyObjectOrientationTiles` `add a, $27` | 1 | bank arithmetic | `BANK(Bank27OrientationTiles)` |
 
 ## Other changes made for relocation safety
 

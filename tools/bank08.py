@@ -50,7 +50,7 @@ TILE_LOADS = [
     (0x626B, 78, 0, 0x00, 0x80), (0x68DD, 4, 0, 0x4E, 0x80), (0x6925, 4, 0, 0x52, 0x80),
     (0x696D, 4, 0, 0x56, 0x80), (0x69B5, 4, 0, 0x5A, 0x80),
 ]
-ENCODED_FONT = 0x6B85          # 37 tiles: LoadEncodedFontTiles (ROM0) and $01:RAM_D9CB
+ENCODED_FONT = 0x6B85          # 37 tiles: LoadEncodedFontTiles (ROM0) and $01:LoadEncodedFontTilesToVram1
 ENCODED_FONT_TILES = 37
 GLYPH_TABLE = 0x6B05           # 128 bytes, DrawEncodedGlyph: tile = [table + char]
 METATILES = 0x43E0             # 16 x 12 bytes, Func_0DB6 type-3 path: $43E0 + 12 * (obj+$19 & $0F)
@@ -150,7 +150,7 @@ def parse(rom: bytes):
     find_once(rom, font_pat, "LoadEncodedFontTiles")
     ram_font = bytes([0x1E, 0x00, 0x16, ENCODED_FONT_TILES, 0x3E, 0x88, 0x01,
                       ENCODED_FONT & 0xFF, ENCODED_FONT >> 8, 0xCD, 0x22, 0x06])
-    find_once(rom, ram_font, "$01:RAM_D9CB font copy", 0x4000, 0x8000)
+    find_once(rom, ram_font, "$01:LoadEncodedFontTilesToVram1 font copy", 0x4000, 0x8000)
     # 2. Glyph table: table = $6B05, 128 ASCII entries, values < font tile count; ends at font.
     find_once(rom, bytes([0x21, GLYPH_TABLE & 0xFF, GLYPH_TABLE >> 8]), "DrawEncodedGlyph table pointer")
     glyphs = r(GLYPH_TABLE, 128)
@@ -351,7 +351,9 @@ SYMBOLS = {
     "Bank08ArrowUpPalette": (0x08, 0x691D), "Bank08ArrowUpTiles": (0x08, 0x6925),
     "Bank08ArrowDownPalette": (0x08, 0x6965), "Bank08ArrowDownTiles": (0x08, 0x696D),
     "Bank08AlphanumericFontPalette": (0x08, 0x69AD), "Bank08AlphanumericFontTiles": (0x08, 0x69B5),
-    "Bank08InterfaceTiles69B5": (0x08, 0x69B5), "Bank08InterfaceTiles69FD": (0x08, 0x69FD),
+    "Bank08InterfaceTiles69B5": (0x08, 0x69B5), "Bank08HudAlertIconTiles": (0x08, 0x69B5),
+    "Bank08PowerupIcon1Palette": (0x08, 0x691D), "Bank08PowerupIcon2Palette": (0x08, 0x6965),
+    "Bank08PowerupIcon3Palette": (0x08, 0x69AD), "Bank08InterfaceTiles69FD": (0x08, 0x69FD),
     "Bank08UnreferencedTiles6A7D": (0x08, 0x6A7D),
     "Bank08UnreferencedPalette6AFD": (0x08, 0x6AFD),
     "EncodedGlyphTable": (0x08, 0x6B05), "EncodedFontTiles": (0x08, 0x6B85),
@@ -359,6 +361,8 @@ SYMBOLS = {
     "wUiFontPalette": (0x00, 0xC721), "wHudIconPalette": (0x00, 0xC6F9),
     "wArrowUpPalette": (0x00, 0xC701), "wArrowDownPalette": (0x00, 0xC709),
     "wAlphanumericFontPalette": (0x00, 0xC711),
+    "wPowerupIcon1Palette": (0x00, 0xC701), "wPowerupIcon2Palette": (0x00, 0xC709),
+    "wPowerupIcon3Palette": (0x00, 0xC711),
     "LoadObjectPalettes": (0x00, 0x07A7), "LoadInterfaceTilesVRAM1": (0x00, 0x0807),
     "LoadInterfaceTilesVRAM0": (0x00, 0x0879), "LoadInterfacePalettes": (0x00, 0x092F),
     "SelectObjectSpritePaletteFar": (0x00, 0x37AC),

@@ -2,10 +2,10 @@
 
 1. **Interrupt-time banking (not proven safe).** Three scene interrupt paths
    call bank-`$01` ROM without mapping bank `$01`:
-   - the STAT image (`SceneStatHandler`, `$C729`) calls `Bank01RomImage_5EE0`;
+   - the STAT image (`SceneStatHandler`, `$C729`) calls `WriteBgPalette7FromD3F8RomImage`;
    - the VBlank image (`SceneVBlankHandler`, `$C7F1`) calls `StartSceneTileRowHdma`
      (`$6580`) when `hSceneRowHdmaPending` is set;
-   - `StepSceneWindowSplit` (`$D140`, run from VBlank) calls `Bank01RomImage_5F26`.
+   - `StepSceneWindowSplit` (`$D140`, run from VBlank) calls `WriteBgPalette7FromFF98RomImage`.
 
    They are safe only under this invariant: while these handlers are installed,
    IME = 1 and `[$7FFF] != 1`, no VBlank may arrive unless (`hFF80 != 0` or
@@ -17,7 +17,7 @@
    keep it by raising `hFF80` around their bank switches. These sites switch
    banks with `hFF80 = 0` and depend on timing:
    - `Audio_Update` (bank `$06`);
-   - `Func_3960` -> `Func_02_46E1` (bank `$02`);
+   - `ClearBackgroundPalettes` -> `ClearBackgroundPalettesImpl` (bank `$02`);
    - `ComputeSceneRowPointer`;
    - `StageSceneRowTiles`.
 

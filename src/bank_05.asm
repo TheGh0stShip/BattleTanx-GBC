@@ -101,7 +101,8 @@ Bank05Bank04Copy452C: ; unused byte-identical fragment of bank $04 level-object 
 ObjectVelocityTable: ; 16 speed classes x 16 directions; X then Y, signed 32-bit, 1/256 px per frame
 ; Read by ROM0 Func_2241/Func_2295 (class = object +$1A, direction = object +$19).
 ; Magnitude = (class + 1) * $60; direction 0 = -Y, 4 = +X, 8 = +Y, 12 = -X.
-; ObjectTypeParameterTable caps the class index at 14, so class 15 is never selected.
+; The reader uses class = +$1A - 1; ProjectileSubtypeParameters stores at most
+; speed $0F (class 14), so class 15 is never selected.
 	; speed class 0
 	object_velocity 0, -96 ; direction 0
 	object_velocity 37, -89 ; direction 1
@@ -387,7 +388,10 @@ ObjectScoreValues:
 
 	ds $5100 - @, $00
 
-ObjectTypeParameterTable:
+; Indexed by projectile subtype (+$20): damage, speed (+$1A), lifetime.
+; Row 3 is unreachable: powerup 3 calls StartScreenEffect instead.
+ProjectileSubtypeParameters:
+ObjectTypeParameterTable: ; legacy alias, used by tools and reports
 	object_type_parameters $06, $0F, $50
 	object_type_parameters $04, $06, $B4
 	object_type_parameters $05, $05, $4B
@@ -424,7 +428,7 @@ LevelAttributeLookupPointers:
 	ASSERT LevelRecordPointers == $4300
 	ASSERT Level14_Record == $4518
 	ASSERT ObjectScoreValues == $4EA0
-	ASSERT ObjectTypeParameterTable == $5100
+	ASSERT ProjectileSubtypeParameters == $5100
 	ASSERT LevelTileAnimationPointers == $5120
 	ASSERT LevelAttributeLookupPointers == $513E
 	ASSERT LevelTileAnimationSet0 == $517A

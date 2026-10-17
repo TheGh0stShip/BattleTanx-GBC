@@ -7,6 +7,9 @@ include/level_data.inc and the assets.txt lines are then maintained by hand;
 
 Usage: gen_level_asm.py baserom.gbc   (writes src/bank_09.asm-bank_26.asm,
        include/level_data.inc, and prints assets.txt lines)
+
+Superseded: output differs from hand-maintained include/level_data.inc
+(bank files still match); comparison only. Do not rerun in the tree.
 """
 import os, sys
 sys.path.insert(0, os.path.dirname(__file__))

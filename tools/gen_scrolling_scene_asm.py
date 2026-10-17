@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Generate RGBDS source for scrolling-scene banks $2F/$34-$3B."""
+"""Generate RGBDS source for scrolling-scene banks $2F/$34-$3B.
+
+Superseded: output differs from hand-maintained src/bank_2F.asm and
+src/bank_34.asm-bank_3B.asm; comparison only. Running it overwrites those files.
+"""
 
 from __future__ import annotations
 

@@ -6,7 +6,7 @@ RGBDS has no listing output, so this tool assembles a scratch copy in which a
 line of banks $01-$05. That yields an exact source-line -> ROM-range map.
 Each byte is then classified by the directive that produced it:
 
-  code (direct)       instruction bytes reached by tools/trace.py
+  code (direct)       instruction bytes reached by tools/rom_trace.py
   code (untraced)     instruction bytes the tracer does not reach
   ram code source     instruction bytes inside a LOAD block (RAM-executed)
   ram data source     db/dw bytes inside a LOAD block
@@ -123,7 +123,7 @@ def classify(root: pathlib.Path, rom: bytes):
             marks[int(m.group(1))].append((int(m.group(2)), int(m.group(3))))
     sys.path.insert(0, str(root / "tools"))
     import hints  # noqa: E402
-    import trace  # noqa: E402
+    import rom_trace as trace  # noqa: E402
     traced = trace.run(rom, hints.extra_entries(rom), getattr(hints, "DATA_RANGES", None))
     code_offsets = set()
     for o, ln in traced.code.items():

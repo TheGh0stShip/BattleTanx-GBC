@@ -56,15 +56,15 @@ The two totals sum to 16,384.
 
 | Reader | Bank $08 source | Read | Destination |
 | --- | --- | --- | --- |
-| `LoadInterfaceTilesVRAM1` | `$60F8` x1, `$6222` x2, `$611A` x16, `$6753` x10, `$6815` x12, `$4010` x61, `$69FD` x8 | `Func_0622` (e, d, page) | VRAM1 BG tiles `$C0`, `$C1`, `$C3`, `$D3`, `$DD`; `$C3-$FF` (font); `$BB` |
+| `LoadInterfaceTilesVRAM1` | `$60F8` x1, `$6222` x2, `$611A` x16, `$6753` x10, `$6815` x12, `$4010` x61, `$69FD` x8 | `CopyTilesToVRAM` (e, d, page) | VRAM1 BG tiles `$C0`, `$C1`, `$C3`, `$D3`, `$DD`; `$C3-$FF` (font); `$BB` |
 | `LoadInterfaceTilesVRAM0` | `$626B` x78, `$68DD` x4, `$6925` x4, `$696D` x4, `$69B5` x4 | same | VRAM0 tiles `$80`, `$CE`, `$D2`, `$D6`, `$DA` |
-| `LoadEncodedFontTiles` (ROM0) and `$01:RAM_D9CB` (RAM image of `$01:5718`) | `$6B85` x37 | same | VRAM0 `$8000`; VRAM1 `$8800` |
+| `LoadEncodedFontTiles` (ROM0) and `$01:LoadEncodedFontTilesToVram1` (RAM image of `$01:5718`) | `$6B85` x37 | same | VRAM0 `$8000`; VRAM1 `$8800` |
 | `DrawEncodedGlyph` | `$6B05 + char` | 1 byte | BG tile `glyph + $80`, attribute `$0F` (palette 7, VRAM1) |
-| `Func_0DB6` type-3 path (`Jump_0E39`) | `$43E0 + 12 * (obj+$19)`; `obj+$19` stored `& $0F` | 12 bytes | 2x3 BG metatile: tile + `$42`, attribute OR `$0F` |
-| `Func_3190` (object animation) | bank-`$02` frame tables `$4565-$45BB` (9 tables) | `[obj+$25]` tiles | WRAM staging `$C100+`, HDMA to VRAM1 `$8000`; OAM attribute OR `$0B` |
+| `RenderObjectOrientationGraphic` type-3 path (`.queueMetatile`) | `$43E0 + 12 * (obj+$19)`; `obj+$19` stored `& $0F` | 12 bytes | 2x3 BG metatile: tile + `$42`, attribute OR `$0F` |
+| `LoadObjectAnimationTiles` (object animation) | bank-`$02` frame tables `$4565-$45BB` (9 tables) | `[obj+$25]` tiles | WRAM staging `$C100+`, HDMA to VRAM1 `$8000`; OAM attribute OR `$0B` |
 | `RenderScreenEffect` / `CopyScreenEffectPartTiles` | bank-`$05` step table `$6358` (72 steps x 3 record words; 5-byte records: count, tile source, OAM template) | count x 16 | WRAM staging; OAM attribute OR 3 (OBJ palette 3, VRAM1) |
-| `LoadObjectPalettes` | `$46EA` (3 colours, OBJ 3), `$67FD` (4 x 3 colours, OBJ 4-7), `$44A2` (8 bytes, BG 7) | `Func_057D` / `Func_052F` | OCPD / BCPD |
-| ROM0 `$3CFB` effect start / ROM0 `$3F00` | `$5502` / `$46EA` (3 colours, OBJ 3) | `Func_057D` | OCPD |
+| `LoadObjectPalettes` | `$46EA` (3 colours, OBJ 3), `$67FD` (4 x 3 colours, OBJ 4-7), `$44A2` (8 bytes, BG 7) | `LoadObjectPaletteRange` / `LoadBackgroundPaletteRange` | OCPD / BCPD |
+| ROM0 `$3CFB` effect start / ROM0 `$3F00` | `$5502` / `$46EA` (3 colours, OBJ 3) | `LoadObjectPaletteRange` | OCPD |
 | `LoadInterfacePalettes` | `$44A0`, `$674B`, `$691D`, `$6965`, `$69AD` (8 bytes each) | `CopyBytesShort` | `wUiFontPalette`, `wHudIconPalette`, `wArrowUpPalette`, `wArrowDownPalette`, `wAlphanumericFontPalette` (LOAD blocks kept) |
 | `SelectObjectSpritePalette` (`$6DD5`, bank-`$08` code) | `$67F3 + obj+$1E` | 1 byte | `$FF80` = (value & 3) + 4 |
 
@@ -120,11 +120,11 @@ caller's bank.
 hand-maintained):
 - explicit palettes, tables, unknown bytes and code;
 - typed tile INCBINs, with sprite blocks sliced from two concatenated assets;
-- legacy labels kept at their addresses (`Bank08AlphanumericFontTiles` = `$69B5`);
+- legacy labels kept at their addresses (`Bank08AlphanumericFontTiles` = `$69B5`, primary now `Bank08InterfaceTiles69B5`);
 - ASSERTs on the key boundaries.
 
 Bank `$00`/`$01` raw addresses `$44A2`, `$46EA`, `$5502`, `$6B05`, `$6B85` and
-`Bank08AlphanumericFontTiles + $48` became symbols. The bytes are identical.
+`Bank08AlphanumericFontTiles + $48` (now `Bank08InterfaceTiles69B5 + $48`) became symbols. The bytes are identical.
 
 The asset lists are in `handoff/`. The two concatenated sprite assets are not
 single ROM ranges, so they are not in `assets.txt`. `tools/bank08.py`
@@ -207,7 +207,7 @@ All of them round-trip to the original bytes.
 
 | Range | Bytes | Class | Label |
 | --- | ---: | --- | --- |
-| `4000-400F` | 16 | graphics (not loaded) | UiFontTile0 |
+| `4000-400F` | 16 | graphics (not loaded) | Bank08UiFontTiles |
 | `4010-43DF` | 976 | graphics | UiFontTiles |
 | `43E0-449F` | 192 | table | InterfaceMetatiles |
 | `44A0-44A7` | 8 | palette | Bank08UiFontPalette |
@@ -334,7 +334,7 @@ All of them round-trip to the original bytes.
 | `67F3-67FC` | 10 | table | ObjectSpritePaletteIndexTable |
 | `67FD-6814` | 24 | palette | Bank08ObjectPalettes67FD |
 | `6815-68D4` | 192 | graphics | Bank08InterfaceTiles6815 |
-| `68D5-68DC` | 8 | palette record | Bank08InterfacePalette68D5 |
+| `68D5-68DC` | 8 | palette record | PaletteRecord68D5 |
 | `68DD-691C` | 64 | graphics | Bank08InterfaceTiles68DD |
 | `691D-6924` | 8 | palette | Bank08ArrowUpPalette |
 | `6925-6964` | 64 | graphics | Bank08ArrowUpTiles |

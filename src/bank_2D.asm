@@ -5,13 +5,16 @@ SECTION "ROM Bank $2D", ROMX[$4000], BANK[$2D]
 
 ; ScreenModeTable entries 8.
 Func_2D_4000: ; address-based alias kept for other banks
+LevelGridCompleteScreen_LoadTiles:
 ScreenMode08_LoadTiles:
 	screen_load_tiles ScreenMode08_Descriptor
 
 Func_2D_4058: ; address-based alias kept for other banks
+LevelGridCompleteScreen_Draw:
 ScreenMode08_Draw: ; fades in from black
 	screen_draw_fade ScreenMode08_Descriptor, 0
 
+LevelGridCompleteScreen_Descriptor:
 ScreenMode08_Descriptor:
 	screen_descriptor ScreenMode08_Tiles, ScreenMode08_TileMap, ScreenMode08_AttrMap, ScreenMode08_Palettes, 273, 20, 18, 8, 0
 

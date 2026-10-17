@@ -37,21 +37,21 @@ fill.
 
 | Routine | Bank selection | Reads |
 | --- | --- | --- |
-| ROM0 `LoadObjectPalettes` | immediates `$27`, `$28`, `$29` | `Bank2xObjectPalette` (`$4512`) through `Func_057D` with `b` = 0/1/2 (OBJ palette slot) and `c` = 1 |
-| ROM0 `Func_057D` | — | writes OCPS = `$80 + 8*b`, writes colour 0 as `$0000`, then 6 bytes (colours 1-3) |
-| ROM0 `Func_0F43` | `[$FF80] + $27` | 9 tiles (`ld b,$09`, 16 bytes each) from `$05:ObjectOrientationTilePointers[[$FF81]]` to `[de]` |
-| ROM0 `Func_0F0C` | `$05` | 9 OAM entries from `$05:ObjectOrientationLayoutPointers[[$FF81]]`; y/x/tile offsets added from `$FF83`/`$FF82`/`$FF84`; attribute = record OR `$08` (VRAM bank 1) + `[$FF85]` |
+| ROM0 `LoadObjectPalettes` | immediates `$27`, `$28`, `$29` | `Bank2xObjectPalette` (`$4512`) through `LoadObjectPaletteRange` with `b` = 0/1/2 (OBJ palette slot) and `c` = 1 |
+| ROM0 `LoadObjectPaletteRange` | — | writes OCPS = `$80 + 8*b`, writes colour 0 as `$0000`, then 6 bytes (colours 1-3) |
+| ROM0 `CopyObjectOrientationTiles` | `[$FF80] + $27` | 9 tiles (`ld b,$09`, 16 bytes each) from `$05:ObjectOrientationTilePointers[[$FF81]]` to `[de]` |
+| ROM0 `WriteObjectOrientationOam` | `$05` | 9 OAM entries from `$05:ObjectOrientationLayoutPointers[[$FF81]]`; y/x/tile offsets added from `$FF83`/`$FF82`/`$FF84`; attribute = record OR `$08` (VRAM bank 1) + `[$FF85]` |
 
 **Bank-selection audit.** Every `rROMB0` write was checked: 201 in bank `$00`
 and 23 in bank `$01`, including the RAM `LOAD` images. Only two places can map
-`$27-$29`: `LoadObjectPalettes` (immediates) and `Func_0F43` (`[$FF80] + $27`).
-- **`Func_0F43`'s only caller** is ROM0 `Func_0DB6` (`$0DB6`), the object
+`$27-$29`: `LoadObjectPalettes` (immediates) and `CopyObjectOrientationTiles` (`[$FF80] + $27`).
+- **`CopyObjectOrientationTiles`'s only caller** is ROM0 `RenderObjectOrientationGraphic` (`$0DB6`), the object
   draw path for object type 1.
   - `$FF80` = object field +`$1E`. The copy is skipped when it equals 3
     (`cp $03 / jr z`).
   - `$FF81` = object field +`$19`, stored masked with `and $0F` (ROM0 `$2115`
     path) or copied from another object. So 0-15, the exact table size.
-- **Field +`$1E`** is set through `Func_0AD5` from immediates 0-2 or `[$CD08]`
+- **Field +`$1E`** is set through `CreateObjectAtOrigin` from immediates 0-2 or `[$CD08]`
   (0, the menu selection 0-2, or a level byte).
 - **Exception resolved:** `$01` code increments +`$1E` only in type-4 handler
   8. Handler 9 is a no-op, so that path cannot increment repeatedly. The draw
@@ -88,7 +88,7 @@ pointer is `$4480`, and `$4480 + 144 = $4510`. The palette loader starts at
 
 All words have bit 15 clear. The four consecutive RGB555 words form the same
 palette-record layout used elsewhere: the loader points two bytes into the
-record, and `Func_057D` substitutes `$0000` for colour 0 before copying the
+record, and `LoadObjectPaletteRange` substitutes `$0000` for colour 0 before copying the
 remaining three colours. Source colour 0 is therefore structurally identified
 but unused at runtime.
 
@@ -158,7 +158,7 @@ loop immediates (9 tiles, 9 OAM entries), which the validator checks.
 
 - **`$4518-$4BFF` as sprite, metasprite or animation data.** It is an exact
   copy of `$26:$4518-$4BFB` and has no reader.
-- **Source colour 0 as a colour actually loaded.** `Func_057D` writes `$0000` itself and
+- **Source colour 0 as a colour actually loaded.** `LoadObjectPaletteRange` writes `$0000` itself and
   the pointer starts at `$4512`.
 - **Reverse orientations as separate graphics.** They are lookup reuse plus
   x-flip.
@@ -170,7 +170,7 @@ Recommended RAM names (not applied): `hObjectBankIndex`
 (`$FF80`, bank = value + `$27`), `hObjectOrientation` (`$FF81`).
 Recommended routine names: `CopyObjectOrientationTiles` (`Func_0F43`),
 `WriteObjectOrientationOam` (`Func_0F0C`), `LoadObjPaletteColors1To3`
-(`Func_057D`). All of these are subject to the bounds in section 2.
+(`Func_057D`, now `LoadObjectPaletteRange`). All of these are subject to the bounds in section 2.
 
 ## 10. Unresolved
 

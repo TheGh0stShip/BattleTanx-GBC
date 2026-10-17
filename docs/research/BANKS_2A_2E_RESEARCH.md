@@ -62,13 +62,13 @@ template routines, but no caller is known.
 ```
 ROM0 ScreenTable_CallInit  (a = mode, jp hl at $39C3) -> ScreenModeNN_LoadTiles
 ROM0 ScreenTable_CallUpdate (a = mode, bc = BG offset pushed, jp hl at $39F0) -> ScreenModeNN_Draw
-ScreenModeNN_LoadTiles -> Func_0622 (VRAM tile copy) x3
-ScreenModeNN_Draw (fade)  -> Func_05B7 (copy descriptor to wScreenDescriptor), CopyScreenMaps,
-                             Func_3A88 (fade buffer, 8 palettes), Func_3A2F -> $02:474B (32 steps),
-                             Func_3A52 + Audio_Update per frame (32 frames)
-ScreenModeNN_Draw (plain) -> Func_05B7, CopyScreenMaps, Func_052F (palettes), one VBlank wait
-ROM0 $3F28 -> FixedScreen2A_Run -> FixedScreen2A_LoadTiles, FixedScreen2A_Draw,
-                                   Func_3971 (wait), FixedScreen2A_DrawFrame
+ScreenModeNN_LoadTiles -> CopyTilesToVRAM (VRAM tile copy) x3
+ScreenModeNN_Draw (fade)  -> CopyBytesBC (copy descriptor to wScreenDescriptor), CopyScreenMaps,
+                             PrepareBackgroundPaletteFade (fade buffer, 8 palettes), BuildBackgroundPaletteFadeFrames -> $02:474B (32 steps),
+                             LoadBackgroundPaletteFrame + Audio_Update per frame (32 frames)
+ScreenModeNN_Draw (plain) -> CopyBytesBC, CopyScreenMaps, LoadBackgroundPaletteRange (palettes), one VBlank wait
+ROM0 $3F28 -> NoLivesScreen_Run -> NoLivesScreen_LoadTiles, NoLivesScreen_Draw,
+                                   WaitForButtonOrTimeout (wait), NoLivesScreen_DrawFrame
 ```
 
 ## 5. Entry points
@@ -77,20 +77,20 @@ ROM0 $3F28 -> FixedScreen2A_Run -> FixedScreen2A_LoadTiles, FixedScreen2A_Draw,
 | --- | --- | --- | --- |
 | ScreenModeNN_LoadTiles (12) | see section 17 | `ScreenModeTable` +2, via `$39C3` | copies 384 tiles |
 | ScreenModeNN_Draw (12) | load + 88 | `ScreenModeTable` +4, via `$39F0` | BG offset at sp+4 |
-| Screen2E_LoadTiles / _Draw | `2E:4000` / `2E:4058` | none found | identical to the template |
-| FixedScreen2A_Run | `2A:7774` | ROM0 `$3F28` | loops until `$C6B5` != 0 |
-| FixedScreen2A_LoadTiles, _Draw, _DrawFrame | `2A:7719`, `7754`, `7795` | FixedScreen2A_Run | |
+| UncalledScreen2E_LoadTiles / _Draw | `2E:4000` / `2E:4058` | none found | identical to the template |
+| NoLivesScreen_Run | `2A:7774` | ROM0 `$3F28` | loops until `$C6B5` != 0 |
+| NoLivesScreen_LoadTiles, _Draw, _DrawFrame | `2A:7719`, `7754`, `7795` | NoLivesScreen_Run | |
 
 ## 6. Cross-bank calls
 
-From these banks into ROM0: `Func_0622`, `Func_05B7`, `Func_05C5`,
-`Func_052F`, `Func_3A88`, `Func_3A2F` (which maps bank `$02`), `Func_3A52`,
-`Func_3960` (bank `$02:46E1`), `Func_3971`, `Audio_Update`. None of these
-routines switches banks directly; `Func_3A88` maps the caller's own bank
+From these banks into ROM0: `CopyTilesToVRAM`, `CopyBytesBC`, `CopyScreenMaps`,
+`LoadBackgroundPaletteRange`, `PrepareBackgroundPaletteFade`, `BuildBackgroundPaletteFadeFrames` (which maps bank `$02`), `LoadBackgroundPaletteFrame`,
+`ClearBackgroundPalettes` (bank `$02:46E1`), `WaitForButtonOrTimeout`, `Audio_Update`. None of these
+routines switches banks directly; `PrepareBackgroundPaletteFade` maps the caller's own bank
 (`[ROM_BANK_MARKER]`) while it copies palettes.
 
 Into these banks: the ScreenTable dispatchers (ROM0), ROM0 `$3F28`, and the
-bank-`$01` routines `$01:7981`, `RAM_D7CB` and `RAM_D88B`. Those read
+bank-`$01` routines `$01:7981`, `LoadMenuState05Graphics` and `CopyBankedTilemapRowsToBG`. Those read
 picture data with bank `$2C` or `$2E` selected through `$C943`/`$DBFB`.
 
 ## 7. Indirect control flow
@@ -109,9 +109,9 @@ One assumption remains: `wMenuState` always points at a `menu_state` record.
 | Symbol | Address | Evidence |
 | --- | --- | --- |
 | `wPaletteFadeFromWhite` | `$C6D1` | read by `$02:474B`: 0 selects `$01:46B1` (subtract per channel), non-zero `$01:4703` (add) while building the 32 steps backward from the target |
-| `wScreenDescriptor` | `$C6D2` | 14-byte copy by Func_05B7 in every draw routine |
-| `wScreenWidth` / `wScreenHeight` | `$C6DC` / `$C6DD` | descriptor +10/+11, read by `CopyScreenMaps`; FixedScreen2A_Draw stores 20/18 |
-| `wJoypadHeld` | `$C6B5` | `ReadJoypad` stores the held P1 bits; `WaitForButtonOrTimeout` clears and polls it, and `FixedScreen2A_Run` exits when any bit becomes nonzero |
+| `wScreenDescriptor` | `$C6D2` | 14-byte copy by CopyBytesBC in every draw routine |
+| `wScreenWidth` / `wScreenHeight` | `$C6DC` / `$C6DD` | descriptor +10/+11, read by `CopyScreenMaps`; NoLivesScreen_Draw stores 20/18 |
+| `wJoypadHeld` | `$C6B5` | `ReadJoypad` stores the held P1 bits; `WaitForButtonOrTimeout` clears and polls it, and `NoLivesScreen_Run` exits when any bit becomes nonzero |
 
 `wMenuState05Selection` is bounded to 0-2 by the next/previous handlers, which
 wrap at both ends before indexing the three `$01:$596D` picture records.
@@ -163,7 +163,7 @@ screen also uses VRAM1 ids `$80-$FF` for tiles 384-511.
 - 20x18 tile map and attribute map;
 - a 20x11 frame sheet holding four 5x11 frames;
 - 8 palettes;
-- `FixedScreen2A_FrameTable`: 4 entries of (`dw` frame tiles, `dw` frame
+- `NoLivesScreen_FrameTable`: 4 entries of (`dw` frame tiles, `dw` frame
   attributes) at `sheet + 5*n`.
 
 The loader copies 512 tiles, so 48 of them come from the maps.
@@ -172,13 +172,13 @@ The loader copies 512 tiles, so 48 of them come from the maps.
 - 16-byte entries: `db bank`, `dw` tiles, tile map, attribute map,
   palettes, `db $40`, then zeros.
 - Entries 0-2 name bank `$2E`; entry 2 is `Screen2E`.
-- Entry 3 onward is not this format. The index used by `RAM_D7CB` is not
+- Entry 3 onward is not this format. The index used by `LoadMenuState05Graphics` is not
   bounded by this work.
 
 ## 10. RAM-copied regions
 
 No code or data from these banks is copied into a `LOAD` image. At run
-time, Func_3A88 copies 64 palette bytes to WRAM bank 2 `$D7C0`, and maps
+time, PrepareBackgroundPaletteFade copies 64 palette bytes to WRAM bank 2 `$D7C0`, and maps
 and tiles go directly to VRAM.
 
 ## 11. Shared structure
@@ -201,36 +201,36 @@ right. Every package in all five banks uses the same template, and
 
 | Old symbol | New symbol | Address | Evidence | Confidence |
 | --- | --- | --- | --- | --- |
-| Func_2D_54FA | ScreenMode00_LoadTiles (alias kept) | 2D:54FA | ScreenModeTable entries 0; 3 x Func_0622 from descriptor tiles | high |
-| Func_2D_5552 | ScreenMode00_Draw (alias kept) | 2D:5552 | descriptor copy, Func_05C5 maps, fade from black | high |
-| Func_2A_61D8 | ScreenMode01_LoadTiles (alias kept) | 2A:61D8 | ScreenModeTable entries 1; 3 x Func_0622 from descriptor tiles | high |
-| Func_2A_6230 | ScreenMode01_Draw (alias kept) | 2A:6230 | descriptor copy, Func_05C5 maps, fade from black | high |
-| Func_2C_4000 | ScreenMode02_LoadTiles (alias kept) | 2C:4000 | ScreenModeTable entries 2; 3 x Func_0622 from descriptor tiles | high |
-| Func_2C_4058 | ScreenMode02_Draw (alias kept) | 2C:4058 | descriptor copy, Func_05C5 maps, fade from black | high |
-| Func_2C_5ED3 | ScreenMode03_LoadTiles (alias kept) | 2C:5ED3 | ScreenModeTable entries 3; 3 x Func_0622 from descriptor tiles | high |
-| Func_2C_5F2B | ScreenMode03_Draw (alias kept) | 2C:5F2B | descriptor copy, Func_05C5 maps, fade from black | high |
-| Func_2B_6E6C | ScreenMode04_LoadTiles (alias kept) | 2B:6E6C | ScreenModeTable entries 4; 3 x Func_0622 from descriptor tiles | high |
-| Func_2B_6EC4 | ScreenMode04_Draw (alias kept) | 2B:6EC4 | descriptor copy, Func_05C5 maps, no fade | high |
-| Func_2C_4B3A | ScreenMode05_LoadTiles (alias kept) | 2C:4B3A | ScreenModeTable entries 5; 3 x Func_0622 from descriptor tiles | high |
-| Func_2C_4B92 | ScreenMode05_Draw (alias kept) | 2C:4B92 | descriptor copy, Func_05C5 maps, fade from black | high |
-| Func_2C_5F9F | ScreenMode06_LoadTiles (alias kept) | 2C:5F9F | ScreenModeTable entries 6; 3 x Func_0622 from descriptor tiles | high |
-| Func_2C_5FF7 | ScreenMode06_Draw (alias kept) | 2C:5FF7 | descriptor copy, Func_05C5 maps, fade from black | high |
-| Func_2B_4000 | ScreenMode07_LoadTiles (alias kept) | 2B:4000 | ScreenModeTable entries 7; 3 x Func_0622 from descriptor tiles | high |
-| Func_2B_4058 | ScreenMode07_Draw (alias kept) | 2B:4058 | descriptor copy, Func_05C5 maps, fade from white | high |
-| Func_2D_4000 | ScreenMode08_LoadTiles (alias kept) | 2D:4000 | ScreenModeTable entries 8; 3 x Func_0622 from descriptor tiles | high |
-| Func_2D_4058 | ScreenMode08_Draw (alias kept) | 2D:4058 | descriptor copy, Func_05C5 maps, fade from black | high |
-| Func_2B_5BDA | ScreenMode09_LoadTiles (alias kept) | 2B:5BDA | ScreenModeTable entries 9,10; 3 x Func_0622 from descriptor tiles | high |
-| Func_2B_5C32 | ScreenMode09_Draw (alias kept) | 2B:5C32 | descriptor copy, Func_05C5 maps, fade from black | high |
-| Func_2C_55C4 | ScreenMode11_LoadTiles (alias kept) | 2C:55C4 | ScreenModeTable entries 11; 3 x Func_0622 from descriptor tiles | high |
-| Func_2C_561C | ScreenMode11_Draw (alias kept) | 2C:561C | descriptor copy, Func_05C5 maps, no fade | high |
-| Func_2A_6A22 | ScreenMode12_LoadTiles (alias kept) | 2A:6A22 | ScreenModeTable entries 12; 3 x Func_0622 from descriptor tiles | high |
-| Func_2A_6A7A | ScreenMode12_Draw (alias kept) | 2A:6A7A | descriptor copy, Func_05C5 maps, no fade | high |
-| Func_2E_4000 | Screen2E_LoadTiles (alias kept) | 2E:4000 | no caller; template-identical; 3 x Func_0622 from descriptor tiles | high |
-| Func_2E_4058 | Screen2E_Draw (alias kept) | 2E:4058 | descriptor copy, Func_05C5 maps, fade from black | high |
-| Func_2A_7719 | FixedScreen2A_LoadTiles | 2A:7719 | 4 x Func_0622 from `$4000` | high |
-| Func_2A_7754 | FixedScreen2A_Draw | 2A:7754 | sets width/height, Func_05C5, 8 palettes | high |
-| Func_2A_7774 | FixedScreen2A_Run (alias kept) | 2A:7774 | loop over frames until `$C6B5` | high |
-| Func_2A_7795 | FixedScreen2A_DrawFrame | 2A:7795 | 5x11 copy to `$980F` from frame table | high |
+| Func_2D_54FA | ScreenMode00_LoadTiles (alias kept) | 2D:54FA | ScreenModeTable entries 0; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2D_5552 | ScreenMode00_Draw (alias kept) | 2D:5552 | descriptor copy, CopyScreenMaps maps, fade from black | high |
+| Func_2A_61D8 | ScreenMode01_LoadTiles (alias kept; now `OptionsScreen_LoadTiles`) | 2A:61D8 | ScreenModeTable entries 1; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2A_6230 | ScreenMode01_Draw (alias kept; now `OptionsScreen_Draw`) | 2A:6230 | descriptor copy, CopyScreenMaps maps, fade from black | high |
+| Func_2C_4000 | ScreenMode02_LoadTiles (alias kept; now `BootSequenceScreen2_LoadTiles`) | 2C:4000 | ScreenModeTable entries 2; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2C_4058 | ScreenMode02_Draw (alias kept; now `BootSequenceScreen2_Draw`) | 2C:4058 | descriptor copy, CopyScreenMaps maps, fade from black | high |
+| Func_2C_5ED3 | ScreenMode03_LoadTiles (alias kept) | 2C:5ED3 | ScreenModeTable entries 3; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2C_5F2B | ScreenMode03_Draw (alias kept) | 2C:5F2B | descriptor copy, CopyScreenMaps maps, fade from black | high |
+| Func_2B_6E6C | ScreenMode04_LoadTiles (alias kept; now `PlayerTypeSelectScreen_LoadTiles`) | 2B:6E6C | ScreenModeTable entries 4; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2B_6EC4 | ScreenMode04_Draw (alias kept; now `PlayerTypeSelectScreen_Draw`) | 2B:6EC4 | descriptor copy, CopyScreenMaps maps, no fade | high |
+| Func_2C_4B3A | ScreenMode05_LoadTiles (alias kept; now `BootSequenceScreen3_LoadTiles`) | 2C:4B3A | ScreenModeTable entries 5; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2C_4B92 | ScreenMode05_Draw (alias kept; now `BootSequenceScreen3_Draw`) | 2C:4B92 | descriptor copy, CopyScreenMaps maps, fade from black | high |
+| Func_2C_5F9F | ScreenMode06_LoadTiles (alias kept; now `EarnedCodeScreen_LoadTiles`) | 2C:5F9F | ScreenModeTable entries 6; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2C_5FF7 | ScreenMode06_Draw (alias kept; now `EarnedCodeScreen_Draw`) | 2C:5FF7 | descriptor copy, CopyScreenMaps maps, fade from black | high |
+| Func_2B_4000 | ScreenMode07_LoadTiles (alias kept; now `BootSequenceScreen4_LoadTiles`) | 2B:4000 | ScreenModeTable entries 7; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2B_4058 | ScreenMode07_Draw (alias kept; now `BootSequenceScreen4_Draw`) | 2B:4058 | descriptor copy, CopyScreenMaps maps, fade from white | high |
+| Func_2D_4000 | ScreenMode08_LoadTiles (alias kept; now `LevelGridCompleteScreen_LoadTiles`) | 2D:4000 | ScreenModeTable entries 8; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2D_4058 | ScreenMode08_Draw (alias kept; now `LevelGridCompleteScreen_Draw`) | 2D:4058 | descriptor copy, CopyScreenMaps maps, fade from black | high |
+| Func_2B_5BDA | ScreenMode09_LoadTiles (alias kept; now `BootSequenceScreen1_LoadTiles`) | 2B:5BDA | ScreenModeTable entries 9,10; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2B_5C32 | ScreenMode09_Draw (alias kept; now `BootSequenceScreen1_Draw`) | 2B:5C32 | descriptor copy, CopyScreenMaps maps, fade from black | high |
+| Func_2C_55C4 | ScreenMode11_LoadTiles (alias kept; now `LevelGridScreen_LoadTiles`) | 2C:55C4 | ScreenModeTable entries 11; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2C_561C | ScreenMode11_Draw (alias kept; now `LevelGridScreen_Draw`) | 2C:561C | descriptor copy, CopyScreenMaps maps, no fade | high |
+| Func_2A_6A22 | ScreenMode12_LoadTiles (alias kept; now `FinalLevelCompleteScreen_LoadTiles`) | 2A:6A22 | ScreenModeTable entries 12; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2A_6A7A | ScreenMode12_Draw (alias kept; now `FinalLevelCompleteScreen_Draw`) | 2A:6A7A | descriptor copy, CopyScreenMaps maps, no fade | high |
+| Func_2E_4000 | Screen2E_LoadTiles (alias kept; now `UncalledScreen2E_LoadTiles`) | 2E:4000 | no caller; template-identical; 3 x CopyTilesToVRAM from descriptor tiles | high |
+| Func_2E_4058 | Screen2E_Draw (alias kept; now `UncalledScreen2E_Draw`) | 2E:4058 | descriptor copy, CopyScreenMaps maps, fade from black | high |
+| Func_2A_7719 | FixedScreen2A_LoadTiles (now `NoLivesScreen_LoadTiles`) | 2A:7719 | 4 x CopyTilesToVRAM from `$4000` | high |
+| Func_2A_7754 | FixedScreen2A_Draw (now `NoLivesScreen_Draw`) | 2A:7754 | sets width/height, CopyScreenMaps, 8 palettes | high |
+| Func_2A_7774 | FixedScreen2A_Run (alias kept; now `NoLivesScreen_Run`) | 2A:7774 | loop over frames until `$C6B5` | high |
+| Func_2A_7795 | FixedScreen2A_DrawFrame (now `NoLivesScreen_DrawFrame`) | 2A:7795 | 5x11 copy to `$980F` from frame table | high |
 
 The address-based labels of the 26 package routines and of `Func_2A_7774`
 are kept as aliases at the same addresses, so `ScreenModeTable` (bank
@@ -242,7 +242,7 @@ local labels.
 - **"Init/update" routine pairs.** The second routine is a one-shot draw that
   takes a BG-map offset argument, not a per-frame update.
 - **`$01:7981` reading `$6CE9`/`$6FB9` in bank `$2E`.** `$01:7981` writes `$2C` to
-  `$C943` before the draw (`RAM_D88B` maps `[$C943]`), so the bank is `$2C`.
+  `$C943` before the draw (`CopyBankedTilemapRowsToBG` maps `[$C943]`), so the bank is `$2C`.
   Those addresses are exactly ScreenMode03's interleaved alternate maps.
 - **The fade draw honouring the palette count.** It always loads 8 palettes.
 - **The 360-byte surplus after ScreenMode03's tiles being tile data.** It is a
@@ -253,7 +253,7 @@ local labels.
 
 ## 14. Unresolved
 
-1. `Screen2E_LoadTiles`/`_Draw` (`2E:4000-40CB`): no caller found.
+1. `UncalledScreen2E_LoadTiles`/`_Draw` (`2E:4000-40CB`): no caller found.
    These 204 bytes are now reported separately as callerless template code,
    rather than as root/table-traced code.
 2. Descriptor +8, and +12/+13 in fade packages, are never read.
@@ -338,85 +338,85 @@ screens: 17 pictures; CSV, palette and PNG outputs round-trip verified
 
 | Bank | Start | End | Bytes | Class | Item |
 | --- | --- | --- | ---: | --- | --- |
-| `$2A` | `4000` | `5D00` | 7424 | graphics | FixedScreen2A_Tiles |
-| `$2A` | `5D00` | `5E68` | 360 | data | FixedScreen2A_TileMap |
-| `$2A` | `5E68` | `5F44` | 220 | data | FixedScreen2A_FrameTileMap |
-| `$2A` | `5F44` | `60AC` | 360 | data | FixedScreen2A_AttrMap |
-| `$2A` | `60AC` | `6188` | 220 | data | FixedScreen2A_FrameAttrMap |
-| `$2A` | `6188` | `61C8` | 64 | data | FixedScreen2A_Palettes |
-| `$2A` | `61C8` | `61D8` | 16 | data | FixedScreen2A_FrameTable |
-| `$2A` | `61D8` | `6230` | 88 | code | ScreenMode01_LoadTiles |
-| `$2A` | `6230` | `62A4` | 116 | code | ScreenMode01_Draw |
-| `$2A` | `62A4` | `62B2` | 14 | data | ScreenMode01_Descriptor |
+| `$2A` | `4000` | `5D00` | 7424 | graphics | NoLivesScreen_Tiles |
+| `$2A` | `5D00` | `5E68` | 360 | data | NoLivesScreen_TileMap |
+| `$2A` | `5E68` | `5F44` | 220 | data | NoLivesScreen_FrameTileMap |
+| `$2A` | `5F44` | `60AC` | 360 | data | NoLivesScreen_AttrMap |
+| `$2A` | `60AC` | `6188` | 220 | data | NoLivesScreen_FrameAttrMap |
+| `$2A` | `6188` | `61C8` | 64 | data | NoLivesScreen_Palettes |
+| `$2A` | `61C8` | `61D8` | 16 | data | NoLivesScreen_FrameTable |
+| `$2A` | `61D8` | `6230` | 88 | code | OptionsScreen_LoadTiles |
+| `$2A` | `6230` | `62A4` | 116 | code | OptionsScreen_Draw |
+| `$2A` | `62A4` | `62B2` | 14 | data | OptionsScreen_Descriptor |
 | `$2A` | `62B2` | `6762` | 1200 | graphics | ScreenMode01_Tiles |
 | `$2A` | `6762` | `68B6` | 340 | data | ScreenMode01 tilemap |
 | `$2A` | `68B6` | `6A0A` | 340 | data | ScreenMode01 attrmap |
 | `$2A` | `6A0A` | `6A22` | 24 | data | ScreenMode01_Palettes |
-| `$2A` | `6A22` | `6A7A` | 88 | code | ScreenMode12_LoadTiles |
-| `$2A` | `6A7A` | `6AD3` | 89 | code | ScreenMode12_Draw |
-| `$2A` | `6AD3` | `6AE1` | 14 | data | ScreenMode12_Descriptor |
+| `$2A` | `6A22` | `6A7A` | 88 | code | FinalLevelCompleteScreen_LoadTiles |
+| `$2A` | `6A7A` | `6AD3` | 89 | code | FinalLevelCompleteScreen_Draw |
+| `$2A` | `6AD3` | `6AE1` | 14 | data | FinalLevelCompleteScreen_Descriptor |
 | `$2A` | `6AE1` | `7421` | 2368 | graphics | ScreenMode12_Tiles |
 | `$2A` | `7421` | `7431` | 16 | padding | ScreenMode12 zero tile slot |
 | `$2A` | `7431` | `7599` | 360 | data | ScreenMode12 tilemap |
 | `$2A` | `7599` | `7701` | 360 | data | ScreenMode12 attrmap |
 | `$2A` | `7701` | `7719` | 24 | data | ScreenMode12_Palettes |
-| `$2A` | `7719` | `7754` | 59 | code | FixedScreen2A_LoadTiles |
-| `$2A` | `7754` | `7774` | 32 | code | FixedScreen2A_Draw |
-| `$2A` | `7774` | `7795` | 33 | code | FixedScreen2A_Run |
-| `$2A` | `7795` | `7801` | 108 | code | FixedScreen2A_DrawFrame |
+| `$2A` | `7719` | `7754` | 59 | code | NoLivesScreen_LoadTiles |
+| `$2A` | `7754` | `7774` | 32 | code | NoLivesScreen_Draw |
+| `$2A` | `7774` | `7795` | 33 | code | NoLivesScreen_Run |
+| `$2A` | `7795` | `7801` | 108 | code | NoLivesScreen_DrawFrame |
 | `$2A` | `7801` | `7FFF` | 2046 | padding | zero fill |
 | `$2A` | `7FFF` | `8000` | 1 | padding | bank marker |
-| `$2B` | `4000` | `4058` | 88 | code | ScreenMode07_LoadTiles |
-| `$2B` | `4058` | `40CC` | 116 | code | ScreenMode07_Draw |
-| `$2B` | `40CC` | `40DA` | 14 | data | ScreenMode07_Descriptor |
+| `$2B` | `4000` | `4058` | 88 | code | BootSequenceScreen4_LoadTiles |
+| `$2B` | `4058` | `40CC` | 116 | code | BootSequenceScreen4_Draw |
+| `$2B` | `40CC` | `40DA` | 14 | data | BootSequenceScreen4_Descriptor |
 | `$2B` | `40DA` | `581A` | 5952 | graphics | ScreenMode07_Tiles |
 | `$2B` | `581A` | `582A` | 16 | padding | ScreenMode07 zero tile slot |
 | `$2B` | `582A` | `59E2` | 440 | data | ScreenMode07 tilemap |
 | `$2B` | `59E2` | `5B9A` | 440 | data | ScreenMode07 attrmap |
 | `$2B` | `5B9A` | `5BDA` | 64 | data | ScreenMode07_Palettes |
-| `$2B` | `5BDA` | `5C32` | 88 | code | ScreenMode09_LoadTiles |
-| `$2B` | `5C32` | `5CA6` | 116 | code | ScreenMode09_Draw |
-| `$2B` | `5CA6` | `5CB4` | 14 | data | ScreenMode09_Descriptor |
+| `$2B` | `5BDA` | `5C32` | 88 | code | BootSequenceScreen1_LoadTiles |
+| `$2B` | `5C32` | `5CA6` | 116 | code | BootSequenceScreen1_Draw |
+| `$2B` | `5CA6` | `5CB4` | 14 | data | BootSequenceScreen1_Descriptor |
 | `$2B` | `5CB4` | `6B84` | 3792 | graphics | ScreenMode09_Tiles |
 | `$2B` | `6B84` | `6B94` | 16 | padding | ScreenMode09 zero tile slot |
 | `$2B` | `6B94` | `6CFC` | 360 | data | ScreenMode09 tilemap |
 | `$2B` | `6CFC` | `6E64` | 360 | data | ScreenMode09 attrmap |
 | `$2B` | `6E64` | `6E6C` | 8 | data | ScreenMode09_Palettes |
-| `$2B` | `6E6C` | `6EC4` | 88 | code | ScreenMode04_LoadTiles |
-| `$2B` | `6EC4` | `6F1D` | 89 | code | ScreenMode04_Draw |
-| `$2B` | `6F1D` | `6F2B` | 14 | data | ScreenMode04_Descriptor |
+| `$2B` | `6E6C` | `6EC4` | 88 | code | PlayerTypeSelectScreen_LoadTiles |
+| `$2B` | `6EC4` | `6F1D` | 89 | code | PlayerTypeSelectScreen_Draw |
+| `$2B` | `6F1D` | `6F2B` | 14 | data | PlayerTypeSelectScreen_Descriptor |
 | `$2B` | `6F2B` | `73FB` | 1232 | graphics | ScreenMode04_Tiles |
 | `$2B` | `73FB` | `7563` | 360 | data | ScreenMode04 tilemap |
 | `$2B` | `7563` | `76CB` | 360 | data | ScreenMode04 attrmap |
 | `$2B` | `76CB` | `76DB` | 16 | data | ScreenMode04_Palettes |
 | `$2B` | `76DB` | `7FFF` | 2340 | padding | zero fill |
 | `$2B` | `7FFF` | `8000` | 1 | padding | bank marker |
-| `$2C` | `4000` | `4058` | 88 | code | ScreenMode02_LoadTiles |
-| `$2C` | `4058` | `40CC` | 116 | code | ScreenMode02_Draw |
-| `$2C` | `40CC` | `40DA` | 14 | data | ScreenMode02_Descriptor |
+| `$2C` | `4000` | `4058` | 88 | code | BootSequenceScreen2_LoadTiles |
+| `$2C` | `4058` | `40CC` | 116 | code | BootSequenceScreen2_Draw |
+| `$2C` | `40CC` | `40DA` | 14 | data | BootSequenceScreen2_Descriptor |
 | `$2C` | `40DA` | `483A` | 1888 | graphics | ScreenMode02_Tiles |
 | `$2C` | `483A` | `49A2` | 360 | data | ScreenMode02 tilemap |
 | `$2C` | `49A2` | `4B0A` | 360 | data | ScreenMode02 attrmap |
 | `$2C` | `4B0A` | `4B3A` | 48 | data | ScreenMode02_Palettes |
-| `$2C` | `4B3A` | `4B92` | 88 | code | ScreenMode05_LoadTiles |
-| `$2C` | `4B92` | `4C06` | 116 | code | ScreenMode05_Draw |
-| `$2C` | `4C06` | `4C14` | 14 | data | ScreenMode05_Descriptor |
+| `$2C` | `4B3A` | `4B92` | 88 | code | BootSequenceScreen3_LoadTiles |
+| `$2C` | `4B92` | `4C06` | 116 | code | BootSequenceScreen3_Draw |
+| `$2C` | `4C06` | `4C14` | 14 | data | BootSequenceScreen3_Descriptor |
 | `$2C` | `4C14` | `52D4` | 1728 | graphics | ScreenMode05_Tiles |
 | `$2C` | `52D4` | `52E4` | 16 | padding | ScreenMode05 zero tile slot |
 | `$2C` | `52E4` | `544C` | 360 | data | ScreenMode05 tilemap |
 | `$2C` | `544C` | `55B4` | 360 | data | ScreenMode05 attrmap |
 | `$2C` | `55B4` | `55C4` | 16 | data | ScreenMode05_Palettes |
-| `$2C` | `55C4` | `561C` | 88 | code | ScreenMode11_LoadTiles |
-| `$2C` | `561C` | `5675` | 89 | code | ScreenMode11_Draw |
-| `$2C` | `5675` | `5683` | 14 | data | ScreenMode11_Descriptor |
+| `$2C` | `55C4` | `561C` | 88 | code | LevelGridScreen_LoadTiles |
+| `$2C` | `561C` | `5675` | 89 | code | LevelGridScreen_Draw |
+| `$2C` | `5675` | `5683` | 14 | data | LevelGridScreen_Descriptor |
 | `$2C` | `5683` | `5BF3` | 1392 | graphics | ScreenMode11_Tiles |
 | `$2C` | `5BF3` | `5D5B` | 360 | data | ScreenMode11 tilemap |
 | `$2C` | `5D5B` | `5EC3` | 360 | data | ScreenMode11 attrmap |
 | `$2C` | `5EC3` | `5ED3` | 16 | data | ScreenMode11_Palettes |
 | `$2C` | `5ED3` | `5F2B` | 88 | code | ScreenMode03_LoadTiles |
 | `$2C` | `5F2B` | `5F9F` | 116 | code | ScreenMode03_Draw |
-| `$2C` | `5F9F` | `5FF7` | 88 | code | ScreenMode06_LoadTiles |
-| `$2C` | `5FF7` | `606B` | 116 | code | ScreenMode06_Draw |
+| `$2C` | `5F9F` | `5FF7` | 88 | code | EarnedCodeScreen_LoadTiles |
+| `$2C` | `5FF7` | `606B` | 116 | code | EarnedCodeScreen_Draw |
 | `$2C` | `606B` | `6079` | 14 | data | ScreenMode03_Descriptor |
 | `$2C` | `6079` | `6CE9` | 3184 | graphics | ScreenMode03_Tiles |
 | `$2C` | `6CE9` | `6E51` | 360 | data | ScreenMode03 alt tilemap |
@@ -428,12 +428,12 @@ screens: 17 pictures; CSV, palette and PNG outputs round-trip verified
 | `$2C` | `7B09` | `7C71` | 360 | data | ScreenMode06 tilemap |
 | `$2C` | `7C71` | `7DD9` | 360 | data | ScreenMode06 attrmap |
 | `$2C` | `7DD9` | `7DF9` | 32 | data | ScreenMode06_Palettes |
-| `$2C` | `7DF9` | `7E07` | 14 | data | ScreenMode06_Descriptor |
+| `$2C` | `7DF9` | `7E07` | 14 | data | EarnedCodeScreen_Descriptor |
 | `$2C` | `7E07` | `7FFF` | 504 | padding | zero fill |
 | `$2C` | `7FFF` | `8000` | 1 | padding | bank marker |
-| `$2D` | `4000` | `4058` | 88 | code | ScreenMode08_LoadTiles |
-| `$2D` | `4058` | `40CC` | 116 | code | ScreenMode08_Draw |
-| `$2D` | `40CC` | `40DA` | 14 | data | ScreenMode08_Descriptor |
+| `$2D` | `4000` | `4058` | 88 | code | LevelGridCompleteScreen_LoadTiles |
+| `$2D` | `4058` | `40CC` | 116 | code | LevelGridCompleteScreen_Draw |
+| `$2D` | `40CC` | `40DA` | 14 | data | LevelGridCompleteScreen_Descriptor |
 | `$2D` | `40DA` | `51EA` | 4368 | graphics | ScreenMode08_Tiles |
 | `$2D` | `51EA` | `5352` | 360 | data | ScreenMode08 tilemap |
 | `$2D` | `5352` | `54BA` | 360 | data | ScreenMode08 attrmap |
@@ -447,18 +447,18 @@ screens: 17 pictures; CSV, palette and PNG outputs round-trip verified
 | `$2D` | `613C` | `614C` | 16 | data | ScreenMode00_Palettes |
 | `$2D` | `614C` | `7FFF` | 7859 | padding | zero fill |
 | `$2D` | `7FFF` | `8000` | 1 | padding | bank marker |
-| `$2E` | `4000` | `4058` | 88 | code | Screen2E_LoadTiles |
-| `$2E` | `4058` | `40CC` | 116 | code | Screen2E_Draw |
-| `$2E` | `40CC` | `40DA` | 14 | data | Screen2E_Descriptor |
-| `$2E` | `40DA` | `51EA` | 4368 | graphics | Screen2E_Tiles |
+| `$2E` | `4000` | `4058` | 88 | code | UncalledScreen2E_LoadTiles |
+| `$2E` | `4058` | `40CC` | 116 | code | UncalledScreen2E_Draw |
+| `$2E` | `40CC` | `40DA` | 14 | data | UncalledScreen2E_Descriptor |
+| `$2E` | `40DA` | `51EA` | 4368 | graphics | MenuState05Picture2_Tiles |
 | `$2E` | `51EA` | `5366` | 380 | data | Screen2E tilemap |
 | `$2E` | `5366` | `54E2` | 380 | data | Screen2E attrmap |
 | `$2E` | `54E2` | `5522` | 64 | data | Screen2E_Palettes |
-| `$2E` | `5522` | `6562` | 4160 | graphics | Picture596D1_Tiles |
+| `$2E` | `5522` | `6562` | 4160 | graphics | MenuState05Picture1_Tiles |
 | `$2E` | `6562` | `66DE` | 380 | data | Picture596D1_TileMap |
 | `$2E` | `66DE` | `685A` | 380 | data | Picture596D1_AttrMap |
 | `$2E` | `685A` | `689A` | 64 | data | Picture596D1_Palettes |
-| `$2E` | `689A` | `799A` | 4352 | graphics | Picture596D0_Tiles |
+| `$2E` | `689A` | `799A` | 4352 | graphics | MenuState05Picture0_Tiles |
 | `$2E` | `799A` | `7B16` | 380 | data | Picture596D0_TileMap |
 | `$2E` | `7B16` | `7C92` | 380 | data | Picture596D0_AttrMap |
 | `$2E` | `7C92` | `7CD2` | 64 | data | Picture596D0_Palettes |

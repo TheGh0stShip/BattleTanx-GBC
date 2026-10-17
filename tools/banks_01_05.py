@@ -155,7 +155,7 @@ def check_recorded_path_source(root):
         for p in sorted((root / "src").glob("*.asm"))
     }
     all_text = "".join(sources.values())
-    check(all_text.count("UnusedStartRecordedPathFollow") == 1,
+    check(len(re.findall(r"\bUnusedStartRecordedPathFollow\b", all_text)) == 1,
           "recorded path: unused initializer gained a source reference")
     check(all_text.count("call AppendRecordedPathWaypoint") == 1,
           "recorded path: appender caller set changed")
@@ -258,7 +258,14 @@ def check_ram_include(root):
         check(not re.search(rf"\bDEF {n}\b", other), f"ram: {n} defined twice")
         v = int(a, 16)
         check(0xC000 <= v < 0xE000 or 0xFF80 <= v < 0xFFFF, f"ram: {n} = ${a} outside WRAM/HRAM")
-    check(len({a for _, a in names}) == len(names), "ram: two symbols share an address")
+    # an address may carry several names only when every one is marked time-shared
+    lines = {n: l for l in inc.splitlines() for n in re.findall(r"^DEF (\w+)\s+EQU", l)}
+    by_addr = {}
+    for n, a in names:
+        by_addr.setdefault(a, []).append(n)
+    for a, ns in by_addr.items():
+        if len(ns) > 1:
+            check(all("time-shared" in lines[n] for n in ns), "ram: two symbols share an address")
     all_source = "".join(path.read_text() for path in (root / "src").glob("*.asm"))
     check(all_source.count("wVestigialStateC8E6") == 3,
           "ram: vestigial $C8E6 access set changed")
@@ -272,10 +279,10 @@ def check_ram_include(root):
 # They are safe only while bank $01 is mapped whenever they can fire; see
 # docs/research/banks_01_05/INDIRECT_CONTROL_FLOW.md. This pins the set of such
 # calls so a new one cannot appear unnoticed.
-SCENE_IMAGES = {"Bank01RomImage_5D77": "SceneStatHandler", "Bank01RomImage_5E16": "SceneVBlankHandler",
-                "Bank01RomImage_5BD6": "StepSceneWindowSplit"}
-SCENE_BANK1_CALLS = {("SceneStatHandler", "Bank01RomImage_5EE0"), ("SceneVBlankHandler", "StartSceneTileRowHdma"),
-                     ("StepSceneWindowSplit", "Bank01RomImage_5F26")}
+SCENE_IMAGES = {"SceneStatHandlerRomImage": "SceneStatHandler", "SceneVBlankHandlerRomImage": "SceneVBlankHandler",
+                "StepSceneWindowSplitRomImage": "StepSceneWindowSplit"}
+SCENE_BANK1_CALLS = {("SceneStatHandler", "WriteBgPalette7FromD3F8RomImage"), ("SceneVBlankHandler", "StartSceneTileRowHdma"),
+                     ("StepSceneWindowSplit", "WriteBgPalette7FromFF98RomImage")}
 _LEN3 = {0x01, 0x11, 0x21, 0x31, 0x08, 0xC2, 0xC3, 0xC4, 0xCA, 0xCC, 0xCD, 0xD2, 0xD4, 0xDA, 0xDC, 0xEA, 0xFA}
 _LEN2 = {0x06, 0x0E, 0x16, 0x1E, 0x26, 0x2E, 0x36, 0x3E, 0x18, 0x20, 0x28, 0x30, 0x38, 0xC6, 0xCE, 0xD6, 0xDE,
          0xE6, 0xEE, 0xF6, 0xFE, 0xE0, 0xF0, 0xE8, 0xF8, 0xCB}
@@ -423,7 +430,7 @@ def negative_tests(root, rom, sym):
             raise Banks0105Error("negative test not rejected: recorded-path caller")
     extra = [
         ("scene interrupt call", {(1, 0x5E3B): 0x81}, "bank-$01 ROM calls changed"),
-        ("scene interrupt new call", {(1, sym["Bank01RomImage_5D77"][1] + i): v for i, v in enumerate((0xCD, 0x00, 0x50, 0x00))}, "bank-$01 ROM calls changed"),
+        ("scene interrupt new call", {(1, sym["SceneStatHandlerRomImage"][1] + i): v for i, v in enumerate((0xCD, 0x00, 0x50, 0x00))}, "bank-$01 ROM calls changed"),
         ("picture descriptor bank", {(1, sym["MenuState05PictureDescriptors"][1]): 0x2D}, "descriptor 0 bank"),
         ("picture descriptor padding", {(1, sym["MenuState05PictureDescriptors"][1] + 12): 0x01}, "descriptor 0 tail"),
         ("palette bit 15", {(2, sym["BurstObjPalettes"][1] + 1): 0x80}, "BurstObjPalettes word 0"),

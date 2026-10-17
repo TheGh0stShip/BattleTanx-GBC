@@ -36,7 +36,7 @@ CASES = [
      "ROM0 now names the table by label (formerly a raw pinned address)"),
     ("RAM-code source image (bank $02 interrupt handler image)", "src/bank_02.asm", "PaletteStatHandlerImage", "relocate", 1,
      "CopyBytes source operands use the ROM-side label; RAM labels keep their run-time addresses"),
-    ("RAM-code source image in bank $01", "src/bank_01.asm", "Bank01RomImage_49CB", "relocate", 1,
+    ("RAM-code source image in bank $01", "src/bank_01.asm", "InitMenuSystemRomImage", "relocate", 1,
      "ROM0 now names the table by label (formerly a raw pinned address)"),
     ("data block referenced by a raw ROM0 address", "src/bank_01.asm", "ScoreThresholdTable", "relocate", 1,
      "ROM0 now names the table by label (formerly a raw pinned address)"),

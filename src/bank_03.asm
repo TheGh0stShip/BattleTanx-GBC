@@ -188,25 +188,25 @@ Func_03_5CD0: ; legacy alias, used by src/bank_00.asm
 	ld [wForceRecordedPathAppend], a
 	ld a, e
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld e, a
 	ld a, [de]
 	cp $02
-	jp nz, Jump_03_5CED
+	jp nz, UpdateObjectSequenceMovement_CheckThrottleBypass
 	ld a, [wSequenceObjectsInState2Count]
 	inc a
 	ld [wSequenceObjectsInState2Count], a
-Jump_03_5CED:
+UpdateObjectSequenceMovement_CheckThrottleBypass:
 	ld a, e
 	and $C0
 	add a, $08
 	ld e, a
 	ld a, [de]
 	and $08
-	jr nz, Jump_03_5D1A
+	jr nz, UpdateObjectSequenceMovement_RunUpdate
 	ld a, e
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld e, a
 	ld a, [de]
 	cp $03
@@ -215,16 +215,16 @@ Jump_03_5CED:
 	inc a
 	ld [wObjectSequenceThrottleCounter], a
 	and $07
-	jr z, Jump_03_5D1A
+	jr z, UpdateObjectSequenceMovement_RunUpdate
 	ld a, e
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld e, a
 	xor a
 	ld [de], a
 	jp ObjectSequenceUpdateExit
 
-Jump_03_5D1A:
+UpdateObjectSequenceMovement_RunUpdate:
 	call CheckObjectAuxRegionTriggers
 	ld a, e
 	and $C0
@@ -232,53 +232,53 @@ Jump_03_5D1A:
 	ld e, a
 	ld a, [de]
 	bit 6, a
-	jp nz, Jump_03_661F
+	jp nz, UpdateObjectSequenceMovement_FollowRecordedPath
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_PROXIMITY_DELAY_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
-	jr nz, Jump_03_5D54
+	jr nz, UpdateObjectSequenceMovement_TickProximityDelay
 	ld a, [wPlayerObject]
 	ld l, a
 	ld a, [wPlayerObject + 1]
 	ld h, a
 	ld a, l
 	and $C0
-	add a, OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET
+	add a, OBJECT_VEHICLE_HIDE_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	and a
-	jr z, Jump_03_5D4F
+	jr z, UpdateObjectSequenceMovement_CheckNearPlayer
 	ld a, l
 	and $C0
-	add a, OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET
+	add a, OBJECT_VEHICLE_HIDE_REVEAL_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	and a
-	jr z, Jump_03_5D65
-Jump_03_5D4F:
+	jr z, UpdateObjectSequenceMovement_CompareHeading
+UpdateObjectSequenceMovement_CheckNearPlayer:
 	call CheckObjectNearPlayerBox
-	jr Jump_03_5D65
+	jr UpdateObjectSequenceMovement_CompareHeading
 
-Jump_03_5D54:
+UpdateObjectSequenceMovement_TickProximityDelay:
 	dec a
 	ld [de], a
 	cp $20
-	jr c, Jump_03_5D65
+	jr c, UpdateObjectSequenceMovement_CompareHeading
 	ld a, e
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld e, a
 	xor a
 	ld [de], a
 	jp ObjectSequenceUpdateExit
 
-Jump_03_5D65:
+UpdateObjectSequenceMovement_CompareHeading:
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	ld b, a
@@ -288,10 +288,10 @@ Jump_03_5D65:
 	ld e, a
 	ld a, [de]
 	cp b
-	jr z, Jump_03_5DB9
+	jr z, UpdateObjectSequenceMovement_CheckActionTimer
 	ld a, e
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld e, a
 	xor a
 	ld [de], a
@@ -301,16 +301,16 @@ Jump_03_5D65:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_5D8E
+	jr z, UpdateObjectSequenceMovement_TurnStep
 	dec a
 	ld [de], a
 	jp ObjectSequenceUpdateExit
 
-Jump_03_5D8E:
+UpdateObjectSequenceMovement_TurnStep:
 	push de
 	ld a, e
 	and $C0
-	add a, $23
+	add a, OBJECT_VEHICLE_TURN_INTERVAL_OFFSET
 	ld e, a
 	ld a, [de]
 	pop de
@@ -323,7 +323,7 @@ Jump_03_5D8E:
 	ld c, a
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	add a, c
@@ -335,10 +335,10 @@ Jump_03_5D8E:
 	ld e, a
 	ld a, [de]
 	bit 7, a
-	jr nz, Jump_03_5DB9
+	jr nz, UpdateObjectSequenceMovement_CheckActionTimer
 	jp ObjectSequenceUpdateExit
 
-Jump_03_5DB9:
+UpdateObjectSequenceMovement_CheckActionTimer:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
@@ -346,17 +346,17 @@ Jump_03_5DB9:
 	ld a, [de]
 	ld b, a
 	and a
-	jr z, Jump_03_5DF5
+	jr z, UpdateObjectSequenceMovement_CheckWaypoint
 	bit 7, a
-	jr z, Jump_03_5DE2
+	jr z, UpdateObjectSequenceMovement_CountdownTimer
 	and $7F
 	dec a
-	jr nz, Jump_03_5DD1
+	jr nz, UpdateObjectSequenceMovement_SpinStep
 	xor a
 	ld [de], a
-	jr Jump_03_5DF5
+	jr UpdateObjectSequenceMovement_CheckWaypoint
 
-Jump_03_5DD1:
+UpdateObjectSequenceMovement_SpinStep:
 	or $80
 	ld [de], a
 	ld a, e
@@ -369,7 +369,7 @@ Jump_03_5DD1:
 	ld [de], a
 	jp ObjectSequenceUpdateExit
 
-Jump_03_5DE2:
+UpdateObjectSequenceMovement_CountdownTimer:
 	ld a, [wObjectSlowTickCounter]
 	and a
 	jp nz, ObjectSequenceUpdateExit
@@ -382,7 +382,7 @@ Jump_03_5DE2:
 	ld [de], a
 	jp ObjectSequenceUpdateExit
 
-Jump_03_5DF5:
+UpdateObjectSequenceMovement_CheckWaypoint:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
@@ -398,7 +398,7 @@ Jump_03_5DF5:
 	ld b, a
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	cp b
@@ -461,7 +461,7 @@ HandleSequenceWaypointArrival:
 	pop de
 	ld a, l
 	and a
-	jr z, Jump_03_5E91
+	jr z, HandleSequenceWaypointArrival_NotPassed
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_TARGET_X_OFFSET
@@ -502,7 +502,7 @@ HandleSequenceWaypointArrival:
 	ld [de], a
 	jr AdvanceObjectSequenceRecord
 
-Jump_03_5E91:
+HandleSequenceWaypointArrival_NotPassed:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
@@ -518,7 +518,7 @@ Jump_03_5E91:
 	push af
 	ld a, e
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld e, a
 	pop af
 	ld [de], a
@@ -537,11 +537,11 @@ AdvanceObjectSequenceRecord:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_5ED3
+	jr z, AdvanceObjectSequenceRecord_StoreIndex
 	dec b
 	ld a, b
 	and a
-	jr nz, Jump_03_5ED2
+	jr nz, AdvanceObjectSequenceRecord_StepBack
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
@@ -550,9 +550,9 @@ AdvanceObjectSequenceRecord:
 	cpl
 	ld [de], a
 	ld b, $00
-Jump_03_5ED2:
+AdvanceObjectSequenceRecord_StepBack:
 	dec b
-Jump_03_5ED3:
+AdvanceObjectSequenceRecord_StoreIndex:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
@@ -562,7 +562,7 @@ Jump_03_5ED3:
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld e, a
 	xor a
 	ld [de], a
@@ -611,7 +611,7 @@ Jump_03_5ED3:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_5F30
+	jr z, AdvanceObjectSequenceRecord_SetTargetHeading
 	push hl
 	dec hl
 	dec hl
@@ -627,7 +627,7 @@ Jump_03_5ED3:
 	and $0F
 	ld b, a
 	pop hl
-Jump_03_5F30:
+AdvanceObjectSequenceRecord_SetTargetHeading:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
@@ -637,13 +637,13 @@ Jump_03_5F30:
 	ld c, $FF
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	sub b
-	jr nc, Jump_03_5F46
+	jr nc, AdvanceObjectSequenceRecord_StoreTurnStep
 	ld c, $01
-Jump_03_5F46:
+AdvanceObjectSequenceRecord_StoreTurnStep:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
@@ -656,8 +656,9 @@ Jump_03_5F46:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_5F66
+	jr z, AdvanceObjectSequenceRecord_SkipForward
 	push hl
+	; Original: the eight dec hl are undone by the pop hl that follows (no effect).
 	dec hl
 	dec hl
 	dec hl
@@ -671,7 +672,7 @@ Jump_03_5F46:
 	inc hl
 	jr ApplySequenceRecordEndAction
 
-Jump_03_5F66:
+AdvanceObjectSequenceRecord_SkipForward:
 	inc hl
 	inc hl
 ApplySequenceRecordEndAction:
@@ -682,16 +683,16 @@ ApplySequenceRecordEndAction:
 	and a
 	jr z, ObjectSequenceUpdateExit
 	cp $01
-	jr z, Jump_03_5F9A
+	jr z, ApplySequenceRecordEndAction_Restart
 	cp $02
-	jr z, Jump_03_5FA5
+	jr z, ApplySequenceRecordEndAction_Reverse
 	cp $03
-	jr z, Jump_03_5F85
+	jr z, ApplySequenceRecordEndAction_SetTimer
 	cp $04
-	jr z, Jump_03_5F8F
+	jr z, ApplySequenceRecordEndAction_StartSpin
 	cp $05
 	jr z, ObjectSequenceUpdateExit
-Jump_03_5F85:
+ApplySequenceRecordEndAction_SetTimer:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
@@ -700,16 +701,16 @@ Jump_03_5F85:
 	ld [de], a
 	jr ObjectSequenceUpdateExit
 
-Jump_03_5F8F:
+ApplySequenceRecordEndAction_StartSpin:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_ACTION_TIMER_OFFSET
 	ld e, a
-	ld a, $91
+	ld a, OBJECT_SEQUENCE_SPIN_FLAG | 17
 	ld [de], a
 	jr ObjectSequenceUpdateExit
 
-Jump_03_5F9A:
+ApplySequenceRecordEndAction_Restart:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
@@ -718,7 +719,7 @@ Jump_03_5F9A:
 	ld [de], a
 	jr ObjectSequenceUpdateExit
 
-Jump_03_5FA5:
+ApplySequenceRecordEndAction_Reverse:
 	cp $02
 	jr nz, ObjectSequenceUpdateExit
 	ld a, e
@@ -750,8 +751,9 @@ LoadFollowingSequenceTargetPosition:
 	inc hl
 	ld a, [hl]
 	and a
-	jr z, Jump_03_5FC8
-Jump_03_5FC8:
+	; Original: jr z targets the next instruction (no effect).
+	jr z, LoadFollowingSequenceTargetPosition_Load
+LoadFollowingSequenceTargetPosition_Load:
 	ld bc, $0008
 	add hl, bc
 	ld a, [hli]
@@ -798,9 +800,9 @@ LoadObjectSequenceTargetPosition:
 	inc hl
 	ld a, [hl]
 	and a
-	jr z, Jump_03_6025
+	jr z, LoadObjectSequenceTargetPosition_Relative
 	cp $01
-	jr nz, Jump_03_6021
+	jr nz, LoadObjectSequenceTargetPosition_CheckMode2
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
@@ -826,12 +828,13 @@ LoadObjectSequenceTargetPosition:
 	inc hl
 	inc hl
 	inc hl
-	jr Jump_03_603F
+	jr LoadObjectSequenceTargetPosition_Store
 
-Jump_03_6021:
+LoadObjectSequenceTargetPosition_CheckMode2:
 	cp $02
-	jr nz, Jump_03_6025
-Jump_03_6025:
+	; Original: jr nz targets the next instruction (no effect).
+	jr nz, LoadObjectSequenceTargetPosition_Relative
+LoadObjectSequenceTargetPosition_Relative:
 	dec hl
 	dec hl
 	ld a, e
@@ -840,7 +843,7 @@ Jump_03_6025:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_603B
+	jr z, LoadObjectSequenceTargetPosition_NextRecord
 	dec hl
 	dec hl
 	dec hl
@@ -849,12 +852,12 @@ Jump_03_6025:
 	dec hl
 	dec hl
 	dec hl
-	jr Jump_03_603F
+	jr LoadObjectSequenceTargetPosition_Store
 
-Jump_03_603B:
+LoadObjectSequenceTargetPosition_NextRecord:
 	ld bc, $0008
 	add hl, bc
-Jump_03_603F:
+LoadObjectSequenceTargetPosition_Store:
 	ld a, [hli]
 	push hl
 	ld h, $00
@@ -890,7 +893,7 @@ Jump_03_603F:
 	pop de
 	ret
 
-Jump_03_6065:
+TestPointWithinBoxDistance:
 	pop bc
 	pop de
 	ld a, c
@@ -900,7 +903,7 @@ Jump_03_6065:
 	sbc a, d
 	ld d, a
 	and $80
-	jr z, Jump_03_607B
+	jr z, TestPointWithinBoxDistance_CheckX
 	ld a, e
 	cpl
 	add a, $01
@@ -909,13 +912,13 @@ Jump_03_6065:
 	cpl
 	adc a, $00
 	ld d, a
-Jump_03_607B:
+TestPointWithinBoxDistance_CheckX:
 	ld a, $00
 	cp d
-	jr nz, Jump_03_60AA
+	jr nz, TestPointWithinBoxDistance_FailX
 	ld a, h
 	cp e
-	jr c, Jump_03_60AA
+	jr c, TestPointWithinBoxDistance_FailX
 	ld l, $01
 	pop bc
 	pop de
@@ -926,7 +929,7 @@ Jump_03_607B:
 	sbc a, d
 	ld d, a
 	and $80
-	jr z, Jump_03_609C
+	jr z, TestPointWithinBoxDistance_CheckY
 	ld a, e
 	cpl
 	add a, $01
@@ -935,22 +938,22 @@ Jump_03_607B:
 	cpl
 	adc a, $00
 	ld d, a
-Jump_03_609C:
+TestPointWithinBoxDistance_CheckY:
 	ld a, $00
 	cp d
-	jr nz, Jump_03_60AC
+	jr nz, TestPointWithinBoxDistance_Fail
 	ld a, h
 	cp e
-	jr c, Jump_03_60AC
+	jr c, TestPointWithinBoxDistance_Fail
 	ld a, l
 	or $02
 	ld l, a
 	ret
 
-Jump_03_60AA:
+TestPointWithinBoxDistance_FailX:
 	pop bc
 	pop de
-Jump_03_60AC:
+TestPointWithinBoxDistance_Fail:
 	ld l, $00
 	ret
 
@@ -964,9 +967,10 @@ Func_03_60AF: ; legacy alias (automatic entry label)
 	ld h, d
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld a, [hl]
+	; Original: every case loads b = $55, so the state compares have no effect on the threshold.
 	ld b, $55
 	cp $00
 	jr z, CheckObjectNearPlayerBox_StoreThreshold
@@ -1030,21 +1034,21 @@ CheckObjectNearPlayerBox_StoreThreshold:
 	push de
 	ld a, [wObjectProximityThreshold]
 	ld h, a
-	jp Jump_03_6065
+	jp TestPointWithinBoxDistance
 
 AimObjectAtPlayerFromProximity:
 Func_03_611C: ; legacy alias (automatic entry label)
 	pop de
 	ld a, l
 	and a
-	jr nz, AimObjectAtPlayer_SetLatch
+	jr nz, AimObjectAtPlayerFromProximity_SetLatch
 	ld a, e
 	and $C0
 	add a, OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET
 	ld e, a
 	ld a, [de]
 	bit 7, a
-	jr nz, AimObjectAtPlayer_ComputeDirection
+	jr nz, AimObjectAtPlayerFromProximity_ComputeDirection
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
@@ -1052,13 +1056,15 @@ Func_03_611C: ; legacy alias (automatic entry label)
 	ld a, [de]
 	and $F0
 	ret nz
+	; Entering follow mode: the low nibble saved by the hold path is restored as
+	; the target heading below (not for type 3).
 	ld a, [de]
 	ld b, a
-	ld a, $80
+	ld a, OBJECT_SEQUENCE_MOVEMENT_FOLLOWING
 	ld [de], a
 	ld a, e
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld e, a
 	ld a, [de]
 	cp $03
@@ -1071,8 +1077,9 @@ Func_03_611C: ; legacy alias (automatic entry label)
 	ld [de], a
 	ret
 
-AimObjectAtPlayer_SetLatch:
+AimObjectAtPlayerFromProximity_SetLatch:
 	ld a, [wObjectProximityThreshold]
+	; Original: the flags from cp $55 are overwritten before any test (no effect).
 	cp $55
 	ld a, e
 	and $C0
@@ -1081,7 +1088,7 @@ AimObjectAtPlayer_SetLatch:
 	ld a, [de]
 	or $80
 	ld [de], a
-AimObjectAtPlayer_ComputeDirection:
+AimObjectAtPlayerFromProximity_ComputeDirection:
 	ld a, [wPlayerObject]
 	ld l, a
 	ld a, [wPlayerObject + 1]
@@ -1123,13 +1130,13 @@ AimObjectAtPlayer_ComputeDirection:
 	ld c, $FF
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	sub b
-	jr nc, AimObjectAtPlayer_StoreTurnSign
+	jr nc, AimObjectAtPlayerFromProximity_StoreTurnSign
 	ld c, $01
-AimObjectAtPlayer_StoreTurnSign:
+AimObjectAtPlayerFromProximity_StoreTurnSign:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
@@ -1146,16 +1153,17 @@ AimObjectAtPlayer_StoreTurnSign:
 	ld [de], a
 	ld a, e
 	and $C0
+	; Leaving follow mode: +$38 becomes the previous target heading (0-15).
 	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld e, a
 	ld a, [de]
 	and $F0
-	jr z, AimObjectAtPlayer_CheckFacing
+	jr z, AimObjectAtPlayerFromProximity_CheckFacing
 	ld a, c
 	ld [de], a
 	ret
 
-AimObjectAtPlayer_CheckFacing:
+AimObjectAtPlayerFromProximity_CheckFacing:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_TARGET_HEADING_OFFSET
@@ -1164,7 +1172,7 @@ AimObjectAtPlayer_CheckFacing:
 	ld b, a
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	cp b
@@ -1180,7 +1188,7 @@ AimObjectAtPlayer_CheckFacing:
 	ld h, d
 	ld a, [wPlayerAlive]
 	and a
-	jp z, Jump_03_62E5
+	jp z, AimObjectAtPlayerFromProximity_Return
 	ld a, l
 	and $C0
 	add a, OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET
@@ -1188,9 +1196,9 @@ AimObjectAtPlayer_CheckFacing:
 	ld a, [hl]
 	and $7F
 	ld [hl], a
-	call Func_0F98
-	jp nz, Jump_03_62A8
-	jp Jump_03_62E5
+	call UsePlayerWeaponOrPowerup
+	jp nz, AimObjectAtPlayerFromProximity_SetVelToPlayer
+	jp AimObjectAtPlayerFromProximity_Return
 
 
 ; Locks itself out: wRecordedPathWriteIndex ($CD15) is 0 at level start, and its
@@ -1202,14 +1210,14 @@ Func_03_61FC: ; legacy alias (automatic entry label)
 	ld h, d
 	ld a, [wRecordedPathWriteIndex]
 	and a
-	jp z, Jump_03_62A5
+	jp z, UnusedStartRecordedPathFollow_Return
 	ld a, l
 	and $C0
 	add a, OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET
 	ld l, a
 	ld a, [hl]
 	bit 6, a
-	jp nz, Jump_03_62A5
+	jp nz, UnusedStartRecordedPathFollow_Return
 	or $40
 	ld [hl], a
 	ld [wForceRecordedPathAppend], a
@@ -1314,11 +1322,11 @@ Func_03_61FC: ; legacy alias (automatic entry label)
 	inc hl
 	ld [hl], d
 	pop bc
-Jump_03_62A5:
+UnusedStartRecordedPathFollow_Return:
 	push hl
-	jr Jump_03_62E5
+	jr AimObjectAtPlayerFromProximity_Return
 
-Jump_03_62A8:
+AimObjectAtPlayerFromProximity_SetVelToPlayer:
 	push bc
 	ld a, l
 	and $C0
@@ -1346,23 +1354,30 @@ Jump_03_62A8:
 	ld e, [hl]
 	pop hl
 	call SetObjectVelocityTowardPoint
+	; HL is the new projectile (BC from UsePlayerWeaponOrPowerup), DE the shooter.
+	; Original defect: with shooter +$29 = 3 (a level vehicle can collect
+	; PickupScreenEffectCharge while its +$29 is 0), that call returns NZ through
+	; StartScreenEffect without spawning. HL is then the stale BC from
+	; AimObjectAtPlayerFromProximity_CheckFacing (H = target heading 0-15), so the call above
+	; writes +$29 and +$0D-$12 into $0000-$0FFF, the MBC5 RAM-enable range.
+	; The single charge is consumed first, so the +$29 test below returns.
 	pop de
 	ld a, e
 	and $C0
-	add a, $29
+	add a, OBJECT_PLAYER_POWERUP_TYPE_OFFSET
 	ld e, a
 	ld a, [de]
 	cp $00
 	ret z
 	ld a, l
 	and $C0
-	add a, $29
+	add a, OBJECT_PROJECTILE_AIMED_VELOCITY_FLAG_OFFSET
 	ld l, a
 	xor a
 	ld [hl], a
 	ret
 
-Jump_03_62E5:
+AimObjectAtPlayerFromProximity_Return:
 	pop de
 	ret
 
@@ -1374,15 +1389,16 @@ Func_03_62E7: ; legacy alias (automatic entry label)
 	push hl
 	ld a, b
 	sub d
-	jr nc, SetVelTowardPoint_AbsDx
+	jr nc, SetObjectVelocityTowardPoint_AbsDx
+	; Original: cpl without inc; a negative difference becomes |difference| - 1 (same for Y below).
 	cpl
-SetVelTowardPoint_AbsDx:
+SetObjectVelocityTowardPoint_AbsDx:
 	ld b, a
 	ld a, c
 	sub e
-	jr nc, SetVelTowardPoint_AbsDy
+	jr nc, SetObjectVelocityTowardPoint_AbsDy
 	cpl
-SetVelTowardPoint_AbsDy:
+SetObjectVelocityTowardPoint_AbsDy:
 	ld c, a
 	push bc
 	add a, b
@@ -1390,23 +1406,23 @@ SetVelTowardPoint_AbsDy:
 	ld c, a
 	and a
 	ld de, $0000
-	jr z, Jump_03_6312
+	jr z, SetObjectVelocityTowardPoint_DivY
 	ld h, b
 	ld l, $00
-SetVelTowardPoint_DivXLoop:
+SetObjectVelocityTowardPoint_DivXLoop:
 	ld a, l
 	sub c
 	ld l, a
-	jr nc, Jump_03_630F
+	jr nc, SetObjectVelocityTowardPoint_DivXCount
 	ld a, h
 	sub $01
 	ld h, a
-	jr c, Jump_03_6312
-Jump_03_630F:
+	jr c, SetObjectVelocityTowardPoint_DivY
+SetObjectVelocityTowardPoint_DivXCount:
 	inc de
-	jr SetVelTowardPoint_DivXLoop
+	jr SetObjectVelocityTowardPoint_DivXLoop
 
-Jump_03_6312:
+SetObjectVelocityTowardPoint_DivY:
 	pop bc
 	ld a, c
 	add a, b
@@ -1415,44 +1431,44 @@ Jump_03_6312:
 	and a
 	push de
 	ld de, $0000
-	jr z, Jump_03_6330
+	jr z, SetObjectVelocityTowardPoint_Scale
 	ld h, c
 	ld l, $00
-SetVelTowardPoint_DivYLoop:
+SetObjectVelocityTowardPoint_DivYLoop:
 	ld a, l
 	sub b
 	ld l, a
-	jr nc, Jump_03_632D
+	jr nc, SetObjectVelocityTowardPoint_DivYCount
 	ld a, h
 	sub $01
 	ld h, a
-	jr c, Jump_03_6330
-Jump_03_632D:
+	jr c, SetObjectVelocityTowardPoint_Scale
+SetObjectVelocityTowardPoint_DivYCount:
 	inc de
-	jr SetVelTowardPoint_DivYLoop
+	jr SetObjectVelocityTowardPoint_DivYLoop
 
-Jump_03_6330:
+SetObjectVelocityTowardPoint_Scale:
 	pop bc
 	ld a, $03
 	ld hl, $0000
-SetVelTowardPoint_MulX3:
+SetObjectVelocityTowardPoint_MulX3:
 	add hl, bc
 	dec a
-	jr nz, SetVelTowardPoint_MulX3
+	jr nz, SetObjectVelocityTowardPoint_MulX3
 	ld b, h
 	ld c, l
 	ld a, $03
 	ld hl, $0000
-SetVelTowardPoint_MulY3:
+SetObjectVelocityTowardPoint_MulY3:
 	add hl, de
 	dec a
-	jr nz, SetVelTowardPoint_MulY3
+	jr nz, SetObjectVelocityTowardPoint_MulY3
 	ld d, h
 	ld e, l
 	pop hl
 	ld a, l
 	and $C0
-	add a, $29
+	add a, OBJECT_PROJECTILE_AIMED_VELOCITY_FLAG_OFFSET
 	ld l, a
 	ld a, $01
 	ld [hl], a
@@ -1480,7 +1496,8 @@ SetVelTowardPoint_MulY3:
 	pop bc
 	ld a, d
 	sub b
-	jr nc, SetVelTowardPoint_CheckY
+	jr nc, SetObjectVelocityTowardPoint_CheckY
+	; Original: cpl without inc negates each velocity as -v - 1, not -v (same for Y below).
 	ld a, l
 	and $C0
 	add a, $0D
@@ -1493,7 +1510,7 @@ SetVelTowardPoint_MulY3:
 	ld [hli], a
 	ld a, $FF
 	ld [hl], a
-SetVelTowardPoint_CheckY:
+SetObjectVelocityTowardPoint_CheckY:
 	ld a, e
 	sub c
 	ret nc
@@ -1529,15 +1546,15 @@ Func_03_6391: ; legacy alias (automatic entry label)
 	ld a, [wLevelAuxTimerDivider]
 	inc a
 	cp $1E
-	jr nz, Jump_03_63B6
+	jr nz, UpdateLevelObjectAuxState_StoreDivider
 	xor a
-Jump_03_63B6:
+UpdateLevelObjectAuxState_StoreDivider:
 	ld [wLevelAuxTimerDivider], a
 	ld e, $01
 	and a
-	jr z, Jump_03_63BF
+	jr z, UpdateLevelObjectAuxState_ScanEntries
 	dec e
-Jump_03_63BF:
+UpdateLevelObjectAuxState_ScanEntries:
 	ld hl, wLevelObjectAuxState
 	inc hl
 	inc hl
@@ -1662,28 +1679,29 @@ CheckAuxRegion_Loop:
 	inc hl
 	pop af
 	and a
-	jr nz, Jump_03_6477
+	jr nz, CheckObjectAuxRegionTriggers_XNegative
 	ld a, d
 	and a
-	jr nz, Jump_03_6473
+	jr nz, CheckObjectAuxRegionTriggers_XOutOfRange
 	ld a, e
 	cp b
-	jr c, Jump_03_6484
-Jump_03_6473:
+	jr c, CheckObjectAuxRegionTriggers_CheckY
+CheckObjectAuxRegionTriggers_XOutOfRange:
 	pop de
 	jp CheckAuxRegion_Next
 
-Jump_03_6477:
+CheckObjectAuxRegionTriggers_XNegative:
 	ld a, d
 	and a
-	jr nz, Jump_03_6473
+	jr nz, CheckObjectAuxRegionTriggers_XOutOfRange
+	; Original: the negative X side tests a fixed $0C, while the positive side uses the entry's width byte.
 	ld a, e
 	cp $0C
-	jr c, Jump_03_6484
+	jr c, CheckObjectAuxRegionTriggers_CheckY
 	pop de
 	jp CheckAuxRegion_Next
 
-Jump_03_6484:
+CheckObjectAuxRegionTriggers_CheckY:
 	pop de
 	pop hl
 	push hl
@@ -1715,28 +1733,29 @@ Jump_03_6484:
 	ld b, a
 	pop af
 	and a
-	jr nz, Jump_03_64BD
+	jr nz, CheckObjectAuxRegionTriggers_YNegative
 	ld a, d
 	and a
-	jr nz, Jump_03_64B9
+	jr nz, CheckObjectAuxRegionTriggers_YOutOfRange
 	ld a, e
 	cp b
-	jr c, Jump_03_64CA
-Jump_03_64B9:
+	jr c, CheckObjectAuxRegionTriggers_DispatchMode
+CheckObjectAuxRegionTriggers_YOutOfRange:
 	pop de
 	jp CheckAuxRegion_Next
 
-Jump_03_64BD:
+CheckObjectAuxRegionTriggers_YNegative:
 	ld a, d
 	and a
-	jr nz, Jump_03_64B9
+	jr nz, CheckObjectAuxRegionTriggers_YOutOfRange
+	; Original: the negative Y side tests a fixed $0C, while the positive side uses the entry's height byte.
 	ld a, e
 	cp $0C
-	jr c, Jump_03_64CA
+	jr c, CheckObjectAuxRegionTriggers_DispatchMode
 	pop de
 	jp CheckAuxRegion_Next
 
-Jump_03_64CA:
+CheckObjectAuxRegionTriggers_DispatchMode:
 	pop de
 	ld a, [hli]
 	inc hl
@@ -1923,13 +1942,13 @@ Func_03_6575: ; legacy alias (automatic entry label)
 	ld b, a
 	ld a, [hli]
 	cp c
-	jr nz, Jump_03_65CE
+	jr nz, AppendRecordedPathWaypoint_StorePosition
 	ld a, [hli]
 	cp b
-	jr nz, Jump_03_65CE
+	jr nz, AppendRecordedPathWaypoint_StorePosition
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	ld [hl], a
@@ -1948,7 +1967,7 @@ AppendRecordedPathWaypoint_LoadSecondWord:
 	inc de
 	ld a, [de]
 	ld b, a
-Jump_03_65CE:
+AppendRecordedPathWaypoint_StorePosition:
 	pop hl
 	inc hl
 	inc hl
@@ -1961,7 +1980,7 @@ Jump_03_65CE:
 	ld [wRecordedPathStarted], a
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	ld [hl], a
@@ -1979,15 +1998,15 @@ Jump_03_65CE:
 AppendRecordedPathWaypoint_Primed:
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	cp [hl]
-	jr nz, Jump_03_65FB
+	jr nz, AppendRecordedPathWaypoint_AppendEntry
 	pop bc
 	ret
 
-Jump_03_65FB:
+AppendRecordedPathWaypoint_AppendEntry:
 	push bc
 	ld bc, $0008
 	add hl, bc
@@ -2013,33 +2032,33 @@ Jump_03_65FB:
 	ld [wRecordedPathWrapCount], a
 	ret
 
-Jump_03_661F:
+UpdateObjectSequenceMovement_FollowRecordedPath:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_PROXIMITY_DELAY_OFFSET
 	ld e, a
 	ld a, [de]
 	and a
-	jr nz, Jump_03_662B
-	jr Jump_03_663C
+	jr nz, UpdateObjectSequenceMovement_PathTickProxDelay
+	jr UpdateObjectSequenceMovement_CheckHeading
 
-Jump_03_662B:
+UpdateObjectSequenceMovement_PathTickProxDelay:
 	dec a
 	ld [de], a
 	cp $20
-	jr c, Jump_03_663C
+	jr c, UpdateObjectSequenceMovement_CheckHeading
 	ld a, e
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld e, a
 	xor a
 	ld [de], a
-	jp Jump_03_67BA
+	jp UpdateObjectSequenceMovement_PathExit
 
-Jump_03_663C:
+UpdateObjectSequenceMovement_CheckHeading:
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	ld b, a
@@ -2049,10 +2068,10 @@ Jump_03_663C:
 	ld e, a
 	ld a, [de]
 	cp b
-	jr z, Jump_03_6685
+	jr z, UpdateObjectSequenceMovement_TestWaypointArrival
 	ld a, e
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld e, a
 	xor a
 	ld [de], a
@@ -2062,16 +2081,16 @@ Jump_03_663C:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_6665
+	jr z, UpdateObjectSequenceMovement_PathTurnStep
 	dec a
 	ld [de], a
-	jp Jump_03_67BA
+	jp UpdateObjectSequenceMovement_PathExit
 
-Jump_03_6665:
+UpdateObjectSequenceMovement_PathTurnStep:
 	push de
 	ld a, e
 	and $C0
-	add a, $23
+	add a, OBJECT_VEHICLE_TURN_INTERVAL_OFFSET
 	ld e, a
 	ld a, [de]
 	pop de
@@ -2084,15 +2103,15 @@ Jump_03_6665:
 	ld c, a
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	add a, c
 	and $0F
 	ld [de], a
-	jp Jump_03_67BA
+	jp UpdateObjectSequenceMovement_PathExit
 
-Jump_03_6685:
+UpdateObjectSequenceMovement_TestWaypointArrival:
 	push de
 	ld l, e
 	ld h, d
@@ -2133,7 +2152,7 @@ Jump_03_6685:
 	push bc
 	push de
 	ld h, $04
-	jp Jump_03_6065
+	jp TestPointWithinBoxDistance
 
 SnapAndAdvanceRecordedPathWaypoint:
 Func_03_66BB: ; legacy alias (automatic entry label)
@@ -2199,11 +2218,11 @@ PathSnap_NotArrived:
 	push af
 	ld a, e
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld e, a
 	pop af
 	ld [de], a
-	jp Jump_03_67BA
+	jp UpdateObjectSequenceMovement_PathExit
 
 PathSnap_AdvanceIndex:
 	ld a, e
@@ -2218,11 +2237,11 @@ PathSnap_AdvanceIndex:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_6734
+	jr z, SnapAndAdvanceRecordedPathWaypoint_StepIndex
 	dec b
 	ld a, b
 	and a
-	jr nz, Jump_03_6733
+	jr nz, SnapAndAdvanceRecordedPathWaypoint_StepBack
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_REVERSE_FLAG_OFFSET
@@ -2231,9 +2250,9 @@ PathSnap_AdvanceIndex:
 	cpl
 	ld [de], a
 	ld b, $00
-Jump_03_6733:
+SnapAndAdvanceRecordedPathWaypoint_StepBack:
 	dec b
-Jump_03_6734:
+SnapAndAdvanceRecordedPathWaypoint_StepIndex:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_RECORD_INDEX_OFFSET
@@ -2244,17 +2263,18 @@ Jump_03_6734:
 	ld c, a
 	ld a, [wRecordedPathWriteIndex]
 	cp c
-	jr nz, Jump_03_6747
-	jr Jump_03_674B
+	jr nz, SnapAndAdvanceRecordedPathWaypoint_StoreIndex
+	jr SnapAndAdvanceRecordedPathWaypoint_LoadHeading
 
-Jump_03_6747:
+SnapAndAdvanceRecordedPathWaypoint_StoreIndex:
 	ld a, c
 	ld [de], a
-	jr nz, Jump_03_674B
-Jump_03_674B:
+	; Original: jr nz targets the next instruction (no effect).
+	jr nz, SnapAndAdvanceRecordedPathWaypoint_LoadHeading
+SnapAndAdvanceRecordedPathWaypoint_LoadHeading:
 	ld a, e
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld e, a
 	xor a
 	ld [de], a
@@ -2310,13 +2330,13 @@ PathSnap_SetDesiredHeading:
 	ld c, $FF
 	ld a, e
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld e, a
 	ld a, [de]
 	sub b
-	jr nc, Jump_03_679B
+	jr nc, SnapAndAdvanceRecordedPathWaypoint_StoreTurnStep
 	ld c, $01
-Jump_03_679B:
+SnapAndAdvanceRecordedPathWaypoint_StoreTurnStep:
 	ld a, e
 	and $C0
 	add a, OBJECT_SEQUENCE_TURN_STEP_OFFSET
@@ -2329,7 +2349,7 @@ Jump_03_679B:
 	ld e, a
 	ld a, [de]
 	and a
-	jr z, Jump_03_67B7
+	jr z, SnapAndAdvanceRecordedPathWaypoint_LoadTarget
 	; This push/pop-wrapped dec hl run restores hl unchanged and has no effect.
 	push hl
 	dec hl
@@ -2341,9 +2361,9 @@ Jump_03_679B:
 	dec hl
 	dec hl
 	pop hl
-Jump_03_67B7:
+SnapAndAdvanceRecordedPathWaypoint_LoadTarget:
 	call LoadAdjacentPathWaypointTarget
-Jump_03_67BA:
+UpdateObjectSequenceMovement_PathExit:
 	pop hl
 	pop de
 	pop bc
@@ -2371,12 +2391,12 @@ Func_03_67BF: ; legacy alias (automatic entry label)
 	dec hl
 	dec hl
 	dec hl
-	jr Jump_03_67DA
+	jr LoadAdjacentPathWaypointTarget_ReadEntry
 
 PathTarget_Forward:
 	ld bc, $0008
 	add hl, bc
-Jump_03_67DA:
+LoadAdjacentPathWaypointTarget_ReadEntry:
 	dec hl
 	ld d, [hl]
 	dec hl
@@ -2410,70 +2430,70 @@ Jump_03_67DA:
 QuantizeSignedVectorDirection:
 	ld de, $0000
 	bit 7, b
-	jr z, Jump_03_6807
+	jr z, QuantizeSignedVectorDirection_CheckC
 	ld a, b
 	cpl
 	inc a
 	ld b, a
 	set 1, e
-Jump_03_6807:
+QuantizeSignedVectorDirection_CheckC:
 	bit 7, c
-	jr z, Jump_03_6811
+	jr z, QuantizeSignedVectorDirection_OrderAxes
 	ld a, c
 	cpl
 	inc a
 	ld c, a
 	set 0, e
-Jump_03_6811:
+QuantizeSignedVectorDirection_OrderAxes:
 	push de
 	ld hl, SignedVectorDirectionLookup
 	ld a, b
 	cp c
-	jr nc, Jump_03_681C
+	jr nc, QuantizeSignedVectorDirection_CheckQuadrant
 	inc hl
 	ld b, c
 	ld c, a
-Jump_03_681C:
+QuantizeSignedVectorDirection_CheckQuadrant:
 	ld a, e
 	cp $03
-	jr z, Jump_03_6824
+	jr z, QuantizeSignedVectorDirection_SameSignColumn
 	and a
-	jr nz, Jump_03_6826
-Jump_03_6824:
+	jr nz, QuantizeSignedVectorDirection_DivideRatio
+QuantizeSignedVectorDirection_SameSignColumn:
 	inc hl
 	inc hl
-Jump_03_6826:
+QuantizeSignedVectorDirection_DivideRatio:
 	ld a, b
 	srl a
 	ld e, $00
 	add a, c
 	cp b
-	jr z, Jump_03_6833
-	jr c, Jump_03_6833
+	jr z, QuantizeSignedVectorDirection_RatioStep2
+	jr c, QuantizeSignedVectorDirection_RatioStep2
 	sub b
 	inc e
-Jump_03_6833:
+QuantizeSignedVectorDirection_RatioStep2:
 	add a, c
 	cp b
-	jr z, Jump_03_683B
-	jr c, Jump_03_683B
+	jr z, QuantizeSignedVectorDirection_RatioStep3
+	jr c, QuantizeSignedVectorDirection_RatioStep3
 	sub b
 	inc e
-Jump_03_683B:
+QuantizeSignedVectorDirection_RatioStep3:
 	add a, c
 	cp b
-	jr z, Jump_03_6843
-	jr c, Jump_03_6843
+	jr z, QuantizeSignedVectorDirection_RatioStep4
+	jr c, QuantizeSignedVectorDirection_RatioStep4
 	sub b
 	inc e
-Jump_03_6843:
+QuantizeSignedVectorDirection_RatioStep4:
 	add a, c
 	cp b
-	jr z, Jump_03_684B
-	jr c, Jump_03_684B
+	jr z, QuantizeSignedVectorDirection_Lookup
+	jr c, QuantizeSignedVectorDirection_Lookup
 	sub b
 	inc e
-Jump_03_684B:
+QuantizeSignedVectorDirection_Lookup:
 	ld d, $00
 	sla e
 	sla e
@@ -2642,13 +2662,14 @@ AwardLevelCompletion:
 
 MarkMatchingAuxTargetReached:
 Func_03_6923: ; legacy alias, used by src/bank_00.asm
+	; Original: E and D are stored into wLevelObjectRecordIndex and wLevelObjectRespawnsLeft as scratch, overwriting those variables.
 	ld a, e
 	ld [wLevelObjectRecordIndex], a
 	ld a, d
 	ld [wLevelObjectRespawnsLeft], a
 	ld hl, wLevelObjectAuxState
 	ld a, LEVEL_OBJECT_AUX_COUNT
-Jump_03_6930:
+MarkMatchingAuxTargetReached_Loop:
 	push af
 	push hl
 	ld c, [hl]
@@ -2663,12 +2684,12 @@ Jump_03_6930:
 	inc hl
 	ld a, [hli]
 	and a
-	jr z, Jump_03_697D
+	jr z, MarkMatchingAuxTargetReached_Next
 	cp $03
-	jr z, Jump_03_6946
-	jr Jump_03_697D
+	jr z, MarkMatchingAuxTargetReached_CompareXY
+	jr MarkMatchingAuxTargetReached_Next
 
-Jump_03_6946:
+MarkMatchingAuxTargetReached_CompareXY:
 	push hl
 	ld a, [wLevelObjectRecordIndex]
 	ld l, a
@@ -2681,10 +2702,10 @@ Jump_03_6946:
 	inc hl
 	ld a, [hli]
 	cp c
-	jr nz, Jump_03_697C
+	jr nz, MarkMatchingAuxTargetReached_DropEntry
 	ld a, [hl]
 	cp b
-	jr nz, Jump_03_697C
+	jr nz, MarkMatchingAuxTargetReached_DropEntry
 	ld a, l
 	and $C0
 	add a, $16
@@ -2692,29 +2713,29 @@ Jump_03_6946:
 	inc hl
 	ld a, [hli]
 	cp e
-	jr nz, Jump_03_697C
+	jr nz, MarkMatchingAuxTargetReached_DropEntry
 	ld a, [hl]
 	cp d
-	jr nz, Jump_03_697C
+	jr nz, MarkMatchingAuxTargetReached_DropEntry
 	pop hl
 	inc hl
 	inc hl
 	ld a, [hl]
 	cp $01
-	jr z, Jump_03_697D
+	jr z, MarkMatchingAuxTargetReached_Next
 	ld a, $01
 	ld [hl], a
 	ld [wLevelAuxType3Pending], a
 	push hl
-Jump_03_697C:
+MarkMatchingAuxTargetReached_DropEntry:
 	pop hl
-Jump_03_697D:
+MarkMatchingAuxTargetReached_Next:
 	pop hl
 	ld bc, LEVEL_OBJECT_AUX_STATE_SIZE
 	add hl, bc
 	pop af
 	dec a
-	jr nz, Jump_03_6930
+	jr nz, MarkMatchingAuxTargetReached_Loop
 	ret
 
 TestObjectPassedSequenceTarget:
@@ -2722,9 +2743,9 @@ TestObjectPassedSequenceTarget:
 	pop de
 	ld a, h
 	and a
-	jr z, Jump_03_69B4
+	jr z, TestObjectPassedSequenceTarget_UseYAxis
 	cp $08
-	jr z, Jump_03_69B4
+	jr z, TestObjectPassedSequenceTarget_UseYAxis
 	ld l, $00
 	ld a, c
 	sub e
@@ -2732,32 +2753,33 @@ TestObjectPassedSequenceTarget:
 	ld a, b
 	sbc a, d
 	ld d, a
-	jr nc, Jump_03_699D
+	jr nc, TestObjectPassedSequenceTarget_XSelectSense
 	ld l, $01
-Jump_03_699D:
+TestObjectPassedSequenceTarget_XSelectSense:
 	pop bc
 	pop de
 	ld a, h
 	cp $08
-	jr c, Jump_03_69AE
+	jr c, TestObjectPassedSequenceTarget_XReturnBorrow
 	ld a, l
 	and a
-	jr nz, Jump_03_69AB
+	jr nz, TestObjectPassedSequenceTarget_XReturnNotPassed
 	ld l, $01
 	ret
 
-Jump_03_69AB:
+TestObjectPassedSequenceTarget_XReturnNotPassed:
 	ld l, $00
 	ret
 
-Jump_03_69AE:
+TestObjectPassedSequenceTarget_XReturnBorrow:
 	ld a, l
 	and a
+	; Original: ld l, $00 has no effect: ret nz above leaves only the L = 0 case.
 	ret nz
 	ld l, $00
 	ret
 
-Jump_03_69B4:
+TestObjectPassedSequenceTarget_UseYAxis:
 	pop bc
 	pop de
 	ld l, $00
@@ -2767,25 +2789,26 @@ Jump_03_69B4:
 	ld a, b
 	sbc a, d
 	ld d, a
-	jr nc, Jump_03_69C2
+	jr nc, TestObjectPassedSequenceTarget_YSelectSense
 	ld l, $01
-Jump_03_69C2:
+TestObjectPassedSequenceTarget_YSelectSense:
 	ld a, h
 	cp $08
-	jr z, Jump_03_69D1
+	jr z, TestObjectPassedSequenceTarget_YReturnBorrow
 	ld a, l
 	and a
-	jr nz, Jump_03_69CE
+	jr nz, TestObjectPassedSequenceTarget_YReturnNotPassed
 	ld l, $01
 	ret
 
-Jump_03_69CE:
+TestObjectPassedSequenceTarget_YReturnNotPassed:
 	ld l, $00
 	ret
 
-Jump_03_69D1:
+TestObjectPassedSequenceTarget_YReturnBorrow:
 	ld a, l
 	and a
+	; Original: ld l, $00 has no effect: ret nz above leaves only the L = 0 case.
 	ret nz
 	ld l, $00
 	ret

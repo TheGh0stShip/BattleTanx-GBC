@@ -12,16 +12,16 @@ Evidence: `src/bank_01.asm` and its callers in `src/bank_00.asm`, `src/bank_02.a
   - `ByteToBcd16` adds powers of two from `$4F00` with `daa` for each set bit;
   - `AddWordToBcd24`;
   - `LongToBcd40`, used for the score.
-- **`EntityHandlerTable`**: 10 handlers dispatched by object `+$1E` from the
-  collision path (`DispatchEntityHandlerFar`). The handlers:
+- **`Status4PickupHandlerTable`**: 10 handlers dispatched by object `+$1E` from the
+  collision path (`DispatchStatus4PickupHandlerFar`). The handlers:
   - restore 1/4 or 1/2 of maximum health;
   - add 3000 points;
   - grant a life;
   - set powerup kinds 1-3;
   - start the HUD alert;
   - one does nothing;
-  - `PickupHandler02` starts `OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET` at 60 and
-    clears `OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET`. The first timer is
+  - `PickupStartRenderHideTimer` starts `OBJECT_VEHICLE_HIDE_TIMER_OFFSET` at 60 and
+    clears `OBJECT_VEHICLE_HIDE_REVEAL_TIMER_OFFSET`. The first timer is
     decremented every 16 frames and prevents collecting this pickup again while
     active; the pickup's higher-level gameplay identity remains unproven.
 
@@ -47,7 +47,7 @@ Evidence: `src/bank_01.asm` and its callers in `src/bank_00.asm`, `src/bank_02.a
 - **Options**: `AdjustOptionValue` toggles type-2 values and wraps types 3/4.
   `ApplyOptionsSettings` and `LoadOptionsSettings` copy the settings.
 - **Picture selector**: `MenuState05SelectPrevious`/`Next` (RAM code) wrap
-  `wMenuState05Selection` within 0-2. `LoadMenuState05Graphics` (`RAM_D7CB`)
+  `wMenuState05Selection` within 0-2. `LoadMenuState05Graphics`
   loads the selected picture through `MenuState05PictureDescriptors`.
 - **`SubmitEnteredCode`**: submits the five entered characters for decoding.
 
@@ -79,8 +79,8 @@ Evidence: `src/bank_01.asm` and its callers in `src/bank_00.asm`, `src/bank_02.a
 - **Checksum**: `5 + 3*popcount(level) + 2*popcount(lives) + popcount(score field)`.
 - **Character conversion**: five 5-bit characters (`wPasswordChars`), converted
   both ways.
-- **Decode (`Func_01_6C24`)**: rejects a level above `$0E` or a checksum
-  mismatch and returns A = 0. The caller (`Func_01_5126`) then runs the
+- **Decode (`DecodePasswordBits`)**: rejects a level above `$0E` or a checksum
+  mismatch and returns A = 0. The caller (`SubmitEnteredCode`) then runs the
   rejection display (`$01:7981`, maps `CodeRejectedTileMap`/`AttrMap` in bank
   `$2C`). On success it loads the level, lives and score.
 - **Screen data** (former blob `6E8A.bin`):
@@ -95,8 +95,8 @@ Evidence: `src/bank_01.asm` and its callers in `src/bank_00.asm`, `src/bank_02.a
     column/row pairs, and three zero padding bytes.
 - **`FreeObjectsOutsideStatuses1And4`** (`$7D3A`): called only from
   `PreserveScreenEffectObjects`. It frees every object record except statuses
-  1 (created by `CreateObjectAtOrigin`) and 4 (created by `Func_372E`).
-  Status 2 also runs `Func_2C35` first. The code shows no further reason for
+  1 (created by `CreateObjectAtOrigin`) and 4 (created by `SpawnStatus4Object`).
+  Status 2 also runs `ReleaseProjectileOwnerShotSlot` first. The code shows no further reason for
   the choice.
 
 ## Former address-named routines

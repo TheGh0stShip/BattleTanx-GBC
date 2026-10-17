@@ -4,7 +4,7 @@ BASEROM := baserom.gbc
 PYTHON  ?= python3
 SRCS    := $(wildcard src/*.asm) $(wildcard include/*.inc)
 
-.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion progress report disasm clean tidy
+.PHONY: all check compare check-project check-baserom extract-assets graphics maps levels screens objects bank08 relocation banks0105 completion progress report diag disasm clean tidy
 
 all: compare
 
@@ -55,6 +55,12 @@ completion: compare
 	$(PYTHON) tools/rom_range_map.py
 	$(PYTHON) tools/operand_audit.py
 	$(PYTHON) tools/completion_invariants.py
+	$(PYTHON) tools/semantic_invariants.py
+
+# Diagnostic (non-shipping) ROM that traps scene-handler calls into bank-$01 ROM
+# while another bank is mapped; written to build/diag/, never touches src/.
+diag: compare
+	$(PYTHON) tools/diag_bank_trap.py
 
 # Semantic naming progress, kept separate from traced-byte coverage.
 progress: $(ROM)

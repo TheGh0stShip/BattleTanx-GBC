@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Generate explicit RGBDS source for bank-$04 level object data."""
+"""Generate explicit RGBDS source for bank-$04 level object data.
+
+Superseded: output differs from hand-maintained src/level_objects.asm;
+comparison only (prints to stdout).
+"""
 
 from __future__ import annotations
 

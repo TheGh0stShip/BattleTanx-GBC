@@ -4,6 +4,9 @@
 Used once to replace the opaque assets/bank_06/4000.bin inclusion; the output
 lives in src/audio_data.asm and is now the source of truth. Running this again
 only serves as a cross-check: `make compare` proves the bytes either way.
+
+Superseded: output differs from hand-maintained src/audio_data.asm
+(776 differing lines when last checked); comparison only.
 """
 import sys, os
 sys.path.insert(0, os.path.dirname(__file__))

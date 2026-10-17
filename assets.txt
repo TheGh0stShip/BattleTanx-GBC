@@ -1,3 +1,9 @@
+# ROM-contiguous assets: path, ROM offset, byte size (checked by check_project.py).
+# Assets assembled from non-contiguous slices are NOT listed here; asset_slices.txt
+# records every INCBIN slice (including include/object_banks.inc expansions):
+#   assets/bank_08/object_animation_tiles.bin  4000 B, 42 slices $08:44A8-$5487
+#   assets/bank_08/effect_tiles.bin            2960 B, 27 slices $08:5490-$60EF
+# Both are also derived and compared by tools/bank08.py.
 assets/bank_07/audio_build_residue.bin 0x1c007 0xbf5
 assets/bank_08/ui_font_tiles.bin 0x20000 0x3e0
 assets/bank_08/interface_tiles_60F8.bin 0x220f8 0x10

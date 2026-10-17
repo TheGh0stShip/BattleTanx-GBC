@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Generate the explicit bank-$05 level tile-animation tables once."""
+"""Generate the explicit bank-$05 level tile-animation tables once.
+
+One-time edit tool; owns nothing; do not rerun over src/level_tile_animation.asm
+(its output matched that file when last checked; comparison only).
+"""
 
 from __future__ import annotations
 

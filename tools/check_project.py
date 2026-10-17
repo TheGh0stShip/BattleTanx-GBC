@@ -69,6 +69,64 @@ def check_assets(entries: list[tuple[pathlib.Path, int, int]]) -> None:
             fail(f"asset does not match ROM range: {relpath}")
 
 
+def _incbin_slices(source: str):
+    for m in re.finditer(r'^\s*INCBIN\s+"([^"]+)"\s*(?:,\s*([^,;\n]+))?(?:,\s*([^;\n]+))?', source, re.MULTILINE):
+        yield m.group(1), m.group(2), m.group(3)
+
+
+def _eval_int(text: str) -> int:
+    if not re.fullmatch(r"[0-9$xXa-fA-F *+\-]+", text):
+        fail(f"asset slices: cannot evaluate INCBIN argument {text!r}")
+    return int(eval(text.replace("$", "0x"), {"__builtins__": {}}))  # pylint: disable=eval-used
+
+
+def check_asset_slices(rom: bytes, entries) -> None:
+    """Every INCBIN slice is placed at a recorded ROM offset with matching bytes."""
+    rows = []
+    for number, raw in enumerate((ROOT / "asset_slices.txt").read_text().splitlines(), 1):
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        fields = line.split()
+        if len(fields) != 4:
+            fail(f"asset_slices.txt:{number}: expected path, start, length, ROM offset")
+        path, start, size, where = fields[0], *(int(f, 0) for f in fields[1:])
+        data = (ROOT / path).read_bytes()
+        if size <= 0 or start + size > len(data) or where + size > ROM_SIZE:
+            fail(f"asset_slices.txt:{number}: slice out of range")
+        if data[start:start + size] != rom[where:where + size]:
+            fail(f"asset_slices.txt:{number}: {path}+{start:#x} differs from ROM {where:#x}")
+        rows.append((path, start, size, where))
+    ordered = sorted(rows, key=lambda r: r[3])
+    for left, right in zip(ordered, ordered[1:]):
+        if left[3] + left[2] > right[3]:
+            fail(f"asset slices overlap at ROM {right[3]:#x}")
+    # every textual INCBIN in src/ is recorded (macro bodies are listed per expansion)
+    recorded = {(p, s, n) for p, s, n, _ in rows}
+    for asm in sorted((ROOT / "src").glob("*.asm")):
+        for path, start, size in _incbin_slices(asm.read_text()):
+            length = len((ROOT / path).read_bytes())
+            s = _eval_int(start) if start else 0
+            n = _eval_int(size) if size else length - s
+            if (path, s, n) not in recorded:
+                fail(f"asset slices: {asm.name} INCBIN {path},{s},{n} is not recorded")
+    # every file under assets/ is in assets.txt or fully covered by slices
+    manifest = {str(p) for p, _, _ in entries}
+    for f in sorted((ROOT / "assets").rglob("*")):
+        if not f.is_file():
+            continue
+        rel = str(f.relative_to(ROOT))
+        if rel in manifest:
+            continue
+        covered = set()
+        for p, s, n, _ in rows:
+            if p == rel:
+                covered.update(range(s, s + n))
+        if covered != set(range(f.stat().st_size)):
+            fail(f"asset slices: {rel} is neither in assets.txt nor fully sliced")
+    print(f"asset slices: {len(rows)} INCBIN slices placed and matched")
+
+
 def check_bank08_graphics_assets(entries: list[tuple[pathlib.Path, int, int]]) -> None:
     """Bank $08: full layout, assets, symbols and negative tests (BANK08_RESEARCH.md)."""
     del entries  # bank $08 assets are derived and checked by tools/bank08.py
@@ -648,7 +706,7 @@ def check_executable_ram_source() -> None:
 def check_tracing() -> None:
     sys.path.insert(0, str(ROOT / "tools"))
     import hints  # pylint: disable=import-outside-toplevel
-    import trace  # pylint: disable=import-outside-toplevel
+    import rom_trace as trace  # pylint: disable=import-outside-toplevel
 
     rom = (ROOT / "baserom.gbc").read_bytes()
     for offset, value in hints.TEXT_STRINGS.items():
@@ -711,7 +769,6 @@ AUDIO_SYMBOLS = {
     "MusicPointers": (0x06, 0x4744),
     "Instruments": (0x06, 0x476E),
     "Music_00": (0x06, 0x479A),
-    "SoundPatch00UnreadTail": (0x06, 0x4006),
     "SfxSequencePointerTablePadding": (0x06, 0x415A),
     "AudioRegisterInitPadding": (0x06, 0x4660),
     "ChannelRegisterBasesPadding": (0x06, 0x4740),
@@ -879,8 +936,10 @@ def check_audio() -> None:
         fail("audio: channel-1 patch source is not 17 typed records")
     if len(re.findall(r"^\s*sound_patch_ch4\b", patch_source, re.MULTILINE)) != 19:
         fail("audio: channel-4 patch source is not 19 typed records")
-    if len(re.findall(r"^\s*db\s+2,", patch_source, re.MULTILINE)) != 1:
-        fail("audio: channel-2 patch 0 representation changed")
+    if len(re.findall(r"^\s*sound_patch_ch2\b", patch_source, re.MULTILINE)) != 1:
+        fail("audio: channel-2 patch source is not 1 typed record")
+    if "SoundPatch00UnreadTail" in audio_data_source:
+        fail("audio: patch 0 tail split from its typed record again")
     instrument_source = audio_data_source.split("Instruments:", 1)[1].split(
         "Music_00:", 1
     )[0]
@@ -1594,7 +1653,7 @@ def check_level_banks() -> None:
         "OBJECT_NEXT_Y_SUBPIXEL_OFFSET": 0x16,
         "OBJECT_NEXT_Y_OFFSET": 0x17,
         "OBJECT_DIRECTION_OFFSET": 0x19,
-        "OBJECT_VEHICLE_SPEED_OFFSET": 0x1A,
+        "OBJECT_SPEED_OFFSET": 0x1A,
         "OBJECT_VEHICLE_REVERSE_FLAG": 0x01,
         "OBJECT_VEHICLE_TURN_INTERVAL_OFFSET": 0x23,
         "OBJECT_VEHICLE_TURN_TIMER_OFFSET": 0x24,
@@ -1617,13 +1676,14 @@ def check_level_banks() -> None:
         "OBJECT_PROJECTILE_LIFETIME_OFFSET": 0x21,
         "OBJECT_PROJECTILE_TARGET_OFFSET": 0x25,
         "OBJECT_PROJECTILE_STEERING_DELAY_OFFSET": 0x27,
+        "OBJECT_PROJECTILE_AIMED_VELOCITY_FLAG_OFFSET": 0x29,
         "OBJECT_LAST_ATTACKER_OFFSET": 0x2B,
         "OBJECT_FRAME_TABLE_OFFSET": 0x21,
         "OBJECT_OAM_LAYOUT_OFFSET": 0x23,
         "OBJECT_TILE_COUNT_OFFSET": 0x25,
         "OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET": 0x26,
-        "OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET": 0x27,
-        "OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET": 0x28,
+        "OBJECT_VEHICLE_HIDE_TIMER_OFFSET": 0x27,
+        "OBJECT_VEHICLE_HIDE_REVEAL_TIMER_OFFSET": 0x28,
         "OBJECT_PLAYER_POWERUP_TYPE_OFFSET": 0x29,
         "OBJECT_PLAYER_POWERUP_CHARGES_OFFSET": 0x2A,
         "OBJECT_SEQUENCE_SLOT_FLAGS_OFFSET": 0x2D,
@@ -1636,6 +1696,7 @@ def check_level_banks() -> None:
         "OBJECT_SEQUENCE_TARGET_X_OFFSET": 0x34,
         "OBJECT_SEQUENCE_TARGET_Y_OFFSET": 0x36,
         "OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET": 0x38,
+        "OBJECT_SEQUENCE_MOVEMENT_FOLLOWING": 0x80,
         "OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET": 0x39,
         "OBJECT_TYPE0_FALLBACK_SPEED": 0x05,
         "OBJECT_TYPE1_FALLBACK_SPEED": 0x04,
@@ -1643,6 +1704,7 @@ def check_level_banks() -> None:
         "OBJECT_RESPAWNS_LEFT_OFFSET": 0x3A,
         "OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET": 0x3B,
         "OBJECT_SEQUENCE_ACTION_TIMER_OFFSET": 0x3C,
+        "OBJECT_SEQUENCE_SPIN_FLAG": 0x80,
         "OBJECT_HEALTH_DELTA_MASK": 0x3F,
         "OBJECT_COUNT": 64,
     }
@@ -2004,6 +2066,7 @@ def main() -> None:
     rom = (ROOT / "baserom.gbc").read_bytes()
     check_unused_banks(rom, entries)
     check_code_bank_tails(rom, entries)
+    check_asset_slices(rom, entries)
     check_scene_descriptors(rom)
     check_structured_scrolling_scene_banks(rom, entries)
     check_fixed_scene_source(rom, entries)

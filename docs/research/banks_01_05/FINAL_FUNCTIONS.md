@@ -14,17 +14,17 @@ independently against `src/` and the base ROM bytes.
 | --- | --- | --- | --- |
 | `$42EE` | `Bank01NoOpEntry` | single `ret` | ROM0 `Bank1NoOpFar` (`$35C6`), which has no caller |
 | `$4A62` | `ClearPasswordEntryChars` | zeroes `wPasswordEntryChars` (5 bytes) | `InitMenuSystem` RAM image, `HandleMenuState06Input` |
-| `$4ECF` | `SetOptionLabelBgPalette7Colors` | BG palette 7: colour 0 = `$4E91`, colour 3 = `$001F` (via `Func_0514`) | `DrawOptionsEntryLabel` |
+| `$4ECF` | `SetOptionLabelBgPalette7Colors` | BG palette 7: colour 0 = `$4E91`, colour 3 = `$001F` (via `SetBackgroundPaletteColor`) | `DrawOptionsEntryLabel` |
 | `$6243` | `UnusedLoadScrollVariantForGridCell` | `call LoadScrollVariantForGridCell` / `ret`; follows a `ret`, no reference | none |
-| `$66F6` | `LoadPasswordScreenTilesAndCursor` | VRAM bank 1 tiles from `PasswordScreenTiles`, BG palettes, cursor RAM reset | `InitMenuStateScreen`, `ShowEarnedPasswordScreen`, `ShowScreenMode12WithPasswordScoreLives` |
+| `$66F6` | `LoadPasswordScreenTilesAndCursor` | VRAM bank 1 tiles from `PasswordScreenTiles`, BG palettes, cursor RAM reset | `InitMenuStateScreen`, `ShowEarnedPasswordScreen`, `ShowScreenMode12WithScoreAndLives` |
 | `$6746` | `LoadPasswordBgPalettes4To7` | `PasswordBgPalettes`, B = 4, C = 4 | `LoadPasswordScreenTilesAndCursor` |
 | `$6751` | `LoadPasswordObjPalettes1And2` | `PasswordObjPaletteColours` into OBJ palettes 1 and 2 | `InitMenuStateScreen` |
 | `$6789` | `BuildGlyphTileAttrBuffer` | glyph index (bit 7 = raw, else +2) into `PasswordGlyphTiles`/`Attributes`; interleaves tiles and attributes (OR `$0C`) in `wGlyphTileBuffer`. No bounds check | `Draw2x2GlyphTiles` |
 | `$696E` | `InitPasswordCursorOamSlots8To11` | 4 tiles to `$8740`, OAM `$FE20-$FE2F` | end of `LoadMenuCursorSprites` |
 | `$6A1D` | `InitPasswordCursorOamSlots12To15` | 4 tiles to `$8700`, OAM `$FE30-$FE3F` | end of `LoadMenuCursorSprites` |
-| `$6E01` | `ClearScoreThenIncrementForever` | zero `wScore`, then a loop with no exit that increments it | ROM0 `Func_3BD5` (no caller) |
-| `$6E44` | `ShowScreenMode12WithPasswordScoreLives` | mode `$0C` screen: password tiles and palettes, score row 8, lives row `$0C` | `RunLevelExitScreenFlow` path via `Func_3C08` |
-| `$7BC5` | `FillSceneBgRowsWithTrailingTile` | fills BG rows from row 1 with the scene fill tile (`Func_3C90`) | the scroll-in pair below |
+| `$6E01` | `ClearScoreThenIncrementForever` | zero `wScore`, then a loop with no exit that increments it | ROM0 `RunScoreIncrementLoopFar` (no caller) |
+| `$6E44` | `ShowScreenMode12WithScoreAndLives` | mode `$0C` screen: password tiles and palettes, score row 8, lives row `$0C` | `RunLevelExitScreenFlow` path via `RunScreenMode12SetupFar` |
+| `$7BC5` | `FillSceneBgRowsWithTrailingTile` | fills BG rows from row 1 with the scene fill tile (`LoadScrollingScreenFillCell`) | the scroll-in pair below |
 | `$7BE0` | `ScrollSceneInFromLeft` | SCX -= 8 for 20 frames; draws each incoming left column | `MenuState05SelectNext` |
 | `$7C3F` | `ScrollSceneInFromRight` | SCX += 8 for 20 frames; draws each incoming right column | `MenuState05SelectPrevious`, `InitMenuStateScreen` |
 | `$7CA2` | `ScrollSceneOutFillFromRight` | SCX += 8 for 20 frames; fills each incoming column with the fill tile | `MenuState05SelectPrevious` |
@@ -72,7 +72,7 @@ and branch renames, and it checks every new name for uniqueness.
 
 ## Rechecked regions
 
-- **`Func_01_543E`** is `SubtractBCFromHL` and has no route in. The same bytes at
+- **`$01:543E`** (old name `Func_01_543E`, now `SubtractBCFromHL`) is a BC-from-HL subtraction and has no route in. The same bytes at
   `$03:52D2` sit inside the sequence data (`$4018-$5BF2`), not in code.
 - **`$01:7934-$7980`, `$79EC-$7AA2` and `$7AF0-$7BC4`** have no reference, fall-through,
   table or pushed return. `$7938` is the operand byte of `ld hl, $C943`, and

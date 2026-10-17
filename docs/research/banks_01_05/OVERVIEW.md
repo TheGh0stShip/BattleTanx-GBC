@@ -21,7 +21,7 @@ address print before every statement in a scratch assembly.
 - **Duplicate structured data**: bank `$05` contains 1,029 unused bytes copied
   from the decoded bank `$04` level-object spawn records. They are emitted by
   explicit residue macros and checked against bank `$04`.
-- **Dual use**: `Func_01_66F6` copies 128 tiles from `PasswordScreenTiles + $80`.
+- **Dual use**: `LoadPasswordScreenTilesAndCursor` copies 128 tiles from `PasswordScreenTiles + $80`.
   That copy reads 112 bytes of `PasswordGlyphTiles` as tile data.
 
 ## Levels of understanding

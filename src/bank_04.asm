@@ -99,7 +99,7 @@ InitializeLevelObjects:
 	push de
 	ld b, [hl]
 	ld c, $FF
-	call Func_372E
+	call SpawnStatus4Object
 	pop de
 	pop bc
 	call SetObjectPosition
@@ -135,7 +135,7 @@ InitializeLevelObjects:
 	ld b, a
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_HEALTH_OFFSET
 	ld l, a
 	ld a, [hl]
 	sub b
@@ -151,7 +151,7 @@ InitializeLevelObjects:
 	and $C0
 	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
-	ld a, $80
+	ld a, OBJECT_SEQUENCE_MOVEMENT_FOLLOWING
 	ld [hl], a
 	pop de
 	ld a, [de]
@@ -177,7 +177,7 @@ InitializeLevelObjects:
 	inc hl
 	inc hl
 	ld a, [wGameStartMode]
-	cp $01
+	cp GAME_START_LEVEL_SELECT
 	jp z, .advanceSpawnRecord
 	ld a, [hl]
 	ld [wPlayerObjectType], a
@@ -228,7 +228,7 @@ InitializeLevelObjects:
 	ld b, a
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_HEALTH_OFFSET
 	ld l, a
 	ld a, [hl]
 	sub b
@@ -244,7 +244,7 @@ InitializeLevelObjects:
 	and $C0
 	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
-	ld a, $80
+	ld a, OBJECT_SEQUENCE_MOVEMENT_FOLLOWING
 	ld [hl], a
 	pop bc
 	call SetObjectPosition
@@ -258,11 +258,11 @@ InitializeLevelObjects:
 	and $C0
 	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
-	ld a, $80
+	ld a, OBJECT_SEQUENCE_MOVEMENT_FOLLOWING
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	xor a
 	ld [hl], a
@@ -315,7 +315,7 @@ InitializeLevelObjects:
 .storeBehaviorMode:
 	ld a, e
 	and $C0
-	add a, $29
+	add a, OBJECT_PLAYER_POWERUP_TYPE_OFFSET
 	ld e, a
 	ld a, b
 	ld [de], a
@@ -734,7 +734,7 @@ TrySpawnPendingLevelObject:
 	pop de
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_HEALTH_OFFSET
 	ld l, a
 	ld a, [hl]
 	sub d
@@ -750,7 +750,7 @@ TrySpawnPendingLevelObject:
 	and $C0
 	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
-	ld a, $80
+	ld a, OBJECT_SEQUENCE_MOVEMENT_FOLLOWING
 	ld [hl], a
 	pop de
 	ld a, [de]
@@ -792,7 +792,7 @@ TrySpawnPendingLevelObject:
 	pop de
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_HEALTH_OFFSET
 	ld l, a
 	ld a, [hl]
 	sub d
@@ -808,7 +808,7 @@ TrySpawnPendingLevelObject:
 	and $C0
 	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
-	ld a, $80
+	ld a, OBJECT_SEQUENCE_MOVEMENT_FOLLOWING
 	ld [hl], a
 	pop bc
 	call SetObjectPosition
@@ -822,11 +822,11 @@ TrySpawnPendingLevelObject:
 	and $C0
 	add a, OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET
 	ld l, a
-	ld a, $80
+	ld a, OBJECT_SEQUENCE_MOVEMENT_FOLLOWING
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	xor a
 	ld [hl], a
@@ -873,7 +873,7 @@ TrySpawnPendingLevelObject:
 .storeBehaviorMode:
 	ld a, e
 	and $C0
-	add a, $29
+	add a, OBJECT_PLAYER_POWERUP_TYPE_OFFSET
 	ld e, a
 	ld a, b
 	ld [de], a

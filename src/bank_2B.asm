@@ -140,13 +140,16 @@ ScreenMode09_Palettes:
 
 ; ScreenModeTable entries 4.
 Func_2B_6E6C: ; address-based alias kept for other banks
+PlayerTypeSelectScreen_LoadTiles:
 ScreenMode04_LoadTiles:
 	screen_load_tiles ScreenMode04_Descriptor
 
 Func_2B_6EC4: ; address-based alias kept for other banks
+PlayerTypeSelectScreen_Draw:
 ScreenMode04_Draw: ; no fade
 	screen_draw_plain ScreenMode04_Descriptor
 
+PlayerTypeSelectScreen_Descriptor:
 ScreenMode04_Descriptor:
 	screen_descriptor ScreenMode04_Tiles, ScreenMode04_TileMap, ScreenMode04_AttrMap, ScreenMode04_Palettes, 77, 20, 18, 2, 0
 

@@ -5,7 +5,7 @@
 - **Own-bank ROM pointers in banks `$01`-`$05`**: none remain. all 107 raw
   operands now use labels: new statement labels, split data lines, typed blob
   regions, or existing labels. The one raw `$4E91` is an RGB555 colour
-  for `Func_0514`.
+  for `SetBackgroundPaletteColor`.
 - **Cross-bank pointers in bank `$01`/`$05`**: now symbolic:
   - 32 scrolling-scene descriptor entries, with `BANK()`;
   - 11 fixed-scene and 13 screen-mode bank bytes;

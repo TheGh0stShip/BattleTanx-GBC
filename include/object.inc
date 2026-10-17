@@ -20,9 +20,14 @@ DEF OBJECT_NEXT_X_OFFSET      EQU $14 ; 16-bit little-endian pixel coordinate
 DEF OBJECT_NEXT_Y_SUBPIXEL_OFFSET EQU $16
 DEF OBJECT_NEXT_Y_OFFSET      EQU $17 ; 16-bit little-endian pixel coordinate
 DEF OBJECT_DIRECTION_OFFSET   EQU $19 ; low nibble, 16 directions
+; Speed is a 1-based ObjectVelocityTable row; 0 means no movement. It is read
+; by LoadVehicleForwardVelocity and gates CalculateVehicleNextPosition and
+; CalculateProjectileNextPosition. Projectiles copy it from
+; ObjectTypeParameterTable byte 1; status-4 spawns clear it.
+DEF OBJECT_SPEED_OFFSET                 EQU $1A
 ; Vehicle-only drive controls. Flag bit 0 selects the direction+$08 velocity
 ; vector; speed is bounded by the maximum selected from the vehicle type.
-DEF OBJECT_VEHICLE_SPEED_OFFSET         EQU $1A
+DEF OBJECT_VEHICLE_SPEED_OFFSET         EQU OBJECT_SPEED_OFFSET
 DEF OBJECT_VEHICLE_REVERSE_FLAG         EQU $01
 DEF OBJECT_VEHICLE_TURN_INTERVAL_OFFSET EQU $23
 DEF OBJECT_VEHICLE_TURN_TIMER_OFFSET    EQU $24
@@ -45,7 +50,7 @@ DEF OBJECT_STATUS4_LIFETIME_OFFSET EQU OBJECT_HEALTH_OR_AGE_OFFSET
 DEF OBJECT_TYPE_STATE_OR_LIMIT_OFFSET      EQU $20
 DEF OBJECT_VEHICLE_ACTION_INTERVAL_OFFSET  EQU $20
 DEF OBJECT_EFFECT_LIFETIME_OFFSET          EQU $20
-DEF OBJECT_TYPE2_STATE_OFFSET              EQU $20
+DEF OBJECT_TYPE2_STATE_OFFSET              EQU $20 ; legacy alias of OBJECT_PROJECTILE_SUBTYPE_OFFSET (tools/check_project.py)
 DEF OBJECT_VEHICLE_ACTION_TIMER_OFFSET     EQU $21
 DEF OBJECT_VEHICLE_ACTIVE_SHOTS_OFFSET     EQU $22
 ; Status-2 projectile fields. The owner pointer is also copied into a struck
@@ -57,6 +62,12 @@ DEF OBJECT_PROJECTILE_SUBTYPE_OFFSET        EQU $20
 DEF OBJECT_PROJECTILE_LIFETIME_OFFSET       EQU $21
 DEF OBJECT_PROJECTILE_TARGET_OFFSET         EQU $25 ; 16-bit object pointer
 DEF OBJECT_PROJECTILE_STEERING_DELAY_OFFSET EQU $27
+; +$29 on status 2: 0 at spawn (CalculateProjectileNextPosition derives the
+; velocity from +$19/+$1A each update); 1 when SetObjectVelocityTowardPoint
+; stores an aimed +$0D/+$10 velocity, which is then kept. AimObjectAtPlayer
+; clears it again when the shooter has a nonzero +$29 weapon kind.
+DEF OBJECT_PROJECTILE_AIMED_VELOCITY_FLAG_OFFSET EQU $29
+; +$24 on status 2 is zeroed by SpawnVehicleProjectile and never read.
 DEF OBJECT_LAST_ATTACKER_OFFSET             EQU $2B ; 16-bit object pointer
 DEF OBJECT_FRAME_TABLE_OFFSET      EQU $21 ; bank-$02 pointer
 DEF OBJECT_OAM_LAYOUT_OFFSET       EQU $23 ; bank-$02 pointer
@@ -64,11 +75,16 @@ DEF OBJECT_TILE_COUNT_OFFSET       EQU $25
 ; Core level vehicles set +$26; the player vehicle leaves it clear. It gates
 ; enemy action sounds, pickup handling, tracking, and auxiliary-region logic.
 DEF OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET EQU $26
-; Vehicle-only timers. +$27 is also OBJECT_PROJECTILE_STEERING_DELAY_OFFSET
-; while the record has projectile status.
-DEF OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET     EQU $27
-DEF OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET EQU $28
+; Vehicle-only hide timers. +$27 is also OBJECT_PROJECTILE_STEERING_DELAY_OFFSET
+; while the record has projectile status. PickupHandler02 loads +$27 with $3C
+; and clears +$28; UsePlayerWeaponOrPowerup sets +$28 to 2 on success. Both
+; count down once per 16 frames, +$28 only while +$27 is nonzero. While +$27 is
+; nonzero and +$28 is zero, RenderObjectOrientationGraphic skips the vehicle
+; and the bank-3 sequence update skips CheckObjectNearPlayerBox for the player.
+DEF OBJECT_VEHICLE_HIDE_TIMER_OFFSET        EQU $27
+DEF OBJECT_VEHICLE_HIDE_REVEAL_TIMER_OFFSET EQU $28
 DEF OBJECT_PLAYER_POWERUP_TYPE_OFFSET    EQU $29 ; 0 none, 1..3 active kind
+; (status 1, player and level vehicles: level records store 0-2, pickups 1 or 3)
 DEF OBJECT_PLAYER_POWERUP_CHARGES_OFFSET EQU $2A
 ; Per-object waypoint-sequence state. The sequence slot's upper bits are flags;
 ; the low six bits select one of the current level's 64 pointer-table entries.
@@ -81,7 +97,10 @@ DEF OBJECT_SEQUENCE_TURN_STEP_OFFSET      EQU $32
 DEF OBJECT_SEQUENCE_PROXIMITY_DELAY_OFFSET EQU $33
 DEF OBJECT_SEQUENCE_TARGET_X_OFFSET       EQU $34 ; 16-bit pixel coordinate
 DEF OBJECT_SEQUENCE_TARGET_Y_OFFSET       EQU $36 ; 16-bit pixel coordinate
+; +$38 holds $80 (follow waypoints) or $00-$0F (hold: high nibble clear, low
+; nibble = target heading saved on leaving follow mode, restored on re-entry).
 DEF OBJECT_SEQUENCE_MOVEMENT_STATE_OFFSET EQU $38
+DEF OBJECT_SEQUENCE_MOVEMENT_FOLLOWING   EQU $80
 DEF OBJECT_SEQUENCE_FALLBACK_SPEED_OFFSET EQU $39
 DEF OBJECT_TYPE0_FALLBACK_SPEED EQU $05
 DEF OBJECT_TYPE1_FALLBACK_SPEED EQU $04
@@ -89,7 +108,14 @@ DEF OBJECT_TYPE2_FALLBACK_SPEED EQU $03
 ; Bookkeeping copied from the level-object spawn record.
 DEF OBJECT_RESPAWNS_LEFT_OFFSET            EQU $3A
 DEF OBJECT_LEVEL_SPAWN_INDEX_FLAGS_OFFSET EQU $3B
-; Holds sequence wait/turn action state and its countdown.
+; +$3C: 0 idle. Bit 7 clear: wait countdown (sequence data byte), decremented
+; on slow ticks, blocks waypoint checks. Bit 7 set: spin; each update
+; decrements the low 7 bits and advances +$2F by one heading until zero.
+; The $91 preset gives 16 heading steps (one full turn).
+; No shipped seq_point uses end action 3, 4 or >= 6 (351x0, 205x2, 70x5), so
+; neither writer runs on the shipped levels and no +6 timer byte is ever loaded.
 DEF OBJECT_SEQUENCE_ACTION_TIMER_OFFSET    EQU $3C
+DEF OBJECT_SEQUENCE_SPIN_FLAG             EQU $80
+; +$3D-$3F: no access found; only the power-on WRAM clear zeroes them.
 DEF OBJECT_HEALTH_DELTA_MASK       EQU $3F
 DEF OBJECT_COUNT                   EQU $40

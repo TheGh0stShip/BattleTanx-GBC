@@ -70,13 +70,14 @@ HandleLevelEnd:
 	call HandlePlayerLifeLossFar
 	jp RespawnPlayer
 
+	; Original: unreachable. HandleLevelEnd is entered only on carry from UpdateLevelEndCountdown (wPlayerAlive = 0 or wLevelComplete != 0), so jr nz, .spinForever is never taken.
 .spinForever:
 	jr .spinForever
 
 RunLevelCompleteFlow:
 	call RunLevelCompletionScreenFlow
 	ld a, [wGameStartMode]
-	cp $01
+	cp GAME_START_LEVEL_SELECT
 	jp z, ReturnToMenuAfterLevel
 	ld a, [wLevelNumber]
 	cp $0E
@@ -124,7 +125,6 @@ RunNoLivesFlow:
 
 	db $18, $FE
 RestartGame:
-Jump_00DA: ; legacy alias used by banked reset paths
 	ldh a, [rLCDC]
 	res 5, a
 	ldh [rLCDC], a
@@ -193,13 +193,14 @@ RunMenuAndLevelLoop:
 .installMenuRuntime:
 	xor a
 	ld [wSkipInitialMenuTransition], a
-	ld a, $01
+	ld a, BANK(ClearPasswordEntryChars)
 	ld [rROMB0], a
 	call InstallMenuRuntimeCodeFar
-	call RAM_D56A
-	call RAM_D62A
+	call InitMenuSystem
+	call RunMenuLoop
 	ld a, $01
 	ld [rROMB0], a
+	; Original: RunLevel never returns; its exit paths jp back to RunMenuAndLevelLoop, so each pass leaves 2 bytes on the stack (SP is set only at Init).
 	call RunLevel
 	jp RunMenuAndLevelLoop
 
@@ -397,7 +398,7 @@ RespawnPlayer:
 	jr nz, .dispatchCallbacks
 	call ProcessGameplayInput
 .dispatchCallbacks:
-	call DispatchEntityUpdateFar
+	call UpdateNearestObjectTrackerFar
 	call DispatchLevelStateCheckFar
 	ld a, [wVBlankPending]
 	or a
@@ -417,7 +418,7 @@ Func_033A: ; legacy alias
 	push af
 	ld a, BANK(Func_01_4000)
 	ld [rROMB0], a
-	call Func_01_4000
+	call RunPauseHudSequence
 	pop af
 	ld [rROMB0], a
 	ret
@@ -429,7 +430,7 @@ Func_034B: ; legacy alias
 	push af
 	ld a, BANK(Func_01_409E)
 	ld [rROMB0], a
-	call Func_01_409E
+	call LosePlayerLifeAndWaitForMusic
 	pop af
 	ld [rROMB0], a
 	ret
@@ -999,7 +1000,7 @@ Func_05C5: ; legacy alias
 	ld b, a
 	ld a, $20
 	sub b
-	ldh [$FFC0], a
+	ldh [hScreenMapRowSkip], a
 	pop bc
 	ld a, $01
 	ldh [rVBK], a
@@ -1017,7 +1018,7 @@ Func_05C5: ; legacy alias
 	inc bc
 	dec e
 	jr nz, .copyAttributeByte
-	ldh a, [$FFC0]
+	ldh a, [hScreenMapRowSkip]
 	add a, l
 	ld l, a
 	ld a, $00
@@ -1043,7 +1044,7 @@ Func_05C5: ; legacy alias
 	inc bc
 	dec e
 	jr nz, .copyTileByte
-	ldh a, [$FFC0]
+	ldh a, [hScreenMapRowSkip]
 	add a, l
 	ld l, a
 	ld a, $00
@@ -1181,7 +1182,7 @@ Func_06C5: ; legacy alias
 	push af
 	ld a, BANK(Func_01_40CE)
 	ld [rROMB0], a
-	call Func_01_40CE
+	call ByteToBcd16
 	pop af
 	ld [rROMB0], a
 	ret
@@ -1195,7 +1196,7 @@ Func_06D6: ; legacy alias
 	push af
 	ld a, BANK(Func_01_4102)
 	ld [rROMB0], a
-	call Func_01_4102
+	call AddWordToBcd24
 	pop af
 	ld [rROMB0], a
 	ret
@@ -1209,7 +1210,7 @@ Func_06E7: ; legacy alias
 	push af
 	ld a, BANK(Func_01_4143)
 	ld [rROMB0], a
-	call Func_01_4143
+	call LongToBcd40
 	pop af
 	ld [rROMB0], a
 	ret
@@ -1537,9 +1538,9 @@ OAMDMARoutine:
 	ld a, HIGH(wShadowOam)
 	ldh [rDMA], a
 	ld a, $28
-RAM_FFF6:
+OAMDMARoutine_WaitLoop:
 	dec a
-	jr nz, RAM_FFF6
+	jr nz, OAMDMARoutine_WaitLoop
 	ret
 
 	ENDL
@@ -1565,22 +1566,22 @@ LoadInterfacePalettes:
 	ld bc, wUiFontPalette
 	ld e, $08
 	call CopyBytesShort
-	ld a, BANK(Bank08ArrowUpPalette)
+	ld a, BANK(Bank08PowerupIcon1Palette)
 	ld [rROMB0], a
-	ld hl, Bank08ArrowUpPalette
-	ld bc, wArrowUpPalette
+	ld hl, Bank08PowerupIcon1Palette
+	ld bc, wPowerupIcon1Palette
 	ld e, $08
 	call CopyBytesShort
-	ld a, BANK(Bank08ArrowDownPalette)
+	ld a, BANK(Bank08PowerupIcon2Palette)
 	ld [rROMB0], a
-	ld hl, Bank08ArrowDownPalette
-	ld bc, wArrowDownPalette
+	ld hl, Bank08PowerupIcon2Palette
+	ld bc, wPowerupIcon2Palette
 	ld e, $08
 	call CopyBytesShort
-	ld a, BANK(Bank08AlphanumericFontPalette)
+	ld a, BANK(Bank08PowerupIcon3Palette)
 	ld [rROMB0], a
-	ld hl, Bank08AlphanumericFontPalette
-	ld bc, wAlphanumericFontPalette
+	ld hl, Bank08PowerupIcon3Palette
+	ld bc, wPowerupIcon3Palette
 	ld e, $08
 	call CopyBytesShort
 	ld hl, wBackgroundPalette6
@@ -1703,7 +1704,7 @@ Func_0A48: ; legacy alias
 	push af
 	ld a, BANK(Func_02_406F)
 	ld [rROMB0], a
-	call Func_02_406F
+	call ResetNearestObjectTracker
 	pop af
 	ld [rROMB0], a
 	ret
@@ -1794,7 +1795,7 @@ Func_0AB3: ; legacy alias
 	push af
 	ld a, BANK(Func_02_418A)
 	ld [rROMB0], a
-	call Func_02_418A
+	call InstallPaletteStatInterruptHandlers
 	pop af
 	ld [rROMB0], a
 	ret
@@ -1808,7 +1809,7 @@ Func_0AC4: ; legacy alias
 	push af
 	ld a, BANK(Func_02_4238)
 	ld [rROMB0], a
-	call Func_02_4238
+	call InstallVBlankOnlyInterruptHandlers
 	pop af
 	ld [rROMB0], a
 	ret
@@ -1857,34 +1858,34 @@ Func_0AF5: ; legacy alias
 	pop de
 	pop bc
 	pop af
-	ldh [$FF81], a
+	ldh [hRemoveObjectEffectFlag], a
 	ld a, b
-	ldh [$FF80], a
+	ldh [hRemoveObjectSpawnFlag], a
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld a, [hl]
-	ldh [$FF82], a
+	ldh [hRemoveObjectType], a
 	ld a, l
 	and $C0
 	inc a
 	ld l, a
 	ld a, [hli]
 	ld c, a
-	ldh [$FF83], a
+	ldh [hRemoveObjectX], a
 	ld a, [hli]
 	ld b, a
-	ldh [$FF84], a
+	ldh [hRemoveObjectX + 1], a
 	inc l
 	ld a, [hli]
 	ld e, a
-	ldh [$FF85], a
+	ldh [hRemoveObjectY], a
 	ld a, [hl]
 	ld d, a
-	ldh [$FF86], a
+	ldh [hRemoveObjectY + 1], a
 	call FreeObjectRecord
-	ldh a, [$FF81]
+	ldh a, [hRemoveObjectEffectFlag]
 	or a
 	jr z, .maybeSpawnStatus4
 	push de
@@ -1894,7 +1895,7 @@ Func_0AF5: ; legacy alias
 	ld a, $00
 	call SpawnTimedObjectEffect
 .maybeSpawnStatus4:
-	ldh a, [$FF80]
+	ldh a, [hRemoveObjectSpawnFlag]
 	or a
 	jr z, .maybeRedrawFootprint
 	push bc
@@ -1904,16 +1905,16 @@ Func_0AF5: ; legacy alias
 	pop bc
 	call SetObjectPosition
 .maybeRedrawFootprint:
-	ldh a, [$FF82]
+	ldh a, [hRemoveObjectType]
 	cp $03
 	jr nz, .return
-	ldh a, [$FF83]
+	ldh a, [hRemoveObjectX]
 	ld c, a
-	ldh a, [$FF84]
+	ldh a, [hRemoveObjectX + 1]
 	ld b, a
-	ldh a, [$FF85]
+	ldh a, [hRemoveObjectY]
 	ld e, a
-	ldh a, [$FF86]
+	ldh a, [hRemoveObjectY + 1]
 	ld d, a
 	call RedrawLevelCells2x3AroundPixel
 .return:
@@ -2364,12 +2365,12 @@ Func_0D0F:
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET
+	add a, OBJECT_VEHICLE_HIDE_TIMER_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET
+	add a, OBJECT_VEHICLE_HIDE_REVEAL_TIMER_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
@@ -2379,7 +2380,7 @@ Func_0D0F:
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $29
+	add a, OBJECT_PLAYER_POWERUP_TYPE_OFFSET
 	ld l, a
 	ld [hl], $00
 	ld a, l
@@ -2423,13 +2424,13 @@ Func_0DB6: ; legacy alias
 	push bc
 	push hl
 	ld e, l
-	ld a, $27
+	ld a, OBJECT_VEHICLE_HIDE_TIMER_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
 	or a
 	jr z, .render
-	ld a, $28
+	ld a, OBJECT_VEHICLE_HIDE_REVEAL_TIMER_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
@@ -2440,14 +2441,14 @@ Func_0DB6: ; legacy alias
 	add a, e
 	ld l, a
 	ld a, [hl]
-	ldh [$FF80], a
+	ldh [hOrientVariant], a
 	ld a, OBJECT_SCREEN_X_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hli]
-	ldh [$FF82], a
+	ldh [hOrientScreenX], a
 	ld a, [hl]
-	ldh [$FF83], a
+	ldh [hOrientScreenY], a
 	ld a, OBJECT_X_OFFSET
 	add a, e
 	ld l, a
@@ -2462,7 +2463,7 @@ Func_0DB6: ; legacy alias
 	srl b
 	rr c
 	ld a, c
-	ldh [$FF86], a
+	ldh [hOrientCellX], a
 	inc l
 	ld a, [hli]
 	ld c, a
@@ -2475,24 +2476,24 @@ Func_0DB6: ; legacy alias
 	srl b
 	rr c
 	ld a, c
-	ldh [$FF87], a
+	ldh [hOrientCellY], a
 	ld a, OBJECT_DIRECTION_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
-	ldh [$FF81], a
+	ldh [hOrientDirection], a
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $05
 	ld [rROMB0], a
-	ldh a, [$FF80]
+	ldh a, [hOrientVariant]
 	cp $03
 	jr z, .queueMetatile
 	ld a, $09
 	call AllocateDynamicSpriteTiles
 	cp $FF
 	jr z, .restoreBank
-	ldh [$FF84], a
+	ldh [hOrientTileBase], a
 	call CopyObjectOrientationTiles
 	call SelectObjectOrientationPalette
 	call WriteObjectOrientationOam
@@ -2506,9 +2507,9 @@ Func_0DB6: ; legacy alias
 	ret
 
 .queueMetatile:
-	ldh a, [$FF86]
+	ldh a, [hOrientCellX]
 	ld c, a
-	ldh a, [$FF87]
+	ldh a, [hOrientCellY]
 	ld e, a
 	ld a, [wLevelViewX]
 	ld l, a
@@ -2550,10 +2551,10 @@ Func_0DB6: ; legacy alias
 	ld hl, $9800
 	add hl, de
 	ld a, l
-	ldh [$FF88], a
+	ldh [hOrientBgMapPointer], a
 	ld a, h
-	ldh [$FF89], a
-	ldh a, [$FF81]
+	ldh [hOrientBgMapPointer + 1], a
+	ldh a, [hOrientDirection]
 	add a, a
 	ld c, a
 	add a, a
@@ -2566,17 +2567,17 @@ Func_0DB6: ; legacy alias
 	adc a, b
 	ld b, a
 	ld a, c
-	ldh [$FF8A], a
+	ldh [hOrientMetatilePointer], a
 	ld a, b
-	ldh [$FF8B], a
+	ldh [hOrientMetatilePointer + 1], a
 	ld a, $08
 	ld [rROMB0], a
 	ld a, $03
-	ldh [$FF8C], a
+	ldh [hOrientMetatileRowsLeft], a
 .queueMetatileRow:
-	ldh a, [$FF8A]
+	ldh a, [hOrientMetatilePointer]
 	ld l, a
-	ldh a, [$FF8B]
+	ldh a, [hOrientMetatilePointer + 1]
 	ld h, a
 	ld a, [hli]
 	add a, $42
@@ -2584,9 +2585,9 @@ Func_0DB6: ; legacy alias
 	ld a, [hli]
 	or $0F
 	ld b, a
-	ldh a, [$FF88]
+	ldh a, [hOrientBgMapPointer]
 	ld e, a
-	ldh a, [$FF89]
+	ldh a, [hOrientBgMapPointer + 1]
 	ld d, a
 	call QueueBgMapWrite
 	ld a, [hli]
@@ -2596,12 +2597,12 @@ Func_0DB6: ; legacy alias
 	or $0F
 	ld b, a
 	ld a, l
-	ldh [$FF8A], a
+	ldh [hOrientMetatilePointer], a
 	ld a, h
-	ldh [$FF8B], a
-	ldh a, [$FF88]
+	ldh [hOrientMetatilePointer + 1], a
+	ldh a, [hOrientBgMapPointer]
 	ld l, a
-	ldh a, [$FF89]
+	ldh a, [hOrientBgMapPointer + 1]
 	ld h, a
 	push af
 	push de
@@ -2618,9 +2619,9 @@ Func_0DB6: ; legacy alias
 	ld e, l
 	ld d, h
 	call QueueBgMapWrite
-	ldh a, [$FF88]
+	ldh a, [hOrientBgMapPointer]
 	ld l, a
-	ldh a, [$FF89]
+	ldh a, [hOrientBgMapPointer + 1]
 	ld h, a
 	push af
 	ld a, $20
@@ -2633,14 +2634,14 @@ Func_0DB6: ; legacy alias
 	ld h, a
 	pop af
 	ld a, l
-	ldh [$FF88], a
+	ldh [hOrientBgMapPointer], a
 	ld a, h
-	ldh [$FF89], a
-	ldh a, [$FF8C]
+	ldh [hOrientBgMapPointer + 1], a
+	ldh a, [hOrientMetatileRowsLeft]
 	dec a
 	or a
 	jr z, .finishMetatile
-	ldh [$FF8C], a
+	ldh [hOrientMetatileRowsLeft], a
 	jr .queueMetatileRow
 
 .finishMetatile:
@@ -2656,7 +2657,7 @@ Func_0F0C: ; legacy alias
 	ld a, BANK(ObjectOrientationLayoutPointers)
 	ld [rROMB0], a
 	ld hl, ObjectOrientationLayoutPointers
-	ldh a, [$FF81]
+	ldh a, [hOrientDirection]
 	sla a
 	add a, l
 	ld l, a
@@ -2666,19 +2667,19 @@ Func_0F0C: ; legacy alias
 	ld c, $09
 .writeEntry:
 	call AllocateShadowOamFront
-	ldh a, [$FF83]
+	ldh a, [hOrientScreenY]
 	ld b, a
 	ld a, [hli]
 	add a, b
 	ld [de], a
 	inc e
-	ldh a, [$FF82]
+	ldh a, [hOrientScreenX]
 	ld b, a
 	ld a, [hli]
 	add a, b
 	ld [de], a
 	inc e
-	ldh a, [$FF84]
+	ldh a, [hOrientTileBase]
 	ld b, a
 	ld a, [hli]
 	add a, b
@@ -2687,7 +2688,7 @@ Func_0F0C: ; legacy alias
 	ld a, [hli]
 	or $08
 	ld b, a
-	ldh a, [$FF85]
+	ldh a, [hOrientPalette]
 	add a, b
 	ld [de], a
 	dec c
@@ -2702,14 +2703,14 @@ Func_0F43: ; legacy alias
 	ld a, BANK(ObjectOrientationTilePointers)
 	ld [rROMB0], a
 	ld hl, ObjectOrientationTilePointers
-	ldh a, [$FF81]
+	ldh a, [hOrientDirection]
 	sla a
 	add a, l
 	ld l, a
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ldh a, [$FF80]
+	ldh a, [hOrientVariant]
 	add a, $27
 	ld [rROMB0], a
 	ld b, $09
@@ -2770,9 +2771,9 @@ Func_0F43: ; legacy alias
 ; Use the bank selector 0-2 as the OBJ-palette offset for this orientation.
 SelectObjectOrientationPalette:
 Func_0F91: ; legacy alias
-	ldh a, [$FF80]
+	ldh a, [hOrientVariant]
 	add a, $00
-	ldh [$FF85], a
+	ldh [hOrientPalette], a
 	ret
 
 
@@ -2806,7 +2807,7 @@ Func_0F98: ; legacy alias
 	ld [hl], e
 	ld a, l
 	and $C0
-	add a, $29
+	add a, OBJECT_PLAYER_POWERUP_TYPE_OFFSET
 	ld l, a
 	ld e, [hl]
 	ld a, $03
@@ -2860,13 +2861,13 @@ Func_0F98: ; legacy alias
 	jr nz, .finishSuccess
 	ld a, l
 	and $C0
-	add a, $29
+	add a, OBJECT_PLAYER_POWERUP_TYPE_OFFSET
 	ld l, a
 	ld [hl], $00
 .finishSuccess:
 	ld a, l
 	and $C0
-	add a, OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET
+	add a, OBJECT_VEHICLE_HIDE_REVEAL_TIMER_OFFSET
 	ld l, a
 	ld [hl], $02
 	xor a
@@ -2948,7 +2949,7 @@ Func_104B: ; legacy alias
 	jr nz, .checkHealth
 	ld a, l
 	and $C0
-	add a, OBJECT_VEHICLE_PICKUP02_TIMER_OFFSET
+	add a, OBJECT_VEHICLE_HIDE_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -2957,7 +2958,7 @@ Func_104B: ; legacy alias
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, OBJECT_VEHICLE_ACTION_FEEDBACK_TIMER_OFFSET
+	add a, OBJECT_VEHICLE_HIDE_REVEAL_TIMER_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -2967,7 +2968,7 @@ Func_104B: ; legacy alias
 .checkHealth:
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_HEALTH_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -3131,7 +3132,7 @@ ConvertVisibleLevelCellBit2Regions:
 	push de
 	push hl
 	ld a, [wLevelViewY]
-	ldh [$FF98], a
+	ldh [hBit2ScanTop], a
 	add a, $12
 	ld c, a
 	ld a, [wLevelHeight]
@@ -3141,9 +3142,9 @@ ConvertVisibleLevelCellBit2Regions:
 	ld c, a
 .storeBottom:
 	ld a, c
-	ldh [$FF99], a
+	ldh [hBit2ScanBottom], a
 	ld a, [wLevelViewX]
-	ldh [$FF96], a
+	ldh [hBit2ScanLeft], a
 	add a, $14
 	ld c, a
 	ld a, [wLevelWidth]
@@ -3153,32 +3154,32 @@ ConvertVisibleLevelCellBit2Regions:
 	ld c, a
 .storeRight:
 	ld a, c
-	ldh [$FF97], a
-	ldh a, [$FF98]
-	ldh [$FF9A], a
+	ldh [hBit2ScanRight], a
+	ldh a, [hBit2ScanTop]
+	ldh [hBit2ScanRow], a
 .nextRow:
-	ldh a, [$FF96]
-	ldh [$FF9B], a
+	ldh a, [hBit2ScanLeft]
+	ldh [hBit2ScanColumn], a
 .nextColumn:
-	ldh a, [$FF9B]
+	ldh a, [hBit2ScanColumn]
 	ld c, a
-	ldh a, [$FF9A]
+	ldh a, [hBit2ScanRow]
 	ld e, a
 	call ConvertLevelCellBit2RegionAtCell
-	ldh a, [$FF97]
+	ldh a, [hBit2ScanRight]
 	inc a
 	ld b, a
-	ldh a, [$FF9B]
+	ldh a, [hBit2ScanColumn]
 	inc a
-	ldh [$FF9B], a
+	ldh [hBit2ScanColumn], a
 	cp b
 	jr c, .nextColumn
-	ldh a, [$FF99]
+	ldh a, [hBit2ScanBottom]
 	inc a
 	ld b, a
-	ldh a, [$FF9A]
+	ldh a, [hBit2ScanRow]
 	inc a
-	ldh [$FF9A], a
+	ldh [hBit2ScanRow], a
 	cp b
 	jr c, .nextRow
 	pop hl
@@ -4152,6 +4153,7 @@ Func_164F: ; legacy alias
 	pop hl
 	pop de
 	pop bc
+	; Original: pop af restores the caller's A and F, discarding the bits 2-3 result in A. No reference to this routine is known.
 	pop af
 	ret
 
@@ -4653,13 +4655,13 @@ Func_194B:
 	srl d
 	rr e
 	ld a, e
-	ldh [$FF80], a
+	ldh [hCenterViewX], a
 	ld a, d
-	ldh [$FF81], a
-	ldh a, [$FF80]
+	ldh [hCenterViewX + 1], a
+	ldh a, [hCenterViewX]
 	sub $0B
 	ld e, a
-	ldh a, [$FF81]
+	ldh a, [hCenterViewX + 1]
 	sbc a, $00
 	ld d, a
 	ld a, d
@@ -4673,18 +4675,18 @@ Func_194B:
 	ld de, $0000
 .checkXMaximum:
 	ld a, e
-	ldh [$FF80], a
+	ldh [hCenterViewX], a
 	ld a, d
-	ldh [$FF81], a
+	ldh [hCenterViewX + 1], a
 	ld a, [wLevelWidth]
 	sub $15
 	ld e, a
 	ld a, $00
 	sbc a, $00
 	ld d, $00
-	ldh a, [$FF80]
+	ldh a, [hCenterViewX]
 	ld c, a
-	ldh a, [$FF81]
+	ldh a, [hCenterViewX + 1]
 	ld b, a
 	ld a, d
 	cp b
@@ -4694,9 +4696,9 @@ Func_194B:
 .compareXMaximum:
 	jr nc, .calculateY
 	ld a, e
-	ldh [$FF80], a
+	ldh [hCenterViewX], a
 	ld a, d
-	ldh [$FF81], a
+	ldh [hCenterViewX + 1], a
 .calculateY:
 	ld a, l
 	and $C0
@@ -4712,13 +4714,13 @@ Func_194B:
 	srl d
 	rr e
 	ld a, e
-	ldh [$FF82], a
+	ldh [hCenterViewY], a
 	ld a, d
-	ldh [$FF83], a
-	ldh a, [$FF82]
+	ldh [hCenterViewY + 1], a
+	ldh a, [hCenterViewY]
 	sub $0A
 	ld e, a
-	ldh a, [$FF83]
+	ldh a, [hCenterViewY + 1]
 	sbc a, $00
 	ld d, a
 	ld a, d
@@ -4732,18 +4734,18 @@ Func_194B:
 	ld de, $0000
 .checkYMaximum:
 	ld a, e
-	ldh [$FF82], a
+	ldh [hCenterViewY], a
 	ld a, d
-	ldh [$FF83], a
+	ldh [hCenterViewY + 1], a
 	ld a, [wLevelHeight]
 	sub $13
 	ld e, a
 	ld a, $00
 	sbc a, $00
 	ld d, $00
-	ldh a, [$FF82]
+	ldh a, [hCenterViewY]
 	ld c, a
-	ldh a, [$FF83]
+	ldh a, [hCenterViewY + 1]
 	ld b, a
 	ld a, d
 	cp b
@@ -4753,13 +4755,13 @@ Func_194B:
 .compareYMaximum:
 	jr nc, .setViewPosition
 	ld a, e
-	ldh [$FF82], a
+	ldh [hCenterViewY], a
 	ld a, d
-	ldh [$FF83], a
+	ldh [hCenterViewY + 1], a
 .setViewPosition:
-	ldh a, [$FF80]
+	ldh a, [hCenterViewX]
 	ld b, a
-	ldh a, [$FF82]
+	ldh a, [hCenterViewY]
 	ld c, a
 	call SetLevelViewCellPosition
 	pop hl
@@ -5243,9 +5245,9 @@ DrawLevelCellIfVisible:
 	push de
 	push hl
 	ld a, c
-	ldh [$FFA0], a
+	ldh [hDrawLevelCellX], a
 	ld a, e
-	ldh [$FFA1], a
+	ldh [hDrawLevelCellY], a
 	ld a, [wLevelViewX]
 	ld l, a
 	ld a, c
@@ -5291,9 +5293,9 @@ DrawLevelCellIfVisible:
 	push af
 	ld a, [wLevelMapBank]
 	ld [rROMB0], a
-	ldh a, [$FFA0]
+	ldh a, [hDrawLevelCellX]
 	ld b, a
-	ldh a, [$FFA1]
+	ldh a, [hDrawLevelCellY]
 	ld c, a
 	call WriteLevelCellToBGMap
 	pop af
@@ -5322,9 +5324,9 @@ GetLevelCellTileAndAttr:
 	ld e, b
 	add hl, de
 	ld a, l
-	ldh [$FF80], a
+	ldh [hLevelCellIndex], a
 	ld a, h
-	ldh [$FF81], a
+	ldh [hLevelCellIndex + 1], a
 	push hl
 	ldh a, [rSVBK]
 	ld b, a
@@ -5356,6 +5358,7 @@ GetLevelCellTileAndAttr:
 .animatedCell:
 	ld a, [wLevelAnimatedCellAttribute]
 	ld d, a
+	; Original: wLevelAnimationFrame is also stepped by the mapped-cell path below (mask $03 there, $07 here), so the frame depends on draw order.
 	ld a, [wLevelAnimationFrame]
 	inc a
 	and $07
@@ -5365,9 +5368,9 @@ GetLevelCellTileAndAttr:
 	jp .return
 
 .mappedCell:
-	ldh a, [$FF80]
+	ldh a, [hLevelCellIndex]
 	ld l, a
-	ldh a, [$FF81]
+	ldh a, [hLevelCellIndex + 1]
 	ld h, a
 	ld a, [wLevelAttributeMap]
 	add a, l
@@ -5376,9 +5379,9 @@ GetLevelCellTileAndAttr:
 	adc a, h
 	ld h, a
 	ld d, [hl]
-	ldh a, [$FF80]
+	ldh a, [hLevelCellIndex]
 	ld l, a
-	ldh a, [$FF81]
+	ldh a, [hLevelCellIndex + 1]
 	ld h, a
 	ld a, [wLevelTileMap]
 	add a, l
@@ -5401,6 +5404,7 @@ GetLevelCellTileAndAttr:
 	ld l, c
 	ld h, b
 	inc bc
+	; Original: same counter as the animated-cell path above (mask $07 there, $03 here).
 	ld a, [wLevelAnimationFrame]
 	inc a
 	and $03
@@ -5438,9 +5442,9 @@ GetLevelCellTileAndAttr:
 	jr .return
 
 .directCell:
-	ldh a, [$FF80]
+	ldh a, [hLevelCellIndex]
 	ld l, a
-	ldh a, [$FF81]
+	ldh a, [hLevelCellIndex + 1]
 	ld h, a
 	ld a, [wLevelAttributeMap]
 	add a, l
@@ -5449,9 +5453,9 @@ GetLevelCellTileAndAttr:
 	adc a, h
 	ld h, a
 	ld d, [hl]
-	ldh a, [$FF80]
+	ldh a, [hLevelCellIndex]
 	ld l, a
-	ldh a, [$FF81]
+	ldh a, [hLevelCellIndex + 1]
 	ld h, a
 	ld a, [wLevelTileMap]
 	add a, l
@@ -5672,30 +5676,30 @@ DrawLevelViewport:
 	ld a, [wLevelMapBank]
 	ld [rROMB0], a
 	ld a, $00
-	ldh [$FF94], a
-	ldh [$FF95], a
+	ldh [hViewportBgColumn], a
+	ldh [hViewportBgRow], a
 	ld a, [wLevelViewX]
-	ldh [$FF92], a
+	ldh [hViewportMapColumn], a
 	ld a, [wLevelViewY]
-	ldh [$FF93], a
+	ldh [hViewportMapRow], a
 	ld a, $12
-	ldh [$FF91], a
+	ldh [hViewportRowsLeft], a
 .drawRow:
-	ldh a, [$FF94]
+	ldh a, [hViewportBgColumn]
 	ld b, a
-	ldh a, [$FF95]
+	ldh a, [hViewportBgRow]
 	ld c, a
 	inc a
-	ldh [$FF95], a
+	ldh [hViewportBgRow], a
 	call GetLevelBGMapAddress
 	ld a, $14
-	ldh [$FF90], a
-	ldh a, [$FF92]
+	ldh [hViewportCellsLeft], a
+	ldh a, [hViewportMapColumn]
 	ld b, a
-	ldh a, [$FF93]
+	ldh a, [hViewportMapRow]
 	ld c, a
 	inc a
-	ldh [$FF93], a
+	ldh [hViewportMapRow], a
 .drawCell:
 	call GetLevelCellTileAndAttr
 	ld a, $01
@@ -5721,13 +5725,13 @@ DrawLevelViewport:
 	ld l, a
 	pop de
 	pop af
-	ldh a, [$FF90]
+	ldh a, [hViewportCellsLeft]
 	dec a
-	ldh [$FF90], a
+	ldh [hViewportCellsLeft], a
 	jr nz, .drawCell
-	ldh a, [$FF91]
+	ldh a, [hViewportRowsLeft]
 	dec a
-	ldh [$FF91], a
+	ldh [hViewportRowsLeft], a
 	jr nz, .drawRow
 	pop af
 	ld [rROMB0], a
@@ -6250,21 +6254,21 @@ Func_2241: ; legacy alias
 	cp $00
 	jr z, .return
 	dec a
-	ldh [$FF80], a
+	ldh [hVelocitySpeedIndex], a
 	ld a, l
 	and $C0
 	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
-	ldh [$FF81], a
+	ldh [hVelocityDirection], a
 	ld a, BANK(ObjectVelocityTable)
 	ld [rROMB0], a
-	ldh a, [$FF80]
+	ldh a, [hVelocitySpeedIndex]
 	ld h, a
 	ld l, $00
 	srl h
 	rr l
-	ldh a, [$FF81]
+	ldh a, [hVelocityDirection]
 	add a, a
 	add a, a
 	add a, a
@@ -6319,7 +6323,7 @@ Func_2295: ; legacy alias
 	cp $00
 	jr z, .return
 	dec a
-	ldh [$FF80], a
+	ldh [hVelocitySpeedIndex], a
 	ld a, l
 	and $C0
 	add a, OBJECT_DIRECTION_OFFSET
@@ -6327,15 +6331,15 @@ Func_2295: ; legacy alias
 	ld a, [hl]
 	add a, $08
 	and $0F
-	ldh [$FF81], a
+	ldh [hVelocityDirection], a
 	ld a, BANK(ObjectVelocityTable)
 	ld [rROMB0], a
-	ldh a, [$FF80]
+	ldh a, [hVelocitySpeedIndex]
 	ld h, a
 	ld l, $00
 	srl h
 	rr l
-	ldh a, [$FF81]
+	ldh a, [hVelocityDirection]
 	add a, a
 	add a, a
 	add a, a
@@ -6441,14 +6445,14 @@ Func_22ED: ; legacy alias
 	call CalculateVehicleNextPosition
 	call UpdateVehicleTimersAndRemoveDestroyed
 	jr z, .advanceObject
-	ld a, $26
+	ld a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
 	ld l, e
 	or a
 	jr z, .resolveVehicleMovement
-	call Func_0043
+	call UpdateCurrentObjectSequence
 	ld a, [wActiveFlag26ObjectCount]
 	inc a
 	ld [wActiveFlag26ObjectCount], a
@@ -6456,7 +6460,7 @@ Func_22ED: ; legacy alias
 	call ResolveObjectType1ProximityMovement
 	call ResolveObjectLevelBit0Movement
 	call HandleObjectLevelBit3Cell
-	call DispatchNearbyType4Entity
+	call DispatchNearbyStatus4Pickup
 	jr .commitPosition
 
 .updateProjectile:
@@ -6719,8 +6723,10 @@ UpdateObjectFrameDisplacement:
 
 
 ; For an entity with flag bit 3, scan the 64 records for the first flag-bit-3
-; type-4 entity within 12 pixels on both axes and dispatch its handler.
-DispatchNearbyType4Entity:
+; status-4 (+$1D == 4) object within 12 pixels on both axes and dispatch its
+; pickup handler.
+DispatchNearbyStatus4Pickup:
+DispatchNearbyType4Entity: ; legacy alias
 	push de
 	push bc
 	push hl
@@ -6778,7 +6784,7 @@ DispatchNearbyType4Entity:
 	ld a, l
 	and $C0
 	ld l, a
-	call DispatchEntityHandlerFar
+	call DispatchStatus4PickupHandlerFar
 	pop hl
 	pop bc
 	pop de
@@ -6883,7 +6889,7 @@ ResolveObjectLevelBit0Movement:
 	push hl
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -7036,7 +7042,7 @@ HandleObjectLevelBit3Cell:
 	jr z, .return
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -7071,10 +7077,11 @@ HandleObjectLevelBit3Cell:
 	ret
 
 
-; For flag-bit-3 objects, apply the state-$20 response to cell bits 1 and 2.
-; State 0 starts a region transition on bit 1. State 1 handles each axis,
-; rolling it back on bit 1 alone or starting a transition when bit 2 is also
-; set. State 2 has no map response.
+; For on-screen (flag bit 3) projectiles, apply the projectile-subtype (+$20)
+; response to cell bits 1 and 2; off-screen projectiles are freed. Subtype 0
+; starts a region transition on bit 1. Subtype 1 handles each axis, rolling it
+; back on bit 1 alone or starting a transition when bit 2 is also set.
+; Subtype 2 has no map response.
 HandleObjectLevelBit1And2Cells:
 	push af
 	push bc
@@ -7089,7 +7096,7 @@ HandleObjectLevelBit1And2Cells:
 	jp z, .freeDisabledObject
 	ld a, l
 	and $C0
-	add a, OBJECT_TYPE2_STATE_OFFSET
+	add a, OBJECT_PROJECTILE_SUBTYPE_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $02
@@ -7102,7 +7109,7 @@ HandleObjectLevelBit1And2Cells:
 
 .handleState1:
 	xor a
-	ldh [$FF80], a
+	ldh [hProjectileAxisRolledBack], a
 	ld a, l
 	and $C0
 	add a, $14
@@ -7140,7 +7147,7 @@ HandleObjectLevelBit1And2Cells:
 	ld [hl], e
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld b, [hl]
 	ld a, $10
@@ -7149,13 +7156,13 @@ HandleObjectLevelBit1And2Cells:
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_PROJECTILE_POWERED_OFFSET
 	ld l, a
 	ld [hl], a ; original defect: stores L into +$23 instead of incrementing it (Y path increments)
 	inc a
 	ld a, [hl]
 	ld a, $01
-	ldh [$FF80], a
+	ldh [hProjectileAxisRolledBack], a
 .checkState1Y:
 	ld a, l
 	and $C0
@@ -7195,7 +7202,7 @@ HandleObjectLevelBit1And2Cells:
 	ld [hl], e
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld b, [hl]
 	ld a, $0F
@@ -7205,15 +7212,15 @@ HandleObjectLevelBit1And2Cells:
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_PROJECTILE_POWERED_OFFSET
 	ld l, a
 	ld a, [hl]
 	inc a
 	ld [hl], a
 	ld a, $01
-	ldh [$FF80], a
+	ldh [hProjectileAxisRolledBack], a
 .finishState1Axes:
-	ldh a, [$FF80]
+	ldh a, [hProjectileAxisRolledBack]
 	or a
 	jr z, .return
 	ld a, l
@@ -7236,7 +7243,7 @@ HandleObjectLevelBit1And2Cells:
 	call Audio_QueueSound
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_PROJECTILE_LIFETIME_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $B3
@@ -7351,7 +7358,7 @@ ResolveObjectType1ProximityMovement:
 	push hl
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_VEHICLE_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -7549,12 +7556,12 @@ Func_28C5: ; legacy alias
 	add a, OBJECT_PROJECTILE_POWERED_OFFSET
 	ld l, a
 	ld a, [hl]
-	ldh [$FFA1], a
+	ldh [hHitProjectilePowered], a
 	ld a, l
 	and $C0
 	ld l, a
 	ld a, $40
-	ldh [$FFA0], a
+	ldh [hHitScanObjectsLeft], a
 	ld bc, $D000
 .scanNextObject:
 	ld a, c
@@ -7571,7 +7578,9 @@ Func_28C5: ; legacy alias
 	ld a, [bc]
 	and OBJECT_VISIBLE_FLAG
 	jr z, .advanceObject
-	ldh a, [$FFA1]
+	; Original defect: a nonzero +$23 (set by a wall bounce) skips this owner
+	; exclusion, so a bounced projectile can hit its own shooter.
+	ldh a, [hHitProjectilePowered]
 	or a
 	jr nz, .testHit
 	ld a, c
@@ -7593,9 +7602,9 @@ Func_28C5: ; legacy alias
 	ld a, $00
 	adc a, b
 	ld b, a
-	ldh a, [$FFA0]
+	ldh a, [hHitScanObjectsLeft]
 	dec a
-	ldh [$FFA0], a
+	ldh [hHitScanObjectsLeft], a
 	jr nz, .scanNextObject
 	pop hl
 	pop de
@@ -7628,7 +7637,7 @@ Func_28C5: ; legacy alias
 	ld l, c
 	ld h, b
 	ld b, d
-	ldh a, [$FFA1]
+	ldh a, [hHitProjectilePowered]
 	or a
 	jr z, .subtractHealth
 	sla b
@@ -7811,7 +7820,7 @@ Func_2A15: ; legacy alias
 	push bc
 	push hl
 	xor a
-	ldh [$FF90], a
+	ldh [hDirectionOctant], a
 	ld a, l
 	and $C0
 	inc a
@@ -7832,9 +7841,9 @@ Func_2A15: ; legacy alias
 	ld b, a
 	and $80
 	jr z, .measureYDistance
-	ldh a, [$FF90]
+	ldh a, [hDirectionOctant]
 	or $01
-	ldh [$FF90], a
+	ldh [hDirectionOctant], a
 	ld a, c
 	cpl
 	add a, $01
@@ -7865,9 +7874,9 @@ Func_2A15: ; legacy alias
 	ld b, a
 	and $80
 	jr z, .selectOctant
-	ldh a, [$FF90]
+	ldh a, [hDirectionOctant]
 	or $02
-	ldh [$FF90], a
+	ldh [hDirectionOctant], a
 	ld a, c
 	cpl
 	add a, $01
@@ -7884,7 +7893,7 @@ Func_2A15: ; legacy alias
 	ld a, b
 	sbc a, d
 	ld b, a
-	ldh a, [$FF90]
+	ldh a, [hDirectionOctant]
 	jr nc, .lookupDirection
 	or $04
 .lookupDirection:
@@ -7900,8 +7909,10 @@ Func_2A15: ; legacy alias
 	ret
 
 
-; Dispatch the bank-$02 gameplay entity updater selected in its WRAM jump stub.
-DispatchEntityUpdateFar:
+; Bank-switch thunk to UpdateNearestObjectTracker (bank $02), which resets the
+; nearest-object tracker or jumps through wNearestTargetScanJump.
+UpdateNearestObjectTrackerFar:
+DispatchEntityUpdateFar: ; legacy alias
 Func_2A88: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
@@ -8085,7 +8096,7 @@ ClearTextColumn:
 
 
 ; Create a status-2 projectile at the firing vehicle, link it back to that
-; vehicle, and initialize its subtype fields from ObjectTypeParameterTable.
+; vehicle, and initialize its subtype fields from ProjectileSubtypeParameters.
 ; Return nonzero in A on success and zero when no object record is available.
 SpawnVehicleProjectile:
 Func_2B86: ; legacy alias
@@ -8103,11 +8114,11 @@ Func_2B86: ; legacy alias
 	pop hl
 	ld a, c
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld c, a
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
 	ld [bc], a
@@ -8140,7 +8151,7 @@ Func_2B86: ; legacy alias
 	sla a
 	sla a
 	sla a
-	ld de, ObjectTypeParameterTable
+	ld de, ProjectileSubtypeParameters
 	add a, e
 	ld e, a
 	ld a, [ROM_BANK_MARKER]
@@ -8156,7 +8167,7 @@ Func_2B86: ; legacy alias
 	inc e
 	ld a, c
 	and $C0
-	add a, $1A
+	add a, OBJECT_SPEED_OFFSET
 	ld c, a
 	ld a, [de]
 	ld [bc], a
@@ -8175,13 +8186,14 @@ Func_2B86: ; legacy alias
 	ld [bc], a
 	ld a, c
 	and $C0
+	; +$24 is never read for status-2 records (no reader in any bank).
 	add a, $24
 	ld c, a
 	xor a
 	ld [bc], a
 	ld a, c
 	and $C0
-	add a, $29
+	add a, OBJECT_PROJECTILE_AIMED_VELOCITY_FLAG_OFFSET
 	ld c, a
 	xor a
 	ld [bc], a
@@ -8260,7 +8272,7 @@ Func_2C58: ; legacy alias
 	ld e, l
 	ld a, l
 	and $C0
-	add a, $29
+	add a, OBJECT_PROJECTILE_AIMED_VELOCITY_FLAG_OFFSET
 	ld l, a
 	ld a, [hl]
 	and a
@@ -8268,7 +8280,7 @@ Func_2C58: ; legacy alias
 	call z, LoadVehicleForwardVelocity
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	or a
@@ -8369,7 +8381,7 @@ Func_2CC3: ; legacy alias
 .stillAlive:
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_SPEED_OFFSET
 	ld l, a
 	ld a, [hl]
 	ld a, l
@@ -8433,7 +8445,7 @@ Func_2CF1: ; legacy alias
 	ld c, a
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld b, [hl]
 	ld e, b
@@ -8569,12 +8581,12 @@ Func_2DCB: ; legacy alias
 	push bc
 	push hl
 	ld a, $FF
-	ldh [$FF82], a
-	ldh [$FF83], a
+	ldh [hFacingBestDistance], a
+	ldh [hFacingBestDistance + 1], a
 	xor a
-	ldh [$FF80], a
-	ldh [$FF81], a
-	ldh [$FF86], a
+	ldh [hFacingBestObject], a
+	ldh [hFacingBestObject + 1], a
+	ldh [hFacingFound], a
 	ld e, l
 	ld d, h
 	ld a, l
@@ -8582,9 +8594,9 @@ Func_2DCB: ; legacy alias
 	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
-	ldh [$FF89], a
+	ldh [hFacingSourceDirection], a
 	ld a, $40
-	ldh [$FF85], a
+	ldh [hFacingObjectsLeft], a
 	ld hl, $D000
 .scanNextObject:
 	ld a, e
@@ -8609,39 +8621,39 @@ Func_2DCB: ; legacy alias
 	and OBJECT_VISIBLE_FLAG
 	jr z, .advanceCandidate
 	call GetHalfObjectManhattanDistance
-	ldh a, [$FF83]
+	ldh a, [hFacingBestDistance + 1]
 	cp b
 	jr c, .advanceCandidate
-	ldh a, [$FF82]
+	ldh a, [hFacingBestDistance]
 	cp c
 	jr c, .advanceCandidate
 	ld a, c
-	ldh [$FF87], a
+	ldh [hFacingCandidateDistance], a
 	ld a, b
-	ldh [$FF88], a
+	ldh [hFacingCandidateDistance + 1], a
 	call GetDirectionTowardObject
 	ld b, a
-	ldh a, [$FF89]
+	ldh a, [hFacingSourceDirection]
 	ld c, a
 	call GetDirectionDifferenceFar
 	ld a, $03
 	cp b
 	jr c, .advanceCandidate
 	ld a, b
-	ldh [$FF84], a
+	ldh [hFacingBestDirectionDiff], a
 	ld a, l
 	and $C0
 	ld l, a
 	ld a, l
-	ldh [$FF80], a
+	ldh [hFacingBestObject], a
 	ld a, h
-	ldh [$FF81], a
-	ldh a, [$FF87]
-	ldh [$FF82], a
-	ldh a, [$FF88]
-	ldh [$FF83], a
+	ldh [hFacingBestObject + 1], a
+	ldh a, [hFacingCandidateDistance]
+	ldh [hFacingBestDistance], a
+	ldh a, [hFacingCandidateDistance + 1]
+	ldh [hFacingBestDistance + 1], a
 	ld a, $01
-	ldh [$FF86], a
+	ldh [hFacingFound], a
 .advanceCandidate:
 	ld a, l
 	and $C0
@@ -8650,11 +8662,11 @@ Func_2DCB: ; legacy alias
 	ld a, $00
 	adc a, h
 	ld h, a
-	ldh a, [$FF85]
+	ldh a, [hFacingObjectsLeft]
 	dec a
-	ldh [$FF85], a
+	ldh [hFacingObjectsLeft], a
 	jr nz, .scanNextObject
-	ldh a, [$FF86]
+	ldh a, [hFacingFound]
 	or a
 	jr nz, .found
 	xor a
@@ -8690,23 +8702,23 @@ Func_2E67: ; legacy alias
 	and $C0
 	ld c, a
 	ld a, l
-	ldh [$FF8A], a
+	ldh [hHomingInitArgs], a
 	ld a, h
-	ldh [$FF8B], a
+	ldh [hHomingInitArgs + 1], a
 	ld a, c
-	ldh [$FF8C], a
+	ldh [hHomingInitArgs + 2], a
 	ld a, b
-	ldh [$FF8D], a
+	ldh [hHomingInitArgs + 3], a
 	call FindNearestVisibleObjectFacingSource
 	jr z, .clearTarget
 	ld a, c
 	and $C0
 	add a, OBJECT_PROJECTILE_TARGET_OFFSET
 	ld c, a
-	ldh a, [$FF80]
+	ldh a, [hFacingBestObject]
 	ld [bc], a
 	inc c
-	ldh a, [$FF81]
+	ldh a, [hFacingBestObject + 1]
 	ld [bc], a
 	jr .return
 
@@ -9109,14 +9121,14 @@ Func_3090: ; legacy alias
 	call SetObjectDirection
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	pop af
 	ld d, a
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_EFFECT_AGE_OFFSET
 	ld l, a
 	ld [hl], $00
 	ld a, d
@@ -9199,44 +9211,44 @@ Func_3104:
 	add a, e
 	ld l, a
 	ld a, [hli]
-	ldh [$FF81], a
+	ldh [hSpriteScreenX], a
 	ld a, [hl]
-	ldh [$FF82], a
+	ldh [hSpriteScreenY], a
 	ld a, OBJECT_HEALTH_OR_AGE_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
 	srl a
 	srl a
-	ldh [$FF85], a
+	ldh [hSpriteFrame], a
 	ld a, OBJECT_TYPE_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
-	ldh [$FF80], a
+	ldh [hSpriteType], a
 	ld a, OBJECT_FRAME_TABLE_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hli]
-	ldh [$FF86], a
+	ldh [hSpriteFrameTable], a
 	ld a, [hl]
-	ldh [$FF87], a
+	ldh [hSpriteFrameTable + 1], a
 	ld a, OBJECT_OAM_LAYOUT_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hli]
-	ldh [$FF88], a
+	ldh [hSpriteOamLayout], a
 	ld a, [hl]
-	ldh [$FF89], a
+	ldh [hSpriteOamLayout + 1], a
 	ld a, OBJECT_TILE_COUNT_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
-	ldh [$FF8A], a
+	ldh [hSpriteTileCount], a
 	call AllocateDynamicSpriteTiles
 	cp $FF
 	jr z, .restoreBank
-	ldh [$FF84], a
+	ldh [hSpriteTileBase], a
 	call LoadObjectAnimationTiles
 	call BuildObjectOamEntries
 .restoreBank:
@@ -9254,27 +9266,27 @@ BuildObjectOamEntries:
 Func_315F:
 	ld a, $02
 	ld [rROMB0], a
-	ldh a, [$FF88]
+	ldh a, [hSpriteOamLayout]
 	ld l, a
-	ldh a, [$FF89]
+	ldh a, [hSpriteOamLayout + 1]
 	ld h, a
-	ldh a, [$FF8A]
+	ldh a, [hSpriteTileCount]
 	ld c, a
 .buildEntry:
 	call AllocateShadowOamFront
-	ldh a, [$FF82]
+	ldh a, [hSpriteScreenY]
 	ld b, a
 	ld a, [hli]
 	add a, b
 	ld [de], a
 	inc e
-	ldh a, [$FF81]
+	ldh a, [hSpriteScreenX]
 	ld b, a
 	ld a, [hli]
 	add a, b
 	ld [de], a
 	inc e
-	ldh a, [$FF84]
+	ldh a, [hSpriteTileBase]
 	ld b, a
 	ld a, [hli]
 	add a, b
@@ -9297,11 +9309,11 @@ LoadObjectAnimationTiles:
 Func_3190:
 	ld a, $02
 	ld [rROMB0], a
-	ldh a, [$FF86]
+	ldh a, [hSpriteFrameTable]
 	ld l, a
-	ldh a, [$FF87]
+	ldh a, [hSpriteFrameTable + 1]
 	ld h, a
-	ldh a, [$FF85]
+	ldh a, [hSpriteFrame]
 	add a, a
 	add a, l
 	ld l, a
@@ -9313,7 +9325,7 @@ Func_3190:
 	ld l, a
 	ld a, $08
 	ld [rROMB0], a
-	ldh a, [$FF8A]
+	ldh a, [hSpriteTileCount]
 	ld b, a
 .copyTile:
 	ld a, [hli]
@@ -9539,7 +9551,7 @@ Func_32A3: ; legacy alias
 	push af
 	ld a, BANK(Func_01_4233)
 	ld [rROMB0], a
-	call Func_01_4233
+	call LoadHudTopRows
 	pop af
 	ld [rROMB0], a
 	ret
@@ -9593,7 +9605,7 @@ Func_32DE: ; legacy alias
 	push af
 	ld a, BANK(Func_01_42A2)
 	ld [rROMB0], a
-	call Func_01_42A2
+	call LoadPauseHudTopRowsAndTransfer
 	pop af
 	ld [rROMB0], a
 	ret
@@ -9967,7 +9979,7 @@ Func_3439:
 HudPowerupFirstTiles:
 	db $00, $4E, $52, $56
 HudPowerupPalettes:
-	dw $0000, wArrowUpPalette, wArrowDownPalette, wAlphanumericFontPalette
+	dw $0000, wPowerupIcon1Palette, wPowerupIcon2Palette, wPowerupIcon3Palette
 
 ; Draw power-up kind D as a 2-by-2 icon and copy its eight-byte CGB palette to
 ; the buffer consumed by the installed scanline palette uploader.
@@ -10105,12 +10117,12 @@ Func_356B:
 	ld e, a
 	ld a, [wScore + 3]
 	ld d, a
-	ld hl, $FF90
+	ld hl, hHudScoreBcd
 	call ConvertU32ToPackedBcdFar
 	ld hl, wVramDmaStagingBuffer + $0D
 	xor a
-	ldh [$FF98], a
-	ld bc, $FF92
+	ldh [hHudScoreDigitShown], a
+	ld bc, hHudScoreBcd + 2
 	ld e, $05
 .nextPackedDigit:
 	ld a, e
@@ -10130,12 +10142,12 @@ Func_356B:
 	or a
 	jr z, .maybeDrawDigit
 	ld a, $01
-	ldh [$FF98], a
+	ldh [hHudScoreDigitShown], a
 .maybeDrawDigit:
 	ld a, d
 	or a
 	jr nz, .drawDigit
-	ldh a, [$FF98]
+	ldh a, [hHudScoreDigitShown]
 	or a
 	jr nz, .drawDigit
 	jr .advanceCell
@@ -10198,7 +10210,7 @@ Func_35F7: ; legacy alias
 	push af
 	ld a, BANK(Func_01_446E)
 	ld [rROMB0], a
-	call Func_01_446E
+	call AnimatePlayerHealthRefill
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10214,15 +10226,15 @@ Func_3608: ; legacy alias
 	ld a, [wJoypadHeld]
 	ld e, a
 	ld a, e
-	cp $80
+	cp PADF_START
 	jr nz, .checkReturnToMenuChord
 	ld a, [wPauseActive]
 	cpl
 	ld [wPauseActive], a
 .checkReturnToMenuChord:
 	ld a, e
-	and $F0
-	cp $F0
+	and PADF_START | PADF_SELECT | PADF_B | PADF_A
+	cp PADF_START | PADF_SELECT | PADF_B | PADF_A
 	jr nz, .continueGameplay
 	jp RestartGame
 
@@ -10420,7 +10432,7 @@ Func_372E: ; legacy alias
 	jr z, .return
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld [hl], b
 	ld a, l
@@ -10430,15 +10442,16 @@ Func_372E: ; legacy alias
 	ld [hl], c
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld [hl], $00
 	ld a, l
 	and $C0
-	add a, $1A
+	add a, OBJECT_SPEED_OFFSET
 	ld l, a
 	ld [hl], $00
 	ld a, l
+	; +$20 has no status-4 reader; this clear is the only status-4 access.
 	and $C0
 	add a, $20
 	ld l, a
@@ -10453,12 +10466,13 @@ Func_372E: ; legacy alias
 	ret
 
 
-DispatchEntityHandlerFar:
+DispatchStatus4PickupHandlerFar:
+DispatchEntityHandlerFar: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, BANK(DispatchEntityHandler)
+	ld a, BANK(DispatchStatus4PickupHandler)
 	ld [rROMB0], a
-	call DispatchEntityHandler
+	call DispatchStatus4PickupHandler
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10533,7 +10547,7 @@ Func_37BD: ; legacy alias
 	push af
 	ld a, BANK(Func_01_4687)
 	ld [rROMB0], a
-	call Func_01_4687
+	call DrawObjectTypeMarkerSprite
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10591,7 +10605,7 @@ Func_3812: ; legacy alias
 	push af
 	ld a, BANK(Func_03_5CD0)
 	ld [rROMB0], a
-	call Func_03_5CD0
+	call UpdateObjectSequenceMovement
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10630,7 +10644,7 @@ Func_3845: ; legacy alias
 	push af
 	ld a, BANK(Func_03_6923)
 	ld [rROMB0], a
-	call Func_03_6923
+	call MarkMatchingAuxTargetReached
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10643,7 +10657,7 @@ Func_3856:
 	push af
 	ld a, BANK(Func_01_46B1)
 	ld [rROMB0], a
-	call Func_01_46B1
+	call SubtractRgb555Saturating
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10656,7 +10670,7 @@ Func_3867:
 	push af
 	ld a, BANK(Func_01_4703)
 	ld [rROMB0], a
-	call Func_01_4703
+	call AddRgb555Saturating
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10669,7 +10683,7 @@ Func_3878:
 	push af
 	ld a, BANK(Func_01_475E)
 	ld [rROMB0], a
-	call Func_01_475E
+	call DarkenAllBgPaletteColors
 	pop af
 	ld [rROMB0], a
 	ret
@@ -10683,7 +10697,7 @@ Func_3889:
 	push af
 	ld a, BANK(Func_01_4799)
 	ld [rROMB0], a
-	call Func_01_4799
+	call CaptureBgPalettesAndFadeToWhite
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11122,7 +11136,7 @@ Func_3AAE: ; legacy alias
 	push af
 	ld a, BANK(Func_01_5867)
 	ld [rROMB0], a
-	call Func_01_5867
+	call InstallMenuRamCode
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11136,9 +11150,9 @@ Func_3ABF: ; legacy alias
 	ld [rROMB0], a
 	call ClearShadowOamAndTransferFar
 	ld a, [wGameStartMode]
-	cp $01
+	cp GAME_START_LEVEL_SELECT
 	jr z, .return
-	call Func_01_5BF1
+	call InitSceneDisplay
 	ld a, [wLevelNumber]
 	ld hl, LevelRowSceneFlags
 	ld a, a
@@ -11153,7 +11167,7 @@ Func_3ABF: ; legacy alias
 	jr z, .queueSceneSounds
 	call SelectLevelRowScene
 	call RunScrollingScene
-	call Func_01_6133
+	call ClearSceneSplitPalettes
 .queueSceneSounds:
 	ld e, $10
 	call Audio_QueueSound
@@ -11165,7 +11179,7 @@ Func_3ABF: ; legacy alias
 	add a, $81
 	ld e, a
 	call Audio_QueueSound
-	call Func_01_5BF1
+	call InitSceneDisplay
 	ld a, [wLevelNumber]
 	call SelectLevelScene
 	call RunScrollingScene
@@ -11181,16 +11195,16 @@ Func_3B12: ; legacy alias
 	ld a, BANK(Func_01_5BF1)
 	ld [rROMB0], a
 	ld a, [wGameStartMode]
-	cp $00
+	cp GAME_START_NEW
 	jr z, .runSceneAndMode12
-	cp $02
+	cp GAME_START_PASSWORD
 	jr z, .runSceneAndMode12
-	cp $01
+	cp GAME_START_LEVEL_SELECT
 	jr z, .runMode8
 	jr .return
 
 .runSceneAndMode12:
-	call Func_01_5BF1
+	call InitSceneDisplay
 	xor a
 	ldh [$FF82], a
 	ldh [$FF81], a
@@ -11229,7 +11243,7 @@ Func_3B5A: ; legacy alias
 	ld a, BANK(Func_01_6BBC)
 	ld [rROMB0], a
 	ld a, [wGameStartMode]
-	cp $01
+	cp GAME_START_LEVEL_SELECT
 	jr z, .restoreBankAndReturn
 	call PrepareDisplayForScreenTransition
 	ld e, $82
@@ -11237,7 +11251,7 @@ Func_3B5A: ; legacy alias
 	ld a, [wLevelNumber]
 	cp $0E
 	jp z, .restoreBankAndReturn
-	call Func_01_6BBC
+	call EncodePasswordFromProgress
 	call RunScreenMode6SetupFar
 .waitForInputFrame:
 	xor a
@@ -11268,7 +11282,7 @@ Func_3B9F: ; legacy alias
 	push af
 	ld a, BANK(Func_02_5C40)
 	ld [rROMB0], a
-	call Func_02_5C40
+	call RunBootScreenSequence
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11283,7 +11297,7 @@ Func_3BB0: ; legacy alias
 	ld a, BANK(Func_01_6618)
 	ld [rROMB0], a
 	call InstallBasicInterruptHandlersFar
-	call Func_01_6618
+	call InstallSceneRamCode
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11296,7 +11310,7 @@ Func_3BC4: ; legacy alias
 	push af
 	ld a, BANK(Func_01_6CF0)
 	ld [rROMB0], a
-	call Func_01_6CF0
+	call ShowEarnedPasswordScreen
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11323,7 +11337,7 @@ Func_3BE6: ; legacy alias
 	push af
 	ld a, BANK(Func_02_47AF)
 	ld [rROMB0], a
-	call Func_02_47AF
+	call DivideScoreByThousand
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11336,7 +11350,7 @@ Func_3BF7: ; legacy alias
 	push af
 	ld a, BANK(Func_02_5D33)
 	ld [rROMB0], a
-	call Func_02_5D33
+	call SetScoreFromThousands
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11347,9 +11361,9 @@ RunScreenMode12SetupFar:
 Func_3C08: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
-	ld a, BANK(ShowScreenMode12WithPasswordScoreLives)
+	ld a, BANK(ShowScreenMode12WithScoreAndLives)
 	ld [rROMB0], a
-	call ShowScreenMode12WithPasswordScoreLives
+	call ShowScreenMode12WithScoreAndLives
 	pop af
 	ld [rROMB0], a
 	ret
@@ -11622,7 +11636,7 @@ ProcessNextScreenEffectObject:
 	ld l, e
 	cp $01
 	jr nz, .advanceToNextObject
-	ld a, $26
+	ld a, OBJECT_NONPLAYER_CONTROLLED_FLAG_OFFSET
 	add a, e
 	ld l, a
 	ld a, [hl]
@@ -11890,7 +11904,7 @@ RunScreenMode8ActivityFar:
 Func_3F1F: ; legacy alias
 	ld a, BANK(Func_02_6306)
 	ld [rROMB0], a
-	call Func_02_6306
+	call RunBurstEffectUntilButton
 	ret
 
 

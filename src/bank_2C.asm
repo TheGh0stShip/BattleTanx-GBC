@@ -134,13 +134,16 @@ ScreenMode05_Palettes:
 
 ; ScreenModeTable entries 11.
 Func_2C_55C4: ; address-based alias kept for other banks
+LevelGridScreen_LoadTiles:
 ScreenMode11_LoadTiles:
 	screen_load_tiles ScreenMode11_Descriptor
 
 Func_2C_561C: ; address-based alias kept for other banks
+LevelGridScreen_Draw:
 ScreenMode11_Draw: ; no fade
 	screen_draw_plain ScreenMode11_Descriptor
 
+LevelGridScreen_Descriptor:
 ScreenMode11_Descriptor:
 	screen_descriptor ScreenMode11_Tiles, ScreenMode11_TileMap, ScreenMode11_AttrMap, ScreenMode11_Palettes, 87, 20, 18, 2, 0
 
@@ -202,10 +205,12 @@ ScreenMode03_Draw: ; fades in from black
 
 ; ScreenModeTable entries 6.
 Func_2C_5F9F: ; address-based alias kept for other banks
+EarnedCodeScreen_LoadTiles:
 ScreenMode06_LoadTiles:
 	screen_load_tiles ScreenMode06_Descriptor
 
 Func_2C_5FF7: ; address-based alias kept for other banks
+EarnedCodeScreen_Draw:
 ScreenMode06_Draw: ; fades in from black
 	screen_draw_fade ScreenMode06_Descriptor, 0
 
@@ -354,6 +359,7 @@ ScreenMode06_Palettes:
 	dw $0C63, $0204, $270A, $6F58 ; palette 2
 	dw $0C63, $1120, $0204, $6F58 ; palette 3
 
+EarnedCodeScreen_Descriptor:
 ScreenMode06_Descriptor:
 	screen_descriptor ScreenMode06_Tiles, ScreenMode06_TileMap, ScreenMode06_AttrMap, ScreenMode06_Palettes, 134, 20, 18, 4, 0
 

@@ -69,8 +69,6 @@ def tile_number(tile: int, attributes: int) -> int:
 
 
 class Level:
-    # tools/ is on sys.path and tools/dis.py shadows the standard dis module,
-    # so this file avoids dataclasses (which import inspect -> dis).
     def __init__(self, **fields):
         self.__dict__.update(fields)
         self.ranges = []

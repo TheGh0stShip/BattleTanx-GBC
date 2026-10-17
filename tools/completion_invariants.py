@@ -10,10 +10,14 @@ Rules:
   2 bank $08 duplicate palette-shaped records
   3 bank $08 counted tile copies avoid the unexplained bytes
   4 scene grid columns, unread column-3 slots, zero +$38 palette windows
-  5 LevelTileAnimationSet2 overrun lands on Set4
+  5 LevelTileAnimationSet2 overrun lands on Set4, at pinned cell positions
   6 level record fields +6, +7/+8 and tile-block end
   7 scene RAM images contain no di/ei/halt/reti; HDMA flag set after staging
   8 pinned Func_3960 call sites
+  9 level bit-2/3 regions not covered by their start-cell rectangle
+ 10 level cell $0A columns and their rectangles
+ 11 VRAM1 animated-cell tile ids $BB-$C2 and their loader
+ 12 level attribute lookup reads and map-attribute agreement
 """
 from __future__ import annotations
 
@@ -276,9 +280,15 @@ def le(r, i):
 SET_RECORDS = 5
 SET2_RECORDS = 95
 SET2_OVERRUN = {3: [172, 174, 186, 187, 195], 4: [213, 214, 218, 219]}
+# Level 3 overrun cells are exactly the $0A columns (rule 10); level 4 has six cells.
+SET2_OVERRUN_CELLS = {
+    3: sorted((x, y) for x in (60, 77, 105) for y in (37, 38, 39)),
+    4: sorted([(51, 8), (56, 8), (52, 10), (53, 10), (54, 10), (55, 10)]),
+}
 
 
-def set2_overrun(ctx):
+def set2_overrun(ctx, cells=False):
+    """Overrun record indices per level, or with cells=True the (x, y) cell positions."""
     _, set2 = ctx.label("LevelTileAnimationSet2")
     _, anims = ctx.label("LevelTileAnimationPointers")
     out = {}
@@ -288,15 +298,16 @@ def set2_overrun(ctx):
         r = level_record(ctx, lv)
         w, h, cb, mb = r[0], r[1], r[4], r[5]
         attr, tmap, cmap = le(r, 14), le(r, 16), le(r, 18)
-        idx = set()
+        idx, pos = set(), set()
         for i in range(w * h):
             if byte(ctx.rom, cb, cmap + i) & 0x0C == 0 or byte(ctx.rom, mb, attr + i) & 0x08:
                 continue      # not convertible to the mapped state, or VRAM bank 1 (tables skipped)
             k = (byte(ctx.rom, mb, tmap + i) + 0x7F) & 0xFF
             if k >= SET2_RECORDS:
                 idx.add(k)
+                pos.add((i % w, i // w))
         if idx:
-            out[lv] = sorted(idx)
+            out[lv] = sorted(pos) if cells else sorted(idx)
     return out
 
 
@@ -310,6 +321,8 @@ def check_set2_overrun(ctx):
     check_set2_layout(ctx)
     got = set2_overrun(ctx)
     check(got == SET2_OVERRUN, f"rule 5: Set2 overrun indices {got} differ from pinned {SET2_OVERRUN}")
+    cells = set2_overrun(ctx, cells=True)
+    check(cells == SET2_OVERRUN_CELLS, f"rule 5: Set2 overrun cells {cells} differ from pinned positions {SET2_OVERRUN_CELLS}")
     s4 = ctx.label("LevelTileAnimationSet4")[1]
     s4_end = s4 + SET_RECORDS * 96
     landed = sorted({k - 164 for v in got.values() for k in v})
@@ -355,15 +368,15 @@ def check_level_tile_end(ctx):
 
 
 # ------------------------------------------------------------------ rule 7
-SCENE_IMAGES = {0xD1F0: "Bank01RomImage_6432", 0xD230: "Bank01RomImage_6468",
-                0xD370: "Bank01RomImage_6505", 0xD3B0: "Bank01RomImage_6538"}
+SCENE_IMAGES = {0xD1F0: "ComputeSceneRowPointerRomImage", 0xD230: "GetSceneTileSourceAddressRomImage",
+                0xD370: "StageSceneRowTilesRomImage", 0xD3B0: "CopySceneTileToStagingRomImage"}
 
 
 def scene_image_copies(ctx):
     """(label, length) for each image, parsed from ld hl/ld de/ld bc/call CopyBytes in the source."""
     found = {}
     for text in ctx.src.values():
-        for m in re.finditer(r"ld hl, (Bank01RomImage_[0-9A-F]{4})\s*\n\s*ld de, \$([0-9A-Fa-f]{4})\s*\n"
+        for m in re.finditer(r"ld hl, (\w+RomImage(?:_[0-9A-F]{4})?)\s*\n\s*ld de, \$([0-9A-Fa-f]{4})\s*\n"
                              r"\s*ld bc, \$([0-9A-Fa-f]{4})\s*\n\s*call CopyBytes", text):
             found[int(m.group(3), 16)] = (m.group(1), int(m.group(2), 16))
     return found
@@ -413,6 +426,163 @@ def check_func_3960_sites(ctx):
     got = func_3960_sites(ctx)
     check(got == FUNC_3960_PINNED, f"rule 8: Func_3960 call sites {got} differ from the pinned list")
     return sum(n for *_, n in got)
+
+
+# ------------------------------------------------------------------ level maps (rules 9-12)
+LOOKUP_ENTRIES = 0xA0
+
+
+class Level:
+    """Cell map, tile map and attribute map of one level (8-bit cells, row-major)."""
+
+    def __init__(self, ctx, n):
+        r = level_record(ctx, n)
+        self.n, self.w, self.h = n, r[0], r[1]
+        cb, mb = r[4], r[5]
+        attr, tmap, cmap = le(r, 14), le(r, 16), le(r, 18)
+        size = self.w * self.h
+        self.cells = [byte(ctx.rom, cb, cmap + i) for i in range(size)]
+        self.tiles = [byte(ctx.rom, mb, tmap + i) for i in range(size)]
+        self.attrs = [byte(ctx.rom, mb, attr + i) for i in range(size)]
+        _, lp = ctx.label("LevelAttributeLookupPointers")
+        lk, lb = word(ctx.rom, 5, lp + 4 * n), byte(ctx.rom, 5, lp + 4 * n + 2)
+        self.lut = [byte(ctx.rom, lb, lk + i) for i in range(LOOKUP_ENTRIES)]
+        _, ap = ctx.label("LevelTileAnimationPointers")
+        self.anim = word(ctx.rom, 5, ap + 2 * n)      # bank $05 record table, 5 bytes per record
+
+    def c(self, x, y):
+        return self.cells[y * self.w + x]
+
+    def rect(self, x, y):
+        """FindLevelCellRun{Left,Right,Top,Bottom}Edge: scan the start row and start column for and $0C."""
+        l = x
+        while l > 0 and self.c(l - 1, y) & 0x0C:
+            l -= 1
+        r = x
+        while r + 1 < self.w and self.c(r + 1, y) & 0x0C:
+            r += 1
+        t = y
+        while t > 0 and self.c(x, t - 1) & 0x0C:
+            t -= 1
+        b = y
+        while b + 1 < self.h and self.c(x, b + 1) & 0x0C:
+            b += 1
+        return l, r, t, b
+
+    def rect_cells(self, x, y):
+        l, r, t, b = self.rect(x, y)
+        return {yy * self.w + xx for yy in range(t, b + 1) for xx in range(l, r + 1)}
+
+    def regions(self):
+        """4-connected components of cells with bits 2/3 set, in first-cell order."""
+        seen, out = set(), []
+        for s in range(self.w * self.h):
+            if not self.cells[s] & 0x0C or s in seen:
+                continue
+            comp, stack = set(), [s]
+            while stack:
+                p = stack.pop()
+                if p in comp or not self.cells[p] & 0x0C:
+                    continue
+                comp.add(p)
+                x, y = p % self.w, p // self.w
+                stack += [q for q, ok in ((p - 1, x > 0), (p + 1, x < self.w - 1),
+                                          (p - self.w, y > 0), (p + self.w, y < self.h - 1)) if ok]
+            seen |= comp
+            out.append(comp)
+        return out
+
+    def mapped(self, i):
+        """Cell drawn through the record/lookup path (bits 2/3 set, attribute not VRAM bank 1)."""
+        return bool(self.cells[i] & 0x0C) and not self.attrs[i] & 0x08
+
+    def record_index(self, i):
+        return (self.tiles[i] + 0x7F) & 0xFF
+
+
+def levels(ctx):
+    return [Level(ctx, n) for n in range(15)]
+
+
+# ------------------------------------------------------------------ rule 9
+# Regions whose converted part depends on the start cell (the rectangle does not cover them).
+NONRECT_REGIONS = {3: [4], 8: [20, 28]}
+
+
+def check_level_nonrect_regions(ctx):
+    got = {}
+    for lv in levels(ctx):
+        for comp in lv.regions():
+            if any(not comp <= lv.rect_cells(p % lv.w, p // lv.w) for p in sorted(comp)):
+                got.setdefault(lv.n, []).append(len(comp))
+    got = {k: sorted(v) for k, v in sorted(got.items())}
+    check(got == NONRECT_REGIONS, f"rule 9: non-rectangular bit-2/3 regions {got} differ from pinned {NONRECT_REGIONS}")
+    return sum(len(v) for v in got.values())
+
+
+# ------------------------------------------------------------------ rule 10
+CELL_0A_COLUMNS = {3: [60, 77, 105]}   # (x,37)=(x,38)=$0A, (x,39)=$09, rectangle x,37-39
+
+
+def check_level_cell_0a(ctx):
+    got = {}
+    for lv in levels(ctx):
+        pos = [i for i, v in enumerate(lv.cells) if v == 0x0A]
+        for i in pos:
+            x, y = i % lv.w, i // lv.w
+            l, r, t, b = lv.rect(x, y)
+            col = [lv.c(x, yy) for yy in range(t, b + 1)]
+            check(l == r == x and (t, b) == (37, 39) and col == [0x0A, 0x0A, 0x09],
+                  f"rule 10: level {lv.n} cell $0A at ({x},{y}) has rectangle {(l, r, t, b)} column {col}")
+        if pos:
+            got[lv.n] = sorted({i % lv.w for i in pos})
+            check(len(pos) == 2 * len(got[lv.n]), f"rule 10: level {lv.n} has {len(pos)} $0A cells")
+    check(got == CELL_0A_COLUMNS, f"rule 10: $0A columns {got} differ from pinned {CELL_0A_COLUMNS}")
+    return sum(len(v) for v in got.values())
+
+
+# ------------------------------------------------------------------ rule 11
+def check_anim_vram1_loader(ctx):
+    s = ctx.src["bank_00.asm"]
+    m = re.search(r"LevelAnimatedCellAttributes:\s*\n\s*db ([^\n]+)", s)
+    check(m, "rule 11: LevelAnimatedCellAttributes not found")
+    vals = [int(v.strip().lstrip("$"), 16) for v in m.group(1).split(",")]
+    check(len(vals) == 15 and all(v & 0x08 for v in vals),
+          f"rule 11: LevelAnimatedCellAttributes {vals} has an entry without bit 3 (VRAM bank 1)")
+    i, j = s.find("LoadInterfaceTilesVRAM1:"), s.find("LoadInterfaceTilesVRAM0:")
+    check(0 <= i < j, "rule 11: LoadInterfaceTilesVRAM1 body not found")
+    body = s[i:j]
+    check("\tld a, $01\n\tldh [rVBK], a" in body and not re.search(r"(xor a|ld a, \$00)\n\tldh \[rVBK\]", body),
+          "rule 11: LoadInterfaceTilesVRAM1 does not keep VBK=1 throughout")
+    check(re.search(r"ld e, \$3B\n\tld d, \$08\n\tld a, \$88\n\tld bc, Bank08InterfaceTiles69FD\n\tcall CopyTilesToVRAM", body),
+          "rule 11: no 8-tile copy of Bank08InterfaceTiles69FD to VRAM1 $8BB0 (ids $BB-$C2)")
+    # The bit-6 path returns $BB + (frame & 7): ids $BB-$C2 exactly.
+    check(re.search(r"inc a\n\tand \$07\n\tld \[wLevelAnimationFrame\], a\n\tadd a, \$BB", s),
+          "rule 11: bit-6 path no longer returns $BB + (frame & 7)")
+    return 8
+
+
+# ------------------------------------------------------------------ rule 12
+# The lookup table is read at index (record byte + $FF) & $FF, where the record is
+# animation record (map tile + $7F) & $FF, bytes 1-4 (Set2 overrun records included).
+# Pinned: (1) every read index is inside the $A0-entry table; (2) for every VRAM0 map
+# cell with index below $A0, lookup[index] equals the map attribute with the flip bits
+# ($60) cleared; (3) no entry has bit 3 set.
+def check_level_lookup(ctx):
+    reads = 0
+    for lv in levels(ctx):
+        for i in range(lv.w * lv.h):
+            a, j = lv.attrs[i], lv.record_index(i)
+            if not a & 0x08 and j < LOOKUP_ENTRIES:
+                check(lv.lut[j] == a & 0x9F,
+                      f"rule 12: level {lv.n} lookup[{j}] ${lv.lut[j]:02X} != map attribute ${a:02X} & $9F at cell {i}")
+            if lv.mapped(i):
+                for f in range(4):
+                    k = (byte(ctx.rom, 5, lv.anim + 5 * j + 1 + f) + 0xFF) & 0xFF
+                    check(k < LOOKUP_ENTRIES, f"rule 12: level {lv.n} reads lookup[{k}] past the table")
+                    reads += 1
+        check(not any(v & 0x08 for v in lv.lut), f"rule 12: level {lv.n} lookup entry has bit 3 set")
+    return reads
 
 
 # ------------------------------------------------------------------ negative tests
@@ -504,7 +674,7 @@ def negative_tests(ctx):
     out.append(expect_fail("level 0 lookup pointer +1", check_level_tile_end, c, "level 0 tiles end"))
 
     # 7: di in an image; store moved before the call
-    for dest, name in ((0xD1F0, "Bank01RomImage_6432"), (0xD3B0, "Bank01RomImage_6538")):
+    for dest, name in ((0xD1F0, "ComputeSceneRowPointerRomImage"), (0xD3B0, "CopySceneTileToStagingRomImage")):
         n = scene_image_copies(ctx)[dest][1]
         c = mut(ctx)
         op = 0x7F if dest == 0xD1F0 else 0xF5      # ld a, a / push af: one-byte instructions
@@ -521,7 +691,56 @@ def negative_tests(ctx):
     s = ctx.src["bank_01.asm"].replace("DrawNextSceneRow:\n", "DrawNextSceneRow:\n\tcall Func_3960\n", 1)
     out.append(expect_fail("new call Func_3960 in DrawNextSceneRow", check_func_3960_sites,
                            mut(ctx, src={**ctx.src, "bank_01.asm": s}), "differ from the pinned list"))
+
+    # 5: same overrun index on another convertible level-3 cell (indices unchanged, positions moved)
+    l3 = Level(ctx, 3)
+    src_i = next(i for i in range(l3.w * l3.h) if l3.mapped(i) and l3.record_index(i) >= SET2_RECORDS)
+    dst_i = next(i for i in range(l3.w * l3.h) if l3.mapped(i) and l3.record_index(i) < SET2_RECORDS)
+    out.append(expect_fail("level 3 overrun tile copied to another convertible cell", check_set2_overrun,
+                           level_poke(ctx, 3, dst_i % l3.w, dst_i // l3.w, l3.tiles[src_i], "tiles"),
+                           "rule 5: Set2 overrun cells"))
+
+    # 9: fill a level-8 hole; new L-shaped region in level 5
+    out.append(expect_fail("level 8 hole (43,7) $00 -> $08", check_level_nonrect_regions,
+                           level_poke(ctx, 8, 43, 7, 0x08, "cells"), "rule 9: non-rectangular"))
+    l5 = Level(ctx, 5)
+    p = next(i for i, v in enumerate(l5.cells)
+             if v == 0x01 and l5.cells[i + 1] == 0x09 and not l5.cells[i - l5.w] & 0x0C)
+    out.append(expect_fail("level 5 new L-shaped region", check_level_nonrect_regions,
+                           level_poke(ctx, 5, p % l5.w, p // l5.w, 0x09, "cells"), ("rule 9: non-rectangular", "5: [")))
+
+    # 10: stray $0A; broken $0A column
+    out.append(expect_fail("level 0 cell (0,0) -> $0A", check_level_cell_0a,
+                           level_poke(ctx, 0, 0, 0, 0x0A, "cells"), "rule 10: level 0 cell $0A at (0,0)"))
+    out.append(expect_fail("level 3 (60,39) $09 -> $01", check_level_cell_0a,
+                           level_poke(ctx, 3, 60, 39, 0x01, "cells"), "rule 10: level 3 cell $0A at (60,37)"))
+
+    # 11: animated attribute without bit 3; VRAM1 copy destination moved
+    s = ctx.src["bank_00.asm"]
+    for name, new, needle in (
+            ("animated attribute $0A -> $02", s.replace("db $0A, $0A, $0A, $09", "db $02, $0A, $0A, $09", 1),
+             "rule 11: LevelAnimatedCellAttributes"),
+            ("VRAM1 loader e $3B -> $3C", s.replace("ld e, $3B\n", "ld e, $3C\n", 1),
+             "rule 11: no 8-tile copy of Bank08InterfaceTiles69FD")):
+        check(new != s, f"negative setup: {name}")
+        out.append(expect_fail(name, check_anim_vram1_loader, mut(ctx, src={**ctx.src, "bank_00.asm": new}), needle))
+
+    # 12: palette change on a lookup-indexed map cell
+    l0 = Level(ctx, 0)
+    q = next(i for i in range(l0.w * l0.h) if not l0.attrs[i] & 0x08 and l0.record_index(i) < LOOKUP_ENTRIES)
+    out.append(expect_fail("level 0 map palette change on a lookup tile", check_level_lookup,
+                           level_poke(ctx, 0, q % l0.w, q // l0.w, (l0.attrs[q] & 0xF8) | ((l0.attrs[q] + 1) & 7), "attrs"),
+                           "rule 12: level 0 lookup["))
     return out
+
+
+def level_poke(ctx, n, x, y, val, field):
+    """Copy of ctx with one byte of level n's cell, tile or attribute map replaced."""
+    c = mut(ctx)
+    r = level_record(ctx, n)
+    bank, addr = {"cells": (r[4], le(r, 18)), "tiles": (r[5], le(r, 16)), "attrs": (r[5], le(r, 14))}[field]
+    c.rom[off(bank, addr + y * r[0] + x)] = val
+    return c
 
 
 def run(root):
@@ -540,11 +759,16 @@ def run(root):
                  f"{check_fixed_palette_windows(ctx)} fixed-scene +$38 windows zero")
     landed = check_set2_overrun(ctx)
     lines.append(f"rule 5: Set4 - Set2 = 5*164; overrun indices {SET2_OVERRUN} land on Set4 records {landed}")
+    lines.append(f"    overrun cells: level 3 {len(SET2_OVERRUN_CELLS[3])}, level 4 {len(SET2_OVERRUN_CELLS[4])} at pinned positions")
     lines.append(f"rule 6: +6 == +5 ({check_level_field6(ctx)} levels); +7/+8 == highest block tile "
                  f"({check_level_last_tile(ctx)}); tiles end at the zero byte before the lookup ({check_level_tile_end(ctx)})")
     lines.append(f"rule 7: {check_scene_images(ctx)} image bytes decoded with no di/ei/halt/reti; "
                  f"hSceneRowHdmaPending set after StageSceneRowTiles")
     lines.append(f"rule 8: {check_func_3960_sites(ctx)} Func_3960 call sites match the pinned list")
+    lines.append(f"rule 9: {check_level_nonrect_regions(ctx)} non-rectangular bit-2/3 regions {NONRECT_REGIONS}")
+    lines.append(f"rule 10: {check_level_cell_0a(ctx)} $0A columns {CELL_0A_COLUMNS}")
+    lines.append(f"rule 11: VRAM1 ids $BB-$C2 loaded from Bank08InterfaceTiles69FD ({check_anim_vram1_loader(ctx)} tiles)")
+    lines.append(f"rule 12: {check_level_lookup(ctx)} lookup reads inside $A0 entries; map attributes match lookup (& $9F)")
     neg = negative_tests(ctx)
     lines.append(f"{len(neg)} negative tests rejected:")
     lines.extend(neg)
@@ -555,13 +779,13 @@ def run(root):
 FUNC_3960_PINNED = [
     ("bank_00.asm", "RunLevelIntroSceneFlow", "ClearBackgroundPalettes", 1),
     ("bank_01.asm", "ClearSceneSplitPalettes", "Func_3960", 1),
+    ("bank_01.asm", "InitMenuStateScreen_State05", "Func_3960", 1),
     ("bank_01.asm", "InitSceneDisplay", "Func_3960", 1),
-    ("bank_01.asm", "Jump_01_5493", "Func_3960", 1),
     ("bank_01.asm", "LoadFixedSceneForRow", "Func_3960", 1),
     ("bank_01.asm", "MenuState05SelectNext", "Func_3960", 1),
     ("bank_01.asm", "MenuState05SelectPrevious", "Func_3960", 1),
     ("bank_01.asm", "ShowEarnedPasswordScreen", "Func_3960", 1),
-    ("bank_01.asm", "ShowScreenMode12WithPasswordScoreLives", "Func_3960", 1),
+    ("bank_01.asm", "ShowScreenMode12WithScoreAndLives", "Func_3960", 1),
     ("bank_2A.asm", "FixedScreen2A_LoadTiles", "Func_3960", 1),
 ]
 

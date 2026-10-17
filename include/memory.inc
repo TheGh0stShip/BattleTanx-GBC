@@ -194,6 +194,112 @@ DEF hLevelRegionRetryCount     EQU $FF9C
 DEF hLevelRegionChangedCount   EQU $FF9D
 DEF hLevelRegionScore          EQU $FF9E ; 2-byte little-endian accumulator
 
+; DrawLevelViewport loop state (time-shared).
+DEF hViewportCellsLeft         EQU $FF90 ; cells left in the current row, from $14 (time-shared)
+DEF hViewportRowsLeft          EQU $FF91 ; rows left, from $12 (time-shared)
+DEF hViewportMapColumn         EQU $FF92 ; first map column, from wLevelViewX (time-shared)
+DEF hViewportMapRow            EQU $FF93 ; current map row, from wLevelViewY, +1 per row (time-shared)
+DEF hViewportBgColumn          EQU $FF94 ; B for GetLevelBGMapAddress, always 0 (time-shared)
+DEF hViewportBgRow             EQU $FF95 ; C for GetLevelBGMapAddress, +1 per row (time-shared)
+
+; ConvertVisibleLevelCellBit2Regions scan bounds and cursor (time-shared).
+DEF hBit2ScanLeft              EQU $FF96 ; wLevelViewX (time-shared)
+DEF hBit2ScanRight             EQU $FF97 ; inclusive, clamped to wLevelWidth - 1 (time-shared)
+DEF hBit2ScanTop               EQU $FF98 ; wLevelViewY (time-shared)
+DEF hBit2ScanBottom            EQU $FF99 ; inclusive, clamped to wLevelHeight - 1 (time-shared)
+DEF hBit2ScanRow               EQU $FF9A ; E for ConvertLevelCellBit2RegionAtCell (time-shared)
+DEF hBit2ScanColumn            EQU $FF9B ; C for ConvertLevelCellBit2RegionAtCell (time-shared)
+
+; DrawHudScore buffers (time-shared).
+DEF hHudScoreBcd               EQU $FF90 ; 5 bytes packed BCD from LongToBcd40, most significant first (time-shared)
+DEF hHudScoreDigitShown        EQU $FF98 ; nonzero once a nonzero digit is seen; ends zero suppression (time-shared)
+
+; DrawLevelCellIfVisible saved input cell (time-shared).
+DEF hDrawLevelCellX            EQU $FFA0 ; input C, passed back as B to WriteLevelCellToBGMap (time-shared)
+DEF hDrawLevelCellY            EQU $FFA1 ; input E, passed back as C to WriteLevelCellToBGMap (time-shared)
+
+; CopyScreenMaps destination row stride remainder (time-shared).
+DEF hScreenMapRowSkip          EQU $FFC0 ; $20 - wScreenWidth, added to HL after each row (time-shared)
+
+; Bank $02 BuildBackgroundPaletteFadeFramesImpl loop state (time-shared).
+DEF hFadeBuildSourceFrame      EQU $FFC0 ; Func_3A40 index read from, from $1F, -1 per frame (time-shared)
+DEF hFadeBuildDestFrame        EQU $FFC1 ; Func_3A40 index written to, source - 1 (time-shared)
+DEF hFadeBuildColoursLeft      EQU $FFC2 ; colours left in the frame, from $20 (time-shared)
+DEF hFadeBuildFramesLeft       EQU $FFC3 ; frames left, from $1F (time-shared)
+
+; Bank $02 DivideScoreByThousand work registers (time-shared).
+DEF hScoreThousands            EQU $FFC0 ; 2-byte little-endian quotient, returned in BC (time-shared)
+DEF hScoreRemainder            EQU $FFC2 ; 4-byte little-endian copy of wScore reduced by 1000s (time-shared)
+
+; Bank $2A FixedScreen2A_DrawFrame 5x11 copy counters (time-shared).
+DEF hFixedScreen2AColumnsLeft  EQU $FFC0 ; from 5 (time-shared)
+DEF hFixedScreen2ARowsLeft     EQU $FFC1 ; from $0B (time-shared)
+
+; RemoveObject saved inputs and removed-object fields (time-shared).
+DEF hRemoveObjectSpawnFlag     EQU $FF80 ; input B; nonzero spawns a status-4 type-0 object (time-shared)
+DEF hRemoveObjectEffectFlag    EQU $FF81 ; input A; nonzero plays sound $46 and spawns timed effect 0 (time-shared)
+DEF hRemoveObjectType          EQU $FF82 ; object +OBJECT_TYPE_OFFSET; 3 redraws the 2x3 footprint (time-shared)
+DEF hRemoveObjectX             EQU $FF83 ; 2-byte little-endian object +$01 pixel X (time-shared)
+DEF hRemoveObjectY             EQU $FF85 ; 2-byte little-endian object +$04 pixel Y (time-shared)
+
+; RenderObjectOrientationGraphic and its WriteObjectOrientationOam,
+; CopyObjectOrientationTiles and SelectObjectOrientationPalette helpers (time-shared).
+DEF hOrientVariant             EQU $FF80 ; object type 0-3; tile bank $27 + value, palette offset; 3 = metatile (time-shared)
+DEF hOrientDirection           EQU $FF81 ; object direction; orientation layout/tile/metatile index (time-shared)
+DEF hOrientScreenX             EQU $FF82 ; object screen X, added to OAM X (time-shared)
+DEF hOrientScreenY             EQU $FF83 ; object screen Y, added to OAM Y (time-shared)
+DEF hOrientTileBase            EQU $FF84 ; AllocateDynamicSpriteTiles result, added to OAM tile (time-shared)
+DEF hOrientPalette             EQU $FF85 ; hOrientVariant + 0, added to OAM attributes (time-shared)
+DEF hOrientCellX               EQU $FF86 ; object pixel X / 8 (low byte) (time-shared)
+DEF hOrientCellY               EQU $FF87 ; object pixel Y / 8 (low byte) (time-shared)
+DEF hOrientBgMapPointer        EQU $FF88 ; 2-byte little-endian BG map address, +$20 per metatile row (time-shared)
+DEF hOrientMetatilePointer     EQU $FF8A ; 2-byte little-endian InterfaceMetatiles entry cursor (time-shared)
+DEF hOrientMetatileRowsLeft    EQU $FF8C ; metatile rows left, from 3 (time-shared)
+
+; CenterLevelViewOnObject clamped view origin in cells (time-shared).
+DEF hCenterViewX               EQU $FF80 ; 2-byte little-endian, X/8 - $0B clamped to 0..wLevelWidth - $15 (time-shared)
+DEF hCenterViewY               EQU $FF82 ; 2-byte little-endian, Y/8 - $0A clamped to 0..wLevelHeight - $13 (time-shared)
+
+; GetLevelCellTileAndAttr cell index (time-shared).
+DEF hLevelCellIndex            EQU $FF80 ; 2-byte little-endian wLevelRowOffsets[C] + B (time-shared)
+
+; LoadVehicleForwardVelocity / LoadVehicleReverseVelocity table selectors (time-shared).
+DEF hVelocitySpeedIndex        EQU $FF80 ; vehicle speed - 1; selects a $80-byte ObjectVelocityTable block (time-shared)
+DEF hVelocityDirection         EQU $FF81 ; direction (reverse: +8 mod 16); selects an 8-byte entry (time-shared)
+
+; HandleObjectLevelBit1And2Cells subtype-1 rollback flag (time-shared).
+DEF hProjectileAxisRolledBack  EQU $FF80 ; set to 1 when either axis was rolled back (time-shared)
+
+; ResolveProjectileHit scan state (time-shared).
+DEF hHitScanObjectsLeft        EQU $FFA0 ; object records left to scan, from $40 (time-shared)
+DEF hHitProjectilePowered      EQU $FFA1 ; projectile +OBJECT_PROJECTILE_POWERED_OFFSET; nonzero doubles damage (time-shared)
+
+; GetDirectionTowardObject octant bits (time-shared).
+DEF hDirectionOctant           EQU $FF90 ; bit 0: dX negative, bit 1: dY negative; OctantDirectionValues index (time-shared)
+
+; FindNearestVisibleObjectFacingSource / InitializeHomingProjectileTarget (time-shared).
+DEF hFacingBestObject          EQU $FF80 ; 2-byte little-endian best object pointer, returned to the caller (time-shared)
+DEF hFacingBestDistance        EQU $FF82 ; 2-byte little-endian best half-Manhattan distance, from $FFFF (time-shared)
+DEF hFacingBestDirectionDiff   EQU $FF84 ; absolute direction difference of the best object; never read (time-shared)
+DEF hFacingObjectsLeft         EQU $FF85 ; object records left to scan, from $40 (time-shared)
+DEF hFacingFound               EQU $FF86 ; 1 once an object qualifies (time-shared)
+DEF hFacingCandidateDistance   EQU $FF87 ; 2-byte little-endian candidate half-Manhattan distance (time-shared)
+DEF hFacingSourceDirection     EQU $FF89 ; source object direction (time-shared)
+DEF hHomingInitArgs            EQU $FF8A ; 4 bytes: input L, H, C, B; written and never read (time-shared)
+
+; RenderObjectSprite, BuildObjectOamEntries and LoadObjectAnimationTiles (time-shared).
+DEF hSpriteType                EQU $FF80 ; object +OBJECT_TYPE_OFFSET; written and never read (time-shared)
+DEF hSpriteScreenX             EQU $FF81 ; object +$06, added to OAM X (time-shared)
+DEF hSpriteScreenY             EQU $FF82 ; object +$07, added to OAM Y (time-shared)
+DEF hSpriteTileBase            EQU $FF84 ; AllocateDynamicSpriteTiles result, added to OAM tile (time-shared)
+DEF hSpriteFrame               EQU $FF85 ; object +OBJECT_HEALTH_OR_AGE_OFFSET / 4, frame-table index (time-shared)
+DEF hSpriteFrameTable          EQU $FF86 ; 2-byte little-endian bank-$02 frame pointer table (time-shared)
+DEF hSpriteOamLayout           EQU $FF88 ; 2-byte little-endian bank-$02 OAM layout records (time-shared)
+DEF hSpriteTileCount           EQU $FF8A ; tiles copied and OAM entries built (time-shared)
+
+; Bank $08 SelectObjectSpritePalette -> bank $01 DrawObjectTypeMarkerSprite (time-shared).
+DEF hStatus4SpritePalette      EQU $FF80 ; ObjectSpritePaletteIndexTable[type] & 3 + 4; OAM attribute low bits (time-shared)
+
 
 ; Sound driver state (see AUDIO_RESEARCH.md). Written by Audio_Init
 ; ($06:$7CAE) and used by the driver in bank $06 and ROM0:$2ED5-$2F92.

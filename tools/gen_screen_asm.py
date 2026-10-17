@@ -6,6 +6,8 @@ src/bank_2A.asm-src/bank_2E.asm and the assets.txt lines it prints. Those
 files are hand-maintained from then on; do not rerun this over edited source.
 Routine template text is taken from the baseline bank_2B.asm.
 Usage: gen_screen_asm.py baserom.gbc BASELINE_SRC_DIR
+
+It no longer runs on the current tree (template labels were renamed).
 """
 import os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))

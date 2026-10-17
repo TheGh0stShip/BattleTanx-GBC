@@ -1,5 +1,5 @@
 import sys, os; sys.path.insert(0, os.path.dirname(__file__))
-import trace, hints
+import rom_trace as trace, hints
 rom = open(sys.argv[1], 'rb').read()
 banks = [int(x) for x in sys.argv[2].split(',')]
 t = trace.run(rom, hints.extra_entries(rom), hints.DATA_RANGES)

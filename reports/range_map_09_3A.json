@@ -1027,7 +1027,9 @@
    "end": "$5CFF",
    "bytes": 7424,
    "label": "FixedScreen2A_Tiles",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_Tiles"
+   ]
   },
   {
    "bank": "$2A",
@@ -1035,7 +1037,9 @@
    "end": "$5E67",
    "bytes": 360,
    "label": "FixedScreen2A_TileMap",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_TileMap"
+   ]
   },
   {
    "bank": "$2A",
@@ -1043,7 +1047,9 @@
    "end": "$5F43",
    "bytes": 220,
    "label": "FixedScreen2A_FrameTileMap",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_FrameTileMap"
+   ]
   },
   {
    "bank": "$2A",
@@ -1051,7 +1057,9 @@
    "end": "$60AB",
    "bytes": 360,
    "label": "FixedScreen2A_AttrMap",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_AttrMap"
+   ]
   },
   {
    "bank": "$2A",
@@ -1059,7 +1067,9 @@
    "end": "$6187",
    "bytes": 220,
    "label": "FixedScreen2A_FrameAttrMap",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_FrameAttrMap"
+   ]
   },
   {
    "bank": "$2A",
@@ -1067,7 +1077,9 @@
    "end": "$61C7",
    "bytes": 64,
    "label": "FixedScreen2A_Palettes",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_Palettes"
+   ]
   },
   {
    "bank": "$2A",
@@ -1075,7 +1087,9 @@
    "end": "$61D7",
    "bytes": 16,
    "label": "FixedScreen2A_FrameTable",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_FrameTable"
+   ]
   },
   {
    "bank": "$2A",
@@ -1146,8 +1160,9 @@
    "start": "$6A22",
    "end": "$6A79",
    "bytes": 88,
-   "label": "Func_2A_6A22",
+   "label": "FinalLevelCompleteScreen_LoadTiles",
    "aliases": [
+    "Func_2A_6A22",
     "ScreenMode12_LoadTiles"
    ]
   },
@@ -1156,8 +1171,9 @@
    "start": "$6A7A",
    "end": "$6AD2",
    "bytes": 89,
-   "label": "Func_2A_6A7A",
+   "label": "FinalLevelCompleteScreen_Draw",
    "aliases": [
+    "Func_2A_6A7A",
     "ScreenMode12_Draw"
    ]
   },
@@ -1166,8 +1182,10 @@
    "start": "$6AD3",
    "end": "$6AE0",
    "bytes": 14,
-   "label": "ScreenMode12_Descriptor",
-   "aliases": []
+   "label": "FinalLevelCompleteScreen_Descriptor",
+   "aliases": [
+    "ScreenMode12_Descriptor"
+   ]
   },
   {
    "bank": "$2A",
@@ -1207,7 +1225,9 @@
    "end": "$7753",
    "bytes": 59,
    "label": "FixedScreen2A_LoadTiles",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_LoadTiles"
+   ]
   },
   {
    "bank": "$2A",
@@ -1215,7 +1235,9 @@
    "end": "$7773",
    "bytes": 32,
    "label": "FixedScreen2A_Draw",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_Draw"
+   ]
   },
   {
    "bank": "$2A",
@@ -1224,7 +1246,8 @@
    "bytes": 33,
    "label": "FixedScreen2A_Run",
    "aliases": [
-    "Func_2A_7774"
+    "Func_2A_7774",
+    "NoLivesScreen_Run"
    ]
   },
   {
@@ -1233,7 +1256,9 @@
    "end": "$7FFF",
    "bytes": 2155,
    "label": "FixedScreen2A_DrawFrame",
-   "aliases": []
+   "aliases": [
+    "NoLivesScreen_DrawFrame"
+   ]
   },
   {
    "bank": "$2B",
@@ -1370,6 +1395,7 @@
    "bytes": 88,
    "label": "Func_2B_6E6C",
    "aliases": [
+    "PlayerTypeSelectScreen_LoadTiles",
     "ScreenMode04_LoadTiles"
    ]
   },
@@ -1380,6 +1406,7 @@
    "bytes": 89,
    "label": "Func_2B_6EC4",
    "aliases": [
+    "PlayerTypeSelectScreen_Draw",
     "ScreenMode04_Draw"
    ]
   },
@@ -1388,8 +1415,10 @@
    "start": "$6F1D",
    "end": "$6F2A",
    "bytes": 14,
-   "label": "ScreenMode04_Descriptor",
-   "aliases": []
+   "label": "PlayerTypeSelectScreen_Descriptor",
+   "aliases": [
+    "ScreenMode04_Descriptor"
+   ]
   },
   {
    "bank": "$2B",
@@ -1558,6 +1587,7 @@
    "bytes": 88,
    "label": "Func_2C_55C4",
    "aliases": [
+    "LevelGridScreen_LoadTiles",
     "ScreenMode11_LoadTiles"
    ]
   },
@@ -1568,6 +1598,7 @@
    "bytes": 89,
    "label": "Func_2C_561C",
    "aliases": [
+    "LevelGridScreen_Draw",
     "ScreenMode11_Draw"
    ]
   },
@@ -1576,8 +1607,10 @@
    "start": "$5675",
    "end": "$5682",
    "bytes": 14,
-   "label": "ScreenMode11_Descriptor",
-   "aliases": []
+   "label": "LevelGridScreen_Descriptor",
+   "aliases": [
+    "ScreenMode11_Descriptor"
+   ]
   },
   {
    "bank": "$2C",
@@ -1636,8 +1669,9 @@
    "start": "$5F9F",
    "end": "$5FF6",
    "bytes": 88,
-   "label": "Func_2C_5F9F",
+   "label": "EarnedCodeScreen_LoadTiles",
    "aliases": [
+    "Func_2C_5F9F",
     "ScreenMode06_LoadTiles"
    ]
   },
@@ -1646,8 +1680,9 @@
    "start": "$5FF7",
    "end": "$606A",
    "bytes": 116,
-   "label": "Func_2C_5FF7",
+   "label": "EarnedCodeScreen_Draw",
    "aliases": [
+    "Func_2C_5FF7",
     "ScreenMode06_Draw"
    ]
   },
@@ -1748,8 +1783,10 @@
    "start": "$7DF9",
    "end": "$7FFF",
    "bytes": 519,
-   "label": "ScreenMode06_Descriptor",
-   "aliases": []
+   "label": "EarnedCodeScreen_Descriptor",
+   "aliases": [
+    "ScreenMode06_Descriptor"
+   ]
   },
   {
    "bank": "$2D",
@@ -1758,6 +1795,7 @@
    "bytes": 88,
    "label": "Func_2D_4000",
    "aliases": [
+    "LevelGridCompleteScreen_LoadTiles",
     "ScreenMode08_LoadTiles"
    ]
   },
@@ -1768,6 +1806,7 @@
    "bytes": 116,
    "label": "Func_2D_4058",
    "aliases": [
+    "LevelGridCompleteScreen_Draw",
     "ScreenMode08_Draw"
    ]
   },
@@ -1776,8 +1815,10 @@
    "start": "$40CC",
    "end": "$40D9",
    "bytes": 14,
-   "label": "ScreenMode08_Descriptor",
-   "aliases": []
+   "label": "LevelGridCompleteScreen_Descriptor",
+   "aliases": [
+    "ScreenMode08_Descriptor"
+   ]
   },
   {
    "bank": "$2D",
@@ -1878,7 +1919,8 @@
    "bytes": 88,
    "label": "Func_2E_4000",
    "aliases": [
-    "Screen2E_LoadTiles"
+    "Screen2E_LoadTiles",
+    "UncalledScreen2E_LoadTiles"
    ]
   },
   {
@@ -1888,7 +1930,8 @@
    "bytes": 116,
    "label": "Func_2E_4058",
    "aliases": [
-    "Screen2E_Draw"
+    "Screen2E_Draw",
+    "UncalledScreen2E_Draw"
    ]
   },
   {
@@ -1897,7 +1940,9 @@
    "end": "$40D9",
    "bytes": 14,
    "label": "Screen2E_Descriptor",
-   "aliases": []
+   "aliases": [
+    "UncalledScreen2E_Descriptor"
+   ]
   },
   {
    "bank": "$2E",

@@ -145,10 +145,10 @@ PaletteStatHandler:
 	ld de, $FF69
 	ld a, $B0
 	ldh [rBCPS], a
-RAM_C737:
+PaletteStatHandler_WaitHBlank:
 	ldh a, [rSTAT]
 	and $03
-	jr nz, RAM_C737
+	jr nz, PaletteStatHandler_WaitHBlank
 	REPT 16
 	ld a, [hli]
 	ld [de], a
@@ -161,8 +161,9 @@ RAM_C737:
 	ldh a, [rLY]
 	ldh a, [rLY]
 	cp $8F
-	jr c, RAM_C770
-RAM_C770:
+	; Original: jr c targets the next instruction (no effect); the rLY reads and cp $8F feed only this jump.
+	jr c, PaletteStatHandler_Return
+PaletteStatHandler_Return:
 	pop hl
 	pop de
 	pop bc
@@ -219,9 +220,9 @@ PaletteVBlankHandler:
 	ldh [rLCDC], a
 	ld a, [wVBlankCounter]
 	and $01
-	jr z, RAM_C82F
+	jr z, PaletteVBlankHandler_CountFrame
 	call Func_0A59
-RAM_C82F:
+PaletteVBlankHandler_CountFrame:
 	ld hl, wVBlankCounter
 	ld a, [hl]
 	inc a
@@ -293,15 +294,15 @@ VBlankHandlerWithSoftReset:
 	push hl
 	ld a, [wVBlankCounter]
 	and $01
-	jr z, RAM_C80B
+	jr z, VBlankHandlerWithSoftReset_CountFrame
 	call Func_0A59
 	ld a, [wJoypadHeld]
-	and $F0
-	cp $F0
-	jr nz, RAM_C80B
-	jp Jump_00DA
+	and PADF_START | PADF_SELECT | PADF_B | PADF_A
+	cp PADF_START | PADF_SELECT | PADF_B | PADF_A
+	jr nz, VBlankHandlerWithSoftReset_CountFrame
+	jp RestartGame
 
-RAM_C80B:
+VBlankHandlerWithSoftReset_CountFrame:
 	ld a, [wVBlankCounter]
 	inc a
 	ld [wVBlankCounter], a
@@ -423,7 +424,7 @@ Func_02_43EC: ; legacy alias
 	push hl
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld a, [hl]
 	and a
@@ -452,7 +453,7 @@ Func_02_43EC: ; legacy alias
 	ld d, a
 	ld a, l
 	and $C0
-	add a, $19
+	add a, OBJECT_DIRECTION_OFFSET
 	ld l, a
 	ld a, [hl]
 	add a, a
@@ -567,38 +568,39 @@ Func_02_45C1: ; legacy alias
 	push bc
 	push de
 	push hl
-	call Func_2C24
+	call GetVehicleMuzzlePositionFar
 	ld a, $03
 	call AllocateObjectRecord
 	call SetObjectPosition
 	ld a, l
 	and $C0
-	add a, $1E
+	add a, OBJECT_TYPE_OFFSET
 	ld l, a
 	ld [hl], $03
 	ld a, l
 	and $C0
-	add a, $1F
+	add a, OBJECT_EFFECT_AGE_OFFSET
 	ld l, a
 	ld [hl], $00
 	ld de, ObjectAnimationFrames45BB
+	; Original: dead load: BC is overwritten by ld bc, EffectSpriteLayout1x1 below before any read.
 	ld bc, TrackerDirectionLookup + $12
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_EFFECT_LIFETIME_OFFSET
 	ld l, a
 	ld a, $0C
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_FRAME_TABLE_OFFSET
 	ld l, a
 	ld [hl], e
 	inc l
 	ld [hl], d
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_OAM_LAYOUT_OFFSET
 	ld l, a
 	ld bc, EffectSpriteLayout1x1
 	ld [hl], c
@@ -606,7 +608,7 @@ Func_02_45C1: ; legacy alias
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $25
+	add a, OBJECT_TILE_COUNT_OFFSET
 	ld l, a
 	ld [hl], $01
 	pop hl
@@ -622,20 +624,20 @@ Func_02_4611: ; legacy alias
 	ld de, ObjectAnimationFrames45B5
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_EFFECT_LIFETIME_OFFSET
 	ld l, a
 	ld a, $0C
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_FRAME_TABLE_OFFSET
 	ld l, a
 	ld [hl], e
 	inc l
 	ld [hl], d
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_OAM_LAYOUT_OFFSET
 	ld l, a
 	ld bc, EffectSpriteLayout1x1
 	ld [hl], c
@@ -643,7 +645,7 @@ Func_02_4611: ; legacy alias
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $25
+	add a, OBJECT_TILE_COUNT_OFFSET
 	ld l, a
 	ld [hl], $01
 	pop af
@@ -677,20 +679,20 @@ Func_02_463D: ; legacy alias
 	push af
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_EFFECT_LIFETIME_OFFSET
 	ld l, a
 	pop af
 	ld [hl], a
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_FRAME_TABLE_OFFSET
 	ld l, a
 	ld [hl], e
 	inc l
 	ld [hl], d
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_OAM_LAYOUT_OFFSET
 	ld l, a
 	ld bc, EffectSpriteLayout3x3
 	ld [hl], c
@@ -698,7 +700,7 @@ Func_02_463D: ; legacy alias
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $25
+	add a, OBJECT_TILE_COUNT_OFFSET
 	ld l, a
 	ld [hl], $09
 	pop af
@@ -738,19 +740,19 @@ Func_02_4688: ; legacy alias
 .storeAnimation:
 	ld a, l
 	and $C0
-	add a, $20
+	add a, OBJECT_EFFECT_LIFETIME_OFFSET
 	ld l, a
 	ld [hl], $10
 	ld a, l
 	and $C0
-	add a, $21
+	add a, OBJECT_FRAME_TABLE_OFFSET
 	ld l, a
 	ld [hl], e
 	inc l
 	ld [hl], d
 	ld a, l
 	and $C0
-	add a, $23
+	add a, OBJECT_OAM_LAYOUT_OFFSET
 	ld l, a
 	ld bc, EffectSpriteLayout2x2
 	ld [hl], c
@@ -758,7 +760,7 @@ Func_02_4688: ; legacy alias
 	ld [hl], b
 	ld a, l
 	and $C0
-	add a, $25
+	add a, OBJECT_TILE_COUNT_OFFSET
 	ld l, a
 	ld [hl], $04
 	pop af
@@ -852,20 +854,20 @@ Func_02_474B: ; legacy alias
 	ld a, $02
 	ldh [rSVBK], a
 	ld a, $1F
-	ldh [$FFC0], a
+	ldh [hFadeBuildSourceFrame], a
 	ld a, $1E
-	ldh [$FFC1], a
+	ldh [hFadeBuildDestFrame], a
 	ld a, $1F
-	ldh [$FFC3], a
+	ldh [hFadeBuildFramesLeft], a
 .nextFrame:
-	ldh a, [$FFC1]
+	ldh a, [hFadeBuildDestFrame]
 	call Func_3A40
 	ld e, l
 	ld d, h
-	ldh a, [$FFC0]
+	ldh a, [hFadeBuildSourceFrame]
 	call Func_3A40
 	ld a, $20
-	ldh [$FFC2], a
+	ldh [hFadeBuildColoursLeft], a
 .nextColour:
 	ld a, [wVBlankPending]
 	or a
@@ -896,18 +898,18 @@ Func_02_474B: ; legacy alias
 	ld a, b
 	ld [de], a
 	inc de
-	ldh a, [$FFC2]
+	ldh a, [hFadeBuildColoursLeft]
 	dec a
-	ldh [$FFC2], a
+	ldh [hFadeBuildColoursLeft], a
 	jr nz, .nextColour
-	ldh a, [$FFC0]
+	ldh a, [hFadeBuildSourceFrame]
 	dec a
-	ldh [$FFC0], a
+	ldh [hFadeBuildSourceFrame], a
 	dec a
-	ldh [$FFC1], a
-	ldh a, [$FFC3]
+	ldh [hFadeBuildDestFrame], a
+	ldh a, [hFadeBuildFramesLeft]
 	dec a
-	ldh [$FFC3], a
+	ldh [hFadeBuildFramesLeft], a
 	jr nz, .nextFrame
 	ld a, $01
 	ldh [rSVBK], a
@@ -917,58 +919,58 @@ Func_02_474B: ; legacy alias
 DivideScoreByThousand:
 Func_02_47AF: ; legacy alias, used by src/bank_00.asm
 	ld a, [wScore]
-	ldh [$FFC2], a
+	ldh [hScoreRemainder], a
 	ld a, [wScore + 1]
-	ldh [$FFC3], a
+	ldh [hScoreRemainder + 1], a
 	ld a, [wScore + 2]
-	ldh [$FFC4], a
+	ldh [hScoreRemainder + 2], a
 	ld a, [wScore + 3]
-	ldh [$FFC5], a
+	ldh [hScoreRemainder + 3], a
 	xor a
-	ldh [$FFC0], a
-	ldh [$FFC1], a
+	ldh [hScoreThousands], a
+	ldh [hScoreThousands + 1], a
 .nextThousand:
 	ld de, $03E8
-	ldh a, [$FFC5]
+	ldh a, [hScoreRemainder + 3]
 	or a
 	jr nz, .subtractThousand
-	ldh a, [$FFC4]
+	ldh a, [hScoreRemainder + 2]
 	or a
 	jr nz, .subtractThousand
-	ldh a, [$FFC3]
+	ldh a, [hScoreRemainder + 1]
 	cp d
 	jr c, .returnQuotient
 	jr nz, .subtractThousand
-	ldh a, [$FFC2]
+	ldh a, [hScoreRemainder]
 	cp e
 	jr nc, .subtractThousand
 	jr .returnQuotient
 
 .subtractThousand:
-	ldh a, [$FFC2]
+	ldh a, [hScoreRemainder]
 	sub $E8
-	ldh [$FFC2], a
-	ldh a, [$FFC3]
+	ldh [hScoreRemainder], a
+	ldh a, [hScoreRemainder + 1]
 	sbc a, $03
-	ldh [$FFC3], a
-	ldh a, [$FFC4]
+	ldh [hScoreRemainder + 1], a
+	ldh a, [hScoreRemainder + 2]
 	sbc a, $00
-	ldh [$FFC4], a
-	ldh a, [$FFC5]
+	ldh [hScoreRemainder + 2], a
+	ldh a, [hScoreRemainder + 3]
 	sbc a, $00
-	ldh [$FFC5], a
-	ldh a, [$FFC0]
+	ldh [hScoreRemainder + 3], a
+	ldh a, [hScoreThousands]
 	add a, $01
-	ldh [$FFC0], a
-	ldh a, [$FFC1]
+	ldh [hScoreThousands], a
+	ldh a, [hScoreThousands + 1]
 	adc a, $00
-	ldh [$FFC1], a
+	ldh [hScoreThousands + 1], a
 	jr .nextThousand
 
 .returnQuotient:
-	ldh a, [$FFC0]
+	ldh a, [hScoreThousands]
 	ld c, a
-	ldh a, [$FFC1]
+	ldh a, [hScoreThousands + 1]
 	ld b, a
 	ret
 
@@ -1885,7 +1887,7 @@ TrackerDirectionLookup:
 
 RunBootScreenSequence:
 Func_02_5C40: ; legacy alias, used by src/bank_00.asm, src/bank_2B.asm
-	call Func_3BB0
+	call InstallSceneRuntimeCodeFar
 	ld a, $0A
 	call ScreenTable_CallInit
 	ld a, $0A
@@ -1907,7 +1909,7 @@ Func_02_5C40: ; legacy alias, used by src/bank_00.asm, src/bank_2B.asm
 	call Audio_Update
 	dec d
 	jr nz, .waitFirstScreen
-	call Func_06F8
+	call FadePalettesToBlackWithSound
 	ld a, $02
 	call ScreenTable_CallInit
 	ld a, $02
@@ -1915,7 +1917,7 @@ Func_02_5C40: ; legacy alias, used by src/bank_00.asm, src/bank_2B.asm
 	call ScreenTable_CallUpdate
 	ld d, $B4
 	call Func_3971
-	call Func_06F8
+	call FadePalettesToBlackWithSound
 	ld a, $05
 	call ScreenTable_CallInit
 	ld a, $05
@@ -1923,7 +1925,7 @@ Func_02_5C40: ; legacy alias, used by src/bank_00.asm, src/bank_2B.asm
 	call ScreenTable_CallUpdate
 	ld d, $B4
 	call Func_3971
-	call Func_071F
+	call FadeBackgroundPalettesToWhiteWithSound
 	ld e, $4F
 	call Audio_QueueSound
 	ld e, $82
@@ -2009,7 +2011,7 @@ Func_02_5C40: ; legacy alias, used by src/bank_00.asm, src/bank_2B.asm
 	ldh [rSCY], a
 	ld d, $B4
 	call Func_3971
-	call Func_06F8
+	call FadePalettesToBlackWithSound
 	xor a
 	ldh [rSCX], a
 	ldh [rSCY], a
@@ -2549,7 +2551,7 @@ SpawnBurstSpriteBlock:
 	adc a, d
 	ld d, a
 	ld a, $02
-	call Func_004E
+	call NoOpHook
 	inc bc
 	sub $62
 	ld [hli], a
@@ -2611,6 +2613,7 @@ AnimateBurstSpriteBlock:
 	ld a, $04
 	add a, e
 	ld e, a
+	; Original: adc a, e / ld e, a here; the add/adc pattern suggests adc a, d / ld d, a, so D is never advanced.
 	ld a, $00
 	adc a, e
 	ld e, a

@@ -6,9 +6,7 @@
 ; channels or 4 for even, written from ChannelRegisterBases[channel-1]
 ; with bit 7 forced on the last; then the NR51 bits to set; rest unread.
 SoundPatches:
-	db 2, $86, $F0, $00, $03, $22 ; $00: channel, four registers, NR51
-SoundPatch00UnreadTail:
-	db $22, $00 ; fixed record tail, never read
+	sound_patch_ch2 $86, $F0, $00, $03, $22, $22, $00 ; $00
 	sound_patch_ch1 $77, $87, $F7, $82, $47, $11, $00 ; $01
 	sound_patch_ch1 $2C, $84, $F7, $82, $47, $11, $00 ; $02
 	sound_patch_ch1 $25, $41, $F2, $A8, $01, $11, $00 ; $03
@@ -105,13 +103,15 @@ SfxSequence_18:
 	sfx_patch $1A, 7
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_18_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_17:
 	sfx_patch $17, 54
 	sfx_patch $23, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_17_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_10:
 	sfx_tone 41, 4
@@ -127,7 +127,8 @@ SfxSequence_10:
 	sfx_tone 48, 4
 	sfx_mute_ch1 $22, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_10_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_11:
 	sfx_tone 48, 4
@@ -153,7 +154,8 @@ SfxSequence_11:
 	sfx_tone 48, 8
 	sfx_mute_ch1 $22, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_11_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_12:
 	sfx_tone 41, 8
@@ -193,7 +195,8 @@ SfxSequence_12:
 	sfx_tone 48, 8
 	sfx_mute_ch1 $22, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_12_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_13:
 	sfx_tone 36, 4
@@ -215,7 +218,8 @@ SfxSequence_13:
 	sfx_tone 38, 4
 	sfx_mute_ch1 $22, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_13_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_14:
 	sfx_tone 36, 3
@@ -247,7 +251,8 @@ SfxSequence_14:
 	sfx_tone 48, 4
 	sfx_mute_ch1 $22, 0
 	sfx_end
-	db $FF, $00, $FF, $FF, $00, $00 ; not reached by SfxSequence_Update
+SfxSequence_14_UnreadTrailer:
+	db $FF, $00, $FF, $FF, $00, $00  ; never read: after end marker
 
 SfxSequence_0E:
 	sfx_patch $1A, 0
@@ -291,7 +296,8 @@ SfxSequence_0E:
 	sfx_patch $1A, 15
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_0E_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_0D:
 	sfx_patch $09, 0
@@ -339,7 +345,8 @@ SfxSequence_0D:
 	sfx_patch $1A, 15
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_0D_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_0C:
 	sfx_patch $01, 7
@@ -355,7 +362,8 @@ SfxSequence_0C:
 	sfx_patch $01, 7
 	sfx_mute_ch1 $12, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_0C_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_00:
 	sfx_patch $19, 0
@@ -393,7 +401,8 @@ SfxSequence_00:
 	sfx_mute_ch1 $22, 6
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_00_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_0A:
 	sfx_tone 36, 5
@@ -407,7 +416,8 @@ SfxSequence_0A:
 	sfx_tone 48, 6
 	sfx_mute_ch1 $22, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_0A_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_09:
 	sfx_tone 48, 3
@@ -429,7 +439,8 @@ SfxSequence_09:
 	sfx_tone 60, 4
 	sfx_mute_ch1 $22, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_09_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_08:
 	sfx_patch $18, 0
@@ -451,7 +462,8 @@ SfxSequence_08:
 	sfx_mute_ch1 $12, 3
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_08_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_0F:
 	sfx_mute_ch1 $00, 17
@@ -482,7 +494,8 @@ SfxSequence_0F:
 	sfx_patch $18, 60
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_0F_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_07:
 	sfx_patch $14, 0
@@ -494,7 +507,8 @@ SfxSequence_07:
 	sfx_mute_ch1 $12, 36
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_07_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_06:
 	sfx_patch $13, 0
@@ -508,7 +522,8 @@ SfxSequence_06:
 	sfx_mute_ch1 $12, 19
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_06_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_05:
 	sfx_patch $13, 0
@@ -528,13 +543,15 @@ SfxSequence_05:
 	sfx_mute_ch1 $12, 12
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_05_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_04:
 	sfx_patch $14, 20
 	sfx_mute_ch1 $12, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_04_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_02:
 	sfx_patch $09, 3
@@ -544,7 +561,8 @@ SfxSequence_02:
 	sfx_patch $18, 3
 	sfx_mute_ch4 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_02_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_03:
 	sfx_patch $07, 0
@@ -552,7 +570,8 @@ SfxSequence_03:
 	sfx_mute_ch4 0
 	sfx_mute_ch1 $12, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_03_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_01:
 	sfx_patch $16, 0
@@ -596,7 +615,8 @@ SfxSequence_01:
 	sfx_mute_ch4 13
 	sfx_mute_ch1 $12, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_01_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_15:
 	sfx_patch $1D, 7
@@ -612,7 +632,8 @@ SfxSequence_15:
 	sfx_patch $1D, 25
 	sfx_mute_ch1 $12, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_15_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 SfxSequence_16:
 	sfx_patch $05, 7
@@ -626,7 +647,8 @@ SfxSequence_16:
 	sfx_patch $05, 25
 	sfx_mute_ch1 $12, 0
 	sfx_end
-	db $FF, $00, $FF, $FF ; not reached by SfxSequence_Update
+SfxSequence_16_UnreadTrailer:
+	db $FF, $00, $FF, $FF  ; never read: after end marker
 
 ; Copied to rNR10-rNR52 ($FF10-$FF26) by Audio_Init.
 AudioRegisterInit:
@@ -1237,7 +1259,8 @@ Music_01:
 	music_off 4, 6
 	music_off 3, 0
 	music_loop $FF, 0
-	db $FE, $FF ; not reached by Music_HandleEvent
+Music_01_UnreadTrailer:
+	db $FE, $FF  ; never read: after end marker
 
 Music_02:
 	music_instrument 2, INSTRUMENT_CH2_ALTERNATE, 0
@@ -1923,7 +1946,8 @@ Music_02:
 	music_off 4, 10
 	music_off 3, 0
 	music_loop $FF, 0
-	db $FE, $FF ; not reached by Music_HandleEvent
+Music_02_UnreadTrailer:
+	db $FE, $FF  ; never read: after end marker
 
 Music_03:
 	music_note 2, 16, 0
@@ -2612,7 +2636,8 @@ Music_03:
 	music_off 4, 6
 	music_off 2, 0
 	music_loop $FF, 0
-	db $FE, $FF ; not reached by Music_HandleEvent
+Music_03_UnreadTrailer:
+	db $FE, $FF  ; never read: after end marker
 
 Music_04:
 	music_note 3, 31, 0
@@ -3400,7 +3425,8 @@ Music_04:
 	music_off 3, 1
 	music_off 2, 0
 	music_loop $FF, 0
-	db $FE, $FF ; not reached by Music_HandleEvent
+Music_04_UnreadTrailer:
+	db $FE, $FF  ; never read: after end marker
 
 Music_05:
 	music_note 3, 31, 0
@@ -4366,7 +4392,8 @@ Music_05:
 	music_off 2, 3
 	music_off 3, 0
 	music_loop $FF, 0
-	db $FE, $FF ; not reached by Music_HandleEvent
+Music_05_UnreadTrailer:
+	db $FE, $FF  ; never read: after end marker
 
 Music_06:
 	music_note 3, 19, 0
@@ -5292,7 +5319,8 @@ Music_06:
 	music_off 2, 0
 	music_off 4, 0
 	music_loop $FF, 0
-	db $FE, $FF ; not reached by Music_HandleEvent
+Music_06_UnreadTrailer:
+	db $FE, $FF  ; never read: after end marker
 
 Music_07:
 	music_off 1, 15
@@ -5366,7 +5394,8 @@ Music_07:
 	music_off 3, 0
 	music_stop $FF, $FF
 	db $00 ; read by Music_Update as the stop event's delay (dead write: wMusicPtr is cleared)
-	db $FF, $FF ; never read
+Music_07_UnreadTrailer:
+	db $FF, $FF  ; never read: after end marker
 
 Music_08:
 	music_instrument 2, INSTRUMENT_CH2_ALTERNATE, 0
@@ -6008,7 +6037,8 @@ Music_08:
 	music_note 4, 17, 9
 	music_off 4, 0
 	music_loop $FF, 0
-	db $FE, $FF ; not reached by Music_HandleEvent
+Music_08_UnreadTrailer:
+	db $FE, $FF  ; never read: after end marker
 
 Music_09:
 	music_instrument 2, INSTRUMENT_CH2_ALTERNATE, 0
@@ -6126,4 +6156,5 @@ Music_09:
 	music_off 4, 8
 	music_off 1, 0
 	music_loop $FF, 0
-	db $FE, $FF ; not reached by Music_HandleEvent
+Music_09_UnreadTrailer:
+	db $FE, $FF  ; never read: after end marker

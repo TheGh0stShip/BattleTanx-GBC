@@ -15,6 +15,7 @@ ENDM
 ; descriptor's tile pointer to VRAM0 $8800, VRAM0 $9000 and VRAM1 $9000,
 ; whatever the picture's tile count.
 MACRO screen_load_tiles ; descriptor
+	; Original: this ld hl and ld d, $00 are overwritten below before any read (dead stores).
 	ld hl, \1
 	ld d, $00
 	xor a

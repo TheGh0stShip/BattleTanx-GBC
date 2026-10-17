@@ -17,7 +17,7 @@ BANK_SIZE = 0x4000
 BANKS = range(0x2A, 0x2F)
 DESC_SIZE = 14
 SCREEN_MODE_TABLE = (0x01, 0x47EC, 13)       # 8-byte entries: bank, 0, init, draw, 0
-PICTURE_TABLE = (0x01, 0x596D, 3)           # 16-byte entries used by $01:RAM_D7CB
+PICTURE_TABLE = (0x01, 0x596D, 3)           # 16-byte entries used by $01:LoadMenuState05Graphics
 
 
 class ScreenDataError(ValueError):

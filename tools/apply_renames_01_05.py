@@ -10,6 +10,8 @@ definition so those users keep resolving to the same address.
 
 This tool edits reviewed source; it is not a generator and owns nothing.
 Usage: apply_renames_01_05.py RENAMES.json [--dry-run]
+
+Rerun only with a new reviewed rename list; never replay an applied list.
 """
 from __future__ import annotations
 

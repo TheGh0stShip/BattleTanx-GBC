@@ -215,8 +215,9 @@ delay byte (a dead write, because the stop clears `wMusicPtr`); the trailing
 2. `wUnusedAudioStateC8E4` is initialized to zero and never read;
    `wUnusedChannel1PatchFlag` is set by channel-1 patches and never read.
 3. The fixed padding and reserved fields are structurally bounded but their
-   build-time purpose is unknown: `SoundPatch00UnreadTail`, the four named
-   table-padding ranges, music-pointer byte 3, and sequence trailers.
+   build-time purpose is unknown: patch $00 bytes +6/+7, the four named
+   table-padding ranges, music-pointer byte 3, and the sequence trailers
+   labelled `*_UnreadTrailer`.
 4. Instruments 4, 6, 7 and music id `$89` (`Music_09`) have no static
    reference; channel 4's assigned default instrument 3 is always replaced
    by NoiseNoteTable before use. Dynamic id sources (ROM0 `$1042` uses `b` in {4, 5, `$1B`};

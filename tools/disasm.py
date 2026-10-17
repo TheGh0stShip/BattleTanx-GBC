@@ -5,11 +5,14 @@ Usage: disasm.py baserom.gbc outdir
 
 Writes outdir/src/bank_XX.asm, outdir/src/main.asm and the list of binary
 assets that tools/extract_assets.py must produce (assets.txt).
+
+Superseded: output differs from hand-maintained src/ and assets.txt; comparison
+only. Write to a scratch OUTDIR, never to the project root (`make disasm` does).
 """
 import os, sys, collections
 sys.path.insert(0, os.path.dirname(__file__))
 from sm83 import decode
-import trace, hints
+import rom_trace as trace, hints
 
 INCBIN_MIN = 0x200          # data runs at least this long become INCBIN
 HREG = {
