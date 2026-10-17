@@ -820,9 +820,16 @@ def check_audio() -> None:
         fail("audio: bank $07 returned to a whole-bank blob")
     if "Bank07MalformedSoundPatch00" not in bank7_source or "Bank07AudioBuildResidue" not in bank7_source:
         fail("audio: bank $07 structured source labels are missing")
+    memory_source = (ROOT / "include" / "memory.inc").read_text()
+    for name, address in {
+        "wMusicNoteOnBlocked": 0xC8E3,
+        "wUnusedAudioStateC8E4": 0xC8E4,
+        "wUnusedChannel1PatchFlag": 0xC8F6,
+    }.items():
+        if not re.search(rf"^DEF {name} EQU \${address:04X}(?:\s|$)", memory_source, re.MULTILINE):
+            fail(f"audio: {name} is not fixed at ${address:04X}")
 
     # Every immediate sound id passed to Audio_QueueSound must be playable.
-    import re  # pylint: disable=import-outside-toplevel
     ids = set()
     for path in sorted((ROOT / "src").glob("bank_*.asm")):
         lines = path.read_text().splitlines()

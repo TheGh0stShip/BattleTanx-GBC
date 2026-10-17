@@ -195,14 +195,15 @@ DEF hLevelRegionScore          EQU $FF9E ; 2-byte little-endian accumulator
 
 ; Sound driver state (see AUDIO_RESEARCH.md). Written by Audio_Init
 ; ($06:$7CAE) and used by the driver in bank $06 and ROM0:$2ED5-$2F92.
-; Not named because no behavior is established: $C8E3 (non-zero blocks
-; music note-on; only ever cleared), $C8E4 and $C8F6 (written, never read).
+DEF wMusicNoteOnBlocked EQU $C8E3 ; nonzero suppresses music note-on; initialized only to zero
+DEF wUnusedAudioStateC8E4 EQU $C8E4 ; initialized to zero, never read
 DEF wMusicDelay      EQU $C8E7 ; frames until the next music event
 DEF wMusicPtr        EQU $C8E8 ; 2 bytes, high byte first; 0 high = no music
 DEF wMusicLoopPtr    EQU $C8EA ; 2 bytes, high byte first
 DEF wChannelSettings EQU $C8EC ; 4 x (instrument, NR51 bit pattern)
 DEF wMusicBank       EQU $C8F4 ; ROM bank holding the current music sequence
 DEF wNotePan         EQU $C8F5 ; scratch: NR51 bit pattern for the note being started
+DEF wUnusedChannel1PatchFlag EQU $C8F6 ; set to 1 by channel-1 patches, never read
 DEF wNoiseLockTimer  EQU $C8F7 ; $37 after a channel-4 patch; music ch4 waits
 DEF wSfxSeqPtr       EQU $C8F8 ; 2 bytes, little-endian; 0 high = idle
 DEF wSfxSeqDelay     EQU $C8FA ; frames until the next sequence event

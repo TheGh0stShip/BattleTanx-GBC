@@ -9,9 +9,9 @@ Audio_Init:
 	ld [wMusicPtr], a
 	ld [wMusicPtr + 1], a
 	ld [wNoiseLockTimer], a
-	ld [$C8F6], a
-	ld [$C8E4], a
-	ld [$C8E3], a
+	ld [wUnusedChannel1PatchFlag], a
+	ld [wUnusedAudioStateC8E4], a
+	ld [wMusicNoteOnBlocked], a
 	ld [wSfxSeqPtr], a
 	ld [wSfxSeqPtr + 1], a
 	ld [wSfxSeqLock], a
@@ -114,7 +114,7 @@ Jump_06_7D46:
 	ret
 
 Jump_06_7D63:
-	ld a, [$C8E3]
+	ld a, [wMusicNoteOnBlocked]
 	and a
 	ret nz
 	ld d, $00
@@ -313,7 +313,7 @@ Audio_PlaySound:
 Jump_06_7E66:
 	cp $01
 	jr nz, Jump_06_7E6D
-	ld [$C8F6], a
+	ld [wUnusedChannel1PatchFlag], a
 Jump_06_7E6D:
 	dec a
 	add a, a
@@ -479,7 +479,7 @@ Jump_06_7F35:
 Jump_06_7F59:
 	cp $01
 	jr nz, Jump_06_7F60
-	ld [$C8F6], a
+	ld [wUnusedChannel1PatchFlag], a
 Jump_06_7F60:
 	dec a
 	add a, a

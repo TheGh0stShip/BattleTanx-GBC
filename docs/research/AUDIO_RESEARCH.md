@@ -139,7 +139,7 @@ Audio_InitFar).
 | rest | not read; all zero except patch `$00`, which has `22 00` |
 
 Channel 4 patches also set `wNoiseLockTimer = $37`; channel 1 patches
-write 1 to `$C8F6`, which nothing reads.
+write 1 to `wUnusedChannel1PatchFlag`, which nothing reads.
 
 ### 5.2 Sound-effect sequence
 
@@ -163,7 +163,7 @@ Ids `$40-$7F` are ignored while `wSfxSeqLock` is set. Starting the id in
 
 | Event | Bytes | Behavior |
 | --- | --- | --- |
-| `ch<<4 \| 1` | 3: note, delay | note on (ignored while `$C8E3` is non-zero) |
+| `ch<<4 \| 1` | 3: note, delay | note on (ignored while `wMusicNoteOnBlocked` is non-zero) |
 | `ch<<4 \| 2` | 2: delay | note off: clears the channel's NR51 bits (channel 4 skipped while the noise lock is active) |
 | `ch<<4 \| 3` | 3: instrument, delay | select instrument |
 | `ch<<4 \| 4` | 3: bits, delay | set the NR51 bit pattern, shifted by `ch-1` at note-on |
@@ -194,9 +194,10 @@ loop. Each sequence is followed by `FE FF` (`$07`: `00 FF FF`), never read.
 
 ## 7. Unresolved
 
-1. `$C8E3`: gates music note-ons when non-zero; nothing in traced code
-   sets it non-zero.
-2. `$C8E4`, `$C8F6`: written, never read.
+1. `wMusicNoteOnBlocked` is initialized to zero and checked before music
+   note-ons, but nothing in traced code sets it nonzero.
+2. `wUnusedAudioStateC8E4` is initialized to zero and never read;
+   `wUnusedChannel1PatchFlag` is set by channel-1 patches and never read.
 3. Unread bytes: `06:415A-415B`, `4660-4661`, `4740-4743`, `476C-476D`,
    patch `$00` bytes 6-7, music-pointer byte 3, sequence trailers.
 4. Instruments 4, 6, 7 and music id `$89` (`Music_09`) have no static
