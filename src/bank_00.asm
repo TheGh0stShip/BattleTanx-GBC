@@ -4422,18 +4422,18 @@ UpdateLevelCamera:
 	ld a, [hl]
 	sub e
 	cp $48
-	jr nc, Jump_1826
+	jr nc, .checkRight
 	ld a, l
 	and $C0
 	add a, $1B
 	ld l, a
 	ld a, [hl]
 	bit 7, a
-	jr z, Jump_1826
+	jr z, .checkRight
 	dec a
 	cpl
 	call ScrollLevelLeft
-Jump_1826:
+.checkRight:
 	ld a, [wLevelCameraX]
 	ld e, a
 	ld a, l
@@ -4445,16 +4445,16 @@ Jump_1826:
 	ld e, a
 	ld a, $58
 	cp e
-	jp nc, Jump_1846
+	jp nc, .checkUp
 	ld a, l
 	and $C0
 	add a, $1B
 	ld l, a
 	ld a, [hl]
 	bit 7, a
-	jr nz, Jump_1846
+	jr nz, .checkUp
 	call ScrollLevelRight
-Jump_1846:
+.checkUp:
 	ld a, [wLevelCameraY]
 	ld e, a
 	ld a, l
@@ -4464,18 +4464,18 @@ Jump_1846:
 	ld a, [hl]
 	sub e
 	cp $38
-	jr nc, Jump_1866
+	jr nc, .checkDown
 	ld a, l
 	and $C0
 	add a, $1C
 	ld l, a
 	ld a, [hl]
 	bit 7, a
-	jr z, Jump_1866
+	jr z, .checkDown
 	dec a
 	cpl
 	call ScrollLevelUp
-Jump_1866:
+.checkDown:
 	ld a, [wLevelCameraY]
 	ld e, a
 	ld a, l
@@ -4487,16 +4487,16 @@ Jump_1866:
 	ld e, a
 	ld a, $48
 	cp e
-	jp nc, Jump_1887
+	jp nc, .return
 	ld a, l
 	and $C0
 	add a, $1C
 	ld l, a
 	ld a, [hl]
 	bit 7, a
-	jr nz, Jump_1887
+	jr nz, .return
 	call ScrollLevelDown
-Jump_1887:
+.return:
 	pop hl
 	pop bc
 	pop de
@@ -4554,12 +4554,12 @@ LoadLevelRecord:
 	ld l, a
 	ld bc, wLevelTileBank
 	ld d, $12
-Jump_18E0:
+.copyFields:
 	ld a, [hli]
 	ld [bc], a
 	inc bc
 	dec d
-	jr nz, Jump_18E0
+	jr nz, .copyFields
 	call BuildLevelRowOffsets
 	pop hl
 	pop de
@@ -4662,13 +4662,13 @@ Func_194B:
 	ld a, d
 	add a, $80
 	cp $80
-	jr nz, Jump_197D
+	jr nz, .compareXMinimum
 	ld a, e
 	cp $00
-Jump_197D:
-	jr nc, Jump_1982
+.compareXMinimum:
+	jr nc, .checkXMaximum
 	ld de, $0000
-Jump_1982:
+.checkXMaximum:
 	ld a, e
 	ldh [$FF80], a
 	ld a, d
@@ -4685,16 +4685,16 @@ Jump_1982:
 	ld b, a
 	ld a, d
 	cp b
-	jr nz, Jump_19A0
+	jr nz, .compareXMaximum
 	ld a, e
 	cp c
-Jump_19A0:
-	jr nc, Jump_19A8
+.compareXMaximum:
+	jr nc, .calculateY
 	ld a, e
 	ldh [$FF80], a
 	ld a, d
 	ldh [$FF81], a
-Jump_19A8:
+.calculateY:
 	ld a, l
 	and $C0
 	add a, OBJECT_Y_OFFSET
@@ -4721,13 +4721,13 @@ Jump_19A8:
 	ld a, d
 	add a, $80
 	cp $80
-	jr nz, Jump_19D7
+	jr nz, .compareYMinimum
 	ld a, e
 	cp $00
-Jump_19D7:
-	jr nc, Jump_19DC
+.compareYMinimum:
+	jr nc, .checkYMaximum
 	ld de, $0000
-Jump_19DC:
+.checkYMaximum:
 	ld a, e
 	ldh [$FF82], a
 	ld a, d
@@ -4744,16 +4744,16 @@ Jump_19DC:
 	ld b, a
 	ld a, d
 	cp b
-	jr nz, Jump_19FA
+	jr nz, .compareYMaximum
 	ld a, e
 	cp c
-Jump_19FA:
-	jr nc, Jump_1A02
+.compareYMaximum:
+	jr nc, .setViewPosition
 	ld a, e
 	ldh [$FF82], a
 	ld a, d
 	ldh [$FF83], a
-Jump_1A02:
+.setViewPosition:
 	ldh a, [$FF80]
 	ld b, a
 	ldh a, [$FF82]
@@ -4775,7 +4775,7 @@ BuildLevelRowOffsets:
 	ld hl, wLevelRowOffsets
 	ld a, [wLevelHeight]
 	ld d, a
-Jump_1A1E:
+.nextRow:
 	ld [hl], c
 	inc hl
 	ld [hl], b
@@ -4787,7 +4787,7 @@ Jump_1A1E:
 	adc a, b
 	ld b, a
 	dec d
-	jr nz, Jump_1A1E
+	jr nz, .nextRow
 	pop hl
 	pop de
 	pop bc
@@ -4879,24 +4879,24 @@ LoadLevelCellMap:
 	ld h, a
 	ld a, [wLevelHeight]
 	ld e, a
-Jump_1AC4:
+.copyRow:
 	ld a, [wLevelWidth]
 	ld d, a
-Jump_1AC8:
+.copyByte:
 	ld a, [hli]
 	ld [bc], a
 	inc bc
 	ld a, $E0
 	cp b
-	jr nz, Jump_1AD6
+	jr nz, .continueRow
 	ld b, $D0
 	ld a, $03
 	ldh [rSVBK], a
-Jump_1AD6:
+.continueRow:
 	dec d
-	jr nz, Jump_1AC8
+	jr nz, .copyByte
 	dec e
-	jr nz, Jump_1AC4
+	jr nz, .copyRow
 	pop af
 	ldh [rSVBK], a
 	pop hl
@@ -4987,13 +4987,13 @@ CacheLevelViewRowOffset:
 	ld l, $00
 	ld a, c
 	or a
-Jump_1B60:
-	jr z, Jump_1B66
+.addRowWidth:
+	jr z, .storeOffset
 	add hl, de
 	dec a
-	jr Jump_1B60
+	jr .addRowWidth
 
-Jump_1B66:
+.storeOffset:
 	push af
 	ld a, l
 	ld [wLevelViewRowOffset], a
@@ -5017,7 +5017,7 @@ ScrollLevelRight:
 	srl a
 	srl a
 	cp d
-	jr z, Jump_1BCD
+	jr z, .moveWithinCell
 	ld a, [wLevelWidth]
 	sub $15
 	ld b, a
@@ -5052,7 +5052,7 @@ ScrollLevelRight:
 	call DrawLevelRightColumn
 	ret
 
-Jump_1BCD:
+.moveWithinCell:
 	ld a, [wLevelCameraX]
 	add a, e
 	ld [wLevelCameraX], a
@@ -5075,7 +5075,7 @@ ScrollLevelLeft:
 	srl a
 	srl a
 	cp d
-	jr z, Jump_1C36
+	jr z, .moveWithinCell
 	ld a, [wLevelViewX]
 	or a
 	ret z
@@ -5107,7 +5107,7 @@ ScrollLevelLeft:
 	call DrawLevelLeftColumn
 	ret
 
-Jump_1C36:
+.moveWithinCell:
 	ld a, [wLevelCameraX]
 	sub e
 	ld [wLevelCameraX], a
@@ -5130,7 +5130,7 @@ ScrollLevelDown:
 	srl a
 	srl a
 	cp d
-	jr z, Jump_1CA5
+	jr z, .moveWithinCell
 	ld a, [wLevelHeight]
 	sub $13
 	ld b, a
@@ -5165,7 +5165,7 @@ ScrollLevelDown:
 	call DrawLevelBottomRow
 	ret
 
-Jump_1CA5:
+.moveWithinCell:
 	ld a, [wLevelCameraY]
 	add a, e
 	ld [wLevelCameraY], a
@@ -5188,7 +5188,7 @@ ScrollLevelUp:
 	srl a
 	srl a
 	cp d
-	jr z, Jump_1D0F
+	jr z, .moveWithinCell
 	ld a, [wLevelViewY]
 	or a
 	ret z
@@ -5221,7 +5221,7 @@ ScrollLevelUp:
 	call DrawLevelTopRow
 	ret
 
-Jump_1D0F:
+.moveWithinCell:
 	ld a, [wLevelCameraY]
 	sub e
 	ld [wLevelCameraY], a
@@ -5249,7 +5249,7 @@ DrawLevelCellIfVisible:
 	sub l
 	ld c, a
 	cp $20
-	jp nc, Jump_1D8E
+	jp nc, .return
 	ld a, [wLevelRingX]
 	add a, c
 	and $1F
@@ -5260,7 +5260,7 @@ DrawLevelCellIfVisible:
 	sub l
 	ld e, a
 	cp $20
-	jp nc, Jump_1D8E
+	jp nc, .return
 	ld a, [wLevelRingY]
 	add a, e
 	and $1F
@@ -5295,7 +5295,7 @@ DrawLevelCellIfVisible:
 	call WriteLevelCellToBGMap
 	pop af
 	ld [rROMB0], a
-Jump_1D8E:
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -5345,12 +5345,12 @@ GetLevelCellTileAndAttr:
 	pop hl
 	ld a, c
 	and $C0
-	jp z, Jump_1E5F
+	jp z, .directCell
 	cp $40
-	jr z, Jump_1DD8
+	jr z, .animatedCell
 	cp $80
-	jr z, Jump_1DEB
-Jump_1DD8:
+	jr z, .mappedCell
+.animatedCell:
 	ld a, [wLevelAnimatedCellAttribute]
 	ld d, a
 	ld a, [wLevelAnimationFrame]
@@ -5359,9 +5359,9 @@ Jump_1DD8:
 	ld [wLevelAnimationFrame], a
 	add a, $BB
 	ld e, a
-	jp Jump_1E81
+	jp .return
 
-Jump_1DEB:
+.mappedCell:
 	ldh a, [$FF80]
 	ld l, a
 	ldh a, [$FF81]
@@ -5386,7 +5386,7 @@ Jump_1DEB:
 	ld e, [hl]
 	ld a, d
 	and $08
-	jr nz, Jump_1E81
+	jr nz, .return
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $05
@@ -5432,9 +5432,9 @@ Jump_1DEB:
 	ld d, [hl]
 	pop af
 	ld [rROMB0], a
-	jr Jump_1E81
+	jr .return
 
-Jump_1E5F:
+.directCell:
 	ldh a, [$FF80]
 	ld l, a
 	ldh a, [$FF81]
@@ -5457,7 +5457,7 @@ Jump_1E5F:
 	adc a, h
 	ld h, a
 	ld e, [hl]
-Jump_1E81:
+.return:
 	pop bc
 	pop hl
 	ret
@@ -5491,7 +5491,7 @@ DrawLevelRow21:
 	ld a, [wLevelMapBank]
 	ld [rROMB0], a
 	ld e, $15
-Jump_1EA7:
+.drawCell:
 	call WriteLevelCellToBGMap
 	push af
 	push de
@@ -5507,7 +5507,7 @@ Jump_1EA7:
 	pop af
 	inc b
 	dec e
-	jr nz, Jump_1EA7
+	jr nz, .drawCell
 	pop af
 	ld [rROMB0], a
 	pop hl
@@ -5527,7 +5527,7 @@ DrawLevelColumn19:
 	ld a, [wLevelMapBank]
 	ld [rROMB0], a
 	ld e, $13
-Jump_1ED5:
+.drawCell:
 	call WriteLevelCellToBGMap
 	push af
 	ld a, $20
@@ -5541,7 +5541,7 @@ Jump_1ED5:
 	pop af
 	inc c
 	dec e
-	jr nz, Jump_1ED5
+	jr nz, .drawCell
 	pop af
 	ld [rROMB0], a
 	pop hl
