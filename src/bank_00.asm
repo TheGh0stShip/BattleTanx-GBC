@@ -3970,7 +3970,8 @@ Func_164F:
 	ret
 
 
-Func_16A8:
+; Return cell-map bit 3 for the cell containing pixel coordinate BC,DE.
+TestLevelCellBit3AtPixel:
 	push bc
 	push de
 	push hl
@@ -4033,7 +4034,8 @@ Func_16A8:
 	ret
 
 
-Func_16FF:
+; Return cell-map bit 0 for the cell containing pixel coordinate BC,DE.
+TestLevelCellBit0AtPixel:
 	push bc
 	push de
 	push hl
@@ -4096,7 +4098,8 @@ Func_16FF:
 	ret
 
 
-Func_1756:
+; Return cell-map bit 1 for the cell containing pixel coordinate BC,DE.
+TestLevelCellBit1AtPixel:
 	push bc
 	push de
 	push hl
@@ -4159,7 +4162,8 @@ Func_1756:
 	ret
 
 
-Func_17AD:
+; Return cell-map bit 2 for the cell containing pixel coordinate BC,DE.
+TestLevelCellBit2AtPixel:
 	push bc
 	push de
 	push hl
@@ -6271,7 +6275,8 @@ Jump_23B0:
 	jp Jump_232B
 
 
-Func_23B6:
+; Require cell-map bit 0 at eight points around a 20-by-16-pixel footprint.
+TestLevelCellBit0Footprint:
 	push bc
 	push de
 	ld a, c
@@ -6286,7 +6291,7 @@ Func_23B6:
 	ld a, d
 	sbc a, $00
 	ld d, a
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jp z, Jump_2438
 	ld a, c
@@ -6295,7 +6300,7 @@ Func_23B6:
 	ld a, b
 	adc a, $00
 	ld b, a
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jp z, Jump_2438
 	ld a, c
@@ -6304,7 +6309,7 @@ Func_23B6:
 	ld a, b
 	adc a, $00
 	ld b, a
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jp z, Jump_2438
 	ld a, e
@@ -6313,7 +6318,7 @@ Func_23B6:
 	ld a, d
 	adc a, $00
 	ld d, a
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jp z, Jump_2438
 	ld a, e
@@ -6322,7 +6327,7 @@ Func_23B6:
 	ld a, d
 	adc a, $00
 	ld d, a
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jp z, Jump_2438
 	ld a, c
@@ -6331,7 +6336,7 @@ Func_23B6:
 	ld a, b
 	sbc a, $00
 	ld b, a
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jp z, Jump_2438
 	ld a, c
@@ -6340,7 +6345,7 @@ Func_23B6:
 	ld a, b
 	sbc a, $00
 	ld b, a
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jp z, Jump_2438
 	ld a, e
@@ -6349,7 +6354,7 @@ Func_23B6:
 	ld a, d
 	sbc a, $00
 	ld d, a
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jp z, Jump_2438
 Jump_2438:
@@ -6358,7 +6363,9 @@ Jump_2438:
 	ret
 
 
-Func_243B:
+; Classify signed BC against the horizontal level bounds.
+; Returns 0 inside, 1 left of zero, or 2 at/right of the pixel width.
+ClassifyLevelXBoundary:
 	push bc
 	push de
 	ld a, b
@@ -6400,7 +6407,9 @@ Jump_2467:
 	ret
 
 
-Func_246C:
+; Classify signed DE against the vertical level bounds.
+; Returns 0 inside, 4 above zero, or 2 at/below the pixel height.
+ClassifyLevelYBoundary:
 	push bc
 	push de
 	ld a, d
@@ -6670,7 +6679,7 @@ Func_2589:
 	ld e, [hl]
 	inc l
 	ld d, [hl]
-	call Func_243B
+	call ClassifyLevelXBoundary
 	or a
 	jr nz, Jump_25D2
 	ld a, l
@@ -6680,13 +6689,13 @@ Func_2589:
 	ld a, [hl]
 	and $08
 	jr z, Jump_25CC
-	call Func_23B6
+	call TestLevelCellBit0Footprint
 	or a
 	jr nz, Jump_25F0
 	jr Jump_25D2
 
 Jump_25CC:
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jr nz, Jump_25F0
 Jump_25D2:
@@ -6729,7 +6738,7 @@ Jump_25F0:
 	ld e, [hl]
 	inc l
 	ld d, [hl]
-	call Func_246C
+	call ClassifyLevelYBoundary
 	or a
 	jr nz, Jump_2620
 	ld a, l
@@ -6739,13 +6748,13 @@ Jump_25F0:
 	ld a, [hl]
 	and $08
 	jr z, Jump_261A
-	call Func_23B6
+	call TestLevelCellBit0Footprint
 	or a
 	jr nz, Jump_2640
 	jr Jump_2620
 
 Jump_261A:
-	call Func_16FF
+	call TestLevelCellBit0AtPixel
 	or a
 	jr nz, Jump_2640
 Jump_2620:
@@ -6814,7 +6823,7 @@ Func_2644:
 	ld e, [hl]
 	inc l
 	ld d, [hl]
-	call Func_16A8
+	call TestLevelCellBit3AtPixel
 	or a
 	jr z, Jump_267B
 	call Func_1219
@@ -6870,9 +6879,9 @@ Jump_26A8:
 	ld e, [hl]
 	inc l
 	ld d, [hl]
-	call Func_1756
+	call TestLevelCellBit1AtPixel
 	jr z, Jump_26F6
-	call Func_17AD
+	call TestLevelCellBit2AtPixel
 	jp nz, Jump_27BA
 	ld a, l
 	and $C0
@@ -6924,9 +6933,9 @@ Jump_26F6:
 	ld e, [hl]
 	inc l
 	ld d, [hl]
-	call Func_1756
+	call TestLevelCellBit1AtPixel
 	jr z, Jump_2744
-	call Func_17AD
+	call TestLevelCellBit2AtPixel
 	jp nz, Jump_27BA
 	ld a, l
 	and $C0
@@ -7021,7 +7030,7 @@ Jump_277C:
 	ld e, [hl]
 	inc l
 	ld d, [hl]
-	call Func_1756
+	call TestLevelCellBit1AtPixel
 	jr nz, Jump_27BA
 	ld a, l
 	and $C0
@@ -7037,7 +7046,7 @@ Jump_277C:
 	ld e, [hl]
 	inc l
 	ld d, [hl]
-	call Func_1756
+	call TestLevelCellBit1AtPixel
 	jr nz, Jump_27BA
 	pop hl
 	pop de

@@ -21,7 +21,8 @@ The 30 banks are 15 levels, two banks per level:
 Every byte belongs to exactly one range below. `tools/level_data.py` checks
 the coverage and boundaries from the ROM. There is no code, text, sprite
 layout, collision table or compressed stream anywhere in these banks. The
-cell map's low six bits have unknown meaning (section 6).
+cell map uses only bits 0-3 in ROM; their gameplay meanings remain unknown
+(section 6).
 
 | Class | Bytes | Share |
 | --- | ---: | ---: |
@@ -93,9 +94,11 @@ falls in `$09-$26` within their known index ranges.
 Copied to WRAM. In `$1D93`, bits 6-7 select the lookup path: `00` uses the
 tile/attribute maps; `$40`/`$C0` returns tile `$BB + (counter & 7)` with
 attribute `[$C8D3]`; `$80` uses the bank-`$05` table at `[$C8CE]` and
-the attribute lookup table. **Every cell byte in ROM has bits 6-7 clear.**
-Low-bit values seen: 0, 1, 2, 3, 6, 8, 9, 10, 15. Their meaning is not
-established. The WRAM copy may be changed at run time, which was not traced.
+the attribute lookup table. **Every cell byte in ROM has bits 4-7 clear.**
+Values seen are 0, 1, 2, 3, 6, 8, 9, 10, and 15. Dedicated ROM0 routines
+read bits 0, 1, 2, and 3 at a pixel coordinate; another tests bit 0 around
+an eight-point footprint. Their gameplay meanings are not established. The
+WRAM copy may be changed at run time, but no such writer has been established.
 
 ### 4.2 Tiles (odd bank, `16 * (record+7 + 1)` bytes)
 
@@ -186,7 +189,7 @@ bytes are zero; `$7FFF` holds the bank number.
 | --- | ---: | --- |
 | Tiles, tile maps, attribute maps, palettes | 305,984 | boundaries, references and representation checked |
 | Zero fill and markers | 71,121 | checked |
-| Cell maps | 112,000 | boundaries and bits 6-7 checked; low 6 bits unknown |
+| Cell maps | 112,000 | boundaries checked; ROM uses bits 0-3 only, with dedicated readers but unknown gameplay meanings |
 | Attribute lookup tables | 2,400 | boundaries and indexing checked; the reading path is never triggered by ROM cell data |
 | Zero byte before each table | 15 | never read; role unknown |
 
@@ -198,8 +201,9 @@ validator. Visual renders were only used as a sanity check, not as evidence.
 
 ## 7. Unresolved
 
-1. Meaning of the cell-map low bits (likely read by game logic in WRAM;
-   not traced).
+1. Gameplay meaning of cell-map bits 0-3. ROM0 has dedicated pixel-coordinate
+   readers for each bit and an eight-point bit-0 footprint test; their movement
+   callers are traced, but do not establish names for the four flags.
 2. Whether run-time code sets cell bits 6-7, which would exercise the
    `$40`/`$80` paths and the lookup tables.
 3. Record +6 and +7..+8 are never read.
@@ -216,7 +220,7 @@ validator. Visual renders were only used as a sanity check, not as evidence.
 > maps, zero fill and markers. Source is structured per bank with typed
 > INCBINs, explicit palettes and tables, and layout ASSERTs.
 > `tools/level_data.py` validates every boundary from the ROM, with 11
-> negative tests. Unknown: cell-map low bits, record +6/+7, the role of one
+> negative tests. Unknown: cell-map bits 0-3, record +6/+7, the role of one
 > unread byte per level, and the run-time use of the lookup tables.
 
 ## 9. Validation
@@ -241,7 +245,7 @@ levels: 15 levels, 112000 cells; CSV, palette and PNG outputs round-trip verifie
 
 Negative tests (each must fail for the stated reason): bank marker, zero
 fill, record bank byte, record tile count, lookup-table pointer, palette
-bit 15, attribute palette range, tile beyond count, cell bits 6-7, and the
+bit 15, attribute palette range, tile beyond count, ROM cell bits 4-7, and the
 unread byte, plus the tile-animation pointer table.
 
 ## 10. Range map

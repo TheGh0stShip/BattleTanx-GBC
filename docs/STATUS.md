@@ -31,7 +31,7 @@ This is complete binary reconstruction. It is not complete semantic recovery.
 | Symbols | Interrupts, startup, copy helpers, screen and menu-state dispatch, OAM DMA, MBC5/VBlank state, both active scene descriptors, and their copy/load routines are named | Continue naming routines and RAM state from evidence |
 | RAM images | All 31 executable images are explicit instructions, while 7 data-only images remain bytes; every image retains its ROM source and runtime address with a `LOAD` block | Name remaining images and verify every copy site |
 | Graphics | 61 confirmed 2bpp sheets extract to PNG and round-trip byte-exactly: eleven interface sheets, three orientation sets, eleven fixed backgrounds, and 36 scrolling-scene sheets | Establish the remaining mixed graphics/data formats in banks `$27-$29` and identify remaining layouts |
-| Maps | Eleven fixed backgrounds, 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers with checked dimensions, indices, attributes, flips, and palettes | Recover the low six bits of level cell maps and name individual scenes and levels |
+| Maps | Eleven fixed backgrounds, 36 scrolling scenes, and all 15 two-bank levels have lossless inspection renderers with checked dimensions, indices, attributes, flips, and palettes | Determine the gameplay meanings of cell bits 0-3 and name individual scenes and levels |
 | Level data | Every byte of banks `$09-$26` is classified across 15 levels: cell maps, tiles, lookup tables, palettes, tile maps, attribute maps, fill, and markers | Determine the unknown cell-map bits and unused record fields |
 | Audio | Driver code and all of its data (bank `$06:$4000-$7CAD`) are explicit source in `src/audio_data.asm`; see the Audio section below | Name remaining unknown fields; physical-hardware check |
 | Text | Options-menu labels and value strings are represented directly in source | Extract and round-trip remaining strings and encodings |
@@ -116,6 +116,11 @@ address-checked.
 Level initialization also names the banked cell-position setter and its ROM0
 wrapper. Checked cache fields retain the level's pixel dimensions, the current
 view-row offset into the cell map, and the wrapped BG-map row offset.
+Horizontal and vertical boundary classifiers now document their signed input
+registers and directional return codes against those pixel dimensions. The
+cell-map accessors for bits 0 through 3 and the eight-point bit-0 footprint
+test are named; their callers establish use by movement logic, but the gameplay
+meaning of each flag remains unknown. ROM cell maps never set bits 4 through 7.
 
 Bank `$05:$4EA0` contains four 16-bit score awards selected by an object's
 type; the two callers and the four-byte score-accumulation routine now have
@@ -123,9 +128,10 @@ behavioral names. Four eight-byte object-type parameter records at `$5100`
 have three consumed bytes and five reserved zeros apiece. Both tables are
 explicit source with checked values and addresses.
 
-The low six bits of cell-map entries, record fields +6 and +7/+8, and the role
-of one unread byte preceding each lookup table remain unknown. No ROM cell sets
-bits 6 or 7, so the lookup-table paths may depend on run-time changes.
+The gameplay meanings of cell-map bits 0 through 3, record fields +6 and
++7/+8, and the role of one unread byte preceding each lookup table remain
+unknown. No ROM cell sets bits 4 through 7, so the bit-6/7 lookup-table paths
+may depend on run-time changes.
 
 ## Confirmed graphics boundaries
 

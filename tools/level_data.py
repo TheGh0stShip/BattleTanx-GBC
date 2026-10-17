@@ -135,7 +135,7 @@ def validate_level(rom: bytes, lv: Level) -> None:
     check(not any(read(rom, odd, pal_end, 0x7FFF - pal_end)), f"{tag}: odd-bank fill not zero")
     check(read(rom, odd, 0x7FFF)[0] == odd, f"{tag}: odd-bank marker")
     cells = read(rom, odd, lv.cellmap_addr, lv.cells)
-    check(not any(c & 0xC0 for c in cells), f"{tag}: cell byte with bit 6/7 set")
+    check(not any(c & 0xF0 for c in cells), f"{tag}: ROM cell byte with bit 4-7 set")
 
     # Even bank layout
     map_end = lv.attrmap_addr + lv.cells
@@ -224,7 +224,7 @@ def negative_tests(rom: bytes) -> int:
         "palette word": ({(0x09, lv0.palettes_addr + 1): 0x80}, "bit 15"),
         "attribute palette": ({(0x0A, lv0.attrmap_addr): 0x07}, "palette out of range"),
         "tile beyond count": ({(0x0A, 0x4000): 0xB7, (0x0A, lv0.attrmap_addr): 0x08}, "highest tile"),
-        "cell flag bits": ({(0x09, 0x4000): 0x80}, "bit 6/7"),
+        "cell high bits": ({(0x09, 0x4000): 0x10}, "bit 4-7"),
         "gap byte": ({(0x09, lv0.attr_table_addr - 1): 0x01}, "byte before"),
         "animation pointer": ({(0x05, 0x5120): 0x7B}, "animation pointer table"),
     }
