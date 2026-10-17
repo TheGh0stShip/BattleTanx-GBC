@@ -287,8 +287,8 @@ Jump_0236:
 Jump_0245:
 	ld e, $58
 	call Audio_QueueSound
-	call Func_0A48
-	call Func_0A23
+	call InitializeLevelEntityDispatcherFar
+	call ResetGameplayFrameState
 Jump_0250:
 	xor a
 	ld [wVBlankPending], a
@@ -1662,7 +1662,10 @@ Jump_09F1:
 LevelAnimatedCellAttributes:
 	db $0A, $0A, $0A, $09, $09, $0A, $0B, $0B, $0B, $0A, $0A, $0A, $0A, $0A, $0A
 
-Func_0A23:
+; Reset HUD alert, entity-iteration, and frame-counter state. If $C91E/$C91F
+; holds a pending byte pointer, decrement that byte once and clear the pointer.
+ResetGameplayFrameState:
+Func_0A23: ; legacy alias
 	xor a
 	ld [wHudAlertActive], a
 	ld [$C8D7], a
@@ -1684,7 +1687,10 @@ Func_0A23:
 	ret
 
 
-Func_0A48:
+; Select the bank-$02 entity update routine for the current level group and
+; install its JP stub and iteration state at $C8D4-$C8DE.
+InitializeLevelEntityDispatcherFar:
+Func_0A48: ; legacy alias
 	ld a, [ROM_BANK_MARKER]
 	push af
 	ld a, $02

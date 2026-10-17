@@ -277,6 +277,8 @@ NAMES = {
     0x3AAE: "InstallMenuRuntimeCodeFar",
     0x3BB0: "InstallSceneRuntimeCodeFar",
     0x3C90: "LoadScrollingScreenFillCell",
+    0x0A23: "ResetGameplayFrameState",
+    0x0A48: "InitializeLevelEntityDispatcherFar",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",
