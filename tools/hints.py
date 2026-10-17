@@ -271,6 +271,7 @@ NAMES = {
     0x30D1: "InitializeTimedEffectSubtype1Far",
     0x30E2: "InitializeTimedEffectSubtype0Far",
     0x30F3: "InitializeTimedEffectSubtype2Far",
+    0x0192: "RunLevel",
     0x3CD9: "ClearShadowOamAndTransferFar",
     0x322D: "InitializeHudWindow",
     0x3252: "MoveHudWindow",

@@ -79,7 +79,7 @@ Jump_0076:
 	jp z, Jump_0090
 	inc a
 	ld [wLevelNumber], a
-	jp Func_0192
+	jp RunLevel
 
 Jump_0090:
 	call PrepareDisplayForScreenTransition
@@ -195,11 +195,14 @@ Jump_0175:
 	call RAM_D62A
 	ld a, $01
 	ld [rROMB0], a
-	call Func_0192
+	call RunLevel
 	jp Jump_016C
 
 
-Func_0192:
+; Initialize the selected level, handle player respawns, and run gameplay
+; frames until level completion or the player exhausts all lives.
+RunLevel:
+Func_0192: ; legacy alias
 	call Func_3ABF
 	xor a
 	ld [wPauseActive], a
