@@ -220,6 +220,7 @@ DEF wPaletteFadeFromWhite EQU $C6D1 ; 0: fade steps darken (fade from black); el
 DEF wScreenDescriptor     EQU $C6D2 ; 14-byte copy of the current screen descriptor
 DEF wScreenWidth          EQU $C6DC ; descriptor +10, CopyScreenMaps width
 DEF wScreenHeight         EQU $C6DD ; descriptor +11, CopyScreenMaps height
+DEF wSkipInitialMenuTransition EQU $C6E2 ; nonzero only for the first menu pass after boot
 
 ; Eight-byte entry copied from bank 1's ScreenModeTable before its banked
 ; initialization or drawing callback is dispatched.

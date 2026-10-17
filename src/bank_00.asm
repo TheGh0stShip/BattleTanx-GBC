@@ -111,7 +111,7 @@ Jump_00A6:
 	jr z, Jump_009F
 	call FadePalettesToBlackWithSound
 	call InstallBasicInterruptHandlersFar
-	jp Jump_016C
+	jp RunMenuAndLevelLoop
 
 	db $C3, $C3, $00, $C9
 Jump_00C7:
@@ -120,10 +120,11 @@ Jump_00C7:
 	call PrepareDisplayForScreenTransition
 	call RunNoLivesScreenFar
 	call FadePalettesToBlackWithSound
-	jp Jump_016C
+	jp RunMenuAndLevelLoop
 
 	db $18, $FE
-Jump_00DA:
+RestartGame:
+Jump_00DA: ; legacy alias used by banked reset paths
 	ldh a, [rLCDC]
 	res 5, a
 	ldh [rLCDC], a
@@ -182,16 +183,16 @@ Init:
 	call Audio_QueueSound
 	ld a, $01
 	ld [wMusicEnabled], a
-	ld [$C6E2], a
+	ld [wSkipInitialMenuTransition], a
 	call RunBootScreenSequenceFar
-Jump_016C:
-	ld a, [$C6E2]
+RunMenuAndLevelLoop:
+	ld a, [wSkipInitialMenuTransition]
 	or a
-	jr nz, Jump_0175
+	jr nz, .installMenuRuntime
 	call PrepareDisplayForScreenTransition
-Jump_0175:
+.installMenuRuntime:
 	xor a
-	ld [$C6E2], a
+	ld [wSkipInitialMenuTransition], a
 	ld a, $01
 	ld [rROMB0], a
 	call InstallMenuRuntimeCodeFar
@@ -200,7 +201,7 @@ Jump_0175:
 	ld a, $01
 	ld [rROMB0], a
 	call RunLevel
-	jp Jump_016C
+	jp RunMenuAndLevelLoop
 
 
 ; Initialize the selected level, handle player respawns, and run gameplay
@@ -9889,7 +9890,7 @@ Func_3439:
 	ld l, a
 	ld a, [hl]
 	cp $00
-	jr z, Jump_346E
+	jr z, .clearPowerup
 	ld d, a
 	call DrawPlayerPowerupIcon
 	ld a, l
@@ -9898,16 +9899,16 @@ Func_3439:
 	ld l, a
 	ld a, [hl]
 	cp $0A
-	jr c, Jump_3463
+	jr c, .drawCharge
 	ld a, $09
-Jump_3463:
+.drawCharge:
 	add a, $30
 	ld c, a
 	ld hl, $C407
 	call WriteHudTileAndAttribute
-	jr Jump_348A
+	jr .drawAlert
 
-Jump_346E:
+.clearPowerup:
 	ld c, $01
 	ld hl, $C407
 	call WriteHudTileAndAttribute
@@ -9920,13 +9921,13 @@ Jump_346E:
 	call WriteHudTileAndAttribute
 	inc hl
 	call WriteHudTileAndAttribute
-Jump_348A:
+.drawAlert:
 	ld a, [wHudAlertActive]
 	and a
-	jr z, Jump_34CE
+	jr z, .return
 	ld a, [wVBlankCounter]
 	bit 4, a
-	jr z, Jump_34B4
+	jr z, .hideAlert
 	ld c, $5A
 	ld b, $87
 	ld hl, $C40A
@@ -9940,9 +9941,9 @@ Jump_348A:
 	inc hl
 	inc c
 	call WriteHudTileAndAttribute
-	jr Jump_34CE
+	jr .return
 
-Jump_34B4:
+.hideAlert:
 	ld c, $01
 	ld b, $87
 	ld hl, $C40A
@@ -9954,7 +9955,7 @@ Jump_34B4:
 	call WriteHudTileAndAttribute
 	inc hl
 	call WriteHudTileAndAttribute
-Jump_34CE:
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -10109,40 +10110,40 @@ Func_356B:
 	ldh [$FF98], a
 	ld bc, $FF92
 	ld e, $05
-Jump_3590:
+.nextPackedDigit:
 	ld a, e
 	and $01
-	jr z, Jump_359C
+	jr z, .readLowNibble
 	ld a, [bc]
 	swap a
 	and $0F
-	jr Jump_35A0
+	jr .checkLeadingZero
 
-Jump_359C:
+.readLowNibble:
 	ld a, [bc]
 	and $0F
 	inc c
-Jump_35A0:
+.checkLeadingZero:
 	ld d, a
 	or a
-	jr z, Jump_35A8
+	jr z, .maybeDrawDigit
 	ld a, $01
 	ldh [$FF98], a
-Jump_35A8:
+.maybeDrawDigit:
 	ld a, d
 	or a
-	jr nz, Jump_35B3
+	jr nz, .drawDigit
 	ldh a, [$FF98]
 	or a
-	jr nz, Jump_35B3
-	jr Jump_35B6
+	jr nz, .drawDigit
+	jr .advanceCell
 
-Jump_35B3:
+.drawDigit:
 	call DrawHudScoreDigit
-Jump_35B6:
+.advanceCell:
 	inc hl
 	dec e
-	jr nz, Jump_3590
+	jr nz, .nextPackedDigit
 	ld a, [bc]
 	and $0F
 	ld d, a
@@ -10212,19 +10213,19 @@ Func_3608: ; legacy alias
 	ld e, a
 	ld a, e
 	cp $80
-	jr nz, Jump_3621
+	jr nz, .checkReturnToMenuChord
 	ld a, [wPauseActive]
 	cpl
 	ld [wPauseActive], a
-Jump_3621:
+.checkReturnToMenuChord:
 	ld a, e
 	and $F0
 	cp $F0
-	jr nz, Jump_362B
-	jp Jump_00DA
+	jr nz, .continueGameplay
+	jp RestartGame
 
-Jump_362B:
-	jr Jump_363B
+.continueGameplay:
+	jr ResetReturnToMenuCounter
 
 
 ; Increment the dormant return-to-menu counter. At 20, restart the outer menu
@@ -10235,20 +10236,20 @@ Func_362D: ; legacy alias
 	inc a
 	ld [$CD0F], a
 	cp $14
-	jr nz, Jump_363F
-	jp Jump_016C
+	jr nz, DispatchRuntimeCallbackUnlessPaused
+	jp RunMenuAndLevelLoop
 
-Jump_363B:
+ResetReturnToMenuCounter:
 	xor a
 	ld [$CD0F], a
-Jump_363F:
+DispatchRuntimeCallbackUnlessPaused:
 	ld a, [wPauseActive]
 	or a
-	jr z, Jump_3647
+	jr z, .dispatch
 	pop hl
 	ret
 
-Jump_3647:
+.dispatch:
 	ld hl, wRuntimeCallback
 	ld a, [hli]
 	ld h, [hl]
@@ -10261,35 +10262,35 @@ Func_364E: ; legacy alias
 	pop hl
 	ld a, e
 	and $02
-	jr z, Jump_3657
+	jr z, .checkClockwise
 	call TurnVehicleCounterclockwise
-Jump_3657:
+.checkClockwise:
 	ld a, e
 	and $01
-	jr z, Jump_365F
+	jr z, .checkForward
 	call TurnVehicleClockwise
-Jump_365F:
+.checkForward:
 	ld a, e
 	and $04
-	jr z, Jump_3669
+	jr z, .checkReverse
 	call AccelerateVehicleForward
-	jr Jump_3676
+	jr .checkAction
 
-Jump_3669:
+.checkReverse:
 	ld a, e
 	and $08
-	jr z, Jump_3673
+	jr z, .decelerate
 	call AccelerateVehicleReverse
-	jr Jump_3676
+	jr .checkAction
 
-Jump_3673:
+.decelerate:
 	call DecelerateVehicle
-Jump_3676:
+.checkAction:
 	ld a, e
 	and $10
-	jr z, Jump_367E
+	jr z, .return
 	call UsePlayerWeaponOrPowerup
-Jump_367E:
+.return:
 	ret
 
 HandleControlScheme1:
@@ -10297,30 +10298,30 @@ Func_367F: ; legacy alias
 	pop hl
 	ld a, e
 	and $02
-	jr z, Jump_3688
+	jr z, .checkClockwise
 	call TurnVehicleCounterclockwise
-Jump_3688:
+.checkClockwise:
 	ld a, e
 	and $01
-	jr z, Jump_3690
+	jr z, .checkForward
 	call TurnVehicleClockwise
-Jump_3690:
+.checkForward:
 	ld a, e
 	and $14
-	jr z, Jump_369A
+	jr z, .checkReverse
 	call AccelerateVehicleForward
-	jr Jump_36A7
+	jr .checkAction
 
-Jump_369A:
+.checkReverse:
 	ld a, e
 	and $08
-	jr z, Jump_36A4
+	jr z, .decelerate
 	call AccelerateVehicleReverse
-	jr Jump_36A7
+	jr .checkAction
 
-Jump_36A4:
+.decelerate:
 	call DecelerateVehicle
-Jump_36A7:
+.checkAction:
 	ld a, e
 	and $20
 	ret z
@@ -10334,71 +10335,71 @@ Func_36AF: ; legacy alias
 	ld a, e
 	and $0F
 	cp $02
-	jr nz, Jump_36C1
+	jr nz, .checkDirection01
 	ld a, $0C
 	call SetObjectDirection
 	call AccelerateVehicleForward
-	jr Jump_3726
+	jr .checkAction
 
-Jump_36C1:
+.checkDirection01:
 	cp $01
-	jr nz, Jump_36CF
+	jr nz, .checkDirection04
 	ld a, $04
 	call SetObjectDirection
 	call AccelerateVehicleForward
-	jr Jump_3726
+	jr .checkAction
 
-Jump_36CF:
+.checkDirection04:
 	cp $04
-	jr nz, Jump_36DD
+	jr nz, .checkDirection08
 	ld a, $00
 	call SetObjectDirection
 	call AccelerateVehicleForward
-	jr Jump_3726
+	jr .checkAction
 
-Jump_36DD:
+.checkDirection08:
 	cp $08
-	jr nz, Jump_36EB
+	jr nz, .checkDirection06
 	ld a, $08
 	call SetObjectDirection
 	call AccelerateVehicleForward
-	jr Jump_3726
+	jr .checkAction
 
-Jump_36EB:
+.checkDirection06:
 	cp $06
-	jr nz, Jump_36F9
+	jr nz, .checkDirection0A
 	ld a, $0E
 	call SetObjectDirection
 	call AccelerateVehicleForward
-	jr Jump_3726
+	jr .checkAction
 
-Jump_36F9:
+.checkDirection0A:
 	cp $0A
-	jr nz, Jump_3707
+	jr nz, .checkDirection05
 	ld a, $0A
 	call SetObjectDirection
 	call AccelerateVehicleForward
-	jr Jump_3726
+	jr .checkAction
 
-Jump_3707:
+.checkDirection05:
 	cp $05
-	jr nz, Jump_3715
+	jr nz, .checkDirection09
 	ld a, $02
 	call SetObjectDirection
 	call AccelerateVehicleForward
-	jr Jump_3726
+	jr .checkAction
 
-Jump_3715:
+.checkDirection09:
 	cp $09
-	jr nz, Jump_3723
+	jr nz, .decelerate
 	ld a, $06
 	call SetObjectDirection
 	call AccelerateVehicleForward
-	jr Jump_3726
+	jr .checkAction
 
-Jump_3723:
+.decelerate:
 	call DecelerateVehicle
-Jump_3726:
+.checkAction:
 	ld a, e
 	and $10
 	ret z
@@ -10414,7 +10415,7 @@ Func_372E: ; legacy alias
 	push bc
 	ld a, $04
 	call AllocateObjectRecord
-	jr z, Jump_3761
+	jr z, .return
 	ld a, l
 	and $C0
 	add a, $1E
@@ -10444,7 +10445,7 @@ Func_372E: ; legacy alias
 	ld a, l
 	and $C0
 	ld l, a
-Jump_3761:
+.return:
 	pop bc
 	pop de
 	ret
@@ -10472,10 +10473,10 @@ Func_3775: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	cp $FF
-	jr z, Jump_378F
+	jr z, .alive
 	dec a
 	ld [hl], a
-	jr nz, Jump_378F
+	jr nz, .alive
 	ld a, l
 	and $C0
 	ld l, a
@@ -10484,7 +10485,7 @@ Func_3775: ; legacy alias
 	pop hl
 	ret
 
-Jump_378F:
+.alive:
 	xor a
 	inc a
 	pop hl
@@ -10501,14 +10502,14 @@ Func_3793: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	cp $FF
-	jr z, Jump_37A5
+	jr z, .draw
 	ld a, [wVBlankCounter]
 	and $10
-	jr z, Jump_37AB
-Jump_37A5:
+	jr z, .return
+.draw:
 	call SelectObjectSpritePaletteFar
 	call RenderStatus4ObjectSpriteFar
-Jump_37AB:
+.return:
 	ret
 
 
