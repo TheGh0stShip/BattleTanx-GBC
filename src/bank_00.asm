@@ -5677,7 +5677,7 @@ DrawLevelViewport:
 	ldh [$FF93], a
 	ld a, $12
 	ldh [$FF91], a
-Jump_1FA4:
+.drawRow:
 	ldh a, [$FF94]
 	ld b, a
 	ldh a, [$FF95]
@@ -5693,14 +5693,14 @@ Jump_1FA4:
 	ld c, a
 	inc a
 	ldh [$FF93], a
-Jump_1FBD:
+.drawCell:
 	call GetLevelCellTileAndAttr
 	ld a, $01
 	ldh [rVBK], a
-Jump_1FC4:
+.waitForVram:
 	ldh a, [rSTAT]
 	and $02
-	jr nz, Jump_1FC4
+	jr nz, .waitForVram
 	ld [hl], d
 	xor a
 	ldh [rVBK], a
@@ -5721,11 +5721,11 @@ Jump_1FC4:
 	ldh a, [$FF90]
 	dec a
 	ldh [$FF90], a
-	jr nz, Jump_1FBD
+	jr nz, .drawCell
 	ldh a, [$FF91]
 	dec a
 	ldh [$FF91], a
-	jr nz, Jump_1FA4
+	jr nz, .drawRow
 	pop af
 	ld [rROMB0], a
 	pop hl
@@ -5744,14 +5744,14 @@ Func_1FF5:
 	ld d, OBJECT_COUNT
 	ld c, a
 	ld hl, wObjectPool
-Jump_1FFD:
+.scanRecord:
 	ld a, l
 	and $C0
 	add a, OBJECT_STATUS_OFFSET
 	ld l, a
 	ld a, [hl]
 	cp $00
-	jr z, Jump_2018
+	jr z, .allocate
 	ld a, l
 	and $C0
 	add a, OBJECT_RECORD_SIZE
@@ -5760,11 +5760,11 @@ Jump_1FFD:
 	adc a, h
 	ld h, a
 	dec d
-	jr nz, Jump_1FFD
+	jr nz, .scanRecord
 	xor a
-	jr Jump_2025
+	jr .return
 
-Jump_2018:
+.allocate:
 	ld a, l
 	and $C0
 	add a, OBJECT_STATUS_OFFSET
@@ -5775,7 +5775,7 @@ Jump_2018:
 	ld l, a
 	xor a
 	inc a
-Jump_2025:
+.return:
 	pop de
 	pop bc
 	ret
@@ -5788,7 +5788,7 @@ Func_2028:
 	push hl
 	ld d, OBJECT_COUNT
 	ld hl, wObjectPool
-Jump_2030:
+.clearRecord:
 	call FreeObjectRecord
 	ld a, l
 	and $C0
@@ -5798,7 +5798,7 @@ Jump_2030:
 	adc a, h
 	ld h, a
 	dec d
-	jr nz, Jump_2030
+	jr nz, .clearRecord
 	pop hl
 	pop af
 	pop de
@@ -5854,12 +5854,12 @@ Func_2080:
 	ld b, a
 	ld a, [wShadowOamFreeCount]
 	sub b
-	jr c, Jump_208C
+	jr c, .insufficient
 	ld a, $01
 	pop bc
 	ret
 
-Jump_208C:
+.insufficient:
 	ld a, $02
 	pop bc
 	ret
@@ -5871,11 +5871,11 @@ AllocateShadowOamFront:
 Func_2090:
 	ld a, [wShadowOamFreeCount]
 	or a
-	jr nz, Jump_209A
+	jr nz, .allocate
 	ld de, wDiscardedOamEntry
 	ret
 
-Jump_209A:
+.allocate:
 	dec a
 	ld [wShadowOamFreeCount], a
 	ld a, [wShadowOamFrontPtr]
@@ -5895,11 +5895,11 @@ AllocateShadowOamBack:
 Func_20B1:
 	ld a, [wShadowOamFreeCount]
 	or a
-	jr nz, Jump_20BB
+	jr nz, .allocate
 	ld de, wDiscardedOamEntry
 	ret
 
-Jump_20BB:
+.allocate:
 	dec a
 	ld [wShadowOamFreeCount], a
 	ld a, [wShadowOamBackPtr]
@@ -5923,7 +5923,7 @@ Func_20D2:
 	ld c, a
 	add a, d
 	cp DYNAMIC_SPRITE_TILE_REJECT_AT
-	jr nc, Jump_20F8
+	jr nc, .failed
 	ld [wDynamicSpriteTileCount], a
 	ld a, d
 	add a, a
@@ -5942,7 +5942,7 @@ Func_20D2:
 	ld a, c
 	ret
 
-Jump_20F8:
+.failed:
 	xor a
 	ld d, a
 	ld e, a
@@ -5963,13 +5963,13 @@ Func_20FE:
 	ret z
 	ld d, a
 	xor a
-Jump_210D:
+.clearEntry:
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
 	dec d
-	jr nz, Jump_210D
+	jr nz, .clearEntry
 	ret
 
 
@@ -6055,11 +6055,11 @@ Func_214D:
 	ld a, b
 	add a, $80
 	cp d
-	jr nz, Jump_2173
+	jr nz, .compareLeftBound
 	ld a, c
 	cp e
-Jump_2173:
-	jr c, Jump_21DF
+.compareLeftBound:
+	jr c, .notVisible
 	ld de, $00AC
 	ld a, d
 	add a, $80
@@ -6067,11 +6067,11 @@ Jump_2173:
 	ld a, b
 	add a, $80
 	cp d
-	jr nz, Jump_2184
+	jr nz, .compareRightBound
 	ld a, c
 	cp e
-Jump_2184:
-	jr nc, Jump_21DF
+.compareRightBound:
+	jr nc, .notVisible
 	ld a, l
 	and $C0
 	add a, OBJECT_SCREEN_X_OFFSET
@@ -6100,11 +6100,11 @@ Jump_2184:
 	ld a, b
 	add a, $80
 	cp d
-	jr nz, Jump_21B3
+	jr nz, .compareTopBound
 	ld a, c
 	cp e
-Jump_21B3:
-	jr c, Jump_21DF
+.compareTopBound:
+	jr c, .notVisible
 	ld de, $009C
 	ld a, d
 	add a, $80
@@ -6112,11 +6112,11 @@ Jump_21B3:
 	ld a, b
 	add a, $80
 	cp d
-	jr nz, Jump_21C4
+	jr nz, .compareBottomBound
 	ld a, c
 	cp e
-Jump_21C4:
-	jr nc, Jump_21DF
+.compareBottomBound:
+	jr nc, .notVisible
 	ld a, l
 	and $C0
 	add a, OBJECT_SCREEN_Y_OFFSET
@@ -6137,7 +6137,7 @@ Jump_21C4:
 	pop af
 	ret
 
-Jump_21DF:
+.notVisible:
 	ld a, l
 	and $C0
 	add a, OBJECT_FLAGS_OFFSET
@@ -6245,7 +6245,7 @@ Func_2241: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	cp $00
-	jr z, Jump_2290
+	jr z, .return
 	dec a
 	ldh [$FF80], a
 	ld a, l
@@ -6292,7 +6292,7 @@ Func_2241: ; legacy alias
 	inc c
 	ld a, [hli]
 	ld [bc], a
-Jump_2290:
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -6314,7 +6314,7 @@ Func_2295: ; legacy alias
 	ld l, a
 	ld a, [hl]
 	cp $00
-	jr z, Jump_22E8
+	jr z, .return
 	dec a
 	ldh [$FF80], a
 	ld a, l
@@ -6363,7 +6363,7 @@ Func_2295: ; legacy alias
 	inc c
 	ld a, [hli]
 	ld [bc], a
-Jump_22E8:
+.return:
 	pop hl
 	pop de
 	pop bc
@@ -6382,7 +6382,7 @@ Func_22ED: ; legacy alias
 	ld [$CA08], a
 	ld d, $40
 	ld hl, $D000
-Jump_2302:
+.processObject:
 	ld e, l
 	call UpdateObjectScreenPosition
 	ld a, $08
@@ -6397,23 +6397,23 @@ Jump_2302:
 	ld a, [hl]
 	ld l, e
 	cp $00
-	jr z, Jump_2335
+	jr z, .advanceObject
 	cp $02
-	jr z, Jump_237C
+	jr z, .updateProjectile
 	cp $01
-	jr z, Jump_2345
+	jr z, .updateVehicle
 	cp $03
-	jp z, Jump_23A9
+	jp z, .updateTimedEffect
 	cp $04
-	jr z, Jump_239D
-	jr Jump_2335
+	jr z, .updateStatus4
+	jr .advanceObject
 
-Jump_232B:
+.commitPosition:
 	ld l, e
 	call SaveObjectPreviousPosition
 	call CommitObjectNextPosition
 	call UpdateObjectFrameDisplacement
-Jump_2335:
+.advanceObject:
 	ld a, e
 	add a, $40
 	ld l, a
@@ -6421,78 +6421,78 @@ Jump_2335:
 	adc a, h
 	ld h, a
 	dec d
-	jr nz, Jump_2302
+	jr nz, .processObject
 	pop af
 	ld [rROMB0], a
 	ret
 
-Jump_2345:
+.updateVehicle:
 	xor a
 	or b
-	jr z, Jump_2353
+	jr z, .advanceVehicle
 	call RenderObjectOrientationGraphic
 	ld a, [$CA08]
 	inc a
 	ld [$CA08], a
-Jump_2353:
+.advanceVehicle:
 	call CalculateVehicleNextPosition
 	call UpdateVehicleTimersAndRemoveDestroyed
-	jr z, Jump_2335
+	jr z, .advanceObject
 	ld a, $26
 	add a, e
 	ld l, a
 	ld a, [hl]
 	ld l, e
 	or a
-	jr z, Jump_236E
+	jr z, .resolveVehicleMovement
 	call Func_0043
 	ld a, [$CA07]
 	inc a
 	ld [$CA07], a
-Jump_236E:
+.resolveVehicleMovement:
 	call ResolveObjectType1ProximityMovement
 	call ResolveObjectLevelBit0Movement
 	call HandleObjectLevelBit3Cell
 	call DispatchNearbyType4Entity
-	jr Jump_232B
+	jr .commitPosition
 
-Jump_237C:
+.updateProjectile:
 	xor a
 	or b
-	jr z, Jump_2383
+	jr z, .advanceProjectile
 	call RenderProjectile
-Jump_2383:
+.advanceProjectile:
 	call CalculateProjectileNextPosition
 	call UpdateProjectileLifetimeAndHoming
-	jr z, Jump_2335
+	jr z, .advanceObject
 	call HandleObjectLevelBit1And2Cells
 	ld a, $1D
 	add a, e
 	ld l, a
 	ld a, [hl]
 	cp $02
-	jr nz, Jump_232B
+	jr nz, .commitPosition
 	ld l, e
 	call ResolveProjectileHit
-	jr Jump_232B
+	jr .commitPosition
 
-Jump_239D:
+.updateStatus4:
 	xor a
 	or b
-	jr z, Jump_23A4
+	jr z, .advanceStatus4
 	call RenderStatus4Object
-Jump_23A4:
+.advanceStatus4:
 	call UpdateStatus4ObjectLifetime
-	jr Jump_232B
+	jr .commitPosition
 
-Jump_23A9:
+.updateTimedEffect:
 	xor a
 	or b
-	jr z, Jump_23B0
+	jr z, .advanceTimedEffect
 	call RenderObjectSprite
-Jump_23B0:
+.advanceTimedEffect:
 	call AdvanceTimedObjectEffect
-	jp Jump_232B
+	jp .commitPosition
 
 
 ; Require cell-map bit 0 at eight points around a 20-by-16-pixel footprint.
