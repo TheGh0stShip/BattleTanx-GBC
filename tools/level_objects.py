@@ -98,6 +98,22 @@ def validate_project(root: pathlib.Path) -> str:
           "whole prefix asset returned to manifest")
     check("ld b, $28" in source, "40-record initialization loop changed")
     check("ld a, $08" in source, "8-record auxiliary copy loop changed")
+    memory = (root / "include/memory.inc").read_text()
+    definitions = {
+        name: int(address, 16)
+        for name, address in re.findall(
+            r"^DEF\s+(\w+)\s+EQU\s+\$([0-9A-Fa-f]+)", memory, re.MULTILINE
+        )
+    }
+    expected_memory = {
+        "wLevelObjectSpawnTable": 0xCD1E,
+        "wLevelObjectAuxTable": 0xCD20,
+        "wObjectSlowTickCounter": 0xCD27,
+        "wPendingLevelObjectQueue": 0xCD33,
+    }
+    for name, address in expected_memory.items():
+        check(definitions.get(name) == address,
+              f"memory symbol {name} is {definitions.get(name)}, expected {address:#06x}")
     symbols = read_symbols(root / "battletanx.sym")
     if symbols is not None:
         expected = {

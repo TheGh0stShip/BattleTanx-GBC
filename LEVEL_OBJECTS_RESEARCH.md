@@ -31,6 +31,8 @@ queue. `UpdatePendingLevelObjects` services that queue every 75 calls, and
 record and creates it once its coordinates enter the checked camera window.
 `AbsoluteDifferenceBCDE` is the shared unsigned 16-bit difference helper used
 for both axes; it returns the magnitude in `DE` and the original sign in `A`.
+The active table pointers, the 20-by-3-byte queue, and its shared 75-call
+slow-tick counter now have checked symbols in `include/memory.inc`.
 
 ## Representation and validation
 

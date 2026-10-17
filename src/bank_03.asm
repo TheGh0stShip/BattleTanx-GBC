@@ -369,7 +369,7 @@ Jump_03_5DD1:
 	jp Jump_03_5FBA
 
 Jump_03_5DE2:
-	ld a, [$CD27]
+	ld a, [wObjectSlowTickCounter]
 	and a
 	jp nz, Jump_03_5FBA
 	ld a, e

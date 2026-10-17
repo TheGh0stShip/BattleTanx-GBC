@@ -19,12 +19,12 @@ InitializeLevelObjects:
 	ld [$CD17], a
 	ld [$CD19], a
 	ld [wLevelObjectSequenceTable], a
-	ld [$CD1E], a
-	ld [$CD20], a
+	ld [wLevelObjectSpawnTable], a
+	ld [wLevelObjectAuxTable], a
 	ld [$CD23], a
 	ld [$CD26], a
 	ld [$CD24], a
-	ld [$CD27], a
+	ld [wObjectSlowTickCounter], a
 	ld [$CD28], a
 	ld [$CD29], a
 	ld a, [$CA06]
@@ -35,13 +35,13 @@ InitializeLevelObjects:
 	ld bc, LevelObjectDataPointers
 	add hl, bc
 	ld a, [hli]
-	ld [$CD1E], a
+	ld [wLevelObjectSpawnTable], a
 	ld a, [hli]
-	ld [$CD1F], a
+	ld [wLevelObjectSpawnTable + 1], a
 	ld a, [hli]
-	ld [$CD20], a
+	ld [wLevelObjectAuxTable], a
 	ld a, [hl]
-	ld [$CD21], a
+	ld [wLevelObjectAuxTable + 1], a
 	ld bc, $0200
 	ld hl, $CDEF
 Jump_04_607E:
@@ -51,8 +51,8 @@ Jump_04_607E:
 	ld a, c
 	or b
 	jr nz, Jump_04_607E
-	ld bc, $003C
-	ld hl, $CD33
+	ld bc, PENDING_LEVEL_OBJECT_COUNT * PENDING_LEVEL_OBJECT_SIZE
+	ld hl, wPendingLevelObjectQueue
 Jump_04_608C:
 	ld a, $FF
 	ld [hli], a
@@ -64,9 +64,9 @@ Jump_04_608C:
 	ld [$CD17], a
 	ld [$CD15], a
 	ld [$CD16], a
-	ld a, [$CD1E]
+	ld a, [wLevelObjectSpawnTable]
 	ld l, a
-	ld a, [$CD1F]
+	ld a, [wLevelObjectSpawnTable + 1]
 	ld h, a
 	ld b, $28
 	xor a
@@ -342,9 +342,9 @@ Jump_04_6243:
 	dec a
 	ld b, a
 	jp nz, Jump_04_60AC
-	ld a, [$CD20]
+	ld a, [wLevelObjectAuxTable]
 	ld l, a
-	ld a, [$CD21]
+	ld a, [wLevelObjectAuxTable + 1]
 	ld h, a
 	ld de, $CD6F
 	ld a, $08
@@ -522,8 +522,8 @@ QueuePendingLevelObject:
 	ret z
 	ld e, l
 	ld d, h
-	ld hl, $CD33
-	ld b, $14
+	ld hl, wPendingLevelObjectQueue
+	ld b, PENDING_LEVEL_OBJECT_COUNT
 Jump_04_6353:
 	push bc
 	ld a, [hl]
@@ -553,9 +553,9 @@ Jump_04_6353:
 	add hl, hl
 	pop bc
 	add hl, bc
-	ld a, [$CD1E]
+	ld a, [wLevelObjectSpawnTable]
 	ld c, a
-	ld a, [$CD1F]
+	ld a, [wLevelObjectSpawnTable + 1]
 	ld b, a
 	add hl, bc
 	ld bc, $0009
@@ -578,15 +578,15 @@ Jump_04_6389:
 
 
 UpdatePendingLevelObjects:
-	ld a, [$CD27]
+	ld a, [wObjectSlowTickCounter]
 	inc a
-	ld [$CD27], a
-	cp $4B
+	ld [wObjectSlowTickCounter], a
+	cp OBJECT_SLOW_TICK_PERIOD
 	ret nz
 	xor a
-	ld [$CD27], a
-	ld hl, $CD33
-	ld b, $14
+	ld [wObjectSlowTickCounter], a
+	ld hl, wPendingLevelObjectQueue
+	ld b, PENDING_LEVEL_OBJECT_COUNT
 Jump_04_63A5:
 	push bc
 	push hl
@@ -640,9 +640,9 @@ TrySpawnPendingLevelObject:
 	add hl, hl
 	pop bc
 	add hl, bc
-	ld a, [$CD1E]
+	ld a, [wLevelObjectSpawnTable]
 	ld c, a
-	ld a, [$CD1F]
+	ld a, [wLevelObjectSpawnTable + 1]
 	ld b, a
 	add hl, bc
 	push hl
