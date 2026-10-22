@@ -9,7 +9,7 @@
     "sha1": "5078584e86c0b6f4687c424cc00bbd762ba6573a"
   },
   "project": "BattleTanx GBC",
-  "status": "in-progress",
+  "status": "complete",
   "targets": [
     "GBC"
   ],
@@ -22,9 +22,8 @@
     }
   ],
   "help": [
-    "Hardware behavior verification",
-    "Resolve the final neutral data bytes",
-    "Confirm remaining gameplay identities"
+    "Physical-hardware behavior verification",
+    "Further optional semantic research"
   ],
   "links": [
     {
@@ -37,5 +36,5 @@
     }
   ],
   "tags": ["matching", "RGBDS", "SM83"],
-  "notes": "This is an annotated assembly disassembly, not a high-level-language decompilation. The tracker schema uses decomp as its umbrella type for source rebuilt from a binary. The entire USA cartridge rebuilds byte-for-byte from committed RGBDS source and assets. All 288 catalogued function entries have reviewed names; semantic and hardware verification continues."
+  "notes": "Complete byte-exact annotated assembly disassembly: the entire USA cartridge rebuilds from committed RGBDS source and assets, all 288 catalogued function entries have reviewed names, and the published reconstruction report is 100%. The tracker schema uses decomp as its umbrella type for source rebuilt from a binary. Optional semantic research and physical-hardware verification do not reduce disassembly completeness."
 }

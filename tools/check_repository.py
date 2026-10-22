@@ -56,6 +56,8 @@ def main() -> None:
             fail(f".recomp.json {key!r} must be {value!r}")
     if manifest.get("x-source-form") != "byte-exact annotated assembly disassembly":
         fail(".recomp.json must identify the actual assembly source form")
+    if manifest.get("status") != "complete":
+        fail(".recomp.json must publish the completed reconstruction status")
     if "assembly disassembly" not in manifest.get("approach", "").lower():
         fail(".recomp.json approach must identify the actual assembly source form")
     if manifest.get("original", {}).get("sha1") != "5078584e86c0b6f4687c424cc00bbd762ba6573a":

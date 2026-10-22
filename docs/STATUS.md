@@ -1,6 +1,6 @@
 # Disassembly and source-reconstruction status
 
-Last audited: 2026-10-17
+Last audited: 2026-10-22
 
 ## Prior-work search
 
@@ -31,6 +31,9 @@ claim.
   [`REPRODUCTION.md`](REPRODUCTION.md).
 
 This is complete binary reconstruction. It is not complete semantic recovery.
+Public tracker metadata records the disassembly as `complete`; optional
+semantic research and physical-hardware verification remain separate from the
+100% reconstruction measurement.
 
 ## Source recovery
 
